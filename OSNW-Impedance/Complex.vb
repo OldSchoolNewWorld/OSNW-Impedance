@@ -1,6 +1,7 @@
 ﻿Imports System.Runtime.CompilerServices
+Imports System.Numerics
 
-Module ComplexExtensions
+Public Module ComplexExtensions
 
     ''' <summary>
     ''' Returns a standard form string that represents the current object.

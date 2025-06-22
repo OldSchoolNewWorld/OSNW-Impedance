@@ -1,4 +1,5 @@
 ﻿Imports System.Runtime.CompilerServices
+Imports System.Numerics
 
 ''' <summary>
 ''' Represents an electrical impedance with resistance (R) and reactance (X).
