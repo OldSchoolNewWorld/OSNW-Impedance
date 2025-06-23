@@ -57,7 +57,7 @@ Partial Public Module ComplexExtensions
 
 #End Region ' "ToString Utils"
 
-#Region "ToString Implementations"
+#Region "ToStandardString Implementations"
 
     ' System.Numerics.Complex in .NET 8.0 has these:
     '   They optionally specify a format string, an IFormatProvider, or both.
@@ -98,7 +98,7 @@ Partial Public Module ComplexExtensions
     ''' formatting information.</param>
     ''' <returns>The current complex number expressed in standard
     ''' form.</returns>
-    <Extension>
+    <Extension()>
     Public Function ToStandardString(
         ByVal complex As System.Numerics.Complex,
         ByVal standardizationStyle As StandardizationStyle,
@@ -130,6 +130,7 @@ Partial Public Module ComplexExtensions
     ''' string.</param>
     ''' <returns>The current complex number expressed in standard
     ''' form.</returns>
+    <Extension()>
     Public Function ToStandardString(
         ByVal complex As System.Numerics.Complex,
         ByVal standardizationStyle As StandardizationStyle,
@@ -160,7 +161,7 @@ Partial Public Module ComplexExtensions
     ''' formatting information.</param>
     ''' <returns>The current complex number expressed in standard
     ''' form.</returns>
-    <Extension>
+    <Extension()>
     Public Function ToStandardString(
         ByVal complex As System.Numerics.Complex,
         ByVal aStandardizationStyle As StandardizationStyle,
@@ -188,7 +189,7 @@ Partial Public Module ComplexExtensions
     ''' form string.</param>
     ''' <returns>The current complex number expressed in standard
     ''' form.</returns>
-    <Extension>
+    <Extension()>
     Public Function ToStandardString(
         ByVal complex As System.Numerics.Complex,
         ByVal standardizationStyle As StandardizationStyle) _
@@ -212,7 +213,7 @@ Partial Public Module ComplexExtensions
     ''' converted.</param>
     ''' <returns>The current complex number expressed in standard
     ''' form.</returns>
-    <Extension>
+    <Extension()>
     Public Function ToStandardString(
         ByVal complex As System.Numerics.Complex) _
         As System.String
@@ -223,6 +224,6 @@ Partial Public Module ComplexExtensions
         Return StdStr
     End Function ' ToStandardString
 
-#End Region ' "ToString Implementations"
+#End Region ' "ToStandardString Implementations"
 
 End Module ' ComplexExtensions

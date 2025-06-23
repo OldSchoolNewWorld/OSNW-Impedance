@@ -4,7 +4,8 @@ Imports System.Runtime.CompilerServices
 
 Public Module ComplexExtensions
 
-    'Private Const CHARI As System.Char = "i"c
+    Friend Const CHARI As System.Char = "i"c
+    Friend Const CHARJ As System.Char = "j"c
     Private Const CHARPLUS As System.Char = "+"c
     Private Const CHARMINUS As System.Char = "-"c
     'Private Const CHARUPPERE As System.Char = "E"c
@@ -82,24 +83,5 @@ Public Module ComplexExtensions
     ''' </summary>
     Public Const DefaultStandardizationStyle As StandardizationStyle =
         StandardizationStyle.ClosedAIB
-
-
-
-
-
-
-    '' THIS WAS JUST EARLY TINKERING WITH STRUCTURAL QUESTIONS. IT IS A VERY
-    '' RUDIMENTARY IMPLEMENTATION WITH A SINGLE FORMAT FOR THE RESULT.
-    '''' <summary>
-    '''' Returns a standard form string that represents the current object.
-    '''' </summary>
-    '''' <param name="complex">The complex number to convert.</param>
-    '''' <returns>A string representation of the complex number in the form "A+iB" or "A-iB".</returns>
-    '<Extension()>
-    'Public Function ToStandardString(complex As System.Numerics.Complex)
-    '    Return If(complex.Imaginary < 0.0,
-    '        $"{complex.Real}-i{Math.Abs(complex.Imaginary)}",
-    '        $"{complex.Real}+i{complex.Imaginary}")
-    'End Function ' ToStandardString
 
 End Module ' ComplexExtensions
