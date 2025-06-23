@@ -34,8 +34,10 @@ Public Structure Impedance
     ''' Creates a new Impedance with the specified resistance (R) and reactance
     ''' (X).
     ''' </summary>
-    ''' <param name="r">xxxxxxxxxxxxxxx</param>
-    ''' <param name="x">xxxxxxxxxxxxxxx</param>
+    ''' <param name="r">Specifies the value of resistance component of the
+    ''' Impedance.</param>
+    ''' <param name="x">Specifies the value of reactance component of the
+    ''' Impedance.</param>
     Public Sub New(r As System.Double, x As System.Double)
         Me.Complex = New System.Numerics.Complex(r, x)
     End Sub
