@@ -8,23 +8,23 @@ Public Structure Impedance
     '    Implements IEquatable(Of Impedance)
 
     ''' <summary>
-    ''' Gets the impedance as a complex number.
+    ''' Gets the Impedance as a complex number.
     ''' </summary>
     Private ReadOnly Complex As System.Numerics.Complex
 
     ''' <summary>
-    ''' Gets the resistance of the Impedance.
+    ''' Gets the resistance component of the Impedance.
     ''' </summary>
-    Public ReadOnly Property R As System.Double
+    Public ReadOnly Property Resistance As System.Double
         Get
             Return Me.Complex.Real
         End Get
     End Property
 
     ''' <summary>
-    ''' Gets the reactance of the Impedance.
+    ''' Gets the reactance component of the Impedance.
     ''' </summary>
-    Public ReadOnly Property X As System.Double
+    Public ReadOnly Property Reactance As System.Double
         Get
             Return Me.Complex.Imaginary
         End Get
