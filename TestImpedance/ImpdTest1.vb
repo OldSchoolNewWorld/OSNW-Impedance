@@ -1,4 +1,5 @@
 Imports System
+Imports System.Globalization
 Imports OSNW.Numerics
 Imports Xunit
 
@@ -48,5 +49,48 @@ Namespace TestImpedance
         End Sub
 
     End Class ' ToStandardStringFormatTest
+
+    Public Class ToStandardStringCultureTest
+
+        <Fact>
+        Sub ToStandardString_InvariantCulture_Succeeds()
+            ' One round down, one up.
+            Dim Z As New OSNW.Numerics.Impedance(111_111.122, -555_555.677)
+            Dim CplxStr As String = Z.ToStandardString(Nothing, CultureInfo.InvariantCulture)
+            Assert.Equal("111111.122-j555555.677", CplxStr)
+        End Sub
+
+        <Fact>
+        Sub ToStandardString_CurrentCulture_Succeeds()
+            ' One round down, one up.
+            Dim Z As New OSNW.Numerics.Impedance(111_111.122, -555_555.677)
+            Dim CplxStr As String = Z.ToStandardString(Nothing, CultureInfo.CurrentCulture)
+            Assert.Equal("111111.122-j555555.677", CplxStr)
+        End Sub
+
+        <Fact>
+        Sub ToStandardString_UKCulture_Succeeds()
+            ' One round down, one up.
+            Dim Z As New OSNW.Numerics.Impedance(1.122, 5.677)
+            Dim CplxStr As String = Z.ToStandardString(Nothing, New CultureInfo("en-UK", False))
+            Assert.Equal("1.122+j5.677", CplxStr)
+        End Sub
+
+        <Fact>
+        Sub ToStandardString_RussiaCulture_Succeeds()
+            ' One round down, one up.
+            Dim Z As New OSNW.Numerics.Impedance(111_111.122, -555_555.677)
+            Dim CplxStr As String = Z.ToStandardString(Nothing, New CultureInfo("ru-RU", False))
+            Assert.Equal("111111,122-j555555,677", CplxStr)
+        End Sub
+
+        <Fact>
+        Sub ToStandardString_FranceCulture_Succeeds()
+            Dim Z As New OSNW.Numerics.Impedance(-111_111.125, 555_555.675)
+            Dim CplxStr As String = Z.ToStandardString(Nothing, New CultureInfo("fr-FR", False))
+            Assert.Equal("-111111,125+j555555,675", CplxStr)
+        End Sub
+
+    End Class ' ToStandardStringCultureTest
 
 End Namespace ' TestImpedance
