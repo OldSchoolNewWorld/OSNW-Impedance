@@ -4,101 +4,48 @@ Imports Xunit
 
 Namespace TestImpedance
 
-    Public Class ToStringSignedTest
+    Public Class ToStringDefaultTest
 
-        <Fact>
-        Sub ToString_DefaultPosPos_Succeeds()
-            Dim Z As New OSNW.Numerics.Impedance(1.125, 5.675)
+        <Theory>
+        <InlineData(1.125, 5.675, "<1.125; 5.675>")>
+        <InlineData(1.125, -5.675, "<1.125; -5.675>")>
+        <InlineData(-1.125, 5.675, "<-1.125; 5.675>")>
+        <InlineData(-1.125, -5.675, "<-1.125; -5.675>")>
+        Sub ToString_Default_Succeeds(r As Double, x As Double, expect As String)
+            Dim Z As New OSNW.Numerics.Impedance(r, x)
             Dim ImpStr As String = Z.ToString()
-            Assert.Equal("<1.125; 5.675>", ImpStr)
+            Assert.Equal(expect, ImpStr)
         End Sub
 
-        <Fact>
-        Sub ToString_DefaultPosNeg_Succeeds()
-            Dim Z As New OSNW.Numerics.Impedance(1.125, -5.675)
-            Dim ImpStr As String = Z.ToString()
-            Assert.Equal("<1.125; -5.675>", ImpStr)
-        End Sub
+    End Class ' ToStringDefaultTest
 
-        <Fact>
-        Sub ToString_DefaultNegPos_Succeeds()
-            Dim Z As New OSNW.Numerics.Impedance(-1.125, 5.675)
-            Dim ImpStr As String = Z.ToString()
-            Assert.Equal("<-1.125; 5.675>", ImpStr)
-        End Sub
+    Public Class ToStandardStringDefaultTest
 
-        <Fact>
-        Sub ToString_DefaultNegNeg_Succeeds()
-            Dim Z As New OSNW.Numerics.Impedance(-1.125, -5.675)
-            Dim ImpStr As String = Z.ToString()
-            Assert.Equal("<-1.125; -5.675>", ImpStr)
-        End Sub
-
-    End Class ' ToStringSignedTest
-
-    Public Class ToStandardStringSignedTest
-
-        <Fact>
-        Sub ToStandardString_DefaultPosPos_Succeeds()
-            Dim Z As New OSNW.Numerics.Impedance(1.125, 5.675)
+        <Theory>
+        <InlineData(1.125, 5.675, "1.125+j5.675")>
+        <InlineData(1.125, -5.675, "1.125-j5.675")>
+        <InlineData(-1.125, 5.675, "-1.125+j5.675")>
+        <InlineData(-1.125, -5.675, "-1.125-j5.675")>
+        Sub ToStandardString_Default_Succeeds(r As Double, x As Double, expect As String)
+            Dim Z As New OSNW.Numerics.Impedance(r, x)
             Dim ImpStr As String = Z.ToStandardString()
-            Assert.Equal("1.125+j5.675", ImpStr)
+            Assert.Equal(expect, ImpStr)
         End Sub
 
-        <Fact>
-        Sub ToStandardString_DefaultPosNeg_Succeeds()
-            Dim Z As New OSNW.Numerics.Impedance(1.125, -5.675)
-            Dim ImpStr As String = Z.ToStandardString()
-            Assert.Equal("1.125-j5.675", ImpStr)
-        End Sub
-
-        <Fact>
-        Sub ToStandardString_DefaultNegPos_Succeeds()
-            Dim Z As New OSNW.Numerics.Impedance(-1.125, 5.675)
-            Dim ImpStr As String = Z.ToStandardString()
-            Assert.Equal("-1.125+j5.675", ImpStr)
-        End Sub
-
-        <Fact>
-        Sub ToStandardString_DefaultNegNeg_Succeeds()
-            Dim Z As New OSNW.Numerics.Impedance(-1.125, -5.675)
-            Dim ImpStr As String = Z.ToStandardString()
-            Assert.Equal("-1.125-j5.675", ImpStr)
-        End Sub
-
-    End Class ' ToStandardStringSignedTest
+    End Class ' ToStandardStringDefaultTest
 
     Public Class ToStandardStringFormatTest
 
-        <Fact>
-        Sub ToStandardString_FormatPosPos_Succeeds()
+        <Theory>
+        <InlineData(1.122, 5.677, "F2", "1.12+j5.68")>
+        <InlineData(111_111.122, -555_555.677, "N2", "111,111.12-j555,555.68")>
+        <InlineData(-111_111.125, 555_555.675, "G5", "-1.1111E+05+j5.5556E+05")>
+        Sub ToStandardString_Format_Succeeds(r As Double, x As Double, format As String, expect As String)
             ' One round down, one up.
-            Dim Z As New OSNW.Numerics.Impedance(1.122, 5.677)
-            Dim CplxStr As String = Z.ToStandardString(Nothing, "F2")
-            Assert.Equal("1.12+j5.68", CplxStr)
+            Dim Z As New OSNW.Numerics.Impedance(r, x)
+            Dim CplxStr As String = Z.ToStandardString(Nothing, format)
+            Assert.Equal(expect, CplxStr)
         End Sub
-
-        <Fact>
-        Sub ToStandardString_DefaultPosNeg_Succeeds()
-            ' One round down, one up.
-            Dim Z As New OSNW.Numerics.Impedance(111_111.122, -555_555.677)
-            Dim CplxStr As String = Z.ToStandardString(Nothing, "N2")
-            Assert.Equal("111,111.12-j555,555.68", CplxStr)
-        End Sub
-
-        <Fact>
-        Sub ToStandardString_DefaultNegPos_Succeeds()
-            Dim Z As New OSNW.Numerics.Impedance(-111_111.125, 555_555.675)
-            Dim CplxStr As String = Z.ToStandardString(Nothing, "G5")
-            Assert.Equal("-1.1111E+05+j5.5556E+05", CplxStr)
-        End Sub
-
-        '<Fact>
-        'Sub ToStandardString_DefaultNegNeg_Succeeds()
-        '    Dim Z As New OSNW.Numerics.Impedance(-1.125, -5.675)
-        '    Dim CplxStr As String = Z.ToStandardString("F2", "N2", "G5")
-        '    Assert.Equal("-1.125-j5.675", CplxStr)
-        'End Sub
 
     End Class ' ToStandardStringFormatTest
 
