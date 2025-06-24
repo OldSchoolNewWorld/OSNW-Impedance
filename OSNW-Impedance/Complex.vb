@@ -8,12 +8,17 @@ Imports System.Numerics
 Imports System.Runtime.CompilerServices
 
 ''' <summary>
-''' xxxxxxxxxxxxxxxxxxxxxxxxxxxx
-''' xxxxxxxxxxxxxxxxxxxxxxxxxxxx
-''' xxxxxxxxxxxxxxxxxxxxxxxxxxxx
-''' xxxxxxxxxxxxxxxxxxxxxxxxxxxx
-''' xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+''' This module contains extension methods for the <see cref="Complex"/>
+''' structure, providing additional functionality such as parsing and standard
+''' form string representation.
 ''' </summary>
+''' <remarks>
+''' The module is designed to extend the <see cref="System.Numerics.Complex"/>
+''' structure with methods that allow for converting complex numbers to a
+''' standard form string and parsing complex numbers from standard form strings.
+''' It includes methods for both default and custom standardization styles,
+''' allowing for flexibility in how complex numbers are represented as strings.
+''' </remarks>
 Public Module ComplexExtensions
 
     ' REF: Extension Methods not Recognized
@@ -65,18 +70,28 @@ Public Module ComplexExtensions
 
         ''' <summary>
         ''' Default: Use the A+iB sequence and the closed form, without spaces
-        ''' before and after the sign of the imaginary component.
+        ''' before and after the sign of the imaginary component. There is no
+        ''' parsing enforcement unless EnforceSequence and/or EnforceSpacing are
+        ''' set.
         ''' </summary>
+        ''' <remarks>
+        ''' This is the default value for the enumeration.
+        ''' </remarks>
         None = 0
 
         ''' <summary>
-        ''' Use the A+Bi sequence.
+        ''' Use the A+Bi sequence. There is no parsing enforcement unless
+        ''' EnforceSequence is set.
         ''' </summary>
+        ''' <remarks>
+        ''' This is the default value for the enumeration.
+        ''' </remarks>
         ABi = 1
 
         ''' <summary>
         ''' Use the open (A + iB or A + Bi) form, with spaces before and after
-        ''' the sign of the imaginary component.
+        ''' the sign of the imaginary component. There is no parsing enforcement unless
+        ''' EnforceSpacing is set.
         ''' </summary>
         Open = 2
 
@@ -98,25 +113,29 @@ Public Module ComplexExtensions
 
         ''' <summary>
         ''' Use the A+iB sequence and the closed form, without spaces before and
-        ''' after the sign of the imaginary component.
+        ''' after the sign of the imaginary component. There is no parsing
+        ''' enforcement unless EnforceSequence and/or EnforceSpacing are set.
         ''' </summary>
         ClosedAiB = None
 
         ''' <summary>
         ''' Use the A+Bi sequence and the closed form, without spaces before and
-        ''' after the sign of the imaginary component.
+        ''' after the sign of the imaginary component. There is no parsing
+        ''' enforcement unless EnforceSequence and/or EnforceSpacing are set.
         ''' </summary>
         ClosedABi = ABi
 
         ''' <summary>
         ''' Use the A + iB sequence and the open form, with spaces before and
-        ''' after the sign of the imaginary component.
+        ''' after the sign of the imaginary component. There is no parsing
+        ''' enforcement unless EnforceSequence and/or EnforceSpacing are set.
         ''' </summary>
         OpenAiB = Open
 
         ''' <summary>
         ''' Use the A + Bi sequence and the open form, with spaces before and
-        ''' after the sign of the imaginary component.
+        ''' after the sign of the imaginary component. There is no parsing
+        ''' enforcement unless EnforceSequence and/or EnforceSpacing are set.
         ''' </summary>
         OpenABi = Open Or ABi
 
