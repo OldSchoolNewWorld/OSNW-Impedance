@@ -14,8 +14,8 @@ Namespace TestImpedance
         <InlineData(-1.125, -5.675, "<-1.125; -5.675>")>
         Sub ToString_Default_Succeeds(r As Double, x As Double, expect As String)
             Dim Z As New OSNW.Numerics.Impedance(r, x)
-            Dim ImpStr As String = Z.ToString()
-            Assert.Equal(expect, ImpStr)
+            Dim ImpdStr As String = Z.ToString()
+            Assert.Equal(expect, ImpdStr)
         End Sub
 
     End Class ' ToStringDefaultTest
@@ -29,8 +29,8 @@ Namespace TestImpedance
         <InlineData(-1.125, -5.675, "-1.125-j5.675")>
         Sub ToStandardString_Default_Succeeds(r As Double, x As Double, expect As String)
             Dim Z As New OSNW.Numerics.Impedance(r, x)
-            Dim ImpStr As String = Z.ToStandardString()
-            Assert.Equal(expect, ImpStr)
+            Dim ImpdStr As String = Z.ToStandardString()
+            Assert.Equal(expect, ImpdStr)
         End Sub
 
     End Class ' ToStandardStringDefaultTest
@@ -44,51 +44,36 @@ Namespace TestImpedance
         Sub ToStandardString_Format_Succeeds(r As Double, x As Double, format As String, expect As String)
             ' One round down, one up.
             Dim Z As New OSNW.Numerics.Impedance(r, x)
-            Dim CplxStr As String = Z.ToStandardString(Nothing, format)
-            Assert.Equal(expect, CplxStr)
+            Dim ImpdStr As String = Z.ToStandardString(Nothing, format)
+            Assert.Equal(expect, ImpdStr)
         End Sub
 
     End Class ' ToStandardStringFormatTest
 
     Public Class ToStandardStringCultureTest
 
-        <Fact>
-        Sub ToStandardString_InvariantCulture_Succeeds()
-            ' One round down, one up.
-            Dim Z As New OSNW.Numerics.Impedance(111_111.122, -555_555.677)
-            Dim CplxStr As String = Z.ToStandardString(Nothing, CultureInfo.InvariantCulture)
-            Assert.Equal("111111.122-j555555.677", CplxStr)
-        End Sub
+        <Theory>
+        <InlineData(111_111.122, -555_555.677, 0, "111111.122-j555555.677")> ' One round down, one up.
+        <InlineData(111_111.122, -555_555.677, 1, "111111.122-j555555.677")> ' One round down, one up.
+        <InlineData(1.122, 5.677, 2, "1.122+j5.677")>
+        <InlineData(111_111.122, -555_555.677, 3, "111111,122-j555555,677")> ' One round down, one up.
+        <InlineData(-111_111.125, 555_555.675, 4, "-111111,125+j555555,675")>
+        Sub ToStandardString_Culture_Succeeds(
+            r As Double, x As Double, index As Integer, expected As String)
 
-        <Fact>
-        Sub ToStandardString_CurrentCulture_Succeeds()
-            ' One round down, one up.
-            Dim Z As New OSNW.Numerics.Impedance(111_111.122, -555_555.677)
-            Dim CplxStr As String = Z.ToStandardString(Nothing, CultureInfo.CurrentCulture)
-            Assert.Equal("111111.122-j555555.677", CplxStr)
-        End Sub
+            Dim Providers As System.IFormatProvider() = {
+                CultureInfo.InvariantCulture,
+                CultureInfo.CurrentCulture,
+                New CultureInfo("en-UK", False),
+                New CultureInfo("ru-RU", False),
+                New CultureInfo("fr-FR", False)
+            }
+            Dim Z As New OSNW.Numerics.Impedance(r, x)
 
-        <Fact>
-        Sub ToStandardString_UKCulture_Succeeds()
-            ' One round down, one up.
-            Dim Z As New OSNW.Numerics.Impedance(1.122, 5.677)
-            Dim CplxStr As String = Z.ToStandardString(Nothing, New CultureInfo("en-UK", False))
-            Assert.Equal("1.122+j5.677", CplxStr)
-        End Sub
+            Dim ImpdStr As String = Z.ToStandardString(Nothing, Providers(index))
 
-        <Fact>
-        Sub ToStandardString_RussiaCulture_Succeeds()
-            ' One round down, one up.
-            Dim Z As New OSNW.Numerics.Impedance(111_111.122, -555_555.677)
-            Dim CplxStr As String = Z.ToStandardString(Nothing, New CultureInfo("ru-RU", False))
-            Assert.Equal("111111,122-j555555,677", CplxStr)
-        End Sub
+            Assert.Equal(expected, ImpdStr)
 
-        <Fact>
-        Sub ToStandardString_FranceCulture_Succeeds()
-            Dim Z As New OSNW.Numerics.Impedance(-111_111.125, 555_555.675)
-            Dim CplxStr As String = Z.ToStandardString(Nothing, New CultureInfo("fr-FR", False))
-            Assert.Equal("-111111,125+j555555,675", CplxStr)
         End Sub
 
     End Class ' ToStandardStringCultureTest

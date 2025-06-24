@@ -1,4 +1,5 @@
 Imports System
+Imports System.Configuration
 Imports System.Globalization
 Imports OSNW.Numerics.ComplexExtensions
 Imports Xunit
@@ -10,102 +11,57 @@ Namespace TestComplex
 
     Public Class ToStandardStringDefaultTest
 
-        <Fact>
-        Sub ToStandardString_DefaultPosPos_Succeeds()
-            Dim Z As New System.Numerics.Complex(1.125, 5.675)
+        <Theory>
+        <InlineData(1.125, 5.675, "1.125+i5.675")>
+        <InlineData(1.125, -5.675, "1.125-i5.675")>
+        <InlineData(-1.125, 5.675, "-1.125+i5.675")>
+        <InlineData(-1.125, -5.675, "-1.125-i5.675")>
+        Sub ToStandardString_Default_Succeeds(real As Double, imaginary As Double, expected As String)
+            Dim Z As New System.Numerics.Complex(real, imaginary)
             Dim CplxStr As String = Z.ToStandardString()
-            Assert.Equal("1.125+i5.675", CplxStr)
-        End Sub
-
-        <Fact>
-        Sub ToStandardString_DefaultPosNeg_Succeeds()
-            Dim Z As New System.Numerics.Complex(1.125, -5.675)
-            Dim CplxStr As String = Z.ToStandardString()
-            Assert.Equal("1.125-i5.675", CplxStr)
-        End Sub
-
-        <Fact>
-        Sub ToStandardString_DefaultNegPos_Succeeds()
-            Dim Z As New System.Numerics.Complex(-1.125, 5.675)
-            Dim CplxStr As String = Z.ToStandardString()
-            Assert.Equal("-1.125+i5.675", CplxStr)
-        End Sub
-
-        <Fact>
-        Sub ToStandardString_DefaultNegNeg_Succeeds()
-            Dim Z As New System.Numerics.Complex(-1.125, -5.675)
-            Dim CplxStr As String = Z.ToStandardString()
-            Assert.Equal("-1.125-i5.675", CplxStr)
+            Assert.Equal(expected, CplxStr)
         End Sub
 
     End Class ' ToStandardStringDefaultTest
 
     Public Class ToStandardStringFormatTest
 
-        <Fact>
-        Sub ToStandardString_FormatPosPos_Succeeds()
-            ' One round down, one up.
-            Dim Z As New System.Numerics.Complex(1.122, 5.677)
-            Dim CplxStr As String = Z.ToStandardString(Nothing, "F2")
-            Assert.Equal("1.12+i5.68", CplxStr)
-        End Sub
-
-        <Fact>
-        Sub ToStandardString_DefaultPosNeg_Succeeds()
-            ' One round down, one up.
-            Dim Z As New System.Numerics.Complex(111_111.122, -555_555.677)
-            Dim CplxStr As String = Z.ToStandardString(Nothing, "N2")
-            Assert.Equal("111,111.12-i555,555.68", CplxStr)
-        End Sub
-
-        <Fact>
-        Sub ToStandardString_DefaultNegPos_Succeeds()
-            Dim Z As New System.Numerics.Complex(-111_111.125, 555_555.675)
-            Dim CplxStr As String = Z.ToStandardString(Nothing, "G5")
-            Assert.Equal("-1.1111E+05+i5.5556E+05", CplxStr)
+        <Theory>
+        <InlineData(1.122, 5.677, "F2", "1.12+i5.68")> ' One round down, one up.
+        <InlineData(111_111.122, -555_555.677, "N2", "111,111.12-i555,555.68")> ' One round down, one up.
+        <InlineData(-111_111.125, 555_555.675, "G5", "-1.1111E+05+i5.5556E+05")>
+        Sub ToStandardString_Format_Succeeds(real As Double, imaginary As Double, format As String, expected As String)
+            Dim Z As New System.Numerics.Complex(real, imaginary)
+            Dim CplxStr As String = Z.ToStandardString(Nothing, format)
+            Assert.Equal(expected, CplxStr)
         End Sub
 
     End Class ' ToStandardStringFormatTest
 
     Public Class ToStandardStringCultureTest
 
-        <Fact>
-        Sub ToStandardString_InvariantCulture_Succeeds()
-            ' One round down, one up.
-            Dim Z As New System.Numerics.Complex(111_111.122, -555_555.677)
-            Dim CplxStr As String = Z.ToStandardString(Nothing, CultureInfo.InvariantCulture)
-            Assert.Equal("111111.122-i555555.677", CplxStr)
-        End Sub
+        <Theory>
+        <InlineData(111_111.122, -555_555.677, 0, "111111.122-i555555.677")> ' One round down, one up.
+        <InlineData(111_111.122, -555_555.677, 1, "111111.122-i555555.677")> ' One round down, one up.
+        <InlineData(1.122, 5.677, 2, "1.122+i5.677")>
+        <InlineData(111_111.122, -555_555.677, 3, "111111,122-i555555,677")> ' One round down, one up.
+        <InlineData(-111_111.125, 555_555.675, 4, "-111111,125+i555555,675")>
+        Sub ToStandardString_Culture_Succeeds(
+            real As Double, imaginary As Double, index As Integer, expected As String)
 
-        <Fact>
-        Sub ToStandardString_CurrentCulture_Succeeds()
-            ' One round down, one up.
-            Dim Z As New System.Numerics.Complex(111_111.122, -555_555.677)
-            Dim CplxStr As String = Z.ToStandardString(Nothing, CultureInfo.CurrentCulture)
-            Assert.Equal("111111.122-i555555.677", CplxStr)
-        End Sub
+            Dim Providers As System.IFormatProvider() = {
+                CultureInfo.InvariantCulture,
+                CultureInfo.CurrentCulture,
+                New CultureInfo("en-UK", False),
+                New CultureInfo("ru-RU", False),
+                New CultureInfo("fr-FR", False)
+            }
+            Dim Z As New System.Numerics.Complex(real, imaginary)
 
-        <Fact>
-        Sub ToStandardString_UKCulture_Succeeds()
-            ' One round down, one up.
-            Dim Z As New System.Numerics.Complex(1.122, 5.677)
-            Dim CplxStr As String = Z.ToStandardString(Nothing, New CultureInfo("en-UK", False))
-            Assert.Equal("1.122+i5.677", CplxStr)
-        End Sub
+            Dim CplxStr As String = Z.ToStandardString(Nothing, Providers(index))
 
-        <Fact>
-        Sub ToStandardString_RussiaCulture_Succeeds()
-            ' One round down, one up.
-            Dim Z As New System.Numerics.Complex(111_111.122, -555_555.677)
-            Dim CplxStr As String = Z.ToStandardString(Nothing, New CultureInfo("ru-RU", False))
-            Assert.Equal("111111,122-i555555,677", CplxStr)
-        End Sub
+            Assert.Equal(expected, CplxStr)
 
-        <Fact>
-        Sub ToStandardString_FranceCulture_Succeeds()
-            Dim Z As New System.Numerics.Complex(-111_111.125, 555_555.675)
-            Dim CplxStr As String = Z.ToStandardString(Nothing, New CultureInfo("fr-FR", False))
-            Assert.Equal("-111111,125+i555555,675", CplxStr)
         End Sub
 
     End Class ' ToStandardStringCultureTest
