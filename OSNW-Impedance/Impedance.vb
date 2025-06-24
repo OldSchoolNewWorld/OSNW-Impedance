@@ -11,21 +11,36 @@ Imports System.Runtime.CompilerServices
 
 ''' <summary>
 ''' Represents an electrical impedance with resistance (R) and reactance (X).
+''' An electrical Impedance (Z) is a number of the standard form Z=R+jX or R+Xj,
+''' where R and X are real numbers, and j is the imaginary unit, with the
+''' property j^2 = -1.
 ''' </summary>
 Public Structure Impedance
     '    Implements IEquatable(Of Impedance)
 
+    ' DEV: An Impedance is essentially a complex number with some cosmetic
+    ' differences:
+    '   'i' is replaced by 'j' in the standard form.
+    '   The Real component is represented by Resistance.
+    '   The Imaginary component is represented by Reactance.
+    ' Since System.Numerics.Complex is represented as a structure, it cannot be
+    ' inherited. Given that, Impedance is created as a structure which uses
+    ' familiar terminology but relies on Complex for most of its work.
+
+    ' Use the "has a ..." approach to expose the desired features of a
+    ' System.Numerics.Complex.
+    ' Do not rename (binary serialization).
     ''' <summary>
     ''' Gets the Impedance as a complex number.
     ''' </summary>
-    Private ReadOnly Complex As System.Numerics.Complex
+    Private ReadOnly AsComplex As System.Numerics.Complex
 
     ''' <summary>
     ''' Gets the resistance component of the Impedance.
     ''' </summary>
     Public ReadOnly Property Resistance As System.Double
         Get
-            Return Me.Complex.Real
+            Return Me.AsComplex.Real
         End Get
     End Property
 
@@ -34,21 +49,20 @@ Public Structure Impedance
     ''' </summary>
     Public ReadOnly Property Reactance As System.Double
         Get
-            Return Me.Complex.Imaginary
+            Return Me.AsComplex.Imaginary
         End Get
     End Property
 
     ''' <summary>
     ''' Initializes a new instance of the Impedance structure using the
     ''' specified resistance (R) and reactance (X) values.
-    ''' (X).
     ''' </summary>
-    ''' <param name="r">Specifies the value of resistance component of the
+    ''' <param name="r">Specifies the value of the resistance component of the
     ''' Impedance.</param>
-    ''' <param name="x">Specifies the value of reactance component of the
+    ''' <param name="x">Specifies the value of the reactance component of the
     ''' Impedance.</param>
     Public Sub New(r As System.Double, x As System.Double)
-        Me.Complex = New System.Numerics.Complex(r, x)
+        Me.AsComplex = New System.Numerics.Complex(r, x)
     End Sub
 
     '    Public Function ToComplex() As System.Numerics.Complex
@@ -64,11 +78,12 @@ Public Structure Impedance
 
 #Region "ToString Implementations"
 
-    ' System.Numerics.Complex in .NET 8.0 has these:
+    ' As of when recorded, System.Numerics.Complex in .NET 8.0 and .NET 9.0 have
+    ' the implementations below.
     '   They optionally specify a format string, an IFormatProvider, or both.
-    '   All cases eventually call the full case, which will assign defaults as
-    '   needed.
-    '   Create similar extensions below.
+    '   All cases eventually call the full case, which assigns defaults as
+    '     needed.
+    '   Create similar extensions herein.
 
     ' public override string ToString() => ToString(null, null);
     ' public string ToString([StringSyntax(StringSyntaxAttribute.NumericFormat)] string? format) => ToString(format, null);
@@ -103,7 +118,7 @@ Public Structure Impedance
         ByVal provider As System.IFormatProvider) _
         As System.String
 
-        Return Me.Complex.ToString(format, provider).Replace(CHARI, CHARJ)
+        Return Me.AsComplex.ToString(format, provider).Replace(CHARI, CHARJ)
     End Function ' ToString
 
     '    public string ToString([StringSyntax(StringSyntaxAttribute.NumericFormat)] string? format)
@@ -120,7 +135,7 @@ Public Structure Impedance
             ByVal format As System.String) _
         As System.String
 
-        Return Me.Complex.ToString(format).Replace(CHARI, CHARJ)
+        Return Me.AsComplex.ToString(format).Replace(CHARI, CHARJ)
     End Function ' ToString
 
     '    public string ToString(IFormatProvider? provider)
@@ -136,7 +151,7 @@ Public Structure Impedance
     Public Overloads Function ToString(
         ByVal provider As System.IFormatProvider) As System.String
 
-        Return Me.Complex.ToString(provider).Replace(CHARI, CHARJ)
+        Return Me.AsComplex.ToString(provider).Replace(CHARI, CHARJ)
     End Function ' ToString
 
     '    public override string ToString()
@@ -148,14 +163,14 @@ Public Structure Impedance
     ''' </summary>
     ''' <returns>The current Impedance expressed in Cartesian form.</returns>
     Public Overrides Function ToString() As System.String
-        Return Me.Complex.ToString().Replace(CHARI, CHARJ)
+        Return Me.AsComplex.ToString().Replace(CHARI, CHARJ)
     End Function ' ToString
 
 #End Region ' "ToString Implementations"
 
 #Region "ToStandardString Implementations"
 
-    ' System.Numerics.Complex in .NET 8.0 has these:
+    ' System.Numerics.Complex in .NET 8.0 and .NET 9.0 have these:
     '   They optionally specify a format string, an IFormatProvider, or both.
     '   All cases eventually call the full case, which will assign defaults as
     '   needed.
@@ -199,7 +214,7 @@ Public Structure Impedance
         ByVal provider As System.IFormatProvider) _
         As System.String
 
-        Return Me.Complex.ToStandardString(standardizationStyle, format,
+        Return Me.AsComplex.ToStandardString(standardizationStyle, format,
                                            provider).Replace(CHARI, CHARJ)
     End Function ' ToStandardString
 
@@ -218,7 +233,7 @@ Public Structure Impedance
         ByVal standardizationStyle As StandardizationStyles) _
         As System.String
 
-        Return Me.Complex.ToStandardString(
+        Return Me.AsComplex.ToStandardString(
             standardizationStyle).Replace(CHARI, CHARJ)
     End Function ' ToStandardString
 
@@ -240,7 +255,7 @@ Public Structure Impedance
             ByVal format As System.String) _
         As System.String
 
-        Return Me.Complex.ToStandardString(standardizationStyle,
+        Return Me.AsComplex.ToStandardString(standardizationStyle,
                                            format).Replace(CHARI, CHARJ)
     End Function ' ToStandardString
 
@@ -262,7 +277,7 @@ Public Structure Impedance
         ByVal provider As System.IFormatProvider) _
         As System.String
 
-        Return Me.Complex.ToStandardString(standardizationStyle,
+        Return Me.AsComplex.ToStandardString(standardizationStyle,
                                            provider).Replace(CHARI, CHARJ)
     End Function ' ToStandardString
 
@@ -275,9 +290,32 @@ Public Structure Impedance
     ''' </summary>
     ''' <returns>The current Impedance expressed in standard form.</returns>
     Public Function ToStandardString() As System.String
-        Return Me.Complex.ToStandardString().Replace(CHARI, CHARJ)
+        Return Me.AsComplex.ToStandardString().Replace(CHARI, CHARJ)
     End Function ' ToStandardString
 
 #End Region ' "ToStandardString Implementations"
+
+#Region "TryFormat Implementations"
+
+    ' As of when recorded, System.Numerics.Complex in .NET 8.0 and .NET 9.0 have
+    ' the implementations below.
+    '   They specify the string to be parsed, an IFormatProvider, and
+    '     optionally, the acceptable number styles.
+    '   All cases eventually call the full case, which assigns defaults as
+    '     needed.
+    '   Create similar extensions herein.
+
+    ' public static bool TryParse(ReadOnlySpan<char> s, NumberStyles style, IFormatProvider? provider, out Complex result)
+    ' public static bool TryParse([NotNullWhen(true)] string? s, NumberStyles style, IFormatProvider? provider, out Complex result)
+    ' public static bool TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, out Complex result) => TryParse(s, DefaultNumberStyle, provider, out result);
+    ' public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider? provider, out Complex result) => TryParse(s, DefaultNumberStyle, provider, out result);
+
+    '
+    '
+    '
+    '
+    '
+
+#End Region ' "TryFormat Implementations"
 
 End Structure ' Impedance
