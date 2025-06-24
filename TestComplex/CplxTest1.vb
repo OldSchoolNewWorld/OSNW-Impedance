@@ -9,10 +9,6 @@ Imports System.Globalization
 Imports OSNW.Numerics.ComplexExtensions
 Imports Xunit
 
-' REF: Extension Methods not Recognized
-' https://docs.microsoft.com/en-us/dotnet/standard/base-types/how-to-extend-a-type-with-extension-methods
-'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
 Namespace TestComplex
 
     Public Class ToStandardStringDefaultTest

@@ -7,8 +7,9 @@ Imports System.Runtime.InteropServices
 
 Partial Public Module ComplexExtensions
 
-    ' As of when recorded, these Complex signatures match in .NET versions 8 and
-    ' 9.
+    ' As of when recorded, these Complex signatures match in .NET 8.0 and
+    '   .NET 9.0.
+    '
     '   public static bool TryParse(ReadOnlySpan<char> s, NumberStyles style, IFormatProvider? provider, out Complex result)
     '   public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider? provider, out Complex result) => TryParse(s, DefaultNumberStyle, provider, out result);
     '   public static bool TryParse([NotNullWhen(true)] string? s, NumberStyles style, IFormatProvider? provider, out Complex result)
