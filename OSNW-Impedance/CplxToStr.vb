@@ -1,4 +1,9 @@
-﻿Imports System.Diagnostics.CodeAnalysis
+﻿Option Explicit On
+Option Strict On
+Option Compare Binary
+Option Infer Off
+
+Imports System.Diagnostics.CodeAnalysis
 Imports System.Runtime.CompilerServices
 
 Partial Public Module ComplexExtensions
@@ -9,13 +14,13 @@ Partial Public Module ComplexExtensions
     ''' Converts a Complex.ToString() string into a standard form string.
     ''' </summary>
     ''' <param name="standardizationStyle">Specifies the 
-    ''' <see cref="StandardizationStyle"/> to be used to generate the standard
+    ''' <see cref="StandardizationStyles"/> to be used to generate the standard
     ''' form string.</param>
     ''' <param name="complexStr">The Complex.ToString() string to be
     ''' converted to standard form.</param>
     ''' <param name="standardizedStr">Returns the standardized string.</param>
     Private Sub StandardizeString(
-        ByVal standardizationStyle As StandardizationStyle,
+        ByVal standardizationStyle As StandardizationStyles,
         ByVal complexStr As System.String,
         ByRef standardizedStr As System.String)
 
@@ -44,12 +49,12 @@ Partial Public Module ComplexExtensions
 
         ' Assign the text containing the sign of the imaginary part.
         Dim ImaginarySign As System.String = If(
-            (standardizationStyle And StandardizationStyle.Open) > 0,
+            (standardizationStyle And StandardizationStyles.Open) > 0,
             $" {If(IsNeg, CHARMINUS, CHARPLUS)} ", ' With spaces.
             $"{If(IsNeg, CHARMINUS, CHARPLUS)}") ' Without spaces.
 
         standardizedStr =
-            If((standardizationStyle And StandardizationStyle.ABI) > 0,
+            If((standardizationStyle And StandardizationStyles.ABi) > 0,
                $"{RealStr}{ImaginarySign}{ImaginaryMagStr}i",
                $"{RealStr}{ImaginarySign}i{ImaginaryMagStr}")
 
@@ -90,7 +95,7 @@ Partial Public Module ComplexExtensions
     ''' <param name="complex">The <see cref="System.Numerics.Complex"/> to be
     ''' converted.</param>
     ''' <param name="standardizationStyle">Specifies the 
-    ''' <see cref="StandardizationStyle"/> to be used to generate the standard
+    ''' <see cref="StandardizationStyles"/> to be used to generate the standard
     ''' form string.</param>
     ''' <param name="format">A standard or custom numeric format
     ''' string.</param>
@@ -101,7 +106,7 @@ Partial Public Module ComplexExtensions
     <Extension()>
     Public Function ToStandardString(
         ByVal complex As System.Numerics.Complex,
-        ByVal standardizationStyle As StandardizationStyle,
+        ByVal standardizationStyle As StandardizationStyles,
         <StringSyntax(
             System.Diagnostics.CodeAnalysis.StringSyntaxAttribute.NumericFormat)>
             ByVal format As System.String,
@@ -111,6 +116,33 @@ Partial Public Module ComplexExtensions
         Dim StdStr As System.String = System.String.Empty
         StandardizeString(standardizationStyle,
                           complex.ToString(format, provider), StdStr)
+        Return StdStr
+    End Function ' ToStandardString
+
+    '    public override string ToString()
+    ''' <summary>
+    ''' Converts the value of the current complex number to its equivalent
+    ''' string representation in standard form by using the specified layout
+    ''' format information, and using the default numeric format and
+    ''' culture-specific format for its real and imaginary parts.
+    ''' </summary>
+    ''' <param name="complex">The <see cref="System.Numerics.Complex"/> to be
+    ''' converted.</param>
+    ''' <param name="standardizationStyle">Specifies the 
+    ''' <see cref="StandardizationStyles"/> to be used to generate the standard
+    ''' form string.</param>
+    ''' <returns>The current complex number expressed in standard
+    ''' form.</returns>
+    <Extension()>
+    Public Function ToStandardString(
+        ByVal complex As System.Numerics.Complex,
+        ByVal standardizationStyle As StandardizationStyles) _
+        As System.String
+
+        'Dim ComplexStr As System.String = complex.ToString(Nothing, Nothing)
+        Dim StdStr As System.String = System.String.Empty
+        StandardizeString(standardizationStyle,
+                          complex.ToString(Nothing, Nothing), StdStr)
         Return StdStr
     End Function ' ToStandardString
 
@@ -124,7 +156,7 @@ Partial Public Module ComplexExtensions
     ''' <param name="complex">The <see cref="System.Numerics.Complex"/> to be
     ''' converted.</param>
     ''' <param name="standardizationStyle">Specifies the 
-    ''' <see cref="StandardizationStyle"/> to be used to generate the standard
+    ''' <see cref="StandardizationStyles"/> to be used to generate the standard
     ''' form string.</param>
     ''' <param name="format">A standard or custom numeric format
     ''' string.</param>
@@ -133,7 +165,7 @@ Partial Public Module ComplexExtensions
     <Extension()>
     Public Function ToStandardString(
         ByVal complex As System.Numerics.Complex,
-        ByVal standardizationStyle As StandardizationStyle,
+        ByVal standardizationStyle As StandardizationStyles,
         <StringSyntax(StringSyntaxAttribute.NumericFormat)>
             ByVal format As System.String) _
         As System.String
@@ -155,7 +187,7 @@ Partial Public Module ComplexExtensions
     ''' <param name="complex">The <see cref="System.Numerics.Complex"/> to be
     ''' converted.</param>
     ''' <param name="aStandardizationStyle">Specifies the 
-    ''' <see cref="StandardizationStyle"/> to be used to generate the standard
+    ''' <see cref="StandardizationStyles"/> to be used to generate the standard
     ''' form string.</param>
     ''' <param name="aProvider">An object that supplies culture-specific
     ''' formatting information.</param>
@@ -164,7 +196,7 @@ Partial Public Module ComplexExtensions
     <Extension()>
     Public Function ToStandardString(
         ByVal complex As System.Numerics.Complex,
-        ByVal aStandardizationStyle As StandardizationStyle,
+        ByVal aStandardizationStyle As StandardizationStyles,
         ByVal aProvider As System.IFormatProvider) _
         As System.String
 
@@ -172,33 +204,6 @@ Partial Public Module ComplexExtensions
         Dim StdStr As System.String = System.String.Empty
         StandardizeString(aStandardizationStyle,
                           complex.ToString(Nothing, aProvider), StdStr)
-        Return StdStr
-    End Function ' ToStandardString
-
-    '    public override string ToString()
-    ''' <summary>
-    ''' Converts the value of the current complex number to its equivalent
-    ''' string representation in standard form by using the specified layout
-    ''' format information, and using the default numeric format and
-    ''' culture-specific format for its real and imaginary parts.
-    ''' </summary>
-    ''' <param name="complex">The <see cref="System.Numerics.Complex"/> to be
-    ''' converted.</param>
-    ''' <param name="standardizationStyle">Specifies the 
-    ''' <see cref="StandardizationStyle"/> to be used to generate the standard
-    ''' form string.</param>
-    ''' <returns>The current complex number expressed in standard
-    ''' form.</returns>
-    <Extension()>
-    Public Function ToStandardString(
-        ByVal complex As System.Numerics.Complex,
-        ByVal standardizationStyle As StandardizationStyle) _
-        As System.String
-
-        'Dim ComplexStr As System.String = complex.ToString(Nothing, Nothing)
-        Dim StdStr As System.String = System.String.Empty
-        StandardizeString(standardizationStyle,
-                          complex.ToString(Nothing, Nothing), StdStr)
         Return StdStr
     End Function ' ToStandardString
 

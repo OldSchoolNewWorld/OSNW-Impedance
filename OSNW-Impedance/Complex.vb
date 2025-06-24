@@ -1,8 +1,24 @@
-﻿Imports System.Globalization
+﻿Option Explicit On
+Option Strict On
+Option Compare Binary
+Option Infer Off
+
+Imports System.Globalization
 Imports System.Numerics
 Imports System.Runtime.CompilerServices
 
+''' <summary>
+''' xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+''' xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+''' xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+''' xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+''' xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+''' </summary>
 Public Module ComplexExtensions
+
+    ' REF: Extension Methods not Recognized
+    ' https://docs.microsoft.com/en-us/dotnet/standard/base-types/how-to-extend-a-type-with-extension-methods
+    ' The module needs to be specified as Public.
 
     Friend Const CHARI As System.Char = "i"c
     Friend Const CHARJ As System.Char = "j"c
@@ -35,29 +51,32 @@ Public Module ComplexExtensions
         NumberStyles.AllowCurrencySymbol Or NumberStyles.AllowHexSpecifier)
 
     ''' <summary>
-    ''' Specifies the style to use when converting a complex number to a
-    ''' standard form representation.
+    ''' Used to specify the layout style to use when converting a complex number
+    ''' to its standard form representation.
     ''' </summary>
     ''' <remarks>
-    ''' The default is <see cref="StandardizationStyle.ClosedAIB"/>.
+    ''' The default is <see cref="StandardizationStyles.None"/>.
     ''' </remarks>>
-    <FlagsAttribute>
-    Public Enum StandardizationStyle As System.Int32
+    <System.FlagsAttribute>
+    Public Enum StandardizationStyles As System.Int32
+
+        ' REF: Enum Design
+        ' https://learn.microsoft.com/en-us/dotnet/standard/design-guidelines/enum
 
         ''' <summary>
-        ''' Use the A+iB sequence and the open form, without spaces before and
-        ''' after the sign of the imaginary component.
+        ''' Default: Use the A+iB sequence and the closed form, without spaces
+        ''' before and after the sign of the imaginary component.
         ''' </summary>
-        ClosedAIB = 0
+        None = 0
 
         ''' <summary>
         ''' Use the A+Bi sequence.
         ''' </summary>
-        ABI = 1
+        ABi = 1
 
         ''' <summary>
-        ''' Use the open (A + iB) form, with spaces before and after the sign of
-        ''' the imaginary component.
+        ''' Use the open (A + iB or A + Bi) form, with spaces before and after
+        ''' the sign of the imaginary component.
         ''' </summary>
         Open = 2
 
@@ -75,13 +94,40 @@ Public Module ComplexExtensions
         ''' </summary>
         EnforceSpacing = 8
 
+        ' Add some convenience/shorthand values.
+
+        ''' <summary>
+        ''' Use the A+iB sequence and the closed form, without spaces before and
+        ''' after the sign of the imaginary component.
+        ''' </summary>
+        ClosedAiB = None
+
+        ''' <summary>
+        ''' Use the A+Bi sequence and the closed form, without spaces before and
+        ''' after the sign of the imaginary component.
+        ''' </summary>
+        ClosedABi = ABi
+
+        ''' <summary>
+        ''' Use the A + iB sequence and the open form, with spaces before and
+        ''' after the sign of the imaginary component.
+        ''' </summary>
+        OpenAiB = Open
+
+        ''' <summary>
+        ''' Use the A + Bi sequence and the open form, with spaces before and
+        ''' after the sign of the imaginary component.
+        ''' </summary>
+        OpenABi = Open Or ABi
+
     End Enum ' StandardizationStyle
 
+    'Public Const DefaultStandardizationStyle As StandardizationStyle =
+    '    StandardizationStyle.ClosedAIB
     ''' <summary>
     ''' The default standard form is A+iB sequence without spaces, but no
     ''' enforcement of either option.
     ''' </summary>
-    Public Const DefaultStandardizationStyle As StandardizationStyle =
-        StandardizationStyle.ClosedAIB
+    Public Const DefaultStandardizationStyle As StandardizationStyles = Nothing
 
 End Module ' ComplexExtensions

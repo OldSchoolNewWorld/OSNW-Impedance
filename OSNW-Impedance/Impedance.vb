@@ -1,4 +1,9 @@
-﻿Imports System.Configuration
+﻿Option Explicit On
+Option Strict On
+Option Compare Binary
+Option Infer Off
+
+Imports System.Configuration
 Imports System.Diagnostics.CodeAnalysis
 Imports System.Globalization
 Imports System.Numerics
@@ -34,7 +39,8 @@ Public Structure Impedance
     End Property
 
     ''' <summary>
-    ''' Creates a new Impedance with the specified resistance (R) and reactance
+    ''' Initializes a new instance of the Impedance structure using the
+    ''' specified resistance (R) and reactance (X) values.
     ''' (X).
     ''' </summary>
     ''' <param name="r">Specifies the value of resistance component of the
@@ -178,7 +184,7 @@ Public Structure Impedance
     ''' real and imaginary parts.
     ''' </summary>
     ''' <param name="standardizationStyle">Specifies the 
-    ''' <see cref="StandardizationStyle"/> to be used to generate the standard
+    ''' <see cref="StandardizationStyles"/> to be used to generate the standard
     ''' form string.</param>
     ''' <param name="format">A standard or custom numeric format
     ''' string.</param>
@@ -186,7 +192,7 @@ Public Structure Impedance
     ''' formatting information.</param>
     ''' <returns>The current Impedance expressed in standard form.</returns>
     Public Function ToStandardString(
-        ByVal standardizationStyle As StandardizationStyle,
+        ByVal standardizationStyle As StandardizationStyles,
         <StringSyntax(
             System.Diagnostics.CodeAnalysis.StringSyntaxAttribute.NumericFormat)>
             ByVal format As System.String,
@@ -197,6 +203,25 @@ Public Structure Impedance
                                            provider).Replace(CHARI, CHARJ)
     End Function ' ToStandardString
 
+    '    public override string ToString()
+    ''' <summary>
+    ''' Converts the value of the current Impedance to its equivalent
+    ''' string representation in standard form by using the specified layout
+    ''' format information, and using the default numeric format and
+    ''' culture-specific format for its real and imaginary parts.
+    ''' </summary>
+    ''' <param name="standardizationStyle">Specifies the 
+    ''' <see cref="StandardizationStyles"/> to be used to generate the standard
+    ''' form string.</param>
+    ''' <returns>The current Impedance expressed in standard form.</returns>
+    Public Function ToStandardString(
+        ByVal standardizationStyle As StandardizationStyles) _
+        As System.String
+
+        Return Me.Complex.ToStandardString(
+            standardizationStyle).Replace(CHARI, CHARJ)
+    End Function ' ToStandardString
+
     '    public string ToString([StringSyntax(StringSyntaxAttribute.NumericFormat)] string? format)
     ''' <summary>
     ''' Converts the value of the current Impedance to its equivalent
@@ -205,12 +230,12 @@ Public Structure Impedance
     ''' culture-specific format information, for its real and imaginary parts.
     ''' </summary>
     ''' <param name="standardizationStyle">Specifies the 
-    ''' <see cref="StandardizationStyle"/> to be used to generate the standard
+    ''' <see cref="StandardizationStyles"/> to be used to generate the standard
     ''' form string.</param>
     ''' <param name="format">A standard or custom numeric format string.</param>
     ''' <returns>The current Impedance expressed in standard form.</returns>
     Public Function ToStandardString(
-        ByVal standardizationStyle As StandardizationStyle,
+        ByVal standardizationStyle As StandardizationStyles,
         <StringSyntax(StringSyntaxAttribute.NumericFormat)>
             ByVal format As System.String) _
         As System.String
@@ -227,37 +252,18 @@ Public Structure Impedance
     ''' default numeric format, for its real and imaginary parts.
     ''' </summary>
     ''' <param name="standardizationStyle">Specifies the 
-    ''' <see cref="StandardizationStyle"/> to be used to generate the standard
+    ''' <see cref="StandardizationStyles"/> to be used to generate the standard
     ''' form string.</param>
     ''' <param name="provider">An object that supplies culture-specific
     ''' formatting information.</param>
     ''' <returns>The current Impedance expressed in standard form.</returns>
     Public Function ToStandardString(
-        ByVal standardizationStyle As StandardizationStyle,
+        ByVal standardizationStyle As StandardizationStyles,
         ByVal provider As System.IFormatProvider) _
         As System.String
 
         Return Me.Complex.ToStandardString(standardizationStyle,
                                            provider).Replace(CHARI, CHARJ)
-    End Function ' ToStandardString
-
-    '    public override string ToString()
-    ''' <summary>
-    ''' Converts the value of the current Impedance to its equivalent
-    ''' string representation in standard form by using the specified layout
-    ''' format information, and using the default numeric format and
-    ''' culture-specific format for its real and imaginary parts.
-    ''' </summary>
-    ''' <param name="standardizationStyle">Specifies the 
-    ''' <see cref="StandardizationStyle"/> to be used to generate the standard
-    ''' form string.</param>
-    ''' <returns>The current Impedance expressed in standard form.</returns>
-    Public Function ToStandardString(
-        ByVal standardizationStyle As StandardizationStyle) _
-        As System.String
-
-        Return Me.Complex.ToStandardString(
-            standardizationStyle).Replace(CHARI, CHARJ)
     End Function ' ToStandardString
 
     '    public override string ToString()

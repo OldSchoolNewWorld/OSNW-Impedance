@@ -1,3 +1,8 @@
+Option Explicit On
+Option Strict On
+Option Compare Binary
+Option Infer Off
+
 Imports System
 Imports System.Globalization
 Imports OSNW.Numerics
@@ -34,6 +39,22 @@ Namespace TestImpedance
         End Sub
 
     End Class ' ToStandardStringDefaultTest
+
+    Public Class ToStandardStringStandardizationTest
+
+        <Theory>
+        <InlineData(1.125, 5.675, Nothing, "1.125+j5.675")>
+        <InlineData(1.125, -5.675, StandardizationStyles.ABi, "1.125-5.675j")>
+        <InlineData(-1.125, 5.675, StandardizationStyles.Open, "-1.125 + j5.675")>
+        <InlineData(-1.125, -5.675, StandardizationStyles.OpenABi, "-1.125 - 5.675j")>
+        Sub ToStandardString_Standardization_Succeeds(r As Double, x As Double,
+                                                      standardizationStyle As StandardizationStyles, expected As String)
+            Dim Z As New OSNW.Numerics.Impedance(r, x)
+            Dim ImpdStr As String = Z.ToStandardString(standardizationStyle)
+            Assert.Equal(expected, ImpdStr)
+        End Sub
+
+    End Class ' ToStandardStringStandardizationTest
 
     Public Class ToStandardStringFormatTest
 

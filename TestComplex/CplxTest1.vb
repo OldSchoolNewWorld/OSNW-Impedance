@@ -1,3 +1,8 @@
+Option Explicit On
+Option Strict On
+Option Compare Binary
+Option Infer Off
+
 Imports System
 Imports System.Configuration
 Imports System.Globalization
@@ -6,6 +11,7 @@ Imports Xunit
 
 ' REF: Extension Methods not Recognized
 ' https://docs.microsoft.com/en-us/dotnet/standard/base-types/how-to-extend-a-type-with-extension-methods
+'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 Namespace TestComplex
 
@@ -23,6 +29,22 @@ Namespace TestComplex
         End Sub
 
     End Class ' ToStandardStringDefaultTest
+
+    Public Class ToStandardStringStandardizationTest
+
+        <Theory>
+        <InlineData(1.125, 5.675, Nothing, "1.125+i5.675")>
+        <InlineData(1.125, -5.675, StandardizationStyles.ABi, "1.125-5.675i")>
+        <InlineData(-1.125, 5.675, StandardizationStyles.Open, "-1.125 + i5.675")>
+        <InlineData(-1.125, -5.675, StandardizationStyles.OpenABi, "-1.125 - 5.675i")>
+        Sub ToStandardString_Standardization_Succeeds(real As Double, imaginary As Double,
+                                                      standardizationStyle As StandardizationStyles, expected As String)
+            Dim Z As New System.Numerics.Complex(real, imaginary)
+            Dim CplxStr As String = Z.ToStandardString(standardizationStyle)
+            Assert.Equal(expected, CplxStr)
+        End Sub
+
+    End Class ' ToStandardStringStandardizationTest
 
     Public Class ToStandardStringFormatTest
 
