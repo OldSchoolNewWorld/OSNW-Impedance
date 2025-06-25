@@ -128,15 +128,14 @@ Namespace TestTryParse
 
     Public Class TryParseEnforceStandardizationTest
 
+        Const TightEnforcement As StandardizationStyles =
+            StandardizationStyles.EnforceSequence Or StandardizationStyles.EnforceSpacing
+
         <Theory>
-        <InlineData("1.125+i5.675", 1.125, 5.675, StandardizationStyles.ClosedAiB Or
-            StandardizationStyles.EnforceSequence Or StandardizationStyles.EnforceSpacing)>
-        <InlineData("1.125-5.675i", 1.125, -5.675, StandardizationStyles.ClosedABi Or
-            StandardizationStyles.EnforceSequence Or StandardizationStyles.EnforceSpacing)>
-        <InlineData("-1.125 + i5.675", -1.125, 5.675, StandardizationStyles.OpenAiB Or
-            StandardizationStyles.EnforceSequence Or StandardizationStyles.EnforceSpacing)>
-        <InlineData("-1.125 - 5.675i", -1.125, -5.675, StandardizationStyles.OpenABi Or
-            StandardizationStyles.EnforceSequence Or StandardizationStyles.EnforceSpacing)>
+        <InlineData("1.125+i5.675", 1.125, 5.675, StandardizationStyles.ClosedAiB)>
+        <InlineData("1.125-5.675i", 1.125, -5.675, StandardizationStyles.ClosedABi)>
+        <InlineData("-1.125 + i5.675", -1.125, 5.675, StandardizationStyles.OpenAiB)>
+        <InlineData("-1.125 - 5.675i", -1.125, -5.675, StandardizationStyles.OpenABi)>
         Sub TryParse_CompliantStandardization_Succeeds(standardStr As String, real As Double, imaginary As Double,
                                                        standardizationStyle As StandardizationStyles)
             Dim Cplx As New Numerics.Complex
@@ -147,14 +146,10 @@ Namespace TestTryParse
         End Sub
 
         <Theory>
-        <InlineData("1.125 + i5.675", StandardizationStyles.ClosedAiB Or
-            StandardizationStyles.EnforceSequence Or StandardizationStyles.EnforceSpacing)>
-        <InlineData("1.125-i5.675", StandardizationStyles.ClosedABi Or
-            StandardizationStyles.EnforceSequence Or StandardizationStyles.EnforceSpacing)>
-        <InlineData("-1.125+i5.675", StandardizationStyles.OpenAiB Or
-            StandardizationStyles.EnforceSequence Or StandardizationStyles.EnforceSpacing)>
-        <InlineData("-1.125 - i5.675", StandardizationStyles.OpenABi Or
-            StandardizationStyles.EnforceSequence Or StandardizationStyles.EnforceSpacing)>
+        <InlineData("1.125 + i5.675", StandardizationStyles.ClosedAiB Or TightEnforcement)>
+        <InlineData("1.125-i5.675", StandardizationStyles.ClosedABi Or TightEnforcement)>
+        <InlineData("-1.125+i5.675", StandardizationStyles.OpenAiB Or TightEnforcement)>
+        <InlineData("-1.125 - i5.675", StandardizationStyles.OpenABi Or TightEnforcement)>
         Sub TryParse_NonCompliantStandardization_Fails(standardStr As String,
                                                        standardizationStyle As StandardizationStyles)
             Dim Cplx As New Numerics.Complex
