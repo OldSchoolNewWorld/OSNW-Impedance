@@ -6,10 +6,11 @@ Option Infer Off
 Imports System
 Imports System.Configuration
 Imports System.Globalization
+Imports System.Net.Security
 Imports OSNW.Numerics.ComplexExtensions
 Imports Xunit
 
-Namespace TestComplex
+Namespace TestToString
 
     Public Class ToStandardStringDefaultTest
 
@@ -84,4 +85,82 @@ Namespace TestComplex
 
     End Class ' ToStandardStringCultureTest
 
-End Namespace ' TestComplex
+End Namespace ' TestToString
+
+Namespace TestTryParse
+
+    Public Class TryParseDefaultTest
+
+        <Theory>
+        <InlineData("1.125+i5.675", 1.125, 5.675)>
+        <InlineData("1.125-i5.675", 1.125, -5.675)>
+        <InlineData("-1.125+i5.675", -1.125, 5.675)>
+        <InlineData("-1.125-i5.675", -1.125, -5.675)>
+        Sub TryParse_Default_Succeeds(standardStr As String, real As Double, imaginary As Double)
+            Dim Cplx As New Numerics.Complex
+            If Not TryParseStandard(standardStr, Nothing, Nothing, Cplx) Then
+                Assert.True(False)
+            End If
+            Assert.True(Cplx.Real.Equals(real) AndAlso Cplx.Imaginary.Equals(imaginary))
+        End Sub
+
+    End Class ' TryParseDefaultTest
+
+    Public Class TryParseDefaultMixedTest
+
+        <Theory>
+        <InlineData("1.125+i5.675", 1.125, 5.675)> ' A+iB.
+        <InlineData("1.125-5.675i", 1.125, -5.675)> ' A+Bi.
+        <InlineData("-1.125 + i5.675", -1.125, 5.675)> ' Open, one space.
+        <InlineData(" -1.125  -   5.675i  ", -1.125, -5.675)> ' Open, asymmetric spaces.
+        <InlineData("-1.125+ i5.675", -1.125, 5.675)> ' Open, space one side.
+        <InlineData("-1.125 +i5.675", -1.125, 5.675)> ' Open, space one side.
+        <InlineData("1125e-3+i.5675E1", 1.125, 5.675)> ' Exponential notation.
+        Sub TryParse_Default_Succeeds(standardStr As String, real As Double, imaginary As Double)
+            Dim Cplx As New Numerics.Complex
+            If Not TryParseStandard(standardStr, Nothing, Nothing, Cplx) Then
+                Assert.True(False)
+            End If
+            Assert.True(Cplx.Real.Equals(real) AndAlso Cplx.Imaginary.Equals(imaginary))
+        End Sub
+
+    End Class ' TryParseDefaultMixedTest
+
+    Public Class TryParseEnforceStandardizationTest
+
+        <Theory>
+        <InlineData("1.125+i5.675", 1.125, 5.675, StandardizationStyles.ClosedAiB Or
+            StandardizationStyles.EnforceSequence Or StandardizationStyles.EnforceSpacing)>
+        <InlineData("1.125-5.675i", 1.125, -5.675, StandardizationStyles.ClosedABi Or
+            StandardizationStyles.EnforceSequence Or StandardizationStyles.EnforceSpacing)>
+        <InlineData("-1.125 + i5.675", -1.125, 5.675, StandardizationStyles.OpenAiB Or
+            StandardizationStyles.EnforceSequence Or StandardizationStyles.EnforceSpacing)>
+        <InlineData("-1.125 - 5.675i", -1.125, -5.675, StandardizationStyles.OpenABi Or
+            StandardizationStyles.EnforceSequence Or StandardizationStyles.EnforceSpacing)>
+        Sub TryParse_CompliantStandardization_Succeeds(standardStr As String, real As Double, imaginary As Double,
+                                                       standardizationStyle As StandardizationStyles)
+            Dim Cplx As New Numerics.Complex
+            If Not TryParseStandard(standardStr, standardizationStyle, Nothing, Cplx) Then
+                Assert.True(False)
+            End If
+            Assert.True(Cplx.Real.Equals(real) AndAlso Cplx.Imaginary.Equals(imaginary))
+        End Sub
+
+        <Theory>
+        <InlineData("1.125 + i5.675", StandardizationStyles.ClosedAiB Or
+            StandardizationStyles.EnforceSequence Or StandardizationStyles.EnforceSpacing)>
+        <InlineData("1.125-i5.675", StandardizationStyles.ClosedABi Or
+            StandardizationStyles.EnforceSequence Or StandardizationStyles.EnforceSpacing)>
+        <InlineData("-1.125+i5.675", StandardizationStyles.OpenAiB Or
+            StandardizationStyles.EnforceSequence Or StandardizationStyles.EnforceSpacing)>
+        <InlineData("-1.125 - i5.675", StandardizationStyles.OpenABi Or
+            StandardizationStyles.EnforceSequence Or StandardizationStyles.EnforceSpacing)>
+        Sub TryParse_NonCompliantStandardization_Fails(standardStr As String,
+                                                       standardizationStyle As StandardizationStyles)
+            Dim Cplx As New Numerics.Complex
+            Assert.False(TryParseStandard(standardStr, standardizationStyle, Nothing, Cplx))
+        End Sub
+
+    End Class ' TryParseEnforceStandardizationTest
+
+End Namespace ' TestTryParse
