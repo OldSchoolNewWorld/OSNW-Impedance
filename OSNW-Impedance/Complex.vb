@@ -29,9 +29,9 @@ Public Module ComplexExtensions
     Friend Const CHARJ As System.Char = "j"c
     Private Const CHARPLUS As System.Char = "+"c
     Private Const CHARMINUS As System.Char = "-"c
-    'Private Const CHARUPPERE As System.Char = "E"c
+    Private Const CHARUPPERE As System.Char = "E"c
     Private Const CHARSEMI As System.Char = ";"c
-    'Private Const CHARSPACE As System.Char = " "c
+    Private Const CHARSPACE As System.Char = " "c
 
     ' private const NumberStyles DefaultNumberStyle = NumberStyles.Float | NumberStyles.AllowThousands;
     ''' <summary>
