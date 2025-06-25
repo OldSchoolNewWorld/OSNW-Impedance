@@ -65,16 +65,16 @@ Public Structure Impedance
         Me.AsComplex = New System.Numerics.Complex(r, x)
     End Sub
 
-    '    Public Function ToComplex() As System.Numerics.Complex
-    '        Return New System.Numerics.Complex(Me.Resistance, Me.Reactance)
-    '    End Function
+    'Public Function ToComplex() As System.Numerics.Complex
+    '    Return New System.Numerics.Complex(Me.Resistance, Me.Reactance)
+    'End Function
 
-    '    Public Overloads Function Equals(other As Impedance) As System.Boolean
-    '        Implements IEquatable(Of Impedance).Equals
-    '
-    '        '        Return Resistance = other.Resistance AndAlso Reactance = other.Reactance
-    '        Return Me.Complex.Equals(other.ToComplex())
-    '    End Function
+    'Public Overloads Function Equals(other As Impedance) As System.Boolean
+    '    Implements IEquatable(Of Impedance).Equals
+
+    '    '        Return Resistance.Equals(other.Resistance) AndAlso Reactance.Equals(other.Reactance)
+    '    Return Me.AsComplex.Equals(other.ToComplex())
+    'End Function
 
 #Region "ToString Implementations"
 
