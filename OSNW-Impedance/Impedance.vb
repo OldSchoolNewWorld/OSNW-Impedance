@@ -297,24 +297,93 @@ Public Structure Impedance
 
 #Region "TryFormat Implementations"
 
-    ' As of when recorded, System.Numerics.Complex in .NET 8.0 and .NET 9.0 have
-    ' the implementations below.
-    '   They specify the string to be parsed, an IFormatProvider, and
-    '     optionally, the acceptable number styles.
-    '   All cases eventually call the full case, which assigns defaults as
-    '     needed.
-    '   Create similar extensions herein.
+#Region "Parsing Implementations"
+
+    ' As of when recorded, these Complex signatures match in .NET 8.0 and
+    '   .NET 9.0.
+    '
+    '   public static bool TryParse(ReadOnlySpan<char> s, NumberStyles style, IFormatProvider? provider, out Complex result)
+    '   public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider? provider, out Complex result) => TryParse(s, DefaultNumberStyle, provider, out result);
+    '   public static bool TryParse([NotNullWhen(true)] string? s, NumberStyles style, IFormatProvider? provider, out Complex result)
+    '   public static bool TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, out Complex result) => TryParse(s, DefaultNumberStyle, provider, out result);
 
     ' public static bool TryParse(ReadOnlySpan<char> s, NumberStyles style, IFormatProvider? provider, out Complex result)
     ' public static bool TryParse([NotNullWhen(true)] string? s, NumberStyles style, IFormatProvider? provider, out Complex result)
-    ' public static bool TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, out Complex result) => TryParse(s, DefaultNumberStyle, provider, out result);
-    ' public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider? provider, out Complex result) => TryParse(s, DefaultNumberStyle, provider, out result);
+    ''' <summary>
+    ''' Attempts to convert the standard form representation of an Impedance
+    ''' to its <see cref="OSNW.Numerics.Impedance"/> equivalent using the
+    ''' specified layout format, numeric format, and culture-specific format
+    ''' information.
+    ''' </summary>
+    ''' <param name="s">Specifies the standard form string to be parsed.</param>
+    ''' <param name="standardizationStyle">Specifies the layout formats
+    ''' permitted in numeric string arguments that are passed to the TryParse
+    ''' method of the <c>OSNW.Numerics.Impedance</c> numeric type.</param>
+    ''' <param name="style">Determines the styles permitted in numeric string
+    ''' arguments that are passed to the TryParse method of the
+    ''' <c>OSNW.Numerics.Impedance</c> numeric type.</param>
+    ''' <param name="provider">Provides a mechanism for retrieving an object to
+    ''' control formatting.</param>
+    ''' <param name="result">Returns the <c>OSNW.Numerics.Impedance</c>
+    ''' represented by <paramref name="s"/>.</param>
+    ''' <returns>Returns <c>True</c> if the conversion succeeds; otherwise,
+    ''' <c>False</c>.</returns>
+    Public Shared Function TryParseStandard(
+        <System.Diagnostics.CodeAnalysis.NotNullWhen(True)>
+            ByVal s As System.String,
+        ByVal standardizationStyle As StandardizationStyles,
+        ByVal style As System.Globalization.NumberStyles,
+        ByVal provider As System.IFormatProvider,
+        ByRef result As OSNW.Numerics.Impedance) _
+        As System.Boolean
 
-    '
-    '
-    '
-    '
-    '
+        Dim Cplx As New System.Numerics.Complex
+        If OSNW.Numerics.ComplexExtensions.TryParseStandard(
+            s.Replace(CHARJ, CHARI), standardizationStyle, style, provider,
+            Cplx) Then
+
+            result = New Impedance(Cplx.Real, Cplx.Imaginary)
+            Return True
+        Else
+            result = New OSNW.Numerics.Impedance
+            Return False
+        End If
+
+    End Function ' TryParseStandard
+
+    ' public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider? provider, out Complex result)
+    ' public static bool TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, out Complex result)
+    ''' <summary>
+    ''' Attempts to convert the standard form representation of an Impedance
+    ''' to its <see cref="OSNW.Numerics.Impedance"/> equivalent using the
+    ''' specified layout format and culture-specific format information.
+    ''' </summary>
+    ''' <param name="s">Specifies the standard form string to be parsed.</param>
+    ''' <param name="standardizationStyle">Specifies the layout formats
+    ''' permitted in numeric string arguments that are passed to the TryParse
+    ''' method of the <c>OSNW.Numerics.Impedance</c> numeric type.</param>
+    ''' <param name="provider">Provides a mechanism for retrieving an object to
+    ''' control formatting.</param>
+    ''' <param name="result">Returns the <c>OSNW.Numerics.Impedance</c>
+    ''' represented by <paramref name="s"/>.</param>
+    ''' <returns>Returns <c>True</c> if the conversion succeeds; otherwise,
+    ''' <c>False</c>.</returns>
+    Public Shared Function TryParseStandard(
+        <System.Diagnostics.CodeAnalysis.NotNullWhen(True)>
+            ByVal s As System.String,
+        ByVal standardizationStyle As StandardizationStyles,
+        ByVal provider As System.IFormatProvider,
+        ByRef result As OSNW.Numerics.Impedance) _
+        As System.Boolean
+
+        Return TryParseStandard(
+            s, standardizationStyle, COMPLEXSTYLE, provider, result)
+    End Function ' TryParseStandard
+
+#End Region ' "Parsing Implementations"
+
+
+
 
 #End Region ' "TryFormat Implementations"
 

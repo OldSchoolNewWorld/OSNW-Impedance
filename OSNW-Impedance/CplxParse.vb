@@ -81,11 +81,13 @@ Partial Public Module ComplexExtensions
     ''' <summary>
     ''' Attempts to convert the standard form representation of a complex number
     ''' to its <see cref="System.Numerics.Complex"/> equivalent using the
-    ''' specified numeric format, culture-specific format, and layout format
+    ''' specified layout format, numeric format, and culture-specific format
     ''' information.
     ''' </summary>
     ''' <param name="s">Specifies the standard form string to be parsed.</param>
-    ''' <param name="standardizationStyle">xxxxxxxxxxxxxxxxxx</param>
+    ''' <param name="standardizationStyle">Specifies the layout formats
+    ''' permitted in numeric string arguments that are passed to the TryParse
+    ''' method of the <c>System.Numerics.Complex</c> numeric type.</param>
     ''' <param name="style">Determines the styles permitted in numeric string
     ''' arguments that are passed to the TryParse method of the
     ''' <c>System.Numerics.Complex</c> numeric type.</param>
@@ -273,14 +275,18 @@ Partial Public Module ComplexExtensions
     ''' <summary>
     ''' Attempts to convert the standard form representation of a complex number
     ''' to its <see cref="System.Numerics.Complex"/> equivalent using the
-    ''' specified numeric format, culture-specific format, and layout format
-    ''' information.
+    ''' specified layout format and culture-specific format information.
     ''' </summary>
-    ''' <param name="s">xxxxxxxxxx</param>
-    ''' <param name="standardizationStyle">xxxxxxxxxx</param>
-    ''' <param name="provider">xxxxxxxxxx</param>
-    ''' <param name="result">xxxxxxxxxx</param>
-    ''' <returns>xxxxxxxxxx</returns>
+    ''' <param name="s">Specifies the standard form string to be parsed.</param>
+    ''' <param name="standardizationStyle">Specifies the layout formats
+    ''' permitted in numeric string arguments that are passed to the TryParse
+    ''' method of the <c>System.Numerics.Complex</c> numeric type.</param>
+    ''' <param name="provider">Provides a mechanism for retrieving an object to
+    ''' control formatting.</param>
+    ''' <param name="result">Returns the <c>System.Numerics.Complex</c>
+    ''' represented by <paramref name="s"/>.</param>
+    ''' <returns>Returns <c>True</c> if the conversion succeeds; otherwise,
+    ''' <c>False</c>.</returns>
     Public Function TryParseStandard(
         <System.Diagnostics.CodeAnalysis.NotNullWhen(True)>
             ByVal s As System.String,
