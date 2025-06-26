@@ -10,6 +10,41 @@ Imports System.Net.Security
 Imports OSNW.Numerics.ComplexExtensions
 Imports Xunit
 
+Namespace ListValues
+
+    Public Class ListValues
+
+        '        None = 0
+        '        ABi = 1
+        '        Open = 2
+        '
+        '        EnforceSequence = 4
+        '        EnforceSpacing = 8
+
+        <Theory>
+        <InlineData("ABi", StandardizationStyles.ABi)> ' ABi - ClosedABi: 1
+        <InlineData("Open", StandardizationStyles.Open)> ' Open - OpenAiB: 2
+        <InlineData("EnforceSequence", StandardizationStyles.EnforceSequence)> ' EnforceSequence - EnforceSequence: 4
+        <InlineData("EnforceSpacing", StandardizationStyles.EnforceSpacing)> ' EnforceSpacing - EnforceSpacing: 8
+        Public Sub ListNormalValues(name As String, style As StandardizationStyles)
+            Dim S As String = $"{name} - {style.ToString}: {CInt(style)}"
+            Console.WriteLine(S)
+        End Sub
+
+        <Theory>
+        <InlineData("ClosedAiB", StandardizationStyles.ClosedAiB)> ' ClosedAiB - None: 0
+        <InlineData("ClosedABi", StandardizationStyles.ClosedABi)> ' ClosedABi - ClosedABi: 1
+        <InlineData("OpenAiB", StandardizationStyles.OpenAiB)> ' OpenAiB - OpenAiB: 2
+        <InlineData("OpenABi", StandardizationStyles.OpenABi)> ' OpenABi - OpenABi: 3
+        Public Sub ListShorthands(name As String, style As StandardizationStyles)
+            Dim S As String = $"{name} - {style.ToString}: {CInt(style)}"
+            Console.WriteLine(S)
+        End Sub
+
+    End Class ' ListValues
+
+End Namespace ' ListValues
+
 Namespace TestToStandardString
 
     Public Class ToStandardStringDefaultTest
