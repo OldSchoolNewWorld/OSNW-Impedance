@@ -8,7 +8,8 @@ Imports System.Globalization
 Imports OSNW.Numerics
 Imports Xunit
 
-Namespace TestImpedance
+
+Namespace TestToString
 
     Public Class ToStringDefaultTest
 
@@ -24,6 +25,10 @@ Namespace TestImpedance
         End Sub
 
     End Class ' ToStringDefaultTest
+
+End Namespace ' TestToString
+
+Namespace TestToStandardString
 
     Public Class ToStandardStringDefaultTest
 
@@ -99,4 +104,18 @@ Namespace TestImpedance
 
     End Class ' ToStandardStringCultureTest
 
-End Namespace ' TestImpedance
+End Namespace ' TestToStandardString
+
+Namespace TestTryParseStandard
+
+    Public Class PlaceHolder
+
+        <Fact>
+        Sub PlaceHolder()
+            'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+            Assert.True(False)
+        End Sub
+
+    End Class ' PlaceHolder
+
+End Namespace ' TestTryParseStandard

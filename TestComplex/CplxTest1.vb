@@ -87,16 +87,16 @@ Namespace TestToStandardString
 
 End Namespace ' TestToString
 
-Namespace TestTryParse
+Namespace TestTryParseStandard
 
-    Public Class TryParseDefaultTest
+    Public Class TryParseStandardDefaultTest
 
         <Theory>
         <InlineData("1.125+i5.675", 1.125, 5.675)>
         <InlineData("1.125-i5.675", 1.125, -5.675)>
         <InlineData("-1.125+i5.675", -1.125, 5.675)>
         <InlineData("-1.125-i5.675", -1.125, -5.675)>
-        Sub TryParse_Default_Succeeds(standardStr As String, real As Double, imaginary As Double)
+        Sub TryParseStandard_Default_Succeeds(standardStr As String, real As Double, imaginary As Double)
             Dim Cplx As New Numerics.Complex
             If Not TryParseStandard(standardStr, Nothing, Nothing, Cplx) Then
                 Assert.True(False)
@@ -104,9 +104,9 @@ Namespace TestTryParse
             Assert.True(Cplx.Real.Equals(real) AndAlso Cplx.Imaginary.Equals(imaginary))
         End Sub
 
-    End Class ' TryParseDefaultTest
+    End Class ' TryParseStandardDefaultTest
 
-    Public Class TryParseDefaultMixedTest
+    Public Class TryParseStandardDefaultMixedTest
 
         <Theory>
         <InlineData("1.125+i5.675", 1.125, 5.675)> ' A+iB.
@@ -124,9 +124,9 @@ Namespace TestTryParse
             Assert.True(Cplx.Real.Equals(real) AndAlso Cplx.Imaginary.Equals(imaginary))
         End Sub
 
-    End Class ' TryParseDefaultMixedTest
+    End Class ' TryParseStandardDefaultMixedTest
 
-    Public Class TryParseEnforceStandardizationTest
+    Public Class TryParseStandardEnforceStandardizationTest
 
         Const TightEnforcement As StandardizationStyles =
             StandardizationStyles.EnforceSequence Or StandardizationStyles.EnforceSpacing
@@ -156,9 +156,9 @@ Namespace TestTryParse
             Assert.False(TryParseStandard(standardStr, standardizationStyle, Nothing, Cplx))
         End Sub
 
-    End Class ' TryParseEnforceStandardizationTest
+    End Class ' TryParseStandardEnforceStandardizationTest
 
-    Public Class TryParseCultureTest
+    Public Class TryParseStandardCultureTest
 
         <Theory>
         <InlineData("111111.122-i555555.677", 111_111.122, -555_555.677, 0)> ' One round down, one up.
@@ -186,6 +186,6 @@ Namespace TestTryParse
 
         End Sub
 
-    End Class ' TryParseCultureTest
+    End Class ' TryParseStandardCultureTest
 
-End Namespace ' TestTryParse
+End Namespace ' TestTryParseStandard
