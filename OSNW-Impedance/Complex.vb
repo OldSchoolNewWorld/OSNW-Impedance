@@ -140,17 +140,15 @@ Public Module ComplexExtensions
         OpenABi = Open Or ABi ' 3
 
         ''' <summary>
-        ''' Enforce both the selected sequence and closed/open form when
-        ''' parsing.
+        ''' EnforceBoth, when applied in general, enforces both the selected
+        ''' sequence and closed/open form when parsing.
+        ''' <c>EnforcedClosedAiB</c> is a shortcut that has the same value, and
+        ''' is intended to enforce both the use of the A+iB sequence and
+        ''' the closed form, without spaces before and after the sign of the
+        ''' imaginary component when parsing.
         ''' </summary>
         EnforceBoth = EnforceSequence Or EnforceSpacing ' 12
-
-        ''' <summary>
-        ''' Enforce both the use of the A+iB sequence and the closed form,
-        ''' without spaces before and after the sign of the imaginary component
-        ''' when parsing.
-        ''' </summary>
-        EnforcedClosedAiB = ClosedAiB Or EnforceBoth ' 12
+        EnforcedClosedAiB = EnforceBoth ' 12
 
         ''' <summary>
         ''' Enforce both the use of the A+Bi sequence and the closed form,
