@@ -155,7 +155,7 @@ Namespace TestTryParseStandard
         <InlineData("1.125-5.675i", 1.125, -5.675, StandardizationStyles.ClosedABi)>
         <InlineData("-1.125 + i5.675", -1.125, 5.675, StandardizationStyles.OpenAiB)>
         <InlineData("-1.125 - 5.675i", -1.125, -5.675, StandardizationStyles.OpenABi)>
-        Sub TryParseStandard_CompliantStandardization_Succeeds(standardStr As String, real As Double,
+        Sub TryParseStandard_ValidStandardization_Succeeds(standardStr As String, real As Double,
             imaginary As Double, standardizationStyle As StandardizationStyles)
 
             Dim Impd As New OSNW.Numerics.Impedance
@@ -170,7 +170,7 @@ Namespace TestTryParseStandard
         <InlineData("1.125-i5.675", StandardizationStyles.ClosedABi Or TightEnforcement)>
         <InlineData("-1.125+i5.675", StandardizationStyles.OpenAiB Or TightEnforcement)>
         <InlineData("-1.125 - i5.675", StandardizationStyles.OpenABi Or TightEnforcement)>
-        Sub TryParseStandard_NonCompliantStandardization_Fails(
+        Sub TryParseStandard_InvalidStandardization_Fails(
             standardStr As String, standardizationStyle As StandardizationStyles)
 
             Dim Impd As New OSNW.Numerics.Impedance

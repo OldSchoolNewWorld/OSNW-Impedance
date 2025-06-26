@@ -136,7 +136,7 @@ Namespace TestTryParseStandard
         <InlineData("1.125-5.675i", 1.125, -5.675, StandardizationStyles.ClosedABi)>
         <InlineData("-1.125 + i5.675", -1.125, 5.675, StandardizationStyles.OpenAiB)>
         <InlineData("-1.125 - 5.675i", -1.125, -5.675, StandardizationStyles.OpenABi)>
-        Sub TryParse_CompliantStandardization_Succeeds(standardStr As String, real As Double, imaginary As Double,
+        Sub TryParse_ValidStandardization_Succeeds(standardStr As String, real As Double, imaginary As Double,
                                                        standardizationStyle As StandardizationStyles)
             Dim Cplx As New Numerics.Complex
             If Not TryParseStandard(standardStr, standardizationStyle, Nothing, Cplx) Then
@@ -150,7 +150,7 @@ Namespace TestTryParseStandard
         <InlineData("1.125-i5.675", StandardizationStyles.ClosedABi Or TightEnforcement)>
         <InlineData("-1.125+i5.675", StandardizationStyles.OpenAiB Or TightEnforcement)>
         <InlineData("-1.125 - i5.675", StandardizationStyles.OpenABi Or TightEnforcement)>
-        Sub TryParse_NonCompliantStandardization_Fails(standardStr As String,
+        Sub TryParse_InvalidStandardization_Fails(standardStr As String,
                                                        standardizationStyle As StandardizationStyles)
             Dim Cplx As New Numerics.Complex
             Assert.False(TryParseStandard(standardStr, standardizationStyle, Nothing, Cplx))
