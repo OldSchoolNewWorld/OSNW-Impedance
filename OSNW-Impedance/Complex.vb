@@ -116,28 +116,62 @@ Public Module ComplexExtensions
         ''' after the sign of the imaginary component. There is no parsing
         ''' enforcement unless EnforceSequence and/or EnforceSpacing are set.
         ''' </summary>
-        ClosedAiB = None
+        ClosedAiB = None ' 0
 
         ''' <summary>
         ''' Use the A+Bi sequence and the closed form, without spaces before and
         ''' after the sign of the imaginary component. There is no parsing
         ''' enforcement unless EnforceSequence and/or EnforceSpacing are set.
         ''' </summary>
-        ClosedABi = ABi
+        ClosedABi = ABi ' 1
 
         ''' <summary>
         ''' Use the A + iB sequence and the open form, with spaces before and
         ''' after the sign of the imaginary component. There is no parsing
         ''' enforcement unless EnforceSequence and/or EnforceSpacing are set.
         ''' </summary>
-        OpenAiB = Open
+        OpenAiB = Open ' 2
 
         ''' <summary>
         ''' Use the A + Bi sequence and the open form, with spaces before and
         ''' after the sign of the imaginary component. There is no parsing
         ''' enforcement unless EnforceSequence and/or EnforceSpacing are set.
         ''' </summary>
-        OpenABi = Open Or ABi
+        OpenABi = Open Or ABi ' 3
+
+        ''' <summary>
+        ''' Enforce both the selected sequence and closed/open form when
+        ''' parsing.
+        ''' </summary>
+        EnforceBoth = EnforceSequence Or EnforceSpacing ' 12
+
+        ''' <summary>
+        ''' Enforce both the use of the A+iB sequence and the closed form,
+        ''' without spaces before and after the sign of the imaginary component
+        ''' when parsing.
+        ''' </summary>
+        EnforcedClosedAiB = ClosedAiB Or EnforceBoth ' 12
+
+        ''' <summary>
+        ''' Enforce both the use of the A+Bi sequence and the closed form,
+        ''' without spaces before and after the sign of the imaginary component
+        ''' when parsing.
+        ''' </summary>
+        EnforcedClosedABi = ClosedABi Or EnforceBoth ' 13
+
+        ''' <summary>
+        ''' Enforce both the use of the A + iB sequence and the open form, with
+        ''' spaces before and after the sign of the imaginary component when
+        ''' parsing.
+        ''' </summary>
+        EnforcedOpenAiB = OpenAiB Or EnforceBoth ' 14
+
+        ''' <summary>
+        ''' Enforce both the use of the A + Bi sequence and the open form, with
+        ''' spaces before and after the sign of the imaginary component when
+        ''' parsing.
+        ''' </summary>
+        EnforcedOpenABi = OpenABi Or EnforceBoth ' 15
 
     End Enum ' StandardizationStyle
 

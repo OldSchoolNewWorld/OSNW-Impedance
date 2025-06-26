@@ -10,40 +10,48 @@ Imports System.Net.Security
 Imports OSNW.Numerics.ComplexExtensions
 Imports Xunit
 
-Namespace ListValues
+'Namespace ListValues
 
-    Public Class ListValues
+'    Public Class ListValues
 
-        '        None = 0
-        '        ABi = 1
-        '        Open = 2
-        '
-        '        EnforceSequence = 4
-        '        EnforceSpacing = 8
+'        '        None = 0
+'        '        ABi = 1
+'        '        Open = 2
+'        '
+'        '        EnforceSequence = 4
+'        '        EnforceSpacing = 8
 
-        <Theory>
-        <InlineData("ABi", StandardizationStyles.ABi)> ' ABi - ClosedABi: 1
-        <InlineData("Open", StandardizationStyles.Open)> ' Open - OpenAiB: 2
-        <InlineData("EnforceSequence", StandardizationStyles.EnforceSequence)> ' EnforceSequence - EnforceSequence: 4
-        <InlineData("EnforceSpacing", StandardizationStyles.EnforceSpacing)> ' EnforceSpacing - EnforceSpacing: 8
-        Public Sub ListNormalValues(name As String, style As StandardizationStyles)
-            Dim S As String = $"{name} - {style.ToString}: {CInt(style)}"
-            Console.WriteLine(S)
-        End Sub
+'        <Theory>
+'        <InlineData("ABi", StandardizationStyles.ABi)> ' ABi - ClosedABi: 1
+'        <InlineData("Open", StandardizationStyles.Open)> ' Open - OpenAiB: 2
+'        <InlineData("EnforceSequence", StandardizationStyles.EnforceSequence)> ' EnforceSequence - EnforceSequence: 4
+'        <InlineData("EnforceSpacing", StandardizationStyles.EnforceSpacing)> ' EnforceSpacing - EnforceSpacing: 8
+'        Public Sub ListNormalValues(name As String, style As StandardizationStyles)
+'            Dim S As String = $"{name} - {style.ToString}: {CInt(style)}"
+'            Console.WriteLine(S)
+'        End Sub
 
-        <Theory>
-        <InlineData("ClosedAiB", StandardizationStyles.ClosedAiB)> ' ClosedAiB - None: 0
-        <InlineData("ClosedABi", StandardizationStyles.ClosedABi)> ' ClosedABi - ClosedABi: 1
-        <InlineData("OpenAiB", StandardizationStyles.OpenAiB)> ' OpenAiB - OpenAiB: 2
-        <InlineData("OpenABi", StandardizationStyles.OpenABi)> ' OpenABi - OpenABi: 3
-        Public Sub ListShorthands(name As String, style As StandardizationStyles)
-            Dim S As String = $"{name} - {style.ToString}: {CInt(style)}"
-            Console.WriteLine(S)
-        End Sub
 
-    End Class ' ListValues
 
-End Namespace ' ListValues
+
+'        <Theory>
+'        <InlineData("ClosedAiB", StandardizationStyles.ClosedAiB)> ' ClosedAiB - None: 0
+'        <InlineData("ClosedABi", StandardizationStyles.ClosedABi)> ' ClosedABi - ClosedABi: 1
+'        <InlineData("OpenAiB", StandardizationStyles.OpenAiB)> ' OpenAiB - OpenAiB: 2
+'        <InlineData("OpenABi", StandardizationStyles.OpenABi)> ' OpenABi - OpenABi: 3
+'        <InlineData("EnforceBoth", StandardizationStyles.EnforceBoth)> ' EnforceBoth - EnforcedClosedAiB: 12
+'        <InlineData("EnforcedClosedAiB", StandardizationStyles.EnforcedClosedAiB)> ' EnforcedClosedAiB - EnforcedClosedAiB: 12
+'        <InlineData("EnforcedClosedABi", StandardizationStyles.EnforcedClosedABi)> ' EnforcedClosedABi - EnforcedClosedABi: 13
+'        <InlineData("EnforcedOpenAiB", StandardizationStyles.EnforcedOpenAiB)> ' EnforcedOpenAiB - EnforcedOpenAiB: 14
+'        <InlineData("EnforcedOpenABi", StandardizationStyles.EnforcedOpenABi)> ' EnforcedOpenABi - EnforcedOpenABi: 15
+'        Public Sub ListShorthands(name As String, style As StandardizationStyles)
+'            Dim S As String = $"{name} - {style.ToString}: {CInt(style)}"
+'            Console.WriteLine(S)
+'        End Sub
+
+'    End Class ' ListValues
+
+'End Namespace ' ListValues
 
 Namespace TestToStandardString
 
