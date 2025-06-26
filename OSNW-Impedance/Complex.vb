@@ -4,13 +4,11 @@ Option Compare Binary
 Option Infer Off
 
 Imports System.Globalization
-Imports System.Numerics
-Imports System.Runtime.CompilerServices
 
 ''' <summary>
-''' This module contains extension methods for the <see cref="Complex"/>
-''' structure, providing additional functionality such as parsing and standard
-''' form string representation.
+''' This module contains extension methods for the
+''' <see cref="System.Numerics.Complex"/> structure, providing additional
+''' functionality such as parsing and standard form string representation.
 ''' </summary>
 ''' <remarks>
 ''' The module is designed to extend the <see cref="System.Numerics.Complex"/>

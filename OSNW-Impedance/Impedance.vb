@@ -3,11 +3,7 @@ Option Strict On
 Option Compare Binary
 Option Infer Off
 
-Imports System.Configuration
 Imports System.Diagnostics.CodeAnalysis
-Imports System.Globalization
-Imports System.Numerics
-Imports System.Runtime.CompilerServices
 
 ''' <summary>
 ''' Represents an electrical impedance with resistance (R) and reactance (X).

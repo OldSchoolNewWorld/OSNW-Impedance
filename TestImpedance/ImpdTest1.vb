@@ -3,10 +3,9 @@ Option Strict On
 Option Compare Binary
 Option Infer Off
 
-Imports System
 Imports System.Globalization
-Imports OSNW.Numerics
 Imports Xunit
+Imports OSNW.Numerics
 
 Namespace TestToString
 

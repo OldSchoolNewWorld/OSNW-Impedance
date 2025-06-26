@@ -3,9 +3,6 @@ Option Strict On
 Option Compare Binary
 Option Infer Off
 
-Imports System.Runtime.InteropServices
-Imports OSNW.Numerics.ComplexExtensions
-
 Partial Public Module ComplexExtensions
 
 #Region "Parsing Utils"
