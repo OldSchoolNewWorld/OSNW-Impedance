@@ -8,7 +8,6 @@ Imports System.Globalization
 Imports OSNW.Numerics
 Imports Xunit
 
-
 Namespace TestToString
 
     Public Class ToStringDefaultTest
@@ -52,8 +51,9 @@ Namespace TestToStandardString
         <InlineData(1.125, -5.675, StandardizationStyles.ABi, "1.125-5.675j")>
         <InlineData(-1.125, 5.675, StandardizationStyles.Open, "-1.125 + j5.675")>
         <InlineData(-1.125, -5.675, StandardizationStyles.OpenABi, "-1.125 - 5.675j")>
-        Sub ToStandardString_Standardization_Succeeds(r As Double, x As Double,
-                                                      standardizationStyle As StandardizationStyles, expected As String)
+        Sub ToStandardString_Standardization_Succeeds(
+            r As Double, x As Double, standardizationStyle As StandardizationStyles, expected As String)
+
             Dim Z As New OSNW.Numerics.Impedance(r, x)
             Dim ImpdStr As String = Z.ToStandardString(standardizationStyle)
             Assert.Equal(expected, ImpdStr)
@@ -155,8 +155,9 @@ Namespace TestTryParseStandard
         <InlineData("1.125-5.675i", 1.125, -5.675, StandardizationStyles.ClosedABi)>
         <InlineData("-1.125 + i5.675", -1.125, 5.675, StandardizationStyles.OpenAiB)>
         <InlineData("-1.125 - 5.675i", -1.125, -5.675, StandardizationStyles.OpenABi)>
-        Sub TryParseStandard_CompliantStandardization_Succeeds(standardStr As String, real As Double, imaginary As Double,
-                                                       standardizationStyle As StandardizationStyles)
+        Sub TryParseStandard_CompliantStandardization_Succeeds(standardStr As String, real As Double,
+            imaginary As Double, standardizationStyle As StandardizationStyles)
+
             Dim Impd As New OSNW.Numerics.Impedance
             If Not OSNW.Numerics.Impedance.TryParseStandard(standardStr, standardizationStyle, Nothing, Impd) Then
                 Assert.True(False)
@@ -169,8 +170,9 @@ Namespace TestTryParseStandard
         <InlineData("1.125-i5.675", StandardizationStyles.ClosedABi Or TightEnforcement)>
         <InlineData("-1.125+i5.675", StandardizationStyles.OpenAiB Or TightEnforcement)>
         <InlineData("-1.125 - i5.675", StandardizationStyles.OpenABi Or TightEnforcement)>
-        Sub TryParseStandard_NonCompliantStandardization_Fails(standardStr As String,
-                                                       standardizationStyle As StandardizationStyles)
+        Sub TryParseStandard_NonCompliantStandardization_Fails(
+            standardStr As String, standardizationStyle As StandardizationStyles)
+
             Dim Impd As New OSNW.Numerics.Impedance
             Assert.False(OSNW.Numerics.Impedance.TryParseStandard(standardStr, standardizationStyle, Nothing, Impd))
         End Sub
@@ -185,8 +187,8 @@ Namespace TestTryParseStandard
         <InlineData("1.122+i5.677", 1.122, 5.677, 2)>
         <InlineData("111111,122-i555555,677", 111_111.122, -555_555.677, 3)> ' One round down, one up.
         <InlineData("-111111,125+i555555,675", -111_111.125, 555_555.675, 4)>
-        Sub TryParseStandard_Culture_Succeeds(standardStr As String, real As Double, imaginary As Double,
-                                     index As Integer)
+        Sub TryParseStandard_Culture_Succeeds(
+            standardStr As String, real As Double, imaginary As Double, index As Integer)
 
             Dim Providers As System.IFormatProvider() = {
                 CultureInfo.InvariantCulture,
