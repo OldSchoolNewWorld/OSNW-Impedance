@@ -10,7 +10,7 @@ Imports System.Net.Security
 Imports OSNW.Numerics.ComplexExtensions
 Imports Xunit
 
-Namespace TestToString
+Namespace TestToStandardString
 
     Public Class ToStandardStringDefaultTest
 
@@ -157,5 +157,35 @@ Namespace TestTryParse
         End Sub
 
     End Class ' TryParseEnforceStandardizationTest
+
+    Public Class TryParseCultureTest
+
+        <Theory>
+        <InlineData("111111.122-i555555.677", 111_111.122, -555_555.677, 0)> ' One round down, one up.
+        <InlineData("111111.122-i555555.677", 111_111.122, -555_555.677, 1)> ' One round down, one up.
+        <InlineData("1.122+i5.677", 1.122, 5.677, 2)>
+        <InlineData("111111,122-i555555,677", 111_111.122, -555_555.677, 3)> ' One round down, one up.
+        <InlineData("-111111,125+i555555,675", -111_111.125, 555_555.675, 4)>
+        Sub TryParse_Culture_Succeeds(standardStr As String, real As Double, imaginary As Double,
+                                     index As Integer)
+
+            Dim Providers As System.IFormatProvider() = {
+                CultureInfo.InvariantCulture,
+                CultureInfo.CurrentCulture,
+                New CultureInfo("en-UK", False),
+                New CultureInfo("ru-RU", False),
+                New CultureInfo("fr-FR", False)
+            }
+            Dim Cplx As New Numerics.Complex
+
+            If Not TryParseStandard(standardStr, Nothing, Providers(index), Cplx) Then
+                Assert.True(False)
+            End If
+
+            Assert.True(Cplx.Real.Equals(real) AndAlso Cplx.Imaginary.Equals(imaginary))
+
+        End Sub
+
+    End Class ' TryParseCultureTest
 
 End Namespace ' TestTryParse
