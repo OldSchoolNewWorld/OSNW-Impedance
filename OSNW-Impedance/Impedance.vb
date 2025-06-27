@@ -25,7 +25,7 @@ Public Structure Impedance
 
     ' Use the "has a ..." approach to expose the desired features of a
     ' System.Numerics.Complex.
-    ' Do not rename (binary serialization).
+    ' Do not rename (binary serialization). ??????????????????????????????
     ''' <summary>
     ''' Gets the Impedance as a complex number.
     ''' </summary>
@@ -373,13 +373,10 @@ Public Structure Impedance
         As System.Boolean
 
         Return TryParseStandard(
-            s, standardizationStyle, COMPLEXSTYLE, provider, result)
+            s, standardizationStyle, DEFAULTCOMPLEXSTYLE, provider, result)
     End Function ' TryParseStandard
 
 #End Region ' "Parsing Implementations"
-
-
-
 
 #End Region ' "TryFormat Implementations"
 

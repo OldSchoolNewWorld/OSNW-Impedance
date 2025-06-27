@@ -293,7 +293,7 @@ Partial Public Module ComplexExtensions
         As System.Boolean
 
         Return TryParseStandard(
-            s, standardizationStyle, COMPLEXSTYLE, provider, result)
+            s, standardizationStyle, DEFAULTCOMPLEXSTYLE, provider, result)
     End Function ' TryParseStandard
 
 #End Region ' "Parsing Implementations"
