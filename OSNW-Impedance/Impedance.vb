@@ -12,7 +12,12 @@ Imports System.Diagnostics.CodeAnalysis
 ''' property j^2 = -1.
 ''' </summary>
 Public Structure Impedance
-    '    Implements IEquatable(Of Impedance)
+    ' Implements IEquatable(Of Impedance),
+    '     IFormattable,
+    '     INumberBase(Of Impedance),
+    '     ISignedNumber(Of Impedance),
+    '     IUtf8SpanFormattable
+
 
     ' DEV: An Impedance is essentially a complex number with some cosmetic
     ' differences:
