@@ -5,6 +5,51 @@ Option Infer Off
 
 Imports System.Globalization
 
+
+
+
+
+' REF: .NET 8.0 System.Numerics.Complex
+' https://learn.microsoft.com/en-us/dotnet/api/system.numerics.complex?view=net-8.0
+' https://github.com/microsoft/referencesource/blob/main/System.Numerics/System/Numerics/Complex.cs
+
+
+
+' REF: .NET 9.0 System.Numerics.Complex
+' https://learn.microsoft.com/en-us/dotnet/api/system.numerics.complex?view=net-9.0
+
+
+
+' Which source versions are each of these?
+' https://github.com/microsoft/referencesource/blob/main/System.Numerics/System/Numerics/Complex.cs
+' https://github.com/dotnet/runtime/blob/5535e31a712343a63f5d7d796cd874e563e5ac14/src/libraries/System.Runtime.Numerics/src/System/Numerics/Complex.cs
+' https://github.com/dotnet/runtime/blob/9d5a6a9aa463d6d10b0b0ba6d5982cc82f363dc3/src/libraries/System.Runtime.Numerics/src/System/Numerics/Complex.cs
+
+
+
+' REF:
+' 
+
+' REF:
+' 
+
+' REF:
+' 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ''' <summary>
 ''' This module contains extension methods for the
 ''' <see cref="System.Numerics.Complex"/> structure, providing additional
