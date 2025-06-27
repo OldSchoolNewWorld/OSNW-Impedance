@@ -5,36 +5,26 @@ Option Infer Off
 
 Imports System.Globalization
 
-
-
-
+' REF: System.Numerics.Complex struct
+' https://github.com/dotnet/docs/blob/main/docs/fundamentals/runtime-libraries/system-numerics-complex.md
 
 ' REF: .NET 8.0 System.Numerics.Complex
 ' https://learn.microsoft.com/en-us/dotnet/api/system.numerics.complex?view=net-8.0
-' https://github.com/microsoft/referencesource/blob/main/System.Numerics/System/Numerics/Complex.cs
-
-
+'2 https://github.com/dotnet/runtime/blob/5535e31a712343a63f5d7d796cd874e563e5ac14/src/libraries/System.Runtime.Numerics/src/System/Numerics/Complex.cs
 
 ' REF: .NET 9.0 System.Numerics.Complex
 ' https://learn.microsoft.com/en-us/dotnet/api/system.numerics.complex?view=net-9.0
+'3 https://github.com/dotnet/runtime/blob/9d5a6a9aa463d6d10b0b0ba6d5982cc82f363dc3/src/libraries/System.Runtime.Numerics/src/System/Numerics/Complex.cs
 
+' REF: .NET 10.0 System.Numerics.Complex
+' https://learn.microsoft.com/en-us/dotnet/api/system.numerics.complex?view=net-10.0
+' 4 https://github.com/dotnet/dotnet/blob/c22dcd0c7a78d095a94d20e59ec0271b9924c82c/src/runtime/src/libraries/System.Runtime.Numerics/src/System/Numerics/Complex.cs
 
 
 ' Which source versions are each of these?
-' https://github.com/microsoft/referencesource/blob/main/System.Numerics/System/Numerics/Complex.cs
-' https://github.com/dotnet/runtime/blob/5535e31a712343a63f5d7d796cd874e563e5ac14/src/libraries/System.Runtime.Numerics/src/System/Numerics/Complex.cs
-' https://github.com/dotnet/runtime/blob/9d5a6a9aa463d6d10b0b0ba6d5982cc82f363dc3/src/libraries/System.Runtime.Numerics/src/System/Numerics/Complex.cs
+'1 https://github.com/microsoft/referencesource/blob/main/System.Numerics/System/Numerics/Complex.cs
 
 
-
-' REF:
-' 
-
-' REF:
-' 
-
-' REF:
-' 
 
 
 
