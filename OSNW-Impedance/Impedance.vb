@@ -4,7 +4,11 @@ Option Compare Binary
 Option Infer Off
 
 Imports System.Diagnostics.CodeAnalysis
+Imports System.Threading
+Imports System.Threading.Tasks.Dataflow
 
+' FROM OLD YTT CODE AND .NET SOURCE:
+'    <SerializableAttribute()>
 ''' <summary>
 ''' Represents an electrical impedance with resistance (R) and reactance (X).
 ''' An electrical Impedance (Z) is a number of the standard form Z=R+jX or R+Xj,
@@ -12,12 +16,15 @@ Imports System.Diagnostics.CodeAnalysis
 ''' property j^2 = -1.
 ''' </summary>
 Public Structure Impedance
+    Implements IEquatable(Of Impedance)
+    ' FROM .NET SOURCE:
     ' Implements IEquatable(Of Impedance),
     '     IFormattable,
     '     INumberBase(Of Impedance),
     '     ISignedNumber(Of Impedance),
     '     IUtf8SpanFormattable
-
+    ' FROM OLD YTT CODE:
+    '        Implements IEquatable(Of Ytt.Util.Electrical.Impedance), IFormattable
 
     ' DEV: An Impedance is essentially a complex number with some cosmetic
     ' differences:
@@ -34,48 +41,128 @@ Public Structure Impedance
     ''' <summary>
     ''' Gets the Impedance as a complex number.
     ''' </summary>
-    Private ReadOnly AsComplex As System.Numerics.Complex
+    Private ReadOnly m_Complex As System.Numerics.Complex
 
     ''' <summary>
-    ''' Gets the resistance component of the Impedance.
+    ''' Gets the resistance component, in ohms, of the current <c>Impedance</c>
+    ''' instance.
     ''' </summary>
     Public ReadOnly Property Resistance As System.Double
         Get
-            Return Me.AsComplex.Real
+            Return Me.m_Complex.Real
         End Get
     End Property
 
     ''' <summary>
-    ''' Gets the reactance component of the Impedance.
+    ''' Gets the reactance component, in ohms, of the current <c>Impedance</c>
+    ''' instance.
     ''' </summary>
     Public ReadOnly Property Reactance As System.Double
         Get
-            Return Me.AsComplex.Imaginary
+            Return Me.m_Complex.Imaginary
         End Get
     End Property
 
     ''' <summary>
-    ''' Initializes a new instance of the Impedance structure using the
-    ''' specified resistance (R) and reactance (X) values.
+    ''' Initializes a new instance of the <c>Impedance</c> structure using the
+    ''' specified  <paramref name="resistance"/> (R) and
+    ''' <paramref name="reactance"/> (X) values.
     ''' </summary>
-    ''' <param name="r">Specifies the value of the resistance component of the
-    ''' Impedance.</param>
-    ''' <param name="x">Specifies the value of the reactance component of the
-    ''' Impedance.</param>
-    Public Sub New(r As System.Double, x As System.Double)
-        Me.AsComplex = New System.Numerics.Complex(r, x)
-    End Sub
+    ''' <param name="resistance">Specifies the value of the resistance component of the
+    ''' Impedance in ohms.</param>
+    ''' <param name="reactance">Specifies the value of the reactance component of the
+    ''' Impedance in ohms.</param>
+    ''' <exception cref="System.ArgumentOutOfRangeException">
+    ''' When <paramref name="resistance"/> is negative.
+    ''' </exception>
+    ''' <remarks>
+    ''' An exception is thrown if <paramref name="resistance"/> is negative.
+    ''' <para>
+    ''' No real electrical component can have zero resistance, or its reciprocal
+    ''' - infinite admittance. Nor can the opposite case exist. Some theoretical
+    ''' calculations, such as choosing a component to resonate a circuit, use
+    ''' pure reactances. When necessary, use a very small
+    ''' <paramref name="resistance"/>, such as
+    ''' <see cref="System.Double.Epsilon"/>, to avoid <c>NaN</c>> results in
+    ''' other calculations.
+    ''' </para>
+    ''' </remarks>
+    Public Sub New(ByVal resistance As System.Double, ByVal reactance As System.Double)
 
-    'Public Function ToComplex() As System.Numerics.Complex
-    '    Return New System.Numerics.Complex(Me.Resistance, Me.Reactance)
+        ' Input checking.
+        If resistance < 0.0 Then
+            Dim CaughtBy As System.Reflection.MethodBase =
+                    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(NameOf(resistance))
+        End If
+
+        Me.m_Complex = New System.Numerics.Complex(resistance, reactance)
+
+    End Sub ' New
+
+    ''' <summary>
+    ''' Provides easy access to <c>Complex</c> functionality.
+    ''' </summary>
+    ''' <returns>A new instance of the <see cref="System.Numerics.Complex"/>
+    ''' structure.</returns>
+    Public Function ToComplex() As System.Numerics.Complex
+        Return New System.Numerics.Complex(Me.Resistance, Me.Reactance)
+    End Function
+
+    '' public override bool Equals([NotNullWhen(true)] object? obj)
+    '' {
+    ''     return obj is Complex other && Equals(other);
+    '' }
+    'Public Overrides Function Equals(
+    '    <System.Diagnostics.CodeAnalysis.NotNullWhen(True)>
+    '        ByVal obj As System.Object) As System.Boolean
+    '    '
+    '    '
+    '    '
+    '    '
+    '    '
     'End Function
 
-    'Public Overloads Function Equals(other As Impedance) As System.Boolean
-    '    Implements IEquatable(Of Impedance).Equals
+    ' public bool Equals(Complex value)
+    ' {
+    '     return m_real.Equals(value.m_real) && m_imaginary.Equals(value.m_imaginary);
+    ' }
+    ''' <summary>
+    ''' Returns a value that indicates whether this instance and the specified
+    ''' <see cref="Impedance"/> have the same component values.
+    ''' </summary>
+    ''' <param name="value">The <c>Impedance</c> to compare.</param>
+    ''' <returns><c>True</c> if this instance and a specified <c>Impedance</c>
+    ''' have the same component values.</returns>
+    ''' <remarks>This may have to be changed to determine equality within some
+    ''' reasonable bounds. See 
+    ''' <see href="https://github.com/dotnet/docs/blob/main/docs/fundamentals/runtime-libraries/system-numerics-complex.md#precision-and-complex-numbers"/>
+    ''' </remarks>
+    Public Shadows Function Equals(ByVal value As Impedance) As System.Boolean _
+        Implements System.IEquatable(Of Impedance).Equals
 
-    '    '        Return Resistance.Equals(other.Resistance) AndAlso Reactance.Equals(other.Reactance)
-    '    Return Me.AsComplex.Equals(other.ToComplex())
-    'End Function
+        Return Me.ToComplex().Equals(value.ToComplex())
+    End Function
+
+    Public Overrides Function GetHashCode() As System.Int32
+        Return Me.ToComplex.GetHashCode
+    End Function
+
+
+
+
+
+
+
+
+
+
+
+    'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+
+
+
 
 #Region "ToString Implementations"
 
@@ -119,7 +206,7 @@ Public Structure Impedance
         ByVal provider As System.IFormatProvider) _
         As System.String
 
-        Return Me.AsComplex.ToString(format, provider).Replace(CHARI, CHARJ)
+        Return Me.m_Complex.ToString(format, provider).Replace(CHARI, CHARJ)
     End Function ' ToString
 
     '    public string ToString([StringSyntax(StringSyntaxAttribute.NumericFormat)] string? format)
@@ -136,7 +223,7 @@ Public Structure Impedance
             ByVal format As System.String) _
         As System.String
 
-        Return Me.AsComplex.ToString(format).Replace(CHARI, CHARJ)
+        Return Me.m_Complex.ToString(format).Replace(CHARI, CHARJ)
     End Function ' ToString
 
     '    public string ToString(IFormatProvider? provider)
@@ -152,7 +239,7 @@ Public Structure Impedance
     Public Overloads Function ToString(
         ByVal provider As System.IFormatProvider) As System.String
 
-        Return Me.AsComplex.ToString(provider).Replace(CHARI, CHARJ)
+        Return Me.m_Complex.ToString(provider).Replace(CHARI, CHARJ)
     End Function ' ToString
 
     '    public override string ToString()
@@ -164,7 +251,7 @@ Public Structure Impedance
     ''' </summary>
     ''' <returns>The current Impedance expressed in Cartesian form.</returns>
     Public Overrides Function ToString() As System.String
-        Return Me.AsComplex.ToString().Replace(CHARI, CHARJ)
+        Return Me.m_Complex.ToString().Replace(CHARI, CHARJ)
     End Function ' ToString
 
 #End Region ' "ToString Implementations"
@@ -202,11 +289,15 @@ Public Structure Impedance
     ''' <param name="standardizationStyle">Specifies the 
     ''' <see cref="StandardizationStyles"/> to be used to generate the standard
     ''' form string.</param>
-    ''' <param name="format">A standard or custom numeric format
-    ''' string.</param>
+    ''' <param name="format">A standard or custom numeric format string -or- A
+    ''' null reference (Nothing in Visual Basic) to use the default format
+    ''' defined for the type of the IFormattable implementation.</param>
     ''' <param name="provider">An object that supplies culture-specific
-    ''' formatting information.</param>
-    ''' <returns>The current Impedance expressed in standard form.</returns>
+    ''' formatting information -or- A null reference (Nothing in Visual Basic)
+    ''' to obtain the numeric format information from the current locale setting
+    ''' of the operating system.</param>
+    ''' <returns>The current Impedance expressed in the specified standard
+    ''' form.</returns>
     Public Function ToStandardString(
         ByVal standardizationStyle As StandardizationStyles,
         <StringSyntax(
@@ -215,7 +306,7 @@ Public Structure Impedance
         ByVal provider As System.IFormatProvider) _
         As System.String
 
-        Return Me.AsComplex.ToStandardString(standardizationStyle, format,
+        Return Me.m_Complex.ToStandardString(standardizationStyle, format,
                                            provider).Replace(CHARI, CHARJ)
     End Function ' ToStandardString
 
@@ -234,7 +325,7 @@ Public Structure Impedance
         ByVal standardizationStyle As StandardizationStyles) _
         As System.String
 
-        Return Me.AsComplex.ToStandardString(
+        Return Me.m_Complex.ToStandardString(
             standardizationStyle).Replace(CHARI, CHARJ)
     End Function ' ToStandardString
 
@@ -256,7 +347,7 @@ Public Structure Impedance
             ByVal format As System.String) _
         As System.String
 
-        Return Me.AsComplex.ToStandardString(standardizationStyle,
+        Return Me.m_Complex.ToStandardString(standardizationStyle,
                                            format).Replace(CHARI, CHARJ)
     End Function ' ToStandardString
 
@@ -278,7 +369,7 @@ Public Structure Impedance
         ByVal provider As System.IFormatProvider) _
         As System.String
 
-        Return Me.AsComplex.ToStandardString(standardizationStyle,
+        Return Me.m_Complex.ToStandardString(standardizationStyle,
                                            provider).Replace(CHARI, CHARJ)
     End Function ' ToStandardString
 
@@ -291,7 +382,7 @@ Public Structure Impedance
     ''' </summary>
     ''' <returns>The current Impedance expressed in standard form.</returns>
     Public Function ToStandardString() As System.String
-        Return Me.AsComplex.ToStandardString().Replace(CHARI, CHARJ)
+        Return Me.m_Complex.ToStandardString().Replace(CHARI, CHARJ)
     End Function ' ToStandardString
 
 #End Region ' "ToStandardString Implementations"

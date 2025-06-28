@@ -7,6 +7,58 @@ Imports System.Globalization
 Imports Xunit
 Imports OSNW.Numerics
 
+
+Namespace DevelopmentTests
+
+    Public Class TestEquals
+
+        <Fact>
+        Sub Equals_GoodMatch_Passes()
+            Dim I1 As New Impedance(1, 2)
+            Dim I2 As New Impedance(1, 2)
+            Assert.True(I1.Equals(I2))
+        End Sub
+
+        <Fact>
+        Sub Equals_Mismatch_Fails()
+            Dim I1 As New Impedance(1, 2)
+            Dim I2 As New Impedance(2, 3)
+            Assert.False(I1.Equals(I2))
+        End Sub
+
+        <Fact>
+        Sub Equals_DoubleDefault_Passes()
+            ' What happens the nothing is sent?
+            ' Is a null check needed?
+            Dim I1 As Impedance
+            Dim I2 As Impedance
+            Assert.True(I1.Equals(I2))
+        End Sub
+
+        <Fact>
+        Sub Equals_DoubleEmpty_Passes()
+            ' What happens when nothing is set?
+            ' Is a null check needed?
+            Dim I1 As New Impedance()
+            Dim I2 As New Impedance()
+            Assert.True(I1.Equals(Nothing))
+        End Sub
+
+        <Fact>
+        Sub Equals_Nothing_Fails()
+            ' What happens the "Nothing" is sent?
+            ' Is a null check needed?
+            Dim I1 As New Impedance(1, 2)
+            Assert.False(I1.Equals(Nothing))
+        End Sub
+
+    End Class
+
+End Namespace ' DevTests
+
+
+
+
 Namespace TestToString
 
     Public Class ToStringDefaultTest
@@ -14,8 +66,8 @@ Namespace TestToString
         <Theory>
         <InlineData(1.125, 5.675, "<1.125; 5.675>")>
         <InlineData(1.125, -5.675, "<1.125; -5.675>")>
-        <InlineData(-1.125, 5.675, "<-1.125; 5.675>")>
-        <InlineData(-1.125, -5.675, "<-1.125; -5.675>")>
+        <InlineData(0, 5.675, "<0; 5.675>")>
+        <InlineData(0, -5.675, "<0; -5.675>")>
         Sub ToString_Default_Succeeds(r As Double, x As Double, expect As String)
             Dim Z As New OSNW.Numerics.Impedance(r, x)
             Dim ImpdStr As String = Z.ToString()
@@ -33,8 +85,8 @@ Namespace TestToStandardString
         <Theory>
         <InlineData(1.125, 5.675, "1.125+j5.675")>
         <InlineData(1.125, -5.675, "1.125-j5.675")>
-        <InlineData(-1.125, 5.675, "-1.125+j5.675")>
-        <InlineData(-1.125, -5.675, "-1.125-j5.675")>
+        <InlineData(0, 5.675, "0+j5.675")>
+        <InlineData(0, -5.675, "0-j5.675")>
         Sub ToStandardString_Default_Succeeds(r As Double, x As Double, expect As String)
             Dim Z As New OSNW.Numerics.Impedance(r, x)
             Dim ImpdStr As String = Z.ToStandardString()
@@ -48,8 +100,8 @@ Namespace TestToStandardString
         <Theory>
         <InlineData(1.125, 5.675, Nothing, "1.125+j5.675")>
         <InlineData(1.125, -5.675, StandardizationStyles.ABi, "1.125-5.675j")>
-        <InlineData(-1.125, 5.675, StandardizationStyles.Open, "-1.125 + j5.675")>
-        <InlineData(-1.125, -5.675, StandardizationStyles.OpenABi, "-1.125 - 5.675j")>
+        <InlineData(0, 5.675, StandardizationStyles.Open, "0 + j5.675")>
+        <InlineData(0, -5.675, StandardizationStyles.OpenABi, "0 - 5.675j")>
         Sub ToStandardString_Standardization_Succeeds(
             r As Double, x As Double, standardizationStyle As StandardizationStyles, expected As String)
 
@@ -65,7 +117,7 @@ Namespace TestToStandardString
         <Theory>
         <InlineData(1.122, 5.677, "F2", "1.12+j5.68")>
         <InlineData(111_111.122, -555_555.677, "N2", "111,111.12-j555,555.68")>
-        <InlineData(-111_111.125, 555_555.675, "G5", "-1.1111E+05+j5.5556E+05")>
+        <InlineData(111_111.125, 555_555.675, "G5", "1.1111E+05+j5.5556E+05")>
         Sub ToStandardString_Format_Succeeds(r As Double, x As Double, format As String, expect As String)
             ' One round down, one up.
             Dim Z As New OSNW.Numerics.Impedance(r, x)
@@ -82,7 +134,7 @@ Namespace TestToStandardString
         <InlineData(111_111.122, -555_555.677, 1, "111111.122-j555555.677")> ' One round down, one up.
         <InlineData(1.122, 5.677, 2, "1.122+j5.677")>
         <InlineData(111_111.122, -555_555.677, 3, "111111,122-j555555,677")> ' One round down, one up.
-        <InlineData(-111_111.125, 555_555.675, 4, "-111111,125+j555555,675")>
+        <InlineData(111_111.125, 555_555.675, 4, "111111,125+j555555,675")>
         Sub ToStandardString_Culture_Succeeds(
             r As Double, x As Double, index As Integer, expected As String)
 
@@ -112,8 +164,8 @@ Namespace TestTryParseStandard
         <Theory>
         <InlineData("1.125+i5.675", 1.125, 5.675)>
         <InlineData("1.125-i5.675", 1.125, -5.675)>
-        <InlineData("-1.125+i5.675", -1.125, 5.675)>
-        <InlineData("-1.125-i5.675", -1.125, -5.675)>
+        <InlineData("0+i5.675", 0, 5.675)>
+        <InlineData("0-i5.675", 0, -5.675)>
         Sub TryParseStandard_Default_Succeeds(standardStr As String, real As Double, imaginary As Double)
             Dim Impd As New OSNW.Numerics.Impedance
             If Not OSNW.Numerics.Impedance.TryParseStandard(standardStr, Nothing, Nothing, Impd) Then
@@ -129,10 +181,10 @@ Namespace TestTryParseStandard
         <Theory>
         <InlineData("1.125+i5.675", 1.125, 5.675)> ' A+iB.
         <InlineData("1.125-5.675i", 1.125, -5.675)> ' A+Bi.
-        <InlineData("-1.125 + i5.675", -1.125, 5.675)> ' Open, one space.
-        <InlineData(" -1.125  -   5.675i  ", -1.125, -5.675)> ' Open, asymmetric spaces.
-        <InlineData("-1.125+ i5.675", -1.125, 5.675)> ' Open, space one side.
-        <InlineData("-1.125 +i5.675", -1.125, 5.675)> ' Open, space one side.
+        <InlineData("0 + i5.675", 0, 5.675)> ' Open, one space.
+        <InlineData(" 0  -   5.675i  ", 0, -5.675)> ' Open, asymmetric spaces.
+        <InlineData("0+ i5.675", 0, 5.675)> ' Open, space one side.
+        <InlineData("0 +i5.675", 0, 5.675)> ' Open, space one side.
         <InlineData("1125e-3+i.5675E1", 1.125, 5.675)> ' Exponential notation.
         Sub TryParseStandard_Default_Succeeds(standardStr As String, real As Double, imaginary As Double)
             Dim Impd As New OSNW.Numerics.Impedance
@@ -152,8 +204,8 @@ Namespace TestTryParseStandard
         <Theory>
         <InlineData("1.125+i5.675", 1.125, 5.675, StandardizationStyles.ClosedAiB)>
         <InlineData("1.125-5.675i", 1.125, -5.675, StandardizationStyles.ClosedABi)>
-        <InlineData("-1.125 + i5.675", -1.125, 5.675, StandardizationStyles.OpenAiB)>
-        <InlineData("-1.125 - 5.675i", -1.125, -5.675, StandardizationStyles.OpenABi)>
+        <InlineData("0 + i5.675", 0, 5.675, StandardizationStyles.OpenAiB)>
+        <InlineData("0 - 5.675i", 0, -5.675, StandardizationStyles.OpenABi)>
         Sub TryParseStandard_ValidStandardization_Succeeds(standardStr As String, real As Double,
             imaginary As Double, standardizationStyle As StandardizationStyles)
 
@@ -185,7 +237,7 @@ Namespace TestTryParseStandard
         <InlineData("111111.122-i555555.677", 111_111.122, -555_555.677, 1)> ' One round down, one up.
         <InlineData("1.122+i5.677", 1.122, 5.677, 2)>
         <InlineData("111111,122-i555555,677", 111_111.122, -555_555.677, 3)> ' One round down, one up.
-        <InlineData("-111111,125+i555555,675", -111_111.125, 555_555.675, 4)>
+        <InlineData("111111,125+i555555,675", 111_111.125, 555_555.675, 4)>
         Sub TryParseStandard_Culture_Succeeds(
             standardStr As String, real As Double, imaginary As Double, index As Integer)
 
