@@ -101,13 +101,23 @@ Public Structure Impedance
     End Sub ' New
 
     ''' <summary>
-    ''' Provides easy access to <c>Complex</c> functionality.
+    '''  This is for some internal conveniences. It provides easy access to
+    '''  <c>Complex</c> functionality.
     ''' </summary>
     ''' <returns>A new instance of the <see cref="System.Numerics.Complex"/>
     ''' structure.</returns>
-    Public Function ToComplex() As System.Numerics.Complex
+    Friend Function ToComplex() As System.Numerics.Complex
         Return New System.Numerics.Complex(Me.Resistance, Me.Reactance)
     End Function
+
+    '        ''' <summary>
+    '        ''' Returns a value that represents this instance as its equivalent <see cref="Admittance"/>.
+    '        ''' </summary>
+    '        ''' <returns>The equivalent admittance value of this instance.</returns>
+    '        Public Function ToAdmittance() As Ytt.Util.Electrical.Admittance
+    '            Dim ComplexRecip As System.Numerics.Complex = System.Numerics.Complex.Reciprocal(Me.ToComplex())
+    '            Return New Ytt.Util.Electrical.Admittance(ComplexRecip.Real, ComplexRecip.Imaginary)
+    '        End Function
 
     '' public override bool Equals([NotNullWhen(true)] object? obj)
     '' {
@@ -147,22 +157,6 @@ Public Structure Impedance
     Public Overrides Function GetHashCode() As System.Int32
         Return Me.ToComplex.GetHashCode
     End Function
-
-
-
-
-
-
-
-
-
-
-
-    'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
-
-
-
 
 #Region "ToString Implementations"
 
@@ -475,5 +469,95 @@ Public Structure Impedance
 #End Region ' "Parsing Implementations"
 
 #End Region ' "TryFormat Implementations"
+
+#Region "Other Instance Methods"
+
+    ''' <summary>
+    ''' Calculates the voltage reflection coeffient for this instance based on
+    ''' the specified characteristic impedance.
+    ''' </summary>
+    ''' <param name="z0">The characteristic impedance.</param>
+    ''' <returns>The voltage reflection coeffient.</returns>
+    ''' <exception cref="System.ArgumentNullException">
+    '''   Thrown when any parameter is <c>Nothing</c>.
+    ''' </exception>
+    ''' <exception cref="System.ArgumentOutOfRangeException">
+    ''' Thrown when <paramref name="z0"/> is not a positive, non-zero value.
+    ''' </exception>
+    Public Function VoltageReflectionCoefficient(ByVal z0 As System.Double) As System.Numerics.Complex
+
+        ' Input checking.
+        If z0 <= 0.0 Then
+            Dim CaughtBy As System.Reflection.MethodBase =
+                    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(NameOf(z0))
+        End If
+
+        ' Ref: https://en.wikipedia.org/wiki/Standing_wave_ratio
+
+        Dim MeAsComplex As System.Numerics.Complex = Me.ToComplex()
+        Return (MeAsComplex - z0) / (MeAsComplex + z0)
+
+    End Function ' VoltageReflectionCoefficient
+
+    ''' <summary>
+    ''' Calculates the voltage standing wave ratio for this instance based on
+    ''' the specified characteristic impedance.
+    ''' </summary>
+    ''' <param name="z0">The characteristic impedance in ohms.</param>
+    ''' <returns>The voltage standing wave ratio.</returns>
+    ''' <exception cref="System.ArgumentOutOfRangeException">
+    ''' Thrown when <paramref name="z0"/> is not a positive, non-zero value.
+    ''' </exception>
+    Public Function VSWR(ByVal z0 As System.Double) As System.Double
+
+        ' Input checking.
+        If z0 <= 0.0 Then
+            Dim CaughtBy As System.Reflection.MethodBase =
+                    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(NameOf(z0))
+        End If
+
+        ' Ref:
+        ' https://www.antenna-theory.com/definitions/vswr.php
+        ' https://www.antenna-theory.com/definitions/vswr-calculator.php
+        ' https://www.microwaves101.com/encyclopedias/voltage-standing-wave-ratio-vswr
+
+        'Dim Gamma As System.Numerics.Complex = Me.VoltageReflectionCoefficient(z0)
+        ''            Internal calls to Ytt.Util.Electrical.AbsComplex were replaced by direct calls to System.Numerics.Complex.Abs
+        ''            Dim AbsGamma As System.Double = Ytt.Util.Electrical.AbsComplex(Gamma)
+        'Dim AbsGamma As System.Double = System.Numerics.Complex.Abs(Gamma)
+        'Return (1.0 + AbsGamma) / (1.0 - AbsGamma)
+
+        Dim AbsGamma As System.Double =
+            System.Numerics.Complex.Abs(Me.VoltageReflectionCoefficient(z0))
+        Return (1.0 + AbsGamma) / (1.0 - AbsGamma)
+
+    End Function ' VSWR
+
+    ''' <summary>
+    ''' Calculates the power reflection coeffient for this instance based on the
+    ''' specified characteristic impedance.
+    ''' </summary>
+    ''' <param name="z0">The characteristic impedance in ohms.</param>
+    ''' <exception cref="System.ArgumentOutOfRangeException">
+    ''' Thrown when <paramref name="z0"/> is not a positive, non-zero value.
+    ''' </exception>
+    ''' <returns>The voltage reflection coeffient.</returns>
+    Public Function PowerReflectionCoefficient(ByVal z0 As System.Double) As System.Numerics.Complex
+
+        ' Input checking.
+        If z0 <= 0.0 Then
+            Dim CaughtBy As System.Reflection.MethodBase =
+                    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(NameOf(z0))
+        End If
+
+        Dim VRC As System.Numerics.Complex = Me.VoltageReflectionCoefficient(z0)
+        Return System.Numerics.Complex.Multiply(VRC, VRC)
+
+    End Function ' PowerReflectionCoefficient
+
+#End Region ' "Other Instance Methods"
 
 End Structure ' Impedance
