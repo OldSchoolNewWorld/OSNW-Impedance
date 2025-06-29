@@ -1,4 +1,8 @@
-﻿Option Explicit On
+﻿'TODO:
+' Finish AddParallelImpedance() and AddParallelAdmittance() when Admittance is
+'   accessible.
+' Add AddSeriesAdmittance() when Admittance is accessible?????
+Option Explicit On
 Option Strict On
 Option Compare Binary
 Option Infer Off
@@ -146,7 +150,7 @@ Public Structure Impedance
 
 #End Region ' "System.ValueType Implementations"
 
-#Region "IEquatable Implementations"
+#Region "Operator Implementations"
 
     Public Shared Operator =(ByVal left As Impedance,
                              ByVal right As Impedance) As System.Boolean
@@ -160,7 +164,21 @@ Public Structure Impedance
         Return Not left = right
     End Operator
 
-#End Region ' "IEquatable Implementations"
+    ''' <summary>
+    ''' Returns the result of the addition of two <c>Impedance</c>s.
+    ''' </summary>
+    ''' <param name="impedance1">An <c>Impedance</c>.</param>
+    ''' <param name="impedance2">An <c>Impedance</c>.</param>
+    ''' <returns>The result of the addition.</returns>
+    Public Shared Operator +(impedance1 As Impedance,
+                             impedance2 As Impedance) As Impedance
+        ' No input checking. left and right are presumed to have been checked
+        ' when created.
+        Dim TotalC As System.Numerics.Complex = impedance1.ToComplex + impedance2.ToComplex
+        Return New Impedance(TotalC.Real, TotalC.Imaginary)
+    End Operator
+
+#End Region ' "Operator Implementations"
 
 #Region "TryFormat Implementations"
 
@@ -577,6 +595,83 @@ Public Structure Impedance
         Return System.Numerics.Complex.Multiply(VRC, VRC)
 
     End Function ' PowerReflectionCoefficient
+
+    ''' <summary>
+    ''' Adds two <c>Impedance</c>s in series.
+    ''' </summary>
+    ''' <param name="LoadZ">The impedance of the load.</param>
+    ''' <param name="addZ">The impedance of the added component.</param>
+    ''' <returns>The input impedance of the combined load.</returns>
+    ''' <remarks>
+    ''' <code>
+    '''        o----- addZ -----o
+    '''        |                |
+    '''   Source                loadZ
+    '''        |                |
+    '''        o----------------o
+    ''' </code>
+    ''' </remarks>
+    Public Shared Function AddSeriesImpedance(
+        ByVal loadZ As Impedance, ByVal addZ As Impedance) As Impedance
+
+        ' No input checking. loadZ and addZ are presumed to have been checked
+        ' when created.
+        Return loadZ + addZ
+    End Function ' AddSeriesImpedance
+
+    ''' <summary>
+    ''' Adds two <c>Impedance</c>s in parallel.
+    ''' </summary>
+    ''' <param name="loadZ">The impedance of the load.</param>
+    ''' <param name="addZ">The impedance of the added component.</param>
+    ''' <returns>The input impedance of the combined load.</returns>
+    ''' <remarks>
+    ''' <code>
+    '''        o-------o-------o
+    '''        |       |       |
+    '''   Source     addZ      loadZ
+    '''        |       |       |
+    '''        o-------o-------o
+    ''' </code>
+    ''' </remarks>
+    Public Shared Function AddParallelImpedance(
+        ByVal loadZ As Impedance, ByVal addZ As Impedance) As Impedance
+
+        ' No input checking. loadZ and addZ are presumed to have been checked
+        ' when created.
+        '        Return (loadZ.ToAdmittance + addZ.ToAdmittance).ToImpedance
+        Return New Impedance(9999999999, 999999999)
+        'xxxxxxxxxxxxxxxxxxxxxxxxxx
+    End Function ' AddParallelImpedance
+
+    '''' <summary>
+    '''' Adds an admittance in parallel with a load impedance and returns the result.
+    '''' </summary>
+    '''' <param name="loadZ">The impedance of the load.</param>
+    '''' <param name="addY">The admittance of the added component.</param>
+    '''' <returns>The input impedance of the combined load.</returns>
+    '''' <exception cref="System.ArgumentNullException">
+    ''''   Thrown when any parameter is <c>Nothing</c>.
+    '''' </exception>
+    '''' <remarks>
+    '''' <code>
+    ''''        o-------o-------o
+    ''''        |       |       |
+    ''''   Source     addY      loadZ
+    ''''        |       |       |
+    ''''        o-------o-------o
+    '''' </code>
+    '''' </remarks>
+    'Public Shared Function AddParallelAdmittance(ByVal loadZ As Impedance,
+    '                                             ByVal addY As Admittance
+    '                                             ) As Impedance
+
+    '    ' No input checking. loadZ and addY are presumed to have been checked
+    '    ' when created.
+    '    '        Return (loadZ.ToAdmittance + addY).ToImpedance
+    '    Return New Impedance(9999999999, 999999999)
+    '    'xxxxxxxxxxxxxxxxxxxxxxxxxx
+    'End Function ' AddParallelAdmittance
 
 #End Region ' "Other Instance Methods"
 

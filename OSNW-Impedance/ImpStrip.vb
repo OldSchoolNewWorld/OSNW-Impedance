@@ -1,14 +1,10 @@
 ﻿'Partial Public Module Electrical
-'
-'    Public Structure Impedance
-'        Implements IEquatable(Of Ytt.Util.Electrical.Impedance), IFormattable
-'
 
 '
 '#Region "Shared Methods"
 '
 '        ''' <summary>
-'        ''' Adds two impedances in Series.
+'        ''' Adds two Impedances in Series.
 '        ''' </summary>
 '        ''' <declaration>
 '        ''' Public Shared Function AddSeriesImpedance(ByVal loadZ As Ytt.Util.Electrical.Impedance,
@@ -182,7 +178,7 @@
 '        ''' </declaration>
 '        ''' <param name="z">
 '        '''   <p>Type: Ytt.Util.Electrical.Impedance</p>
-'        '''   <p>Value: An impedance.</p>
+'        '''   <p>Value: An Impedance.</p>
 '        ''' </param>
 '        ''' <returns>
 '        '''   <p>Type: Ytt.Util.Electrical.Impedance</p>
@@ -338,9 +334,6 @@
 '        End Operator
 '
 '#End Region
-'
-'        ' The resistance and reactance are stored as a complex number.
-'        Private m_Complex As System.Numerics.Complex
 '
 '    End Structure ' Impedance
 '
