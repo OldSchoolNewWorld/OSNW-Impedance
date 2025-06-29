@@ -4,6 +4,7 @@ Option Compare Binary
 Option Infer Off
 
 Imports System.Diagnostics.CodeAnalysis
+Imports System.Runtime.CompilerServices
 Imports System.Threading
 Imports System.Threading.Tasks.Dataflow
 
@@ -16,7 +17,7 @@ Imports System.Threading.Tasks.Dataflow
 ''' property j^2 = -1.
 ''' </summary>
 Public Structure Impedance
-    Implements IEquatable(Of Impedance)
+    Implements IEquatable(Of Impedance), IFormattable
     ' FROM .NET SOURCE:
     ' Implements IEquatable(Of Impedance),
     '     IFormattable,
@@ -34,6 +35,8 @@ Public Structure Impedance
     ' Since System.Numerics.Complex is represented as a structure, it cannot be
     ' inherited. Given that, Impedance is created as a structure which uses
     ' familiar terminology but relies on Complex for most of its work.
+
+    Const MSGVMBGTZ As System.String = "Must be a positive, non-zero value."
 
 #Region "Fields and Properties"
 
@@ -143,14 +146,17 @@ Public Structure Impedance
 
 #End Region ' "System.ValueType Implementations"
 
-
 #Region "IEquatable Implementations"
 
-    Public Shared Operator =(left As Impedance, right As Impedance) As Boolean
+    Public Shared Operator =(ByVal left As Impedance,
+                             ByVal right As Impedance) As System.Boolean
+
         Return left.Equals(right)
     End Operator
 
-    Public Shared Operator <>(left As Impedance, right As Impedance) As Boolean
+    Public Shared Operator <>(ByVal left As Impedance,
+                              ByVal right As Impedance) As System.Boolean
+
         Return Not left = right
     End Operator
 
@@ -160,7 +166,7 @@ Public Structure Impedance
 
     '
     '
-    '
+    ' Need these ??????????????
     '
     '
 
@@ -203,13 +209,22 @@ Public Structure Impedance
     ''' <returns>The current Impedance expressed in Cartesian form.</returns>
     Public Overloads Function ToString(
         <StringSyntax(
-            System.Diagnostics.CodeAnalysis.StringSyntaxAttribute.NumericFormat)>
+            System.Diagnostics.CodeAnalysis.StringSyntaxAttribute.NumericFormat
+                )>
             ByVal format As System.String,
         ByVal provider As System.IFormatProvider) _
         As System.String
 
         Return Me.m_Complex.ToString(format, provider).Replace(CHARI, CHARJ)
     End Function ' ToString
+
+    Private Function IFormattable_ToString(
+        ByVal format As System.String,
+        ByVal provider As System.IFormatProvider) _
+        As String Implements IFormattable.ToString
+
+        Return ToString(format, provider)
+    End Function ' IFormattable_ToString
 
     '    public string ToString([StringSyntax(StringSyntaxAttribute.NumericFormat)] string? format)
     ''' <summary>
@@ -309,7 +324,7 @@ Public Structure Impedance
         As System.String
 
         Return Me.m_Complex.ToStandardString(standardizationStyle, format,
-                                           provider).Replace(CHARI, CHARJ)
+                                             provider).Replace(CHARI, CHARJ)
     End Function ' ToStandardString
 
     '    public override string ToString()
@@ -440,7 +455,6 @@ Public Structure Impedance
             result = New OSNW.Numerics.Impedance
             Return False
         End If
-
     End Function ' TryParseStandard
 
     ' public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider? provider, out Complex result)
@@ -481,20 +495,19 @@ Public Structure Impedance
     ''' the specified characteristic impedance.
     ''' </summary>
     ''' <param name="z0">The characteristic impedance.</param>
-    ''' <returns>The voltage reflection coeffient.</returns>
-    ''' <exception cref="System.ArgumentNullException">
-    '''   Thrown when any parameter is <c>Nothing</c>.
-    ''' </exception>
+    ''' <returns>The voltage reflection coeffient for the current instance at
+    ''' the specified characteristic impedance.</returns>
     ''' <exception cref="System.ArgumentOutOfRangeException">
-    ''' Thrown when <paramref name="z0"/> is not a positive, non-zero value.
+    ''' When <paramref name="z0"/> is not a positive, non-zero value.
     ''' </exception>
-    Public Function VoltageReflectionCoefficient(ByVal z0 As System.Double) As System.Numerics.Complex
+    Public Function VoltageReflectionCoefficient(ByVal z0 As System.Double) _
+        As System.Numerics.Complex
 
         ' Input checking.
         If z0 <= 0.0 Then
             Dim CaughtBy As System.Reflection.MethodBase =
                     System.Reflection.MethodBase.GetCurrentMethod
-            Throw New System.ArgumentOutOfRangeException(NameOf(z0))
+            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGVMBGTZ)
         End If
 
         ' Ref: https://en.wikipedia.org/wiki/Standing_wave_ratio
@@ -509,9 +522,10 @@ Public Structure Impedance
     ''' the specified characteristic impedance.
     ''' </summary>
     ''' <param name="z0">The characteristic impedance in ohms.</param>
-    ''' <returns>The voltage standing wave ratio.</returns>
+    ''' <returns>The voltage standing wave ratio for the current instance at the
+    ''' specified characteristic impedance.</returns>
     ''' <exception cref="System.ArgumentOutOfRangeException">
-    ''' Thrown when <paramref name="z0"/> is not a positive, non-zero value.
+    ''' When <paramref name="z0"/> is not a positive, non-zero value.
     ''' </exception>
     Public Function VSWR(ByVal z0 As System.Double) As System.Double
 
@@ -519,7 +533,7 @@ Public Structure Impedance
         If z0 <= 0.0 Then
             Dim CaughtBy As System.Reflection.MethodBase =
                     System.Reflection.MethodBase.GetCurrentMethod
-            Throw New System.ArgumentOutOfRangeException(NameOf(z0))
+            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGVMBGTZ)
         End If
 
         ' Ref:
@@ -544,17 +558,19 @@ Public Structure Impedance
     ''' specified characteristic impedance.
     ''' </summary>
     ''' <param name="z0">The characteristic impedance in ohms.</param>
+    ''' <returns>The power reflection coeffient for the current instance at the
+    ''' specified characteristic impedance.</returns>
     ''' <exception cref="System.ArgumentOutOfRangeException">
-    ''' Thrown when <paramref name="z0"/> is not a positive, non-zero value.
+    ''' When <paramref name="z0"/> is not a positive, non-zero value.
     ''' </exception>
-    ''' <returns>The voltage reflection coeffient.</returns>
-    Public Function PowerReflectionCoefficient(ByVal z0 As System.Double) As System.Numerics.Complex
+    Public Function PowerReflectionCoefficient(ByVal z0 As System.Double) _
+        As System.Numerics.Complex
 
         ' Input checking.
         If z0 <= 0.0 Then
             Dim CaughtBy As System.Reflection.MethodBase =
                     System.Reflection.MethodBase.GetCurrentMethod
-            Throw New System.ArgumentOutOfRangeException(NameOf(z0))
+            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGVMBGTZ)
         End If
 
         Dim VRC As System.Numerics.Complex = Me.VoltageReflectionCoefficient(z0)
@@ -571,10 +587,10 @@ Public Structure Impedance
     ''' specified  <paramref name="resistance"/> (R) and
     ''' <paramref name="reactance"/> (X) values.
     ''' </summary>
-    ''' <param name="resistance">Specifies the value of the resistance component of the
-    ''' Impedance in ohms.</param>
-    ''' <param name="reactance">Specifies the value of the reactance component of the
-    ''' Impedance in ohms.</param>
+    ''' <param name="resistance">Specifies the value of the resistance component
+    ''' of the current instance in ohms.</param>
+    ''' <param name="reactance">Specifies the value of the reactance component
+    ''' of the current instance in ohms.</param>
     ''' <exception cref="System.ArgumentOutOfRangeException">
     ''' When <paramref name="resistance"/> is negative.
     ''' </exception>
