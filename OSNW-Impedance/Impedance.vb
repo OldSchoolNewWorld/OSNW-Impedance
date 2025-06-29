@@ -192,7 +192,8 @@ Public Structure Impedance
                              impedance2 As Impedance) As Impedance
         ' No input checking. impedance1 and impedance2 are presumed to have been
         ' checked when created.
-        Dim TotalC As System.Numerics.Complex = impedance1.ToComplex + impedance2.ToComplex
+        Dim TotalC As System.Numerics.Complex =
+            impedance1.ToComplex + impedance2.ToComplex
         Return New Impedance(TotalC.Real, TotalC.Imaginary)
     End Operator
 
@@ -658,9 +659,7 @@ Public Structure Impedance
 
         ' No input checking. loadZ and addZ are presumed to have been checked
         ' when created.
-        '        Return (loadZ.ToAdmittance + addZ.ToAdmittance).ToImpedance
-        Return New Impedance(9999999999, 999999999)
-        'xxxxxxxxxxxxxxxxxxxxxxxxxx
+        Return (loadZ.ToAdmittance + addZ.ToAdmittance).ToImpedance
     End Function ' AddParallelImpedance
 
     '''' <summary>
