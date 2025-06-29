@@ -85,14 +85,16 @@ Public Structure Impedance
         Return New System.Numerics.Complex(Me.Resistance, Me.Reactance)
     End Function
 
-    '        ''' <summary>
-    '        ''' Returns a value that represents this instance as its equivalent <see cref="Admittance"/>.
-    '        ''' </summary>
-    '        ''' <returns>The equivalent admittance value of this instance.</returns>
-    '        Public Function ToAdmittance() As Ytt.Util.Electrical.Admittance
-    '            Dim ComplexRecip As System.Numerics.Complex = System.Numerics.Complex.Reciprocal(Me.ToComplex())
-    '            Return New Ytt.Util.Electrical.Admittance(ComplexRecip.Real, ComplexRecip.Imaginary)
-    '        End Function
+    ''' <summary>
+    ''' Returns a value that represents this instance as its equivalent
+    ''' <see cref="Admittance"/>.
+    ''' </summary>
+    ''' <returns>The equivalent admittance value of this instance.</returns>
+    Public Function ToAdmittance() As Admittance
+        Dim ComplexRecip As System.Numerics.Complex =
+            System.Numerics.Complex.Reciprocal(Me.ToComplex())
+        Return New Admittance(ComplexRecip.Real, ComplexRecip.Imaginary)
+    End Function
 
 #Region "System.ValueType Implementations"
 
