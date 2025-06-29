@@ -35,6 +35,8 @@ Public Structure Impedance
     ' inherited. Given that, Impedance is created as a structure which uses
     ' familiar terminology but relies on Complex for most of its work.
 
+#Region "Fields and Properties"
+
     ' Use the "has a ..." approach to expose the desired features of a
     ' System.Numerics.Complex.
     ' Do not rename (binary serialization). ??????????????????????????????
@@ -63,42 +65,7 @@ Public Structure Impedance
         End Get
     End Property
 
-    ''' <summary>
-    ''' Initializes a new instance of the <c>Impedance</c> structure using the
-    ''' specified  <paramref name="resistance"/> (R) and
-    ''' <paramref name="reactance"/> (X) values.
-    ''' </summary>
-    ''' <param name="resistance">Specifies the value of the resistance component of the
-    ''' Impedance in ohms.</param>
-    ''' <param name="reactance">Specifies the value of the reactance component of the
-    ''' Impedance in ohms.</param>
-    ''' <exception cref="System.ArgumentOutOfRangeException">
-    ''' When <paramref name="resistance"/> is negative.
-    ''' </exception>
-    ''' <remarks>
-    ''' An exception is thrown if <paramref name="resistance"/> is negative.
-    ''' <para>
-    ''' No real electrical component can have zero resistance, or its reciprocal
-    ''' - infinite admittance. Nor can the opposite case exist. Some theoretical
-    ''' calculations, such as choosing a component to resonate a circuit, use
-    ''' pure reactances. When necessary, use a very small
-    ''' <paramref name="resistance"/>, such as
-    ''' <see cref="System.Double.Epsilon"/>, to avoid <c>NaN</c>> results in
-    ''' other calculations.
-    ''' </para>
-    ''' </remarks>
-    Public Sub New(ByVal resistance As System.Double, ByVal reactance As System.Double)
-
-        ' Input checking.
-        If resistance < 0.0 Then
-            Dim CaughtBy As System.Reflection.MethodBase =
-                    System.Reflection.MethodBase.GetCurrentMethod
-            Throw New System.ArgumentOutOfRangeException(NameOf(resistance))
-        End If
-
-        Me.m_Complex = New System.Numerics.Complex(resistance, reactance)
-
-    End Sub ' New
+#End Region ' "Fields and Properties"
 
     ''' <summary>
     '''  This is for some internal conveniences. It provides easy access to
@@ -119,19 +86,31 @@ Public Structure Impedance
     '            Return New Ytt.Util.Electrical.Admittance(ComplexRecip.Real, ComplexRecip.Imaginary)
     '        End Function
 
-    '' public override bool Equals([NotNullWhen(true)] object? obj)
-    '' {
-    ''     return obj is Complex other && Equals(other);
-    '' }
-    'Public Overrides Function Equals(
-    '    <System.Diagnostics.CodeAnalysis.NotNullWhen(True)>
-    '        ByVal obj As System.Object) As System.Boolean
-    '    '
-    '    '
-    '    '
-    '    '
-    '    '
+#Region "System.ValueType Implementations"
+
+    ' public override bool Equals([NotNullWhen(true)] object? obj)
+    ' {
+    '     return obj is Complex other && Equals(other);
+    ' }
+    'Public Overrides Function Equals(obj As Object) As Boolean
+    '    Return (TypeOf obj Is Impedance) AndAlso
+    '        DirectCast(Me, IEquatable(Of Impedance)).Equals(
+    '        DirectCast(obj, Impedance))
     'End Function
+    ''' <summary>
+    ''' Determines whether the specified object is equal to the current object.
+    ''' </summary>
+    ''' <param name="obj">The object to compare with the current object.</param>
+    ''' <returns><c>True</c> if the specified object is equal to the current
+    ''' object; otherwise, <c>False</c>.</returns>
+    Public Overrides Function Equals(
+        <System.Diagnostics.CodeAnalysis.NotNullWhen(True)>
+            ByVal obj As System.Object) As System.Boolean
+
+        Return (TypeOf obj Is Impedance) AndAlso
+            DirectCast(Me, IEquatable(Of Impedance)).Equals(
+            DirectCast(obj, Impedance))
+    End Function
 
     ' public bool Equals(Complex value)
     ' {
@@ -148,15 +127,31 @@ Public Structure Impedance
     ''' reasonable bounds. See 
     ''' <see href="https://github.com/dotnet/docs/blob/main/docs/fundamentals/runtime-libraries/system-numerics-complex.md#precision-and-complex-numbers"/>
     ''' </remarks>
-    Public Shadows Function Equals(ByVal value As Impedance) As System.Boolean _
+    Public Overloads Function Equals(ByVal value As Impedance) As System.Boolean _
         Implements System.IEquatable(Of Impedance).Equals
 
         Return Me.ToComplex().Equals(value.ToComplex())
     End Function
 
+    ''' <summary>
+    ''' Serves as the default hash function.
+    ''' </summary>
+    ''' <returns>A hash code for the current object.</returns>
     Public Overrides Function GetHashCode() As System.Int32
         Return Me.ToComplex.GetHashCode
     End Function
+
+#End Region ' "System.ValueType Implementations"
+
+#Region "TryFormat Implementations"
+
+    '
+    '
+    '
+    '
+    '
+
+#End Region ' "TryFormat Implementations"
 
 #Region "ToString Implementations"
 
@@ -165,7 +160,7 @@ Public Structure Impedance
     '   They optionally specify a format string, an IFormatProvider, or both.
     '   All cases eventually call the full case, which assigns defaults as
     '     needed.
-    '   Create similar extensions herein.
+    '   Create similar implementations herein.
 
     ' public override string ToString() => ToString(null, null);
     ' public string ToString([StringSyntax(StringSyntaxAttribute.NumericFormat)] string? format) => ToString(format, null);
@@ -381,8 +376,6 @@ Public Structure Impedance
 
 #End Region ' "ToStandardString Implementations"
 
-#Region "TryFormat Implementations"
-
 #Region "Parsing Implementations"
 
     ' As of when recorded, these Complex signatures match in .NET 8.0 and
@@ -467,8 +460,6 @@ Public Structure Impedance
     End Function ' TryParseStandard
 
 #End Region ' "Parsing Implementations"
-
-#End Region ' "TryFormat Implementations"
 
 #Region "Other Instance Methods"
 
@@ -559,5 +550,47 @@ Public Structure Impedance
     End Function ' PowerReflectionCoefficient
 
 #End Region ' "Other Instance Methods"
+
+#Region "Constructors"
+
+    ''' <summary>
+    ''' Initializes a new instance of the <c>Impedance</c> structure using the
+    ''' specified  <paramref name="resistance"/> (R) and
+    ''' <paramref name="reactance"/> (X) values.
+    ''' </summary>
+    ''' <param name="resistance">Specifies the value of the resistance component of the
+    ''' Impedance in ohms.</param>
+    ''' <param name="reactance">Specifies the value of the reactance component of the
+    ''' Impedance in ohms.</param>
+    ''' <exception cref="System.ArgumentOutOfRangeException">
+    ''' When <paramref name="resistance"/> is negative.
+    ''' </exception>
+    ''' <remarks>
+    ''' An exception is thrown if <paramref name="resistance"/> is negative.
+    ''' <para>
+    ''' No real electrical component can have zero resistance, or its reciprocal
+    ''' - infinite admittance. Nor can the opposite case exist. Some theoretical
+    ''' calculations, such as choosing a component to resonate a circuit, use
+    ''' pure reactances. When necessary, use a very small
+    ''' <paramref name="resistance"/>, such as
+    ''' <see cref="System.Double.Epsilon"/>, to avoid <c>NaN</c>> results in
+    ''' other calculations.
+    ''' </para>
+    ''' </remarks>
+    Public Sub New(ByVal resistance As System.Double,
+                   ByVal reactance As System.Double)
+
+        ' Input checking.
+        If resistance < 0.0 Then
+            Dim CaughtBy As System.Reflection.MethodBase =
+                    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(NameOf(resistance))
+        End If
+
+        Me.m_Complex = New System.Numerics.Complex(resistance, reactance)
+
+    End Sub ' New
+
+#End Region ' "Constructors"
 
 End Structure ' Impedance
