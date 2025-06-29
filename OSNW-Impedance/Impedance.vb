@@ -2,6 +2,7 @@
 ' Finish AddParallelImpedance() and AddParallelAdmittance() when Admittance is
 '   accessible.
 ' Add AddSeriesAdmittance() when Admittance is accessible?????
+' Add Serialization to Impedance. To Admittance?????
 Option Explicit On
 Option Strict On
 Option Compare Binary
@@ -152,12 +153,27 @@ Public Structure Impedance
 
 #Region "Operator Implementations"
 
+    ''' <summary>
+    ''' Returns a value that indicates whether two <c>Impedance</c>s are equal.
+    ''' </summary>
+    ''' <param name="left">The first <c>Impedance</c> to compare.</param>
+    ''' <param name="right">The second <c>Impedance</c> to compare.</param>
+    ''' <returns><c>True</c>> if the left and right parameters have the same
+    ''' value; otherwise, <c>False</c>.</returns>
     Public Shared Operator =(ByVal left As Impedance,
                              ByVal right As Impedance) As System.Boolean
 
         Return left.Equals(right)
     End Operator
 
+    ''' <summary>
+    ''' Returns a value that indicates whether two <c>Impedance</c>s are not
+    ''' equal.
+    ''' </summary>
+    ''' <param name="left">The first <c>Impedance</c> to compare.</param>
+    ''' <param name="right">The second <c>Impedance</c> to compare.</param>
+    ''' <returns><c>True</c>> if left and right are not equal; otherwise,
+    ''' <c>False</c>.</returns>
     Public Shared Operator <>(ByVal left As Impedance,
                               ByVal right As Impedance) As System.Boolean
 
@@ -167,13 +183,13 @@ Public Structure Impedance
     ''' <summary>
     ''' Returns the result of the addition of two <c>Impedance</c>s.
     ''' </summary>
-    ''' <param name="impedance1">An <c>Impedance</c>.</param>
-    ''' <param name="impedance2">An <c>Impedance</c>.</param>
+    ''' <param name="impedance1">The first <c>Impedance</c> to add.</param>
+    ''' <param name="impedance2">The first <c>Impedance</c> to add.</param>
     ''' <returns>The result of the addition.</returns>
     Public Shared Operator +(impedance1 As Impedance,
                              impedance2 As Impedance) As Impedance
-        ' No input checking. left and right are presumed to have been checked
-        ' when created.
+        ' No input checking. impedance1 and impedance2 are presumed to have been
+        ' checked when created.
         Dim TotalC As System.Numerics.Complex = impedance1.ToComplex + impedance2.ToComplex
         Return New Impedance(TotalC.Real, TotalC.Imaginary)
     End Operator
@@ -620,7 +636,8 @@ Public Structure Impedance
     End Function ' AddSeriesImpedance
 
     ''' <summary>
-    ''' Adds two <c>Impedance</c>s in parallel.
+    ''' Adds an <c>Impedance</c> in parallel with a load <c>Impedance</c> and
+    ''' returns the result.
     ''' </summary>
     ''' <param name="loadZ">The impedance of the load.</param>
     ''' <param name="addZ">The impedance of the added component.</param>
@@ -645,7 +662,8 @@ Public Structure Impedance
     End Function ' AddParallelImpedance
 
     '''' <summary>
-    '''' Adds an admittance in parallel with a load impedance and returns the result.
+    '''' Adds an <c>Admittance</c> in parallel with a load <c>Impedance</c> and
+    '''' returns the result.
     '''' </summary>
     '''' <param name="loadZ">The impedance of the load.</param>
     '''' <param name="addY">The admittance of the added component.</param>
