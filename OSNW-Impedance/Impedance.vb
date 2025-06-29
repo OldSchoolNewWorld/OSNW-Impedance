@@ -143,6 +143,19 @@ Public Structure Impedance
 
 #End Region ' "System.ValueType Implementations"
 
+
+#Region "IEquatable Implementations"
+
+    Public Shared Operator =(left As Impedance, right As Impedance) As Boolean
+        Return left.Equals(right)
+    End Operator
+
+    Public Shared Operator <>(left As Impedance, right As Impedance) As Boolean
+        Return Not left = right
+    End Operator
+
+#End Region ' "IEquatable Implementations"
+
 #Region "TryFormat Implementations"
 
     '
