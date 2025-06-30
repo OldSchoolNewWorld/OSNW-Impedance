@@ -1,4 +1,7 @@
-﻿''' <summary>
+﻿Imports System.Configuration
+Imports System.Diagnostics.CodeAnalysis
+
+''' <summary>
 ''' Represents an electrical admittance with conductance (G) and susceptance (B).
 ''' An electrical Admittance (Y) is a number of the standard form Y=G+jB, where
 '''   Y is the admittance (siemens);
@@ -7,8 +10,7 @@
 '''   j^2 = −1, the imaginary unit.
 ''' </summary>
 Public Structure Admittance
-    '         Implements IEquatable(Of Ytt.Util.Electrical.Admittance), IFormattable
-    Implements IEquatable(Of Admittance)
+    Implements IEquatable(Of Admittance), IFormattable
 
     Const MSGVMBGTZ As System.String = Impedance.MSGVMBGTZ
 
@@ -28,7 +30,8 @@ Public Structure Admittance
     ''' Returns a value that represents this instance as its equivalent
     ''' <see cref="Impedance"/>.
     ''' </summary>
-    ''' <returns>The equivalent impedance value of this instance.</returns>
+    ''' <returns>The equivalent <c>Impedance</c> value of the current
+    ''' instance.</returns>
     Public Function ToImpedance() As Impedance
         Dim ComplexRecip As System.Numerics.Complex =
             System.Numerics.Complex.Reciprocal(Me.ToComplex())
@@ -81,6 +84,9 @@ Public Structure Admittance
         <System.Diagnostics.CodeAnalysis.NotNullWhen(True)>
             ByVal obj As System.Object) As System.Boolean
 
+        ' This may have to be changed to determine equality within some
+        ' reasonable bounds. See 
+        ' <see href="https://github.com/dotnet/docs/blob/main/docs/fundamentals/runtime-libraries/system-numerics-complex.md#precision-and-complex-numbers"/>
         Return (TypeOf obj Is Admittance) AndAlso
             DirectCast(Me, IEquatable(Of Admittance)).Equals(
             DirectCast(obj, Admittance))
@@ -97,13 +103,12 @@ Public Structure Admittance
     ''' <param name="value">The <c>Impedance</c> to compare.</param>
     ''' <returns><c>True</c> if this instance and a specified <c>Impedance</c>
     ''' have the same component values.</returns>
-    ''' <remarks>This may have to be changed to determine equality within some
-    ''' reasonable bounds. See 
-    ''' <see href="https://github.com/dotnet/docs/blob/main/docs/fundamentals/runtime-libraries/system-numerics-complex.md#precision-and-complex-numbers"/>
-    ''' </remarks>
     Public Overloads Function Equals(ByVal value As Admittance) As System.Boolean _
         Implements System.IEquatable(Of Admittance).Equals
 
+        ' This may have to be changed to determine equality within some
+        ' reasonable bounds. See 
+        ' <see href="https://github.com/dotnet/docs/blob/main/docs/fundamentals/runtime-libraries/system-numerics-complex.md#precision-and-complex-numbers"/>
         Return Me.ToComplex().Equals(value.ToComplex())
     End Function
 
@@ -162,6 +167,122 @@ Public Structure Admittance
     End Operator
 
 #End Region ' "Operator Implementations"
+
+#Region "TryFormat Implementations"
+
+    '
+    '
+    ' Need these ??????????????
+    '
+    '
+
+#End Region ' "TryFormat Implementations"
+
+#Region "ToString Implementations"
+
+    ' As of when recorded, System.Numerics.Complex in .NET 8.0 and .NET 9.0 have
+    ' the implementations below.
+    '   They optionally specify a format string, an IFormatProvider, or both.
+    '   All cases eventually call the full case, which assigns defaults as
+    '     needed.
+    '   Create similar implementations herein.
+
+    ' public override string ToString() => ToString(null, null);
+    ' public string ToString([StringSyntax(StringSyntaxAttribute.NumericFormat)] string? format) => ToString(format, null);
+    ' public string ToString(IFormatProvider? provider) => ToString(null, provider);
+    ' public string ToString([StringSyntax(StringSyntaxAttribute.NumericFormat)] string? format, IFormatProvider? provider)
+    ' {
+    '     // $"<{m_real.ToString(format, provider)}; {m_imaginary.ToString(format, provider)}>";
+    '     var handler = new DefaultInterpolatedStringHandler(4, 2, provider, stackalloc char[512]);
+    '     handler.AppendLiteral("<");
+    '     handler.AppendFormatted(m_real, format);
+    '     handler.AppendLiteral("; ");
+    '     handler.AppendFormatted(m_imaginary, format);
+    '     handler.AppendLiteral(">");
+    '     return handler.ToStringAndClear();
+    ' }
+
+    '    public string ToString([StringSyntax(StringSyntaxAttribute.NumericFormat)] string? format, IFormatProvider? provider)
+    ''' <summary>
+    ''' Converts the value of the current Admittance to its equivalent string
+    ''' representation in Cartesian form by using the specified numeric format
+    ''' and culture-specific format information for its resistance and reactance
+    ''' parts.
+    ''' </summary>
+    ''' <param name="format">A standard or custom numeric format string.</param>
+    ''' <param name="provider">An object that supplies culture-specific
+    ''' formatting information.</param>
+    ''' <returns>The current Admittance expressed in Cartesian form.</returns>
+    Public Overloads Function ToString(
+        <StringSyntax(
+            System.Diagnostics.CodeAnalysis.StringSyntaxAttribute.NumericFormat
+                )>
+            ByVal format As System.String,
+        ByVal provider As System.IFormatProvider) _
+        As System.String
+
+        '        Return Me.m_Complex.ToString(format, provider).Replace(CHARI, CHARJ)
+        Return Me.ToImpedance().ToString(format, provider)
+    End Function ' ToString
+
+    Private Function IFormattable_ToString(
+        ByVal format As System.String,
+        ByVal provider As System.IFormatProvider) _
+        As String Implements IFormattable.ToString
+
+        '        Return ToString(format, provider)
+        Return Me.ToImpedance().ToString(format, provider)
+    End Function ' IFormattable_ToString
+
+    '    public string ToString([StringSyntax(StringSyntaxAttribute.NumericFormat)] string? format)
+    ''' <summary>
+    ''' Converts the value of the current Admittance to its equivalent string
+    ''' representation in Cartesian form by using the specified numeric format
+    ''' information, and using the default culture-specific format information,
+    ''' for its resistance and reactance parts.
+    ''' </summary>
+    ''' <param name="format">A standard or custom numeric format string.</param>
+    ''' <returns>The current Admittance expressed in Cartesian form.</returns>
+    Public Overloads Function ToString(
+        <StringSyntax(StringSyntaxAttribute.NumericFormat)>
+            ByVal format As System.String) _
+        As System.String
+
+        '        Return Me.m_Complex.ToString(format).Replace(CHARI, CHARJ)
+        Return Me.ToImpedance().ToString(format)
+    End Function ' ToString
+
+    '    public string ToString(IFormatProvider? provider)
+    ''' <summary>
+    ''' Converts the value of the current Admittance to its equivalent string
+    ''' representation in Cartesian form by using the specified culture-specific
+    ''' format information, and using the default numeric format, for its
+    ''' resistance and reactance parts.
+    ''' </summary>
+    ''' <param name="provider">An object that supplies culture-specific
+    ''' formatting information.</param>
+    ''' <returns>The current Admittance expressed in Cartesian form.</returns>
+    Public Overloads Function ToString(
+        ByVal provider As System.IFormatProvider) As System.String
+
+        '        Return Me.m_Complex.ToString(provider).Replace(CHARI, CHARJ)
+        Return Me.ToImpedance().ToString(provider)
+    End Function ' ToString
+
+    '    public override string ToString()
+    ''' <summary>
+    ''' Converts the value of the current Admittance to its equivalent string
+    ''' representation in Cartesian form by using the default numeric format and
+    ''' culture-specific format information for its resistance and reactance
+    ''' parts.
+    ''' </summary>
+    ''' <returns>The current Admittance expressed in Cartesian form.</returns>
+    Public Overrides Function ToString() As System.String
+        '        Return Me.m_Complex.ToString().Replace(CHARI, CHARJ)
+        Return Me.ToImpedance().ToString()
+    End Function ' ToString
+
+#End Region ' "ToString Implementations"
 
 #Region "Constructors"
 

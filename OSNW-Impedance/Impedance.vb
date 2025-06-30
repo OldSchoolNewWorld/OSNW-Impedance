@@ -89,7 +89,8 @@ Public Structure Impedance
     ''' Returns a value that represents this instance as its equivalent
     ''' <see cref="Admittance"/>.
     ''' </summary>
-    ''' <returns>The equivalent admittance value of this instance.</returns>
+    ''' <returns>The equivalent <c>Admittance</c> value of the current
+    ''' instance.</returns>
     Public Function ToAdmittance() As Admittance
         Dim ComplexRecip As System.Numerics.Complex =
             System.Numerics.Complex.Reciprocal(Me.ToComplex())
@@ -117,6 +118,9 @@ Public Structure Impedance
         <System.Diagnostics.CodeAnalysis.NotNullWhen(True)>
             ByVal obj As System.Object) As System.Boolean
 
+        ' This may have to be changed to determine equality within some
+        ' reasonable bounds. See 
+        ' <see href="https://github.com/dotnet/docs/blob/main/docs/fundamentals/runtime-libraries/system-numerics-complex.md#precision-and-complex-numbers"/>
         Return (TypeOf obj Is Impedance) AndAlso
             DirectCast(Me, IEquatable(Of Impedance)).Equals(
             DirectCast(obj, Impedance))
@@ -133,13 +137,12 @@ Public Structure Impedance
     ''' <param name="value">The <c>Impedance</c> to compare.</param>
     ''' <returns><c>True</c> if this instance and a specified <c>Impedance</c>
     ''' have the same component values.</returns>
-    ''' <remarks>This may have to be changed to determine equality within some
-    ''' reasonable bounds. See 
-    ''' <see href="https://github.com/dotnet/docs/blob/main/docs/fundamentals/runtime-libraries/system-numerics-complex.md#precision-and-complex-numbers"/>
-    ''' </remarks>
     Public Overloads Function Equals(ByVal value As Impedance) As System.Boolean _
         Implements System.IEquatable(Of Impedance).Equals
 
+        ' This may have to be changed to determine equality within some
+        ' reasonable bounds. See 
+        ' <see href="https://github.com/dotnet/docs/blob/main/docs/fundamentals/runtime-libraries/system-numerics-complex.md#precision-and-complex-numbers"/>
         Return Me.ToComplex().Equals(value.ToComplex())
     End Function
 
