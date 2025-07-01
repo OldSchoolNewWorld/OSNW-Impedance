@@ -1,5 +1,6 @@
 ﻿Imports System.Configuration
 Imports System.Diagnostics.CodeAnalysis
+Imports OSNW.Numerics.ComplexExtensions
 
 ''' <summary>
 ''' Represents an electrical admittance with conductance (G) and susceptance (B).
@@ -230,8 +231,7 @@ Public Structure Admittance
         ByVal provider As System.IFormatProvider) _
         As String Implements IFormattable.ToString
 
-        '        Return ToString(format, provider)
-        Return Me.ToImpedance().ToString(format, provider)
+        Return ToString(format, provider)
     End Function ' IFormattable_ToString
 
     '    public string ToString([StringSyntax(StringSyntaxAttribute.NumericFormat)] string? format)
@@ -248,8 +248,7 @@ Public Structure Admittance
             ByVal format As System.String) _
         As System.String
 
-        '        Return Me.m_Complex.ToString(format).Replace(CHARI, CHARJ)
-        Return Me.ToImpedance().ToString(format)
+        Return Me.m_Complex.ToString(format).Replace(CHARI, CHARJ)
     End Function ' ToString
 
     '    public string ToString(IFormatProvider? provider)
@@ -265,8 +264,7 @@ Public Structure Admittance
     Public Overloads Function ToString(
         ByVal provider As System.IFormatProvider) As System.String
 
-        '        Return Me.m_Complex.ToString(provider).Replace(CHARI, CHARJ)
-        Return Me.ToImpedance().ToString(provider)
+        Return Me.m_Complex.ToString(provider).Replace(CHARI, CHARJ)
     End Function ' ToString
 
     '    public override string ToString()
@@ -278,11 +276,224 @@ Public Structure Admittance
     ''' </summary>
     ''' <returns>The current Admittance expressed in Cartesian form.</returns>
     Public Overrides Function ToString() As System.String
-        '        Return Me.m_Complex.ToString().Replace(CHARI, CHARJ)
-        Return Me.ToImpedance().ToString()
+        Return Me.m_Complex.ToString().Replace(CHARI, CHARJ)
     End Function ' ToString
 
 #End Region ' "ToString Implementations"
+
+#Region "ToStandardString Implementations"
+
+    ' System.Numerics.Complex in .NET 8.0 and .NET 9.0 have these:
+    '   They optionally specify a format string, an IFormatProvider, or both.
+    '   All cases eventually call the full case, which will assign defaults as
+    '   needed.
+    '   Create similar extensions below.
+
+    ' public override string ToString() => ToString(null, null);
+    ' public string ToString([StringSyntax(StringSyntaxAttribute.NumericFormat)] string? format) => ToString(format, null);
+    ' public string ToString(IFormatProvider? provider) => ToString(null, provider);
+    ' public string ToString([StringSyntax(StringSyntaxAttribute.NumericFormat)] string? format, IFormatProvider? provider)
+    ' {
+    '     // $"<{m_real.ToString(format, provider)}; {m_imaginary.ToString(format, provider)}>";
+    '     var handler = new DefaultInterpolatedStringHandler(4, 2, provider, stackalloc char[512]);
+    '     handler.AppendLiteral("<");
+    '     handler.AppendFormatted(m_real, format);
+    '     handler.AppendLiteral("; ");
+    '     handler.AppendFormatted(m_imaginary, format);
+    '     handler.AppendLiteral(">");
+    '     return handler.ToStringAndClear();
+    ' }
+
+    '    public string ToString([StringSyntax(StringSyntaxAttribute.NumericFormat)] string? format, IFormatProvider? provider)
+    ''' <summary>
+    ''' Converts the value of the current <c>Admittance</c> to its equivalent
+    ''' string representation in standard form by using the specified layout
+    ''' format, numeric format, and culture-specific format information for its
+    ''' real and imaginary parts.
+    ''' </summary>
+    ''' <param name="standardizationStyle">Specifies the 
+    ''' <see cref="StandardizationStyles"/> to be used to generate the standard
+    ''' form string.</param>
+    ''' <param name="format">A standard or custom numeric format string -or- A
+    ''' null reference (Nothing in Visual Basic) to use the default format
+    ''' defined for the type of the IFormattable implementation.</param>
+    ''' <param name="provider">An object that supplies culture-specific
+    ''' formatting information -or- A null reference (Nothing in Visual Basic)
+    ''' to obtain the numeric format information from the current locale setting
+    ''' of the operating system.</param>
+    ''' <returns>The current <c>Admittance</c> expressed in the specified standard
+    ''' form.</returns>
+    Public Function ToStandardString(
+        ByVal standardizationStyle As StandardizationStyles,
+        <StringSyntax(
+            System.Diagnostics.CodeAnalysis.StringSyntaxAttribute.NumericFormat)>
+            ByVal format As System.String,
+        ByVal provider As System.IFormatProvider) _
+        As System.String
+
+        Return Me.m_Complex.ToStandardString(standardizationStyle, format,
+                                             provider).Replace(CHARI, CHARJ)
+    End Function ' ToStandardString
+
+    '    public override string ToString()
+    ''' <summary>
+    ''' Converts the value of the current <c>Admittance</c> to its equivalent
+    ''' string representation in standard form by using the specified layout
+    ''' format information, and using the default numeric format and
+    ''' culture-specific format for its real and imaginary parts.
+    ''' </summary>
+    ''' <param name="standardizationStyle">Specifies the 
+    ''' <see cref="StandardizationStyles"/> to be used to generate the standard
+    ''' form string.</param>
+    ''' <returns>The current <c>Admittance</c> expressed in standard form.</returns>
+    Public Function ToStandardString(
+        ByVal standardizationStyle As StandardizationStyles) _
+        As System.String
+
+        Return Me.m_Complex.ToStandardString(
+            standardizationStyle).Replace(CHARI, CHARJ)
+    End Function ' ToStandardString
+
+    '    public string ToString([StringSyntax(StringSyntaxAttribute.NumericFormat)] string? format)
+    ''' <summary>
+    ''' Converts the value of the current <c>Admittance</c> to its equivalent
+    ''' string representation in standard form by using the specified layout
+    ''' format and numeric format information, and using the default
+    ''' culture-specific format information, for its real and imaginary parts.
+    ''' </summary>
+    ''' <param name="standardizationStyle">Specifies the 
+    ''' <see cref="StandardizationStyles"/> to be used to generate the standard
+    ''' form string.</param>
+    ''' <param name="format">A standard or custom numeric format string.</param>
+    ''' <returns>The current <c>Admittance</c> expressed in standard form.</returns>
+    Public Function ToStandardString(
+        ByVal standardizationStyle As StandardizationStyles,
+        <StringSyntax(StringSyntaxAttribute.NumericFormat)>
+            ByVal format As System.String) _
+        As System.String
+
+        Return Me.m_Complex.ToStandardString(standardizationStyle,
+                                             format).Replace(CHARI, CHARJ)
+    End Function ' ToStandardString
+
+    '    public string ToString(IFormatProvider? provider)
+    ''' <summary>
+    ''' Converts the value of the current <c>Admittance</c> to its equivalent
+    ''' string representation in standard form by using the specified layout
+    ''' format and culture-specific format information, and using the
+    ''' default numeric format, for its real and imaginary parts.
+    ''' </summary>
+    ''' <param name="standardizationStyle">Specifies the 
+    ''' <see cref="StandardizationStyles"/> to be used to generate the standard
+    ''' form string.</param>
+    ''' <param name="provider">An object that supplies culture-specific
+    ''' formatting information.</param>
+    ''' <returns>The current <c>Admittance</c> expressed in standard form.</returns>
+    Public Function ToStandardString(
+        ByVal standardizationStyle As StandardizationStyles,
+        ByVal provider As System.IFormatProvider) _
+        As System.String
+
+        Return Me.m_Complex.ToStandardString(standardizationStyle,
+                                           provider).Replace(CHARI, CHARJ)
+    End Function ' ToStandardString
+
+    '    public override string ToString()
+    ''' <summary>
+    ''' Converts the value of the current <c>Admittance</c> to its equivalent
+    ''' string representation in standard form by using the default layout
+    ''' format, numeric format, and culture-specific format information for its
+    ''' real and imaginary parts.
+    ''' </summary>
+    ''' <returns>The current <c>Admittance</c> expressed in standard form.</returns>
+    Public Function ToStandardString() As System.String
+        Return Me.m_Complex.ToStandardString().Replace(CHARI, CHARJ)
+    End Function ' ToStandardString
+
+#End Region ' "ToStandardString Implementations"
+
+#Region "Parsing Implementations"
+
+    ' As of when recorded, these Complex signatures match in .NET 8.0 and
+    '   .NET 9.0.
+    '
+    '   public static bool TryParse(ReadOnlySpan<char> s, NumberStyles style, IFormatProvider? provider, out Complex result)
+    '   public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider? provider, out Complex result) => TryParse(s, DefaultNumberStyle, provider, out result);
+    '   public static bool TryParse([NotNullWhen(true)] string? s, NumberStyles style, IFormatProvider? provider, out Complex result)
+    '   public static bool TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, out Complex result) => TryParse(s, DefaultNumberStyle, provider, out result);
+
+    ' public static bool TryParse(ReadOnlySpan<char> s, NumberStyles style, IFormatProvider? provider, out Complex result)
+    ' public static bool TryParse([NotNullWhen(true)] string? s, NumberStyles style, IFormatProvider? provider, out Complex result)
+    ''' <summary>
+    ''' Attempts to convert the standard form representation of an impedance to
+    ''' its <see cref="Impedance"/> equivalent using the specified layout
+    ''' format, numeric format, and culture-specific format information.
+    ''' </summary>
+    ''' <param name="s">Specifies the standard form string to be parsed.</param>
+    ''' <param name="standardizationStyle">Specifies the layout formats
+    ''' permitted in numeric string arguments that are passed to the TryParse
+    ''' method of the <c>Impedance</c> numeric type.</param>
+    ''' <param name="style">Determines the styles permitted in numeric string
+    ''' arguments that are passed to the TryParse method of the
+    ''' <c>OSNW.Numerics.Impedance</c> numeric type.</param>
+    ''' <param name="provider">Provides a mechanism for retrieving an object to
+    ''' control formatting.</param>
+    ''' <param name="result">Returns the <c>OSNW.Numerics.Impedance</c>
+    ''' represented by <paramref name="s"/>.</param>
+    ''' <returns>Returns <c>True</c> if the conversion succeeds; otherwise,
+    ''' <c>False</c>.</returns>
+    Public Shared Function TryParseStandard(
+        <System.Diagnostics.CodeAnalysis.NotNullWhen(True)>
+            ByVal s As System.String,
+        ByVal standardizationStyle As StandardizationStyles,
+        ByVal style As System.Globalization.NumberStyles,
+        ByVal provider As System.IFormatProvider,
+        ByRef result As OSNW.Numerics.Admittance) _
+        As System.Boolean
+
+        Dim Cplx As New System.Numerics.Complex
+        If OSNW.Numerics.ComplexExtensions.TryParseStandard(
+            s.Replace(CHARJ, CHARI), standardizationStyle, style, provider,
+            Cplx) Then
+
+            result = New Admittance(Cplx.Real, Cplx.Imaginary)
+            Return True
+        Else
+            result = New OSNW.Numerics.Admittance
+            Return False
+        End If
+    End Function ' TryParseStandard
+
+    ' public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider? provider, out Complex result)
+    ' public static bool TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, out Complex result)
+    ''' <summary>
+    ''' Attempts to convert the standard form representation of an impedance to
+    ''' its <see cref="Impedance"/> equivalent using the specified layout format
+    ''' and culture-specific format information.
+    ''' </summary>
+    ''' <param name="s">Specifies the standard form string to be parsed.</param>
+    ''' <param name="standardizationStyle">Specifies the layout formats
+    ''' permitted in numeric string arguments that are passed to the TryParse
+    ''' method of the <c>Impedance</c> numeric type.</param>
+    ''' <param name="provider">Provides a mechanism for retrieving an object to
+    ''' control formatting.</param>
+    ''' <param name="result">Returns the <c>OSNW.Numerics.Impedance</c>
+    ''' represented by <paramref name="s"/>.</param>
+    ''' <returns>Returns <c>True</c> if the conversion succeeds; otherwise,
+    ''' <c>False</c>.</returns>
+    Public Shared Function TryParseStandard(
+        <System.Diagnostics.CodeAnalysis.NotNullWhen(True)>
+            ByVal s As System.String,
+        ByVal standardizationStyle As StandardizationStyles,
+        ByVal provider As System.IFormatProvider,
+        ByRef result As OSNW.Numerics.Admittance) _
+        As System.Boolean
+
+        Return TryParseStandard(
+            s, standardizationStyle, DEFAULTCOMPLEXSTYLE, provider, result)
+    End Function ' TryParseStandard
+
+#End Region ' "Parsing Implementations"
 
 #Region "Constructors"
 

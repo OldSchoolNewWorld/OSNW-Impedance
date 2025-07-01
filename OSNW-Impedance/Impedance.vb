@@ -465,10 +465,10 @@ Public Structure Impedance
     ''' <param name="s">Specifies the standard form string to be parsed.</param>
     ''' <param name="standardizationStyle">Specifies the layout formats
     ''' permitted in numeric string arguments that are passed to the TryParse
-    ''' method of the <c>OSNW.Numerics.Impedance</c> numeric type.</param>
+    ''' method of the <c>Impedance</c> numeric type.</param>
     ''' <param name="style">Determines the styles permitted in numeric string
-    ''' arguments that are passed to the TryParse method of the
-    ''' <c>OSNW.Numerics.Impedance</c> numeric type.</param>
+    ''' arguments that are passed to the TryParse method of the <c>Impedance</c>
+    ''' numeric type.</param>
     ''' <param name="provider">Provides a mechanism for retrieving an object to
     ''' control formatting.</param>
     ''' <param name="result">Returns the <c>OSNW.Numerics.Impedance</c>
