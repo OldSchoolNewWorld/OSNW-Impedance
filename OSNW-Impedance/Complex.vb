@@ -23,6 +23,9 @@ Imports System.Globalization
 ' https://learn.microsoft.com/en-us/dotnet/api/system.numerics.complex?view=net-10.0
 ' 4 https://github.com/dotnet/dotnet/blob/c22dcd0c7a78d095a94d20e59ec0271b9924c82c/src/runtime/src/libraries/System.Runtime.Numerics/src/System/Numerics/Complex.cs
 
+' The module needs to be specified as Public.
+' REF: Extension Methods not Recognized
+' https://docs.microsoft.com/en-us/dotnet/standard/base-types/how-to-extend-a-type-with-extension-methods
 ''' <summary>
 ''' This module contains extension methods for the
 ''' <see cref="System.Numerics.Complex"/> structure, providing additional
@@ -36,10 +39,6 @@ Imports System.Globalization
 ''' allowing for flexibility in how complex numbers are represented as strings.
 ''' </remarks>
 Public Module ComplexExtensions
-
-    ' REF: Extension Methods not Recognized
-    ' https://docs.microsoft.com/en-us/dotnet/standard/base-types/how-to-extend-a-type-with-extension-methods
-    ' The module needs to be specified as Public.
 
     Friend Const CHARI As System.Char = "i"c
     Friend Const CHARJ As System.Char = "j"c
@@ -76,7 +75,7 @@ Public Module ComplexExtensions
     ''' form representation.
     ''' </summary>
     ''' <remarks>
-    ''' The default is <see cref="StandardizationStyles.None"/>.
+    ''' The default is <c>StandardizationStyles.None</c>.
     ''' </remarks>>
     <System.FlagsAttribute>
     Public Enum StandardizationStyles As System.Int32
@@ -85,7 +84,7 @@ Public Module ComplexExtensions
         ' https://learn.microsoft.com/en-us/dotnet/standard/design-guidelines/enum
 
         ''' <summary>
-        ''' Default: Use the A+iB sequence and the closed form, without spaces
+        ''' Default: Use the A+Bi sequence and the closed form, without spaces
         ''' before and after the sign of the imaginary component. There is no
         ''' parsing enforcement unless EnforceSequence and/or EnforceSpacing are
         ''' set.
@@ -96,18 +95,18 @@ Public Module ComplexExtensions
         None = 0
 
         ''' <summary>
-        ''' Use the A+Bi sequence. There is no parsing enforcement unless
+        ''' Use the A+iB sequence. There is no parsing enforcement unless
         ''' EnforceSequence is set.
         ''' </summary>
         ''' <remarks>
         ''' This is the default value for the enumeration.
         ''' </remarks>
-        ABi = 1
+        AiB = 1
 
         ''' <summary>
-        ''' Use the open (A + iB or A + Bi) form, with spaces before and after
-        ''' the sign of the imaginary component. There is no parsing enforcement unless
-        ''' EnforceSpacing is set.
+        ''' Use the open (A + Bi or A + iB) form, with spaces before and after
+        ''' the sign of the imaginary component. There is no parsing enforcement
+        ''' unless <c>EnforceSpacing</c> is set.
         ''' </summary>
         Open = 2
 
@@ -128,75 +127,76 @@ Public Module ComplexExtensions
         ' Add some convenience/shorthand values.
 
         ''' <summary>
-        ''' Use the A+iB sequence and the closed form, without spaces before and
-        ''' after the sign of the imaginary component. There is no parsing
-        ''' enforcement unless EnforceSequence and/or EnforceSpacing are set.
-        ''' </summary>
-        ClosedAiB = None ' 0
-
-        ''' <summary>
         ''' Use the A+Bi sequence and the closed form, without spaces before and
         ''' after the sign of the imaginary component. There is no parsing
-        ''' enforcement unless EnforceSequence and/or EnforceSpacing are set.
+        ''' enforcement unless <c>EnforceSequence</c> and/or
+        ''' <c>EnforceSpacing</c> are set.
         ''' </summary>
-        ClosedABi = ABi ' 1
+        ClosedABi = None ' 0
 
         ''' <summary>
-        ''' Use the A + iB sequence and the open form, with spaces before and
+        ''' Use the A+iB sequence and the closed form, without spaces before and
         ''' after the sign of the imaginary component. There is no parsing
-        ''' enforcement unless EnforceSequence and/or EnforceSpacing are set.
+        ''' enforcement unless <c>EnforceSequence</c> and/or
+        ''' <c>EnforceSpacing</c> are set.
         ''' </summary>
-        OpenAiB = Open ' 2
+        ClosedAiB = AiB ' 1
 
         ''' <summary>
         ''' Use the A + Bi sequence and the open form, with spaces before and
         ''' after the sign of the imaginary component. There is no parsing
-        ''' enforcement unless EnforceSequence and/or EnforceSpacing are set.
+        ''' enforcement unless <c>EnforceSequence</c> and/or
+        ''' <c>EnforceSpacing</c> are set.
         ''' </summary>
-        OpenABi = Open Or ABi ' 3
+        OpenABi = Open ' 2
+
+        ''' <summary>
+        ''' Use the A + iB sequence and the open form, with spaces before and
+        ''' after the sign of the imaginary component. There is no parsing
+        ''' enforcement unless <c>EnforceSequence</c> and/or
+        ''' <c>EnforceSpacing</c> are set.
+        ''' </summary>
+        OpenAiB = Open Or AiB ' 3
 
         ''' <summary>
         ''' EnforceBoth, when applied in general, enforces both the selected
         ''' sequence and closed/open form when parsing.
-        ''' <c>EnforcedClosedAiB</c> is a shortcut that has the same value, and
-        ''' is intended to enforce both the use of the A+iB sequence and
+        ''' <c>EnforcedClosedABi</c> is a shortcut that has the same value, and
+        ''' is intended to enforce both the use of the A+Bi sequence and
         ''' the closed form, without spaces before and after the sign of the
         ''' imaginary component when parsing.
         ''' </summary>
         EnforceBoth = EnforceSequence Or EnforceSpacing ' 12
-        EnforcedClosedAiB = EnforceBoth ' 12
+        EnforcedClosedABi = EnforceBoth ' 12
 
         ''' <summary>
         ''' Enforce both the use of the A+Bi sequence and the closed form,
         ''' without spaces before and after the sign of the imaginary component
         ''' when parsing.
         ''' </summary>
-        EnforcedClosedABi = ClosedABi Or EnforceBoth ' 13
-
-        ''' <summary>
-        ''' Enforce both the use of the A + iB sequence and the open form, with
-        ''' spaces before and after the sign of the imaginary component when
-        ''' parsing.
-        ''' </summary>
-        EnforcedOpenAiB = OpenAiB Or EnforceBoth ' 14
+        EnforcedClosedAiB = ClosedAiB Or EnforceBoth ' 13
 
         ''' <summary>
         ''' Enforce both the use of the A + Bi sequence and the open form, with
         ''' spaces before and after the sign of the imaginary component when
         ''' parsing.
         ''' </summary>
-        EnforcedOpenABi = OpenABi Or EnforceBoth ' 15
+        EnforcedOpenABi = OpenABi Or EnforceBoth ' 14
+
+        ''' <summary>
+        ''' Enforce both the use of the A + iB sequence and the open form, with
+        ''' spaces before and after the sign of the imaginary component when
+        ''' parsing.
+        ''' </summary>
+        EnforcedOpenAiB = OpenAiB Or EnforceBoth ' 15
 
     End Enum ' StandardizationStyle
 
     '''' <summary>
-    '''' The default standard form is A+iB sequence without spaces, but with no
+    '''' The default standard form is A+Bi sequence without spaces, but with no
     '''' enforcement of either option.
     '''' </summary>
     Public Const DefaultStandardizationStyle As StandardizationStyles =
         StandardizationStyles.None
-    'Public Const DefaultStandardizationStyle As StandardizationStyles =
-    '    StandardizationStyles.ClosedAiB
-    'Public Const DefaultStandardizationStyle As StandardizationStyles = Nothing
 
 End Module ' ComplexExtensions

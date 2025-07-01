@@ -34,8 +34,9 @@ Partial Public Module ComplexExtensions
         If String.IsNullOrWhiteSpace(s) Then
             Return 0
         End If
-        Return GetCharCount(s, CHARPLUS) + GetCharCount(s, CHARMINUS)
-    End Function ' GetSignCount
+        Return OSNW.Numerics.ComplexExtensions.GetCharCount(s, CHARPLUS) +
+            OSNW.Numerics.ComplexExtensions.GetCharCount(s, CHARMINUS)
+    End Function ' GetSignCountGetSignCount
 
     '''' <summary>
     '''' Counts the appearances of the letter "E" or "e" in a string. The letter
@@ -131,14 +132,17 @@ Partial Public Module ComplexExtensions
             Next
         End If
 
-        ' Expect the string to be in the, "A+iB" or "A+Bi", open or closed,
+        ' Expect the string to be in the, "A+Bi" or "A+iB", closed or open,
         ' standard form.
         ' s must have exacty one 'i' character.
         ' s must have one to four signs.
-        ' s may have maximum 2 'E'/'e' characters.
-        Dim ICount As System.Int32 = GetCharCount(s, CHARI)
-        Dim SignCount As System.Int32 = GetSignCount(s)
-        Dim ECount As System.Int32 = GetECount(s)
+        ' s may have maximum of two 'E'/'e' characters.
+        Dim ICount As System.Int32 =
+            OSNW.Numerics.ComplexExtensions.GetCharCount(s, CHARI)
+        Dim SignCount As System.Int32 =
+            OSNW.Numerics.ComplexExtensions.GetSignCount(s)
+        Dim ECount As System.Int32 =
+            OSNW.Numerics.ComplexExtensions.GetECount(s)
         If ICount <> 1 OrElse
             SignCount < 1 OrElse SignCount > 4 OrElse
             ECount > 2 Then
@@ -196,13 +200,17 @@ Partial Public Module ComplexExtensions
 
             If (standardizationStyle And StandardizationStyles.Open) > 0 Then
                 ' Must use spacing.
-                If Not (RealStr.EndsWith(CHARSPACE) AndAlso WorkStr.StartsWith(CHARSPACE)) Then
+                If Not (RealStr.EndsWith(CHARSPACE) AndAlso
+                    WorkStr.StartsWith(CHARSPACE)) Then
+
                     result = New System.Numerics.Complex
                     Return False
                 End If
             Else
                 ' Must not use spacing.
-                If RealStr.EndsWith(CHARSPACE) OrElse WorkStr.StartsWith(CHARSPACE) Then
+                If RealStr.EndsWith(CHARSPACE) OrElse
+                    WorkStr.StartsWith(CHARSPACE) Then
+
                     result = New System.Numerics.Complex
                     Return False
                 End If
@@ -225,14 +233,14 @@ Partial Public Module ComplexExtensions
         If (standardizationStyle And
             StandardizationStyles.EnforceSequence) > 0 Then
 
-            If (standardizationStyle And StandardizationStyles.ABi) > 0 Then
-                ' Must match ABI.
+            If (standardizationStyle And StandardizationStyles.AiB) > 0 Then
+                ' Must match FormerABi.
                 If Not TrimmedStr.EndsWith(CHARI) Then
                     result = New System.Numerics.Complex
                     Return False
                 End If
             Else
-                ' Must match AIB.
+                ' Must match FormerAiB.
                 If Not TrimmedStr.StartsWith(CHARI) Then
                     result = New System.Numerics.Complex
                     Return False

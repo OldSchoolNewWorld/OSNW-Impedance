@@ -3,6 +3,7 @@
 '   accessible.
 ' Add AddSeriesAdmittance() when Admittance is accessible?????
 ' Add Serialization to Impedance. To Admittance?????
+
 Option Explicit On
 Option Strict On
 Option Compare Binary
@@ -17,9 +18,11 @@ Imports System.Threading.Tasks.Dataflow
 '    <SerializableAttribute()>
 ''' <summary>
 ''' Represents an electrical impedance with resistance (R) and reactance (X).
-''' An electrical Impedance (Z) is a number of the standard form Z=R+jX or R+Xj,
-''' where R and X are real numbers, and j is the imaginary unit, with the
-''' property j^2 = -1.
+''' An electrical impedance (Z) is a number of the standard form Z=R+Xj or R+jX, where
+'''   Z is the impedance (ohms);
+'''   R is the resistance (ohms);
+'''   X is the reactance (ohms); and
+'''   j^2 = −1, the imaginary unit.
 ''' </summary>
 Public Structure Impedance
     Implements IEquatable(Of Impedance), IFormattable
@@ -137,7 +140,8 @@ Public Structure Impedance
     ''' <param name="value">The <c>Impedance</c> to compare.</param>
     ''' <returns><c>True</c> if this instance and a specified <c>Impedance</c>
     ''' have the same component values.</returns>
-    Public Overloads Function Equals(ByVal value As Impedance) As System.Boolean _
+    Public Overloads Function Equals(ByVal value As Impedance) _
+        As System.Boolean _
         Implements System.IEquatable(Of Impedance).Equals
 
         ' This may have to be changed to determine equality within some
@@ -206,7 +210,7 @@ Public Structure Impedance
 
     '
     '
-    ' Need these ??????????????
+    ' Are these needed ??????????????
     '
     '
 
@@ -546,7 +550,7 @@ Public Structure Impedance
         ' Input checking.
         If z0 <= 0.0 Then
             Dim CaughtBy As System.Reflection.MethodBase =
-                    System.Reflection.MethodBase.GetCurrentMethod
+                System.Reflection.MethodBase.GetCurrentMethod
             Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGVMBGTZ)
         End If
 
@@ -572,7 +576,7 @@ Public Structure Impedance
         ' Input checking.
         If z0 <= 0.0 Then
             Dim CaughtBy As System.Reflection.MethodBase =
-                    System.Reflection.MethodBase.GetCurrentMethod
+                System.Reflection.MethodBase.GetCurrentMethod
             Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGVMBGTZ)
         End If
 
@@ -609,7 +613,7 @@ Public Structure Impedance
         ' Input checking.
         If z0 <= 0.0 Then
             Dim CaughtBy As System.Reflection.MethodBase =
-                    System.Reflection.MethodBase.GetCurrentMethod
+                System.Reflection.MethodBase.GetCurrentMethod
             Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGVMBGTZ)
         End If
 
@@ -729,7 +733,7 @@ Public Structure Impedance
         ' Input checking.
         If resistance < 0.0 Then
             Dim CaughtBy As System.Reflection.MethodBase =
-                    System.Reflection.MethodBase.GetCurrentMethod
+                System.Reflection.MethodBase.GetCurrentMethod
             Throw New System.ArgumentOutOfRangeException(NameOf(resistance))
         End If
 

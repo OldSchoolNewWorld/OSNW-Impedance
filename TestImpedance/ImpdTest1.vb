@@ -83,10 +83,10 @@ Namespace TestToStandardString
     Public Class ToStandardStringDefaultTest
 
         <Theory>
-        <InlineData(1.125, 5.675, "1.125+j5.675")>
-        <InlineData(1.125, -5.675, "1.125-j5.675")>
-        <InlineData(0, 5.675, "0+j5.675")>
-        <InlineData(0, -5.675, "0-j5.675")>
+        <InlineData(1.125, 5.675, "1.125+5.675j")>
+        <InlineData(1.125, -5.675, "1.125-5.675j")>
+        <InlineData(0, 5.675, "0+5.675j")>
+        <InlineData(0, -5.675, "0-5.675j")>
         Sub ToStandardString_Default_Succeeds(r As Double, x As Double, expect As String)
             Dim Z As New OSNW.Numerics.Impedance(r, x)
             Dim ImpdStr As String = Z.ToStandardString()
@@ -98,10 +98,10 @@ Namespace TestToStandardString
     Public Class ToStandardStringStandardizationTest
 
         <Theory>
-        <InlineData(1.125, 5.675, Nothing, "1.125+j5.675")>
-        <InlineData(1.125, -5.675, StandardizationStyles.ABi, "1.125-5.675j")>
-        <InlineData(0, 5.675, StandardizationStyles.Open, "0 + j5.675")>
-        <InlineData(0, -5.675, StandardizationStyles.OpenABi, "0 - 5.675j")>
+        <InlineData(1.125, 5.675, Nothing, "1.125+5.675j")>
+        <InlineData(1.125, -5.675, StandardizationStyles.AiB, "1.125-j5.675")>
+        <InlineData(0, 5.675, StandardizationStyles.Open, "0 + 5.675j")>
+        <InlineData(0, -5.675, StandardizationStyles.OpenAiB, "0 - j5.675")>
         Sub ToStandardString_Standardization_Succeeds(
             r As Double, x As Double, standardizationStyle As StandardizationStyles, expected As String)
 
@@ -115,9 +115,9 @@ Namespace TestToStandardString
     Public Class ToStandardStringFormatTest
 
         <Theory>
-        <InlineData(1.122, 5.677, "F2", "1.12+j5.68")>
-        <InlineData(111_111.122, -555_555.677, "N2", "111,111.12-j555,555.68")>
-        <InlineData(111_111.125, 555_555.675, "G5", "1.1111E+05+j5.5556E+05")>
+        <InlineData(1.122, 5.677, "F2", "1.12+5.68j")>
+        <InlineData(111_111.122, -555_555.677, "N2", "111,111.12-555,555.68j")>
+        <InlineData(111_111.125, 555_555.675, "G5", "1.1111E+05+5.5556E+05j")>
         Sub ToStandardString_Format_Succeeds(r As Double, x As Double, format As String, expect As String)
             ' One round down, one up.
             Dim Z As New OSNW.Numerics.Impedance(r, x)
@@ -130,11 +130,11 @@ Namespace TestToStandardString
     Public Class ToStandardStringCultureTest
 
         <Theory>
-        <InlineData(111_111.122, -555_555.677, 0, "111111.122-j555555.677")> ' One round down, one up.
-        <InlineData(111_111.122, -555_555.677, 1, "111111.122-j555555.677")> ' One round down, one up.
-        <InlineData(1.122, 5.677, 2, "1.122+j5.677")>
-        <InlineData(111_111.122, -555_555.677, 3, "111111,122-j555555,677")> ' One round down, one up.
-        <InlineData(111_111.125, 555_555.675, 4, "111111,125+j555555,675")>
+        <InlineData(111_111.122, -555_555.677, 0, "111111.122-555555.677j")> ' One round down, one up.
+        <InlineData(111_111.122, -555_555.677, 1, "111111.122-555555.677j")> ' One round down, one up.
+        <InlineData(1.122, 5.677, 2, "1.122+5.677j")>
+        <InlineData(111_111.122, -555_555.677, 3, "111111,122-555555,677j")> ' One round down, one up.
+        <InlineData(111_111.125, 555_555.675, 4, "111111,125+555555,675j")>
         Sub ToStandardString_Culture_Succeeds(
             r As Double, x As Double, index As Integer, expected As String)
 
@@ -179,7 +179,7 @@ Namespace TestTryParseStandard
     Public Class TryParseStandardDefaultMixedTest
 
         <Theory>
-        <InlineData("1.125+i5.675", 1.125, 5.675)> ' A+iB.
+        <InlineData("1.125+i5.675", 1.125, 5.675)> ' A+Bi.
         <InlineData("1.125-5.675i", 1.125, -5.675)> ' A+Bi.
         <InlineData("0 + i5.675", 0, 5.675)> ' Open, one space.
         <InlineData(" 0  -   5.675i  ", 0, -5.675)> ' Open, asymmetric spaces.
@@ -202,10 +202,10 @@ Namespace TestTryParseStandard
             StandardizationStyles.EnforceSequence Or StandardizationStyles.EnforceSpacing
 
         <Theory>
-        <InlineData("1.125+i5.675", 1.125, 5.675, StandardizationStyles.ClosedAiB)>
-        <InlineData("1.125-5.675i", 1.125, -5.675, StandardizationStyles.ClosedABi)>
-        <InlineData("0 + i5.675", 0, 5.675, StandardizationStyles.OpenAiB)>
-        <InlineData("0 - 5.675i", 0, -5.675, StandardizationStyles.OpenABi)>
+        <InlineData("1.125+i5.675", 1.125, 5.675, StandardizationStyles.ClosedABi)>
+        <InlineData("1.125-5.675i", 1.125, -5.675, StandardizationStyles.ClosedAiB)>
+        <InlineData("0 + i5.675", 0, 5.675, StandardizationStyles.OpenABi)>
+        <InlineData("0 - 5.675i", 0, -5.675, StandardizationStyles.OpenAiB)>
         Sub TryParseStandard_ValidStandardization_Succeeds(standardStr As String, real As Double,
             imaginary As Double, standardizationStyle As StandardizationStyles)
 
@@ -217,10 +217,10 @@ Namespace TestTryParseStandard
         End Sub
 
         <Theory>
-        <InlineData("1.125 + i5.675", StandardizationStyles.ClosedAiB Or TightEnforcement)>
-        <InlineData("1.125-i5.675", StandardizationStyles.ClosedABi Or TightEnforcement)>
-        <InlineData("-1.125+i5.675", StandardizationStyles.OpenAiB Or TightEnforcement)>
-        <InlineData("-1.125 - i5.675", StandardizationStyles.OpenABi Or TightEnforcement)>
+        <InlineData("1.125 + i5.675", StandardizationStyles.ClosedABi Or TightEnforcement)>
+        <InlineData("1.125-i5.675", StandardizationStyles.ClosedAiB Or TightEnforcement)>
+        <InlineData("-1.125+i5.675", StandardizationStyles.OpenABi Or TightEnforcement)>
+        <InlineData("-1.125 - i5.675", StandardizationStyles.OpenAiB Or TightEnforcement)>
         Sub TryParseStandard_InvalidStandardization_Fails(
             standardStr As String, standardizationStyle As StandardizationStyles)
 
