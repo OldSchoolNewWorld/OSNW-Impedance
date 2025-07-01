@@ -148,7 +148,7 @@ Namespace TestTryParseStandard
         <InlineData(" -1.125  -   5.675i  ", -1.125, -5.675)> ' Open, asymmetric spaces.
         <InlineData("-1.125+ i5.675", -1.125, 5.675)> ' Open, space one side.
         <InlineData("-1.125 +i5.675", -1.125, 5.675)> ' Open, space one side.
-        <InlineData("1125e-3+i.5675E1", 1.125, 5.675)> ' Exponential notation.
+        <InlineData("1125e-3+i.5675E1", 1.125, 5.675)> ' Exponential notation, upper and lower E.
         Sub TryParse_Default_Succeeds(standardStr As String, real As Double, imaginary As Double)
             Dim Cplx As New Numerics.Complex
             If Not TryParseStandard(standardStr, Nothing, Nothing, Cplx) Then

@@ -260,4 +260,51 @@ Namespace TestTryParseStandard
 
     End Class ' TryParseStandardCultureTest
 
+    Namespace TestMath
+
+        Public Class EqualsObjectTest
+
+            <Fact>
+            Sub Dummy_Equals_MatchObject_Passes()
+                Dim I1 As New Admittance(1, 2)
+                Assert.True(I1.Equals(New Admittance(1, 2)))
+            End Sub
+
+            <Fact>
+            Sub Dummy_Equals_MismatchObject_Fails()
+                Dim I1 As New Admittance(1, 2)
+                Assert.False(I1.Equals(New Admittance(1, 3)))
+            End Sub
+
+        End Class ' EqualsObjectTest
+
+        Public Class EqualsOtherTest
+
+            <Fact>
+            Sub Dummy_Equals_MatchOther_Passes()
+                Dim I1 As New Admittance(1, 2)
+                Dim I2 As New Admittance(1, 2)
+                Assert.True(I1.Equals(I2))
+            End Sub
+
+            <Fact>
+            Sub Dummy_Equals_MismatchOther_Fails()
+                Dim I1 As New Admittance(1, 2)
+                Dim I2 As New Admittance(1, 3)
+                Assert.False(I1.Equals(I2))
+            End Sub
+
+        End Class ' EqualsOtherTest
+
+        Public Class EqualsEachOtherTest
+
+            '
+            '
+            ' XXXXXXXXXX CREATE USEFUL TESTS XXXXXXXXXX
+            '
+            '
+
+        End Class ' EqualsEachOtherTest
+
+    End Namespace ' TestMath
 End Namespace ' TestTryParseStandard
