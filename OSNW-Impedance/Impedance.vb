@@ -10,15 +10,13 @@ Option Compare Binary
 Option Infer Off
 
 Imports System.Diagnostics.CodeAnalysis
-Imports System.Runtime.CompilerServices
-Imports System.Threading
-Imports System.Threading.Tasks.Dataflow
 
 ' FROM OLD YTT CODE AND .NET SOURCE:
 '    <SerializableAttribute()>
 ''' <summary>
 ''' Represents an electrical impedance with resistance (R) and reactance (X).
-''' An electrical impedance (Z) is a number of the standard form Z=R+Xj or R+jX, where
+''' An electrical impedance (Z) is a number of the standard form Z=R+Xj or
+''' Z=R+jX, where:
 '''   Z is the impedance (ohms);
 '''   R is the resistance (ohms);
 '''   X is the reactance (ohms); and

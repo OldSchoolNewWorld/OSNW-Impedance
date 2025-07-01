@@ -5,7 +5,8 @@ Imports OSNW.Numerics.ComplexExtensions
 ''' <summary>
 ''' Represents an electrical admittance with conductance (G) and
 ''' susceptance (B).
-''' An electrical admittance (Y) is a number of the standard form Y=G+Bj, where
+''' An electrical admittance (Y) is a number of the standard form Y=G+Bj or
+''' Y=G+jB, where:
 '''   Y is the admittance (siemens);
 '''   G is the conductance (siemens);
 '''   B is the susceptance (siemens); and
