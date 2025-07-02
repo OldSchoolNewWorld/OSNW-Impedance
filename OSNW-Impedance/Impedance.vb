@@ -625,9 +625,9 @@ Public Structure Impedance
     ''' <remarks>
     ''' <code>
     '''         o----- addZ -----o
-    '''
+    '''                          :
     '''   ~Source                loadZ
-    '''
+    '''                          :
     '''         o----------------o
     ''' </code>
     ''' </remarks>
@@ -649,9 +649,9 @@ Public Structure Impedance
     ''' <remarks>
     ''' <code>
     '''         o-------o-------o
-    '''                 |
+    '''                 |       :
     '''   ~Source     addZ      loadZ
-    '''                 |
+    '''                 |       :
     '''         o-------o-------o
     ''' </code>
     ''' </remarks>
@@ -663,33 +663,29 @@ Public Structure Impedance
         Return (loadZ.ToAdmittance + addZ.ToAdmittance).ToImpedance
     End Function ' AddParallelImpedance
 
-    ''' <summary>
-    ''' Adds an <c>Admittance</c> in parallel with a load <c>Impedance</c> and
-    ''' returns the result.
-    ''' </summary>
-    ''' <param name="loadZ">The impedance of the load.</param>
-    ''' <param name="addY">The admittance of the added component.</param>
-    ''' <returns>The input impedance of the combined load.</returns>
-    ''' <exception cref="System.ArgumentNullException">
-    '''   Thrown when any parameter is <c>Nothing</c>.
-    ''' </exception>
-    ''' <remarks>
-    ''' <code>
-    '''         o-------o-------o
-    '''                 |
-    '''   ~Source     addY      loadZ
-    '''                 |
-    '''         o-------o-------o
-    '''  </code>
-    '''  </remarks>
-    Public Shared Function AddParallelAdmittance(ByVal loadZ As Impedance,
-                                                 ByVal addY As Admittance
-                                                 ) As Impedance
+    '''' <summary>
+    '''' Adds an <c>Admittance</c> in parallel with a load <c>Impedance</c> and
+    '''' returns the result.
+    '''' </summary>
+    '''' <param name="loadZ">The impedance of the load.</param>
+    '''' <param name="addY">The admittance of the added component.</param>
+    '''' <returns>The input impedance of the combined load.</returns>
+    '''' <remarks>
+    '''' <code>
+    ''''         o-------o-------o
+    ''''                 |       :
+    ''''   ~Source     addY      loadZ
+    ''''                 |       :
+    ''''         o-------o-------o
+    ''''  </code>
+    ''''  </remarks>
+    'Public Shared Function AddParallelAdmittance(
+    '    ByVal loadZ As Impedance, ByVal addY As Admittance) As Impedance
 
-        ' No input checking. loadZ and addY are presumed to have been checked
-        ' when created.
-        Return (loadZ.ToAdmittance + addY).ToImpedance
-    End Function ' AddParallelAdmittance
+    '    ' No input checking. loadZ and addY are presumed to have been checked
+    '    ' when created.
+    '    Return (loadZ.ToAdmittance + addY).ToImpedance
+    'End Function ' AddParallelAdmittance
 
 #End Region ' "Other Instance Methods"
 
