@@ -122,18 +122,12 @@ Public Structure Impedance
         '' This may have to be changed to determine equality within some
         '' reasonable bounds. See 
         '' <see href="https://github.com/dotnet/docs/blob/main/docs/fundamentals/runtime-libraries/system-numerics-complex.md#precision-and-complex-numbers"/>
-
-        'Return (TypeOf obj Is Impedance) AndAlso
-        '    DirectCast(Me, IEquatable(Of Impedance)).Equals(
-        '    DirectCast(obj, Impedance))
-
         If Not (TypeOf obj Is Impedance) Then
             Return False
         End If
         Return DirectCast(Me, IEquatable(Of Impedance)).Equals(
             DirectCast(obj, Impedance))
-
-    End Function
+    End Function ' Equals
 
     ' public bool Equals(Complex value)
     ' {
@@ -154,7 +148,7 @@ Public Structure Impedance
         ' reasonable bounds. See 
         ' <see href="https://github.com/dotnet/docs/blob/main/docs/fundamentals/runtime-libraries/system-numerics-complex.md#precision-and-complex-numbers"/>
         Return Me.ToComplex().Equals(value.ToComplex())
-    End Function
+    End Function ' Equals
 
     ''' <summary>
     ''' Serves as the default hash function.

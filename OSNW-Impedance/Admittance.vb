@@ -93,7 +93,7 @@ Public Structure Admittance
         Return (TypeOf obj Is Admittance) AndAlso
             DirectCast(Me, IEquatable(Of Admittance)).Equals(
             DirectCast(obj, Admittance))
-    End Function
+    End Function ' Equals
 
     ' public bool Equals(Complex value)
     ' {
@@ -113,7 +113,7 @@ Public Structure Admittance
         ' reasonable bounds. See 
         ' <see href="https://github.com/dotnet/docs/blob/main/docs/fundamentals/runtime-libraries/system-numerics-complex.md#precision-and-complex-numbers"/>
         Return Me.ToComplex().Equals(value.ToComplex())
-    End Function
+    End Function ' Equals
 
     ''' <summary>
     ''' Serves as the default hash function.
