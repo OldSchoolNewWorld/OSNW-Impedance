@@ -11,7 +11,7 @@ Option Infer Off
 
 Imports System.Diagnostics.CodeAnalysis
 
-' FROM OLD YTT CODE AND .NET SOURCE:
+' FROM OLD YTT CODE AND .NET~Source:
 '    <SerializableAttribute()>
 ''' <summary>
 ''' Represents an electrical impedance with resistance (R) and reactance (X).
@@ -24,7 +24,7 @@ Imports System.Diagnostics.CodeAnalysis
 ''' </summary>
 Public Structure Impedance
     Implements IEquatable(Of Impedance), IFormattable
-    ' FROM .NET SOURCE:
+    ' FROM .NET~Source:
     ' Implements IEquatable(Of Impedance),
     '     IFormattable,
     '     INumberBase(Of Impedance),
@@ -122,10 +122,8 @@ Public Structure Impedance
         '' This may have to be changed to determine equality within some
         '' reasonable bounds. See 
         '' <see href="https://github.com/dotnet/docs/blob/main/docs/fundamentals/runtime-libraries/system-numerics-complex.md#precision-and-complex-numbers"/>
-        If Not (TypeOf obj Is Impedance) Then
-            Return False
-        End If
-        Return DirectCast(Me, IEquatable(Of Impedance)).Equals(
+        Return (TypeOf obj Is Impedance) AndAlso
+            DirectCast(Me, IEquatable(Of Impedance)).Equals(
             DirectCast(obj, Impedance))
     End Function ' Equals
 
@@ -431,7 +429,7 @@ Public Structure Impedance
         As System.String
 
         Return Me.m_Complex.ToStandardString(standardizationStyle,
-                                           provider).Replace(CHARI, CHARJ)
+                                             provider).Replace(CHARI, CHARJ)
     End Function ' ToStandardString
 
     '    public override string ToString()
@@ -535,12 +533,12 @@ Public Structure Impedance
 #Region "Other Instance Methods"
 
     ''' <summary>
-    ''' Calculates the voltage reflection coeffient for this instance based on
-    ''' the specified characteristic impedance.
+    ''' Calculates the voltage reflection coeffient (Gamma) for this instance
+    ''' based on the specified characteristic impedance.
     ''' </summary>
-    ''' <param name="z0">The characteristic impedance.</param>
-    ''' <returns>The voltage reflection coeffient for the current instance at
-    ''' the specified characteristic impedance.</returns>
+    ''' <param name="z0">Specifies the characteristic impedance.</param>
+    ''' <returns>The voltage reflection coeffient for the current instance based
+    ''' on the specified characteristic impedance.</returns>
     ''' <exception cref="System.ArgumentOutOfRangeException">
     ''' When <paramref name="z0"/> is not a positive, non-zero value.
     ''' </exception>
@@ -549,13 +547,12 @@ Public Structure Impedance
 
         ' Input checking.
         If z0 <= 0.0 Then
-            Dim CaughtBy As System.Reflection.MethodBase =
-                System.Reflection.MethodBase.GetCurrentMethod
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
             Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGVMBGTZ)
         End If
 
-        ' Ref: https://en.wikipedia.org/wiki/Standing_wave_ratio
-
+        ' Ref: https://en.wikipedia.org/wiki/Standing_wave_ratio#Relationship_to_the_reflection_coefficient
         Dim MeAsComplex As System.Numerics.Complex = Me.ToComplex()
         Return (MeAsComplex - z0) / (MeAsComplex + z0)
 
@@ -586,11 +583,7 @@ Public Structure Impedance
         ' https://www.microwaves101.com/encyclopedias/voltage-standing-wave-ratio-vswr
 
         'Dim Gamma As System.Numerics.Complex = Me.VoltageReflectionCoefficient(z0)
-        ''            Internal calls to Ytt.Util.Electrical.AbsComplex were replaced by direct calls to System.Numerics.Complex.Abs
-        ''            Dim AbsGamma As System.Double = Ytt.Util.Electrical.AbsComplex(Gamma)
         'Dim AbsGamma As System.Double = System.Numerics.Complex.Abs(Gamma)
-        'Return (1.0 + AbsGamma) / (1.0 - AbsGamma)
-
         Dim AbsGamma As System.Double =
             System.Numerics.Complex.Abs(Me.VoltageReflectionCoefficient(z0))
         Return (1.0 + AbsGamma) / (1.0 - AbsGamma)
@@ -618,23 +611,24 @@ Public Structure Impedance
         End If
 
         Dim VRC As System.Numerics.Complex = Me.VoltageReflectionCoefficient(z0)
-        Return System.Numerics.Complex.Multiply(VRC, VRC)
+        '        Return System.Numerics.Complex.Multiply(VRC, VRC)
+        Return VRC * VRC
 
     End Function ' PowerReflectionCoefficient
 
     ''' <summary>
     ''' Adds two <c>Impedance</c>s in series.
     ''' </summary>
-    ''' <param name="LoadZ">The impedance of the load.</param>
+    ''' <param name="loadZ">The impedance of the load.</param>
     ''' <param name="addZ">The impedance of the added component.</param>
     ''' <returns>The input impedance of the combined load.</returns>
     ''' <remarks>
     ''' <code>
-    '''        o----- addZ -----o
-    '''        |                |
-    '''   Source                loadZ
-    '''        |                |
-    '''        o----------------o
+    '''         o----- addZ -----o
+    '''
+    '''   ~Source                loadZ
+    '''
+    '''         o----------------o
     ''' </code>
     ''' </remarks>
     Public Shared Function AddSeriesImpedance(
@@ -654,11 +648,11 @@ Public Structure Impedance
     ''' <returns>The input impedance of the combined load.</returns>
     ''' <remarks>
     ''' <code>
-    '''        o-------o-------o
-    '''        |       |       |
-    '''   Source     addZ      loadZ
-    '''        |       |       |
-    '''        o-------o-------o
+    '''         o-------o-------o
+    '''                 |
+    '''   ~Source     addZ      loadZ
+    '''                 |
+    '''         o-------o-------o
     ''' </code>
     ''' </remarks>
     Public Shared Function AddParallelImpedance(
@@ -669,35 +663,33 @@ Public Structure Impedance
         Return (loadZ.ToAdmittance + addZ.ToAdmittance).ToImpedance
     End Function ' AddParallelImpedance
 
-    '''' <summary>
-    '''' Adds an <c>Admittance</c> in parallel with a load <c>Impedance</c> and
-    '''' returns the result.
-    '''' </summary>
-    '''' <param name="loadZ">The impedance of the load.</param>
-    '''' <param name="addY">The admittance of the added component.</param>
-    '''' <returns>The input impedance of the combined load.</returns>
-    '''' <exception cref="System.ArgumentNullException">
-    ''''   Thrown when any parameter is <c>Nothing</c>.
-    '''' </exception>
-    '''' <remarks>
-    '''' <code>
-    ''''        o-------o-------o
-    ''''        |       |       |
-    ''''   Source     addY      loadZ
-    ''''        |       |       |
-    ''''        o-------o-------o
-    '''' </code>
-    '''' </remarks>
-    'Public Shared Function AddParallelAdmittance(ByVal loadZ As Impedance,
-    '                                             ByVal addY As Admittance
-    '                                             ) As Impedance
+    ''' <summary>
+    ''' Adds an <c>Admittance</c> in parallel with a load <c>Impedance</c> and
+    ''' returns the result.
+    ''' </summary>
+    ''' <param name="loadZ">The impedance of the load.</param>
+    ''' <param name="addY">The admittance of the added component.</param>
+    ''' <returns>The input impedance of the combined load.</returns>
+    ''' <exception cref="System.ArgumentNullException">
+    '''   Thrown when any parameter is <c>Nothing</c>.
+    ''' </exception>
+    ''' <remarks>
+    ''' <code>
+    '''         o-------o-------o
+    '''                 |
+    '''   ~Source     addY      loadZ
+    '''                 |
+    '''         o-------o-------o
+    '''  </code>
+    '''  </remarks>
+    Public Shared Function AddParallelAdmittance(ByVal loadZ As Impedance,
+                                                 ByVal addY As Admittance
+                                                 ) As Impedance
 
-    '    ' No input checking. loadZ and addY are presumed to have been checked
-    '    ' when created.
-    '    '        Return (loadZ.ToAdmittance + addY).ToImpedance
-    '    Return New Impedance(9999999999, 999999999)
-    '    'xxxxxxxxxxxxxxxxxxxxxxxxxx
-    'End Function ' AddParallelAdmittance
+        ' No input checking. loadZ and addY are presumed to have been checked
+        ' when created.
+        Return (loadZ.ToAdmittance + addY).ToImpedance
+    End Function ' AddParallelAdmittance
 
 #End Region ' "Other Instance Methods"
 

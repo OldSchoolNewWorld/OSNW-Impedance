@@ -264,7 +264,7 @@ Namespace TestMath
     Public Class EqualsObjectTest
 
         <Fact>
-        Sub Equals_MismatchObjectType_Fails()
+        Sub Equals_MismatchObjectType_Fails1()
             ' This hits Equals(object).
             ' This correctly fails on a type mismatch.
             Dim I1 As New Admittance(3, 4)
@@ -282,7 +282,7 @@ Namespace TestMath
         End Sub
 
         <Fact>
-        Sub Equals_MismatchObjectType_Fails3()
+        Sub Equals_MismatchObjectValue_Fails()
             ' This hits Equals(object).
             ' This correctly fails on a value mismatch.
             Dim I1 As New Admittance(3, 4)
@@ -295,14 +295,14 @@ Namespace TestMath
     Public Class EqualsOtherTest
 
         <Fact>
-        Sub Dummy_Equals_MatchOther_Passes()
+        Sub Equals_MatchOther_Passes()
             Dim I1 As New Admittance(1, 2)
             Dim I2 As New Admittance(1, 2)
             Assert.True(I1.Equals(I2))
         End Sub
 
         <Fact>
-        Sub Dummy_Equals_MismatchOther_Fails()
+        Sub Equals_MismatchOther_Fails()
             Dim I1 As New Admittance(1, 2)
             Dim I2 As New Admittance(1, 3)
             Assert.False(I1.Equals(I2))

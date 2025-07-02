@@ -1,5 +1,4 @@
-﻿Imports System.Configuration
-Imports System.Diagnostics.CodeAnalysis
+﻿Imports System.Diagnostics.CodeAnalysis
 Imports OSNW.Numerics.ComplexExtensions
 
 ''' <summary>
@@ -72,11 +71,6 @@ Public Structure Admittance
     ' {
     '     return obj is Complex other && Equals(other);
     ' }
-    'Public Overrides Function Equals(obj As Object) As Boolean
-    '    Return (TypeOf obj Is Impedance) AndAlso
-    '        DirectCast(Me, IEquatable(Of Impedance)).Equals(
-    '        DirectCast(obj, Impedance))
-    'End Function
     ''' <summary>
     ''' Determines whether the specified object is equal to the current object.
     ''' </summary>
