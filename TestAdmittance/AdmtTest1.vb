@@ -265,8 +265,6 @@ Namespace TestMath
 
         <Fact>
         Sub Equals_MismatchObjectType_Fails1()
-            ' This hits Equals(object).
-            ' This correctly fails on a type mismatch.
             Dim I1 As New Admittance(3, 4)
             Dim C2 As New Impedance(3, 4)
             Assert.False(I1.Equals(C2))
@@ -274,8 +272,6 @@ Namespace TestMath
 
         <Fact>
         Sub Equals_MismatchObjectType_Fails2()
-            ' This hits Equals(object).
-            ' This correctly fails on a type mismatch.
             Dim I1 As New Admittance(3, 4)
             Dim C2 As Object = New Impedance(3, 4)
             Assert.False(I1.Equals(C2))
@@ -283,8 +279,6 @@ Namespace TestMath
 
         <Fact>
         Sub Equals_MismatchObjectValue_Fails()
-            ' This hits Equals(object).
-            ' This correctly fails on a value mismatch.
             Dim I1 As New Admittance(3, 4)
             Dim C2 As Object = New Admittance(4, 5)
             Assert.False(I1.Equals(C2))
