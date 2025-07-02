@@ -266,16 +266,73 @@ Namespace TestMath
 
     Public Class EqualsObjectTest
 
+        ' These are not resulting in calls to
+        'Public Overrides Function Equals(
+        '    <System.Diagnostics.CodeAnalysis.NotNullWhen(True)>
+        '        ByVal obj As System.Object) As System.Boolean
+
+        '<Fact>
+        'Sub Dummy_Equals_MatchObject_Passes()
+        '    Dim I1 As New Impedance(1, 2)
+        '    Assert.True(I1.Equals(New Impedance(1, 2)))
+        'End Sub
+
+        '<Fact>
+        'Sub Dummy_Equals_MismatchObject_Fails()
+        '    Dim I1 As New Impedance(1, 2)
+        '    Assert.False(I1.Equals(New Impedance(1, 3)))
+        'End Sub
+
+        '===============================================
+
         <Fact>
         Sub Dummy_Equals_MatchObject_Passes()
+            ' This runs.
+            ' This does not hit Equals(object).
+            ' This passes correctly.
             Dim I1 As New Impedance(1, 2)
-            Assert.True(I1.Equals(New Impedance(1, 2)))
+            Dim I2 As New Impedance(1, 2)
+            Assert.True(I1.Equals(I2))
         End Sub
 
         <Fact>
-        Sub Dummy_Equals_MismatchObject_Fails()
-            Dim I1 As New Impedance(1, 2)
-            Assert.False(I1.Equals(New Impedance(1, 3)))
+        Sub Dummy_Equals_MismatchObjectValue_Fails()
+            ' This runs.
+            ' This does not hit Equals(object).
+            ' This fails correctly.
+            Dim I1 As New Impedance(2, 3)
+            Dim I2 As New Impedance(3, 4)
+            Assert.False(I1.Equals(I2))
+        End Sub
+
+        <Fact>
+        Sub Dummy_Equals_MismatchObjectType_Fails()
+            ' This runs.
+            ' This hits Equals(object).
+            ' This correctly fails on a type mismatch.
+            Dim I1 As New Impedance(3, 4)
+            Dim C2 As New Admittance(3, 4)
+            Assert.False(I1.Equals(C2))
+        End Sub
+
+        <Fact>
+        Sub Dummy_Equals_MismatchObjectType_Fails2()
+            ' This runs.
+            ' This hits Equals(object).
+            ' This correctly fails on a type mismatch.
+            Dim I1 As New Impedance(3, 4)
+            Dim C2 As Object = New Admittance(3, 4)
+            Assert.False(I1.Equals(C2))
+        End Sub
+
+        <Fact>
+        Sub Dummy_Equals_MismatchObjectType_Fails3()
+            ' This runs.
+            ' This hits Equals(object).
+            ' This correctly fails on a value mismatch.
+            Dim I1 As New Impedance(3, 4)
+            Dim C2 As Object = New Impedance(4, 5)
+            Assert.False(I1.Equals(C2))
         End Sub
 
     End Class ' EqualsObjectTest

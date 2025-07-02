@@ -119,12 +119,20 @@ Public Structure Impedance
         <System.Diagnostics.CodeAnalysis.NotNullWhen(True)>
             ByVal obj As System.Object) As System.Boolean
 
-        ' This may have to be changed to determine equality within some
-        ' reasonable bounds. See 
-        ' <see href="https://github.com/dotnet/docs/blob/main/docs/fundamentals/runtime-libraries/system-numerics-complex.md#precision-and-complex-numbers"/>
-        Return (TypeOf obj Is Impedance) AndAlso
-            DirectCast(Me, IEquatable(Of Impedance)).Equals(
+        '' This may have to be changed to determine equality within some
+        '' reasonable bounds. See 
+        '' <see href="https://github.com/dotnet/docs/blob/main/docs/fundamentals/runtime-libraries/system-numerics-complex.md#precision-and-complex-numbers"/>
+
+        'Return (TypeOf obj Is Impedance) AndAlso
+        '    DirectCast(Me, IEquatable(Of Impedance)).Equals(
+        '    DirectCast(obj, Impedance))
+
+        If Not (TypeOf obj Is Impedance) Then
+            Return False
+        End If
+        Return DirectCast(Me, IEquatable(Of Impedance)).Equals(
             DirectCast(obj, Impedance))
+
     End Function
 
     ' public bool Equals(Complex value)
