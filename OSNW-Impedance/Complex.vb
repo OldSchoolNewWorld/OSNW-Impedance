@@ -7,6 +7,10 @@ Imports System.Globalization
 
 ' REF: System.Numerics.Complex struct
 ' https://github.com/dotnet/docs/blob/main/docs/fundamentals/runtime-libraries/system-numerics-complex.md
+' https://learn.microsoft.com/en-us/dotnet/fundamentals/runtime-libraries/system-numerics-complex
+
+' REF: Format a complex number
+' https://learn.microsoft.com/en-us/dotnet/fundamentals/runtime-libraries/system-numerics-complex#format-a-complex-number
 
 ' REF: .NET Framework System.Numerics.Complex
 ' 1 https://github.com/microsoft/referencesource/blob/main/System.Numerics/System/Numerics/Complex.cs
