@@ -58,7 +58,7 @@ Public Module ComplexExtensions
     ''' <see cref="System.Globalization.CultureInfo"/>s that include commas for
     ''' thousands.
     ''' </summary>
-    Public Const DEFAULTCOMPLEXSTYLE As System.Globalization.NumberStyles =
+    Friend Const DEFAULTCOMPLEXNUMBERSTYLE As System.Globalization.NumberStyles =
         NumberStyles.Float Or NumberStyles.AllowThousands
 
     ' private const NumberStyles InvalidNumberStyles = ~(NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite
@@ -200,7 +200,7 @@ Public Module ComplexExtensions
     '''' The default standard form is A+Bi sequence without spaces, but with no
     '''' enforcement of either option.
     '''' </summary>
-    Public Const DefaultStandardizationStyle As StandardizationStyles =
+    Private Const DEFAULTSTANDARDIZATIONSTYLE As StandardizationStyles =
         StandardizationStyles.None
 
 End Module ' ComplexExtensions

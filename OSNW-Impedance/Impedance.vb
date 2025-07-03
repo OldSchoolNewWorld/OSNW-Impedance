@@ -536,8 +536,8 @@ Public Structure Impedance
         ByRef result As OSNW.Numerics.Impedance) _
         As System.Boolean
 
-        Return TryParseStandard(
-            s, standardizationStyle, DEFAULTCOMPLEXSTYLE, provider, result)
+        Return TryParseStandard(s, standardizationStyle,
+                                DEFAULTCOMPLEXNUMBERSTYLE, provider, result)
     End Function ' TryParseStandard
 
 #End Region ' "Parsing Implementations"

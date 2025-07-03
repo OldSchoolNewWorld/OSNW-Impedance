@@ -226,7 +226,7 @@ Partial Public Module ComplexExtensions
 
         Dim StdStr As System.String = System.String.Empty
         OSNW.Numerics.ComplexExtensions.StandardizeString(
-            DefaultStandardizationStyle,
+            DEFAULTSTANDARDIZATIONSTYLE,
             complex.ToString(Nothing, Nothing), StdStr)
 
         Return StdStr

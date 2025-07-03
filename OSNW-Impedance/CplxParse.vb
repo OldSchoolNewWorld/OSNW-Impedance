@@ -300,8 +300,8 @@ Partial Public Module ComplexExtensions
         ByRef result As System.Numerics.Complex) _
         As System.Boolean
 
-        Return TryParseStandard(
-            s, standardizationStyle, DEFAULTCOMPLEXSTYLE, provider, result)
+        Return TryParseStandard(s, standardizationStyle,
+                                DEFAULTCOMPLEXNUMBERSTYLE, provider, result)
     End Function ' TryParseStandard
 
 #End Region ' "Parsing Implementations"

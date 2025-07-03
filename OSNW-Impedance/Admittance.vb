@@ -485,8 +485,8 @@ Public Structure Admittance
         ByRef result As OSNW.Numerics.Admittance) _
         As System.Boolean
 
-        Return TryParseStandard(
-            s, standardizationStyle, DEFAULTCOMPLEXSTYLE, provider, result)
+        Return TryParseStandard(s, standardizationStyle,
+                                DEFAULTCOMPLEXNUMBERSTYLE, provider, result)
     End Function ' TryParseStandard
 
 #End Region ' "Parsing Implementations"
