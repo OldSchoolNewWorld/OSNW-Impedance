@@ -11,6 +11,18 @@ Option Infer Off
 
 Imports System.Diagnostics.CodeAnalysis
 
+' REF: A Practical Introduction to Impedance Matching.
+' https://picture.iczhiku.com/resource/eetop/shkgQUqJkAUQZBXx.pdf
+
+' REF: Electrical impedance
+' https://en.wikipedia.org/wiki/Electrical_impedance
+
+' REF: Standing wave ratio
+' https://en.wikipedia.org/wiki/Standing_wave_ratio
+
+' REF: Impedance matching
+' https://en.wikipedia.org/wiki/Impedance_matching
+
 ' FROM OLD YTT CODE AND .NET~Source:
 '    <SerializableAttribute()>
 ''' <summary>
