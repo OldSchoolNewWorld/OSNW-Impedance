@@ -104,11 +104,6 @@ Partial Public Module ComplexExtensions
         ByRef result As System.Numerics.Complex) _
         As System.Boolean
 
-        Const MINLEN As System.Int32 = 4 ' #+#i or #+i#
-        ' Some cultures use a comma as a decimal, or as a thousands, separator.
-        ' The open form includes spaces.
-        Const VALIDCHARS As System.String = "1234567890.+-iEe ,"
-
         '        ValidateParseStyleFloatingPoint(style)
         ' That was called at the top of Complex.Tryparse.
         ' IS THAT COMMENT BASED ON AN OLD APPROACH???????
@@ -119,12 +114,12 @@ Partial Public Module ComplexExtensions
             Return False
         End If
         Dim StrLen As System.Int32 = s.Length
-        If StrLen < MINLEN Then
+        If StrLen < COMPLEXMINLEN Then
             result = New System.Numerics.Complex
             Return False ' Early exit.
         Else
             For I As System.Int32 = 0 To StrLen - 1
-                If Not VALIDCHARS.Contains(s(I)) Then
+                If Not VALIDCOMPLEXCHARS.Contains(s(I)) Then
                     ' Allow only the specified characters.
                     result = New System.Numerics.Complex
                     Return False

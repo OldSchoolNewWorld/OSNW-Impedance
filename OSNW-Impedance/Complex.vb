@@ -44,6 +44,7 @@ Imports System.Globalization
 ''' </remarks>
 Public Module ComplexExtensions
 
+    Private Const COMPLEXMINLEN As System.Int32 = 4 ' #+#i or #+i#
     Friend Const CHARI As System.Char = "i"c
     Friend Const CHARJ As System.Char = "j"c
     Private Const CHARPLUS As System.Char = "+"c
@@ -51,6 +52,10 @@ Public Module ComplexExtensions
     Private Const CHARUPPERE As System.Char = "E"c
     Private Const CHARSEMI As System.Char = ";"c
     Private Const CHARSPACE As System.Char = " "c
+
+    ' Some cultures use a comma as a decimal, or as a thousands, separator.
+    ' The open form includes spaces.
+    Private Const VALIDCOMPLEXCHARS As System.String = "1234567890.+-iEe ,"
 
     ' private const NumberStyles DefaultNumberStyle = NumberStyles.Float | NumberStyles.AllowThousands;
     ''' <summary>
@@ -194,7 +199,7 @@ Public Module ComplexExtensions
         ''' </summary>
         EnforcedOpenAiB = OpenAiB Or EnforceBoth ' 15
 
-    End Enum ' StandardizationStyle
+    End Enum ' StandardizationStyles
 
     '''' <summary>
     '''' The default standard form is A+Bi sequence without spaces, but with no
