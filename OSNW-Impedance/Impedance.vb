@@ -774,8 +774,7 @@ Public Structure Impedance
         If jsonString Is Nothing Then
             'Dim CaughtBy As System.Reflection.MethodBase =
             '    System.Reflection.MethodBase.GetCurrentMethod
-            Throw New System.ArgumentOutOfRangeException(
-                NameOf(jsonString), MSGNOSTR)
+            Throw New System.ArgumentNullException(NameOf(jsonString), MSGNOSTR)
         End If
 
         ' REF: Serialize and deserialize numeric data
@@ -795,11 +794,40 @@ Public Structure Impedance
 
     End Function ' SerializeJSONString
 
-    '
-    '
-    '
-    '
-    '
+    ''' <summary>
+    ''' Deserializes the JSON-formatted string specified by
+    ''' <paramref name="jsonString"/> into an <see cref="Impedance"/> specified
+    ''' by <paramref name="impedanceOut"/>.
+    ''' </summary>
+    ''' <param name="jsonString">Specifies the JSON-formatted string to be
+    ''' deserialized.</param>
+    ''' <param name="impedanceOut">Specifies the <see cref="Impedance"/> into
+    ''' which <paramref name="jsonString"/> is to be serialized.</param>
+    ''' <returns><c>True</c> if the deserialized import succeeds; otherwise,
+    ''' <c>False</c>. Also returns the deserialized result in
+    ''' <paramref name="impedanceOut"/>.</returns>
+    Public Shared Function DeserializeJSONString(jsonString As System.String,
+        ByRef impedanceOut As Impedance) As System.Boolean
+
+        If String.IsNullOrWhiteSpace(jsonString) Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentNullException(
+                NameOf(jsonString), MSGNOSTR)
+        End If
+
+        ' Ref: How to read JSON as .NET objects (deserialize)
+        ' https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/deserialization
+        'impedanceOut = System.Text.Json.JsonSerializer.Deserialize(
+        '    Of Impedance)(jsonString)
+        Dim OutI As Impedance = System.Text.Json.JsonSerializer.Deserialize(
+            Of Impedance)(jsonString)
+        impedanceOut = OutI
+
+        ' On getting this far,
+        Return True
+
+    End Function ' DeserializeJSONString
 
 #End Region '  "Serialization"
 

@@ -364,6 +364,21 @@ Namespace TestSerialization
 
         End Sub
 
+
+        <Fact>
+        Sub Deserialize_Simple_Passes()
+
+            Dim jsonString As String = "{""Resistance"":1,""Reactance"":2}"
+            Dim Imp As Impedance
+
+            If Impedance.DeserializeJSONString(jsonString, Imp) Then
+                Assert.True(1.Equals(Imp.Resistance) AndAlso 2.Equals(Imp.Reactance))
+            Else
+                Assert.True(False, "Serialization failed.")
+            End If
+
+        End Sub
+
         '
         '
         '
