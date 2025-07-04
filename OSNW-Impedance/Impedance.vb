@@ -750,7 +750,7 @@ Public Structure Impedance
 
 #Region "Serialization"
 
-    ' This version is suspected to use the CultureInfo.CurrentCulture.
+    ' This version is suspected to use the CultureInfo.CurrentCulture as a default.
     ''' <summary>
     ''' Serializes a <see cref="Impedance"/> structure to a JSON-formatted
     ''' string, optionally using formatting specified by
@@ -790,7 +790,7 @@ Public Structure Impedance
         As System.Boolean
 
         ' Input checking.
-        If (jsonString) Is Nothing Then
+        If jsonString Is Nothing Then
             'Dim CaughtBy As System.Reflection.MethodBase =
             '    System.Reflection.MethodBase.GetCurrentMethod
             Throw New System.ArgumentOutOfRangeException(NameOf(jsonString), MSGNOSTR)
@@ -836,7 +836,6 @@ Public Structure Impedance
         Return False
 
     End Function ' SerializeJSONString_Curr
-    'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 
 

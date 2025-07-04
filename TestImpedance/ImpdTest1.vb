@@ -339,12 +339,37 @@ Namespace TestSerialization
         <InlineData(444_444.127, -555_555.677, "{""Resistance"":444444.127,""Reactance"":-555555.677}")>
         Sub Serialize_Curr_Passes(r As Double, x As Double, expectedStr As String)
 
-            Dim I1 As New Impedance(r, x)
-            Dim Serialized1 As System.String = System.String.Empty
+            Dim Imp As New Impedance(r, x)
+            Dim ResultStr As System.String = System.String.Empty
 
-            If I1.SerializeJSONString_Curr(Serialized1) Then
+            If Imp.SerializeJSONString_Curr(ResultStr) Then
+                '                Dim PeekStr As String = ResultStr
+                Assert.True(expectedStr.Equals(ResultStr))
+            Else
+                Assert.True(False, "Serialization failed.")
+            End If
+
+        End Sub
+
+
+
+
+
+        <Theory>
+        <InlineData(1, 2, "{""Resistance"":1,""Reactance"":2}")>
+        <InlineData(1.122, 5.677, "{""Resistance"":1.122,""Reactance"":5.677}")>
+        <InlineData(111_111.122, 555_555.677, "{""Resistance"":111111.122,""Reactance"":555555.677}")>
+        <InlineData(222_222.127, -555_555.672, "{""Resistance"":222222.127,""Reactance"":-555555.672}")>
+        <InlineData(333_333.122, 555_555.672, "{""Resistance"":333333.122,""Reactance"":555555.672}")>
+        <InlineData(444_444.127, -555_555.677, "{""Resistance"":444444.127,""Reactance"":-555555.677}")>
+        Sub Serialize_Invar_Passes(r As Double, x As Double, expectedStr As String)
+
+            Dim Imp As New Impedance(r, x)
+            Dim ResultStr As System.String = System.String.Empty
+
+            If Imp.SerializeJSONString_Invar(ResultStr) Then
                 '                Dim PeekStr As String = Serialized1
-                Assert.True(expectedStr.Equals(Serialized1))
+                Assert.True(expectedStr.Equals(ResultStr))
             Else
                 Assert.True(False, "Serialization failed.")
             End If
