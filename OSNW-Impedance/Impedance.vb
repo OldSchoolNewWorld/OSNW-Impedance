@@ -750,7 +750,19 @@ Public Structure Impedance
 
 #Region "Serialization"
 
-    ' This version is suspected to use the CultureInfo.CurrentCulture as a default.
+    ' Try to get CultureInfo.InvariantCulture to work.
+
+    ' This version was suspected to use the CultureInfo.CurrentCulture as a
+    ' default. An AI query reported:
+    '   To serialize the Impedance structure to a JSON string using
+    '   CultureInfo.InvariantCulture, you need to ensure that the numeric values
+    '   (resistance and reactance) are formatted using the invariant culture
+    '   before serialization. The default System.Text.Json.JsonSerializer does
+    '   not use a specific culture for numbers; it always uses the invariant
+    '   culture for serialization. However, if you want to guarantee this or
+    '   have more control (e.g., for custom formatting), you can create an
+    '   anonymous object or DTO with the values formatted as strings using
+    '   InvariantCulture.
     ''' <summary>
     ''' Serializes a <see cref="Impedance"/> structure to a JSON-formatted
     ''' string, optionally using formatting specified by
@@ -759,32 +771,11 @@ Public Structure Impedance
     ''' <param name="jsonString">Specifies the target string.</param>
     ''' <param name="jsonOptions">Optional. Specifies serialization options.
     ''' Default is <c>Nothing</c>.</param>
-    ''' <returns>
-    ''' <see langword="True"/> if the serialized export succeeds; otherwise,
-    ''' <see langword="False"/>.
-    ''' </returns>
+    ''' <returns><c>True</c> if the serialized export succeeds; otherwise,
+    ''' <c>False</c>.</returns>
     ''' <remarks>
-    ''' In this demonstration, jsonOptions is only used to set pretty
-    ''' (Indented) printing.<br/>
-    ''' Initially, PropSecret, L2PropSecret, AutopropSecret, and
-    ''' L2AutoPropSecret were included in the JSON export. Adding
-    ''' <c>&lt;System.Text.Json.Serialization.JsonIgnore&gt;</c> to the property
-    ''' declarations removed them from the export.<br/>
-    ''' Ref: https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/ignore-properties<br/>
-    ''' Initially, L1FieldInteger, FieldDouble, and FieldString were not included
-    ''' in the JSON export. Adding 
-    ''' <c>&lt;System.Text.Json.Serialization.JsonInclude&gt;</c> to the
-    ''' property declarations added them to the export.<br/>
-    ''' Initially, JSON did not export IntArray or L2IntArray. Adding
-    ''' <c>&lt;System.Text.Json.Serialization.JsonInclude&gt;</c> to the
-    ''' property declarations added them to the export.<br/>
-    ''' Initially, NestedObject and L2Object were exported to JSON, but missing
-    ''' L1FieldInteger and L2FieldInteger. Adding
-    ''' <c>&lt;System.Text.Json.Serialization.JsonInclude&gt;</c> to the field
-    ''' declarations added them to the export.<br/>
-    ''' Ref: https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/fields
     ''' </remarks>
-    Public Function SerializeJSONString_Curr(ByRef jsonString As System.String,
+    Public Function SerializeJSONString(ByRef jsonString As System.String,
         Optional jsonOptions _
             As System.Text.Json.JsonSerializerOptions = Nothing) _
         As System.Boolean
@@ -835,96 +826,77 @@ Public Structure Impedance
         End Try
         Return False
 
-    End Function ' SerializeJSONString_Curr
+    End Function ' SerializeJSONString
 
+    ' Try to get CultureInfo.InvariantCulture to work. An AI query reported:
+    ' To serialize the Impedance structure to a JSON string using
+    ' CultureInfo.InvariantCulture, you need to ensure that the numeric values
+    ' (resistance and reactance) are formatted using the invariant culture before
+    ' serialization. The default System.Text.Json.JsonSerializer does not use a
+    ' specific culture for numbers; it always uses the invariant culture for
+    ' serialization. However, if you want to guarantee this or have more control
+    ' (e.g., for custom formatting), you can create an anonymous object or DTO with
+    ' the values formatted as strings using InvariantCulture.
+    ' Here’s a robust and clear way to implement SerializeJSONString_Invar:
 
-
-    ' Try to get CultureInfo.InvariantCulture to work.
-    ''' <summary>
-    ''' Serializes a <see cref="Impedance"/> structure to a JSON-formatted
-    ''' string, optionally using formatting specified by
-    ''' <paramref name="jsonOptions"/>.
-    ''' </summary>
-    ''' <param name="jsonString">Specifies the target string.</param>
-    ''' <param name="jsonOptions">Optional. Specifies serialization options.
-    ''' Default is <c>Nothing</c>.</param>
-    ''' <returns>
-    ''' <see langword="True"/> if the serialized export succeeds; otherwise,
-    ''' <see langword="False"/>.
-    ''' </returns>
-    ''' <remarks>
-    ''' In this demonstration, jsonOptions is only used to set pretty
-    ''' (Indented) printing.<br/>
-    ''' Initially, PropSecret, L2PropSecret, AutopropSecret, and
-    ''' L2AutoPropSecret were included in the JSON export. Adding
-    ''' <c>&lt;System.Text.Json.Serialization.JsonIgnore&gt;</c> to the property
-    ''' declarations removed them from the export.<br/>
-    ''' Ref: https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/ignore-properties<br/>
-    ''' Initially, L1FieldInteger, FieldDouble, and FieldString were not included
-    ''' in the JSON export. Adding 
-    ''' <c>&lt;System.Text.Json.Serialization.JsonInclude&gt;</c> to the
-    ''' property declarations added them to the export.<br/>
-    ''' Initially, JSON did not export IntArray or L2IntArray. Adding
-    ''' <c>&lt;System.Text.Json.Serialization.JsonInclude&gt;</c> to the
-    ''' property declarations added them to the export.<br/>
-    ''' Initially, NestedObject and L2Object were exported to JSON, but missing
-    ''' L1FieldInteger and L2FieldInteger. Adding
-    ''' <c>&lt;System.Text.Json.Serialization.JsonInclude&gt;</c> to the field
-    ''' declarations added them to the export.<br/>
-    ''' Ref: https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/fields
-    ''' </remarks>
-    Public Function SerializeJSONString_Invar(ByRef jsonString As System.String,
-        Optional jsonOptions _
-            As System.Text.Json.JsonSerializerOptions = Nothing) _
-        As System.Boolean
+    Public Function SerializeJSONString_Invar(
+        ByRef jsonString As System.String) As System.Boolean
 
         ' Input checking.
-        If (jsonString) Is Nothing Then
-            'Dim CaughtBy As System.Reflection.MethodBase =
-            '    System.Reflection.MethodBase.GetCurrentMethod
+        If jsonString Is Nothing Then
             Throw New System.ArgumentOutOfRangeException(NameOf(jsonString), MSGNOSTR)
         End If
 
         Try
 
-            ' Ref: How to write .NET objects as JSON (serialize)
-            ' https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/how-to
+            ' The generated version triggers: BC30209 Option Strict On requires
+            ' all variable declarations To have an 'As' clause.
+            '' Use InvariantCulture to format the numeric values as strings.
+            'Dim dto = New With {
+            '    .Resistance = Me.Resistance.ToString(System.Globalization.CultureInfo.InvariantCulture),
+            '    .Reactance = Me.Reactance.ToString(System.Globalization.CultureInfo.InvariantCulture)
+            '}
+            ' Use InvariantCulture to format the numeric values as strings.
+            Dim dto As Object = New With {
+                .Resistance = Me.Resistance.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                .Reactance = Me.Reactance.ToString(System.Globalization.CultureInfo.InvariantCulture)
+            }
 
-            jsonString = If(IsNothing(jsonOptions),
-                System.Text.Json.JsonSerializer.Serialize(Me),
-                System.Text.Json.JsonSerializer.Serialize(Me, jsonOptions))
-
-            ' On getting this far,
+            jsonString = System.Text.Json.JsonSerializer.Serialize(dto)
             Return True
 
         Catch CaughtEx As Exception
-
-            ' React to a generic, unexpected, exception.
             Dim ProcName As System.String =
-                New System.Diagnostics.StackFrame(0).GetMethod().Name
+            New System.Diagnostics.StackFrame(0).GetMethod().Name
             Dim ErrStr As System.String =
-                $"Exception caught in {ProcName} with '{CaughtEx.Message}'."
+            $"Exception caught in {ProcName} with '{CaughtEx.Message}'."
 
             MsgBox(ErrStr, MsgBoxStyle.Exclamation,
-                   $"{ProcName} failure")
+               $"{ProcName} failure")
 
             Dim RelayEx As System.Exception =
-                New System.ApplicationException(ErrStr, CaughtEx)
+            New System.ApplicationException(ErrStr, CaughtEx)
 
-            ' Add arguments from this sub/function to identify
-            ' which data set led to the exception.
             With RelayEx.Data
                 .Add("jsonString", jsonString)
-                .Add("jsonOptions", jsonOptions)
             End With
 
             Throw RelayEx
-
-            'Finally
         End Try
         Return False
 
     End Function ' SerializeJSONString_Invar
+
+    ' What was changed and why:
+    ' •	The function now creates an anonymous object (dto) with Resistance and
+    ' Reactance as strings formatted using InvariantCulture.
+
+
+
+
+
+
+
     'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 

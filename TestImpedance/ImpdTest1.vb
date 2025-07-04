@@ -56,9 +56,6 @@ Namespace DevelopmentTests
 
 End Namespace ' DevTests
 
-
-
-
 Namespace TestToString
 
     Public Class ToStringDefaultTest
@@ -129,12 +126,22 @@ Namespace TestToStandardString
 
     Public Class ToStandardStringCultureTest
 
+        ' Something that was seen indicated that French could have a space as
+        ' the thousands separator, but that does not match that result of the
+        ' current .NET 8.0 implementation. Maybe that is allowed for parsing,
+        ' but not used by ToString().
+
         <Theory>
         <InlineData(111_111.122, -555_555.677, 0, "111111.122-555555.677j")> ' One round down, one up.
-        <InlineData(111_111.122, -555_555.677, 1, "111111.122-555555.677j")> ' One round down, one up.
+        <InlineData(222_222.122, -555_555.677, 1, "222222.122-555555.677j")> ' One round down, one up.
         <InlineData(1.122, 5.677, 2, "1.122+5.677j")>
-        <InlineData(111_111.122, -555_555.677, 3, "111111,122-555555,677j")> ' One round down, one up.
-        <InlineData(111_111.125, 555_555.675, 4, "111111,125+555555,675j")>
+        <InlineData(333_333.122, -555_555.677, 3, "333333,122-555555,677j")> ' One round down, one up.
+        <InlineData(444_444.125, 555_555.675, 4, "444444,125+555555,675j")>
+        <InlineData(555_555_555.555_555_555, -555_555_555.555_555_555, 0, "555555555.5555556-555555555.5555556j")>
+        <InlineData(666_666_666.666_666_666, -666_666_666.666_666_666, 1, "666666666.6666666-666666666.6666666j")>
+        <InlineData(777_777_777.777_777_777, -777_777_777.777_777_777, 2, "777777777.7777778-777777777.7777778j")>
+        <InlineData(888_888_888.888_888_888, -888_888_888.888_888_888, 3, "888888888,8888888-888888888,8888888j")>
+        <InlineData(999_999_999.999_999_999, -999_999_999.999_999_999, 4, "1000000000-1000000000j")>
         Sub ToStandardString_Culture_Succeeds(
             r As Double, x As Double, index As Integer, expected As String)
 
@@ -320,7 +327,7 @@ Namespace TestSerialization
             Dim Serialized1 As System.String = System.String.Empty
             Dim ExpectedSerialized As String = "{""Resistance"":1,""Reactance"":2}"
 
-            If I1.SerializeJSONString_Curr(Serialized1) Then
+            If I1.SerializeJSONString(Serialized1) Then
                 Assert.True(ExpectedSerialized.Equals(Serialized1))
             Else
                 Assert.True(False, "Serialization failed.")
@@ -328,8 +335,6 @@ Namespace TestSerialization
 
         End Sub
 
-
-
         <Theory>
         <InlineData(1, 2, "{""Resistance"":1,""Reactance"":2}")>
         <InlineData(1.122, 5.677, "{""Resistance"":1.122,""Reactance"":5.677}")>
@@ -337,13 +342,13 @@ Namespace TestSerialization
         <InlineData(222_222.127, -555_555.672, "{""Resistance"":222222.127,""Reactance"":-555555.672}")>
         <InlineData(333_333.122, 555_555.672, "{""Resistance"":333333.122,""Reactance"":555555.672}")>
         <InlineData(444_444.127, -555_555.677, "{""Resistance"":444444.127,""Reactance"":-555555.677}")>
-        Sub Serialize_Curr_Passes(r As Double, x As Double, expectedStr As String)
+        <InlineData(555_555_555.555_555_555, -555_555_555.555_555_555, "{""Resistance"":555555555.5555556,""Reactance"":-555555555.5555556}")>
+        Sub Serialize_Default_Passes(r As Double, x As Double, expectedStr As String)
 
             Dim Imp As New Impedance(r, x)
             Dim ResultStr As System.String = System.String.Empty
 
-            If Imp.SerializeJSONString_Curr(ResultStr) Then
-                '                Dim PeekStr As String = ResultStr
+            If Imp.SerializeJSONString(ResultStr) Then
                 Assert.True(expectedStr.Equals(ResultStr))
             Else
                 Assert.True(False, "Serialization failed.")
@@ -351,24 +356,19 @@ Namespace TestSerialization
 
         End Sub
 
-
-
-
-
         <Theory>
-        <InlineData(1, 2, "{""Resistance"":1,""Reactance"":2}")>
-        <InlineData(1.122, 5.677, "{""Resistance"":1.122,""Reactance"":5.677}")>
-        <InlineData(111_111.122, 555_555.677, "{""Resistance"":111111.122,""Reactance"":555555.677}")>
-        <InlineData(222_222.127, -555_555.672, "{""Resistance"":222222.127,""Reactance"":-555555.672}")>
-        <InlineData(333_333.122, 555_555.672, "{""Resistance"":333333.122,""Reactance"":555555.672}")>
-        <InlineData(444_444.127, -555_555.677, "{""Resistance"":444444.127,""Reactance"":-555555.677}")>
+        <InlineData(1, 2, "{""Resistance"":""1"",""Reactance"":""2""}")>
+        <InlineData(1.122, 5.677, "{""Resistance"":""1.122"",""Reactance"":""5.677""}")>
+        <InlineData(111_111.122, 555_555.677, "{""Resistance"":""111111.122"",""Reactance"":""555555.677""}")>
+        <InlineData(222_222.127, -555_555.672, "{""Resistance"":""222222.127"",""Reactance"":""-555555.672""}")>
+        <InlineData(333_333.122, 555_555.672, "{""Resistance"":""333333.122"",""Reactance"":""555555.672""}")>
+        <InlineData(444_444.127, -555_555.677, "{""Resistance"":""444444.127"",""Reactance"":""-555555.677""}")>
         Sub Serialize_Invar_Passes(r As Double, x As Double, expectedStr As String)
 
             Dim Imp As New Impedance(r, x)
             Dim ResultStr As System.String = System.String.Empty
 
             If Imp.SerializeJSONString_Invar(ResultStr) Then
-                '                Dim PeekStr As String = Serialized1
                 Assert.True(expectedStr.Equals(ResultStr))
             Else
                 Assert.True(False, "Serialization failed.")
@@ -376,21 +376,13 @@ Namespace TestSerialization
 
         End Sub
 
-
-
         '
         '
         '
         '
         '
-
-
-
-
 
     End Class ' SerializationTest
-
-
 
     '
     '
