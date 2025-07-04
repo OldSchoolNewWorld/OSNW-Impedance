@@ -760,7 +760,8 @@ Public Structure Impedance
     ''' <param name="jsonOptions">Optional. Specifies serialization options.
     ''' Default is <c>Nothing</c>.</param>
     ''' <returns><c>True</c> if the serialized export succeeds; otherwise,
-    ''' <c>False</c>.</returns>
+    ''' <c>False</c>. Also returns the serialized result in
+    ''' <paramref name="jsonString"/>.</returns>
     ''' <remarks>This function does not use a specific culture for numbers; it
     ''' always uses the <see cref="CultureInfo.InvariantCulture"/> culture for
     ''' serialization.</remarks>
@@ -773,68 +774,32 @@ Public Structure Impedance
         If jsonString Is Nothing Then
             'Dim CaughtBy As System.Reflection.MethodBase =
             '    System.Reflection.MethodBase.GetCurrentMethod
-            Throw New System.ArgumentOutOfRangeException(NameOf(jsonString), MSGNOSTR)
+            Throw New System.ArgumentOutOfRangeException(
+                NameOf(jsonString), MSGNOSTR)
         End If
 
-        Try
+        ' REF: Serialize and deserialize numeric data
+        ' https://learn.microsoft.com/en-us/dotnet/fundamentals/runtime-libraries/system-globalization-numberformatinfo#serialize-and-deserialize-numeric-data
+        ' When numeric data is serialized in string format and later
+        ' deserialized and parsed, the strings should be generated and parsed by
+        ' using the conventions of the invariant culture.
 
-            ' REF: Serialize and deserialize numeric data
-            ' https://learn.microsoft.com/en-us/dotnet/fundamentals/runtime-libraries/system-globalization-numberformatinfo#serialize-and-deserialize-numeric-data
-            ' When numeric data is serialized in string format and later
-            ' deserialized and parsed, the strings should be generated and
-            ' parsed by using the conventions of the invariant culture.
+        ' Ref: How to write .NET objects as JSON (serialize)
+        ' https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/how-to
+        jsonString = If(IsNothing(jsonOptions),
+            System.Text.Json.JsonSerializer.Serialize(Me),
+            System.Text.Json.JsonSerializer.Serialize(Me, jsonOptions))
 
-            ' Ref: How to write .NET objects as JSON (serialize)
-            ' https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/how-to
-
-            jsonString = If(IsNothing(jsonOptions),
-                System.Text.Json.JsonSerializer.Serialize(Me),
-                System.Text.Json.JsonSerializer.Serialize(Me, jsonOptions))
-
-            ' On getting this far,
-            Return True
-
-        Catch CaughtEx As Exception
-
-            ' React to a generic, unexpected, exception.
-            Dim ProcName As System.String =
-                New System.Diagnostics.StackFrame(0).GetMethod().Name
-            Dim ErrStr As System.String =
-                $"Exception caught in {ProcName} with '{CaughtEx.Message}'."
-
-            MsgBox(ErrStr, MsgBoxStyle.Exclamation,
-                   $"{ProcName} failure")
-
-            Dim RelayEx As System.Exception =
-                New System.ApplicationException(ErrStr, CaughtEx)
-
-            ' Add arguments from this sub/function to identify
-            ' which data set led to the exception.
-            With RelayEx.Data
-                .Add("jsonString", jsonString)
-                .Add("jsonOptions", jsonOptions)
-            End With
-
-            Throw RelayEx
-
-            'Finally
-        End Try
-        Return False
+        ' On getting this far,
+        Return True
 
     End Function ' SerializeJSONString
 
-
-
-
-
-
-
-
-    'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
-
-
-
+    '
+    '
+    '
+    '
+    '
 
 #End Region '  "Serialization"
 

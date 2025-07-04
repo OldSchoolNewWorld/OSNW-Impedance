@@ -326,12 +326,12 @@ Namespace TestSerialization
         <Fact>
         Sub Serialize_Simple_Passes()
 
-            Dim I1 As New Impedance(1, 2)
-            Dim Serialized1 As System.String = System.String.Empty
+            Dim Imp As New Impedance(1, 2)
+            Dim ResultStr As System.String = System.String.Empty
             Dim ExpectedSerialized As String = "{""Resistance"":1,""Reactance"":2}"
 
-            If I1.SerializeJSONString(Serialized1) Then
-                Assert.True(ExpectedSerialized.Equals(Serialized1))
+            If Imp.SerializeJSONString(ResultStr) Then
+                Assert.True(ExpectedSerialized.Equals(ResultStr))
             Else
                 Assert.True(False, "Serialization failed.")
             End If
@@ -345,12 +345,13 @@ Namespace TestSerialization
         <InlineData(222_222.127, -555_555.672, "{""Resistance"":222222.127,""Reactance"":-555555.672}")>
         <InlineData(333_333.122, 555_555.672, "{""Resistance"":333333.122,""Reactance"":555555.672}")>
         <InlineData(444_444.127, -555_555.677, "{""Resistance"":444444.127,""Reactance"":-555555.677}")>
-        <InlineData(555_555_555.555_555_555, -555_555_555.555_555_555,
-                    "{""Resistance"":555555555.5555556,""Reactance"":-555555555.5555556}")>
+        <InlineData(555_555_555.555_555_555, 555_555_555.555_555_555,
+                    "{""Resistance"":555555555.5555556,""Reactance"":555555555.5555556}")>
         Sub Serialize_Default_Passes(r As Double, x As Double, expectedStr As String)
 
-            ' Some of the tests below show the impact of (the expected) rounding
-            ' when the input exceeds the precision limits of a floating point value.
+            ' Some of the test sets show the impact of (unsurprising) rounding
+            ' when the input exceeds the precision limits of a floating-point
+            ' value.
 
             Dim Imp As New Impedance(r, x)
             Dim ResultStr As System.String = System.String.Empty
