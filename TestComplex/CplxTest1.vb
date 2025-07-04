@@ -222,3 +222,13 @@ Namespace TestTryParseStandard
     End Class ' TryParseStandardCultureTest
 
 End Namespace ' TestTryParseStandard
+
+Namespace TestSerialization
+
+    '
+    '
+    '
+    '
+    '
+
+End Namespace ' TestSerialization
