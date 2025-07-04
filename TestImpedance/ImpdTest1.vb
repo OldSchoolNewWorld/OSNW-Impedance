@@ -131,6 +131,9 @@ Namespace TestToStandardString
         ' current .NET 8.0 implementation. Maybe that is allowed for parsing,
         ' but not used by ToString().
 
+        ' Some of the tests below show the impact of (the expected) rounding
+        ' when the input exceeds the precision limits of a floating point value.
+
         <Theory>
         <InlineData(111_111.122, -555_555.677, 0, "111111.122-555555.677j")> ' One round down, one up.
         <InlineData(222_222.122, -555_555.677, 1, "222222.122-555555.677j")> ' One round down, one up.
@@ -342,8 +345,12 @@ Namespace TestSerialization
         <InlineData(222_222.127, -555_555.672, "{""Resistance"":222222.127,""Reactance"":-555555.672}")>
         <InlineData(333_333.122, 555_555.672, "{""Resistance"":333333.122,""Reactance"":555555.672}")>
         <InlineData(444_444.127, -555_555.677, "{""Resistance"":444444.127,""Reactance"":-555555.677}")>
-        <InlineData(555_555_555.555_555_555, -555_555_555.555_555_555, "{""Resistance"":555555555.5555556,""Reactance"":-555555555.5555556}")>
+        <InlineData(555_555_555.555_555_555, -555_555_555.555_555_555,
+                    "{""Resistance"":555555555.5555556,""Reactance"":-555555555.5555556}")>
         Sub Serialize_Default_Passes(r As Double, x As Double, expectedStr As String)
+
+            ' Some of the tests below show the impact of (the expected) rounding
+            ' when the input exceeds the precision limits of a floating point value.
 
             Dim Imp As New Impedance(r, x)
             Dim ResultStr As System.String = System.String.Empty
@@ -356,6 +363,13 @@ Namespace TestSerialization
 
         End Sub
 
+        '<Theory>
+        '<InlineData(1, 2, "{""Resistance"":""1"",""Reactance"":""2""}")>
+        '<InlineData(1.122, 5.677, "{""Resistance"":""1.122"",""Reactance"":""5.677""}")>
+        '<InlineData(111_111.122, 555_555.677, "{""Resistance"":""111111.122"",""Reactance"":""555555.677""}")>
+        '<InlineData(222_222.127, -555_555.672, "{""Resistance"":""222222.127"",""Reactance"":""-555555.672""}")>
+        '<InlineData(333_333.122, 555_555.672, "{""Resistance"":""333333.122"",""Reactance"":""555555.672""}")>
+        '<InlineData(444_444.127, -555_555.677, "{""Resistance"":""444444.127"",""Reactance"":""-555555.677""}")>
         <Theory>
         <InlineData(1, 2, "{""Resistance"":""1"",""Reactance"":""2""}")>
         <InlineData(1.122, 5.677, "{""Resistance"":""1.122"",""Reactance"":""5.677""}")>
@@ -363,6 +377,8 @@ Namespace TestSerialization
         <InlineData(222_222.127, -555_555.672, "{""Resistance"":""222222.127"",""Reactance"":""-555555.672""}")>
         <InlineData(333_333.122, 555_555.672, "{""Resistance"":""333333.122"",""Reactance"":""555555.672""}")>
         <InlineData(444_444.127, -555_555.677, "{""Resistance"":""444444.127"",""Reactance"":""-555555.677""}")>
+        <InlineData(555_555_555.555_555_555, -555_555_555.555_555_555,
+                    "{""Resistance"":""555555555.5555556"",""Reactance"":""-555555555.5555556""}")>
         Sub Serialize_Invar_Passes(r As Double, x As Double, expectedStr As String)
 
             Dim Imp As New Impedance(r, x)
