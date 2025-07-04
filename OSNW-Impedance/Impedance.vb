@@ -750,6 +750,7 @@ Public Structure Impedance
 
 #Region "Serialization"
 
+    ' This version is suspected to use the CultureInfo.CurrentCulture.
     ''' <summary>
     ''' Serializes a <see cref="Impedance"/> structure to a JSON-formatted
     ''' string, optionally using formatting specified by
@@ -783,7 +784,7 @@ Public Structure Impedance
     ''' declarations added them to the export.<br/>
     ''' Ref: https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/fields
     ''' </remarks>
-    Public Function SerializeJSONString(ByRef jsonString As System.String,
+    Public Function SerializeJSONString_Curr(ByRef jsonString As System.String,
         Optional jsonOptions _
             As System.Text.Json.JsonSerializerOptions = Nothing) _
         As System.Boolean
@@ -834,7 +835,97 @@ Public Structure Impedance
         End Try
         Return False
 
-    End Function ' SerializeJSONString
+    End Function ' SerializeJSONString_Curr
+    'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+
+
+    ' Try to get CultureInfo.InvariantCulture to work.
+    ''' <summary>
+    ''' Serializes a <see cref="Impedance"/> structure to a JSON-formatted
+    ''' string, optionally using formatting specified by
+    ''' <paramref name="jsonOptions"/>.
+    ''' </summary>
+    ''' <param name="jsonString">Specifies the target string.</param>
+    ''' <param name="jsonOptions">Optional. Specifies serialization options.
+    ''' Default is <c>Nothing</c>.</param>
+    ''' <returns>
+    ''' <see langword="True"/> if the serialized export succeeds; otherwise,
+    ''' <see langword="False"/>.
+    ''' </returns>
+    ''' <remarks>
+    ''' In this demonstration, jsonOptions is only used to set pretty
+    ''' (Indented) printing.<br/>
+    ''' Initially, PropSecret, L2PropSecret, AutopropSecret, and
+    ''' L2AutoPropSecret were included in the JSON export. Adding
+    ''' <c>&lt;System.Text.Json.Serialization.JsonIgnore&gt;</c> to the property
+    ''' declarations removed them from the export.<br/>
+    ''' Ref: https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/ignore-properties<br/>
+    ''' Initially, L1FieldInteger, FieldDouble, and FieldString were not included
+    ''' in the JSON export. Adding 
+    ''' <c>&lt;System.Text.Json.Serialization.JsonInclude&gt;</c> to the
+    ''' property declarations added them to the export.<br/>
+    ''' Initially, JSON did not export IntArray or L2IntArray. Adding
+    ''' <c>&lt;System.Text.Json.Serialization.JsonInclude&gt;</c> to the
+    ''' property declarations added them to the export.<br/>
+    ''' Initially, NestedObject and L2Object were exported to JSON, but missing
+    ''' L1FieldInteger and L2FieldInteger. Adding
+    ''' <c>&lt;System.Text.Json.Serialization.JsonInclude&gt;</c> to the field
+    ''' declarations added them to the export.<br/>
+    ''' Ref: https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/fields
+    ''' </remarks>
+    Public Function SerializeJSONString_Invar(ByRef jsonString As System.String,
+        Optional jsonOptions _
+            As System.Text.Json.JsonSerializerOptions = Nothing) _
+        As System.Boolean
+
+        ' Input checking.
+        If (jsonString) Is Nothing Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(NameOf(jsonString), MSGNOSTR)
+        End If
+
+        Try
+
+            ' Ref: How to write .NET objects as JSON (serialize)
+            ' https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/how-to
+
+            jsonString = If(IsNothing(jsonOptions),
+                System.Text.Json.JsonSerializer.Serialize(Me),
+                System.Text.Json.JsonSerializer.Serialize(Me, jsonOptions))
+
+            ' On getting this far,
+            Return True
+
+        Catch CaughtEx As Exception
+
+            ' React to a generic, unexpected, exception.
+            Dim ProcName As System.String =
+                New System.Diagnostics.StackFrame(0).GetMethod().Name
+            Dim ErrStr As System.String =
+                $"Exception caught in {ProcName} with '{CaughtEx.Message}'."
+
+            MsgBox(ErrStr, MsgBoxStyle.Exclamation,
+                   $"{ProcName} failure")
+
+            Dim RelayEx As System.Exception =
+                New System.ApplicationException(ErrStr, CaughtEx)
+
+            ' Add arguments from this sub/function to identify
+            ' which data set led to the exception.
+            With RelayEx.Data
+                .Add("jsonString", jsonString)
+                .Add("jsonOptions", jsonOptions)
+            End With
+
+            Throw RelayEx
+
+            'Finally
+        End Try
+        Return False
+
+    End Function ' SerializeJSONString_Invar
     'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 

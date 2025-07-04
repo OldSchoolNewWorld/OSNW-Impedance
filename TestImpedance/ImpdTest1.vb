@@ -314,13 +314,13 @@ Namespace TestSerialization
     Public Class SerializationTest
 
         <Fact>
-        Sub Serialize_XXXXXXXXXX_Passes()
+        Sub Serialize_Simple_Passes()
 
             Dim I1 As New Impedance(1, 2)
             Dim Serialized1 As System.String = System.String.Empty
             Dim ExpectedSerialized As String = "{""Resistance"":1,""Reactance"":2}"
 
-            If I1.SerializeJSONString(Serialized1) Then
+            If I1.SerializeJSONString_Curr(Serialized1) Then
                 Assert.True(ExpectedSerialized.Equals(Serialized1))
             Else
                 Assert.True(False, "Serialization failed.")
@@ -334,16 +334,16 @@ Namespace TestSerialization
         <InlineData(1, 2, "{""Resistance"":1,""Reactance"":2}")>
         <InlineData(1.122, 5.677, "{""Resistance"":1.122,""Reactance"":5.677}")>
         <InlineData(111_111.122, 555_555.677, "{""Resistance"":111111.122,""Reactance"":555555.677}")>
-        <InlineData(222_222.122, -555_555.677, "{""Resistance"":222222.122,""Reactance"":-555555.677}")>
+        <InlineData(222_222.127, -555_555.672, "{""Resistance"":222222.127,""Reactance"":-555555.672}")>
         <InlineData(333_333.122, 555_555.672, "{""Resistance"":333333.122,""Reactance"":555555.672}")>
-        <InlineData(444_444.122, -555_555.677, "{""Resistance"":444444.122,""Reactance"":-555555.677}")>
-        Sub Serialize_YYYYYYYYYY_Passes(r As Double, x As Double, expectedStr As String)
+        <InlineData(444_444.127, -555_555.677, "{""Resistance"":444444.127,""Reactance"":-555555.677}")>
+        Sub Serialize_Curr_Passes(r As Double, x As Double, expectedStr As String)
 
             Dim I1 As New Impedance(r, x)
             Dim Serialized1 As System.String = System.String.Empty
 
-            If I1.SerializeJSONString(Serialized1) Then
-                Dim s As String = Serialized1
+            If I1.SerializeJSONString_Curr(Serialized1) Then
+                '                Dim PeekStr As String = Serialized1
                 Assert.True(expectedStr.Equals(Serialized1))
             Else
                 Assert.True(False, "Serialization failed.")
