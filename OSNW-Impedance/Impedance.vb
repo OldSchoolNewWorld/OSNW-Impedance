@@ -13,6 +13,7 @@ Option Compare Binary
 Option Infer Off
 
 Imports System.Diagnostics.CodeAnalysis
+Imports System.Globalization
 
 ' REF: A Practical Introduction to Impedance Matching.
 ' https://picture.iczhiku.com/resource/eetop/shkgQUqJkAUQZBXx.pdf
@@ -750,19 +751,6 @@ Public Structure Impedance
 
 #Region "Serialization"
 
-    ' Try to get CultureInfo.InvariantCulture to work.
-
-    ' This version was suspected to use the CultureInfo.CurrentCulture as a
-    ' default. An AI query reported:
-    '   To serialize the Impedance structure to a JSON string using
-    '   CultureInfo.InvariantCulture, you need to ensure that the numeric values
-    '   (resistance and reactance) are formatted using the invariant culture
-    '   before serialization. The default System.Text.Json.JsonSerializer does
-    '   not use a specific culture for numbers; it always uses the invariant
-    '   culture for serialization. However, if you want to guarantee this or
-    '   have more control (e.g., for custom formatting), you can create an
-    '   anonymous object or DTO with the values formatted as strings using
-    '   InvariantCulture.
     ''' <summary>
     ''' Serializes a <see cref="Impedance"/> structure to a JSON-formatted
     ''' string, optionally using formatting specified by
@@ -773,8 +761,9 @@ Public Structure Impedance
     ''' Default is <c>Nothing</c>.</param>
     ''' <returns><c>True</c> if the serialized export succeeds; otherwise,
     ''' <c>False</c>.</returns>
-    ''' <remarks>
-    ''' </remarks>
+    ''' <remarks>This function does not use a specific culture for numbers; it
+    ''' always uses the <see cref="CultureInfo.InvariantCulture"/> culture for
+    ''' serialization.</remarks>
     Public Function SerializeJSONString(ByRef jsonString As System.String,
         Optional jsonOptions _
             As System.Text.Json.JsonSerializerOptions = Nothing) _
@@ -788,6 +777,12 @@ Public Structure Impedance
         End If
 
         Try
+
+            ' REF: Serialize and deserialize numeric data
+            ' https://learn.microsoft.com/en-us/dotnet/fundamentals/runtime-libraries/system-globalization-numberformatinfo#serialize-and-deserialize-numeric-data
+            ' When numeric data is serialized in string format and later
+            ' deserialized and parsed, the strings should be generated and
+            ' parsed by using the conventions of the invariant culture.
 
             ' Ref: How to write .NET objects as JSON (serialize)
             ' https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/how-to
@@ -828,68 +823,6 @@ Public Structure Impedance
 
     End Function ' SerializeJSONString
 
-    ' Try to get CultureInfo.InvariantCulture to work. An AI query reported:
-    ' To serialize the Impedance structure to a JSON string using
-    ' CultureInfo.InvariantCulture, you need to ensure that the numeric values
-    ' (resistance and reactance) are formatted using the invariant culture before
-    ' serialization. The default System.Text.Json.JsonSerializer does not use a
-    ' specific culture for numbers; it always uses the invariant culture for
-    ' serialization. However, if you want to guarantee this or have more control
-    ' (e.g., for custom formatting), you can create an anonymous object or DTO with
-    ' the values formatted as strings using InvariantCulture.
-    ' Here’s a robust and clear way to implement SerializeJSONString_Invar:
-
-    Public Function SerializeJSONString_Invar(
-        ByRef jsonString As System.String) As System.Boolean
-
-        ' Input checking.
-        If jsonString Is Nothing Then
-            Throw New System.ArgumentOutOfRangeException(NameOf(jsonString), MSGNOSTR)
-        End If
-
-        Try
-
-            ' The generated version triggers: BC30209 Option Strict On requires
-            ' all variable declarations To have an 'As' clause.
-            '' Use InvariantCulture to format the numeric values as strings.
-            'Dim dto = New With {
-            '    .Resistance = Me.Resistance.ToString(System.Globalization.CultureInfo.InvariantCulture),
-            '    .Reactance = Me.Reactance.ToString(System.Globalization.CultureInfo.InvariantCulture)
-            '}
-            ' Use InvariantCulture to format the numeric values as strings.
-            Dim dto As Object = New With {
-                .Resistance = Me.Resistance.ToString(System.Globalization.CultureInfo.InvariantCulture),
-                .Reactance = Me.Reactance.ToString(System.Globalization.CultureInfo.InvariantCulture)
-            }
-
-            jsonString = System.Text.Json.JsonSerializer.Serialize(dto)
-            Return True
-
-        Catch CaughtEx As Exception
-            Dim ProcName As System.String =
-            New System.Diagnostics.StackFrame(0).GetMethod().Name
-            Dim ErrStr As System.String =
-            $"Exception caught in {ProcName} with '{CaughtEx.Message}'."
-
-            MsgBox(ErrStr, MsgBoxStyle.Exclamation,
-               $"{ProcName} failure")
-
-            Dim RelayEx As System.Exception =
-            New System.ApplicationException(ErrStr, CaughtEx)
-
-            With RelayEx.Data
-                .Add("jsonString", jsonString)
-            End With
-
-            Throw RelayEx
-        End Try
-        Return False
-
-    End Function ' SerializeJSONString_Invar
-
-    ' What was changed and why:
-    ' •	The function now creates an anonymous object (dto) with Resistance and
-    ' Reactance as strings formatted using InvariantCulture.
 
 
 
