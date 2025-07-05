@@ -372,7 +372,7 @@ Namespace TestSerialization
             Dim Imp As Impedance
 
             If Impedance.DeserializeJSONString(jsonString, Imp) Then
-                Assert.True(1.Equals(Imp.Resistance) AndAlso 2.Equals(Imp.Reactance))
+                Assert.True(Imp.Resistance.Equals(1) AndAlso Imp.Reactance.Equals(2))
             Else
                 Assert.True(False, "Serialization failed.")
             End If

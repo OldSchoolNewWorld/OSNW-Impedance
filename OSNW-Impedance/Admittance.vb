@@ -218,7 +218,7 @@ Public Structure Admittance
         ByVal provider As System.IFormatProvider) _
         As System.String
 
-        '        Return Me.m_Complex.ToString(format, provider).Replace(CHARI, CHARJ)
+        '        Return Me.AsComplex.ToString(format, provider).Replace(CHARI, CHARJ)
         Return Me.ToImpedance().ToString(format, provider)
     End Function ' ToString
 

@@ -14,6 +14,7 @@ Option Infer Off
 
 Imports System.Diagnostics.CodeAnalysis
 Imports System.Globalization
+Imports System.Text.Json.Serialization
 
 ' REF: A Practical Introduction to Impedance Matching.
 ' https://picture.iczhiku.com/resource/eetop/shkgQUqJkAUQZBXx.pdf
@@ -64,13 +65,26 @@ Public Structure Impedance
 
 #Region "Fields and Properties"
 
-    ' Use the "has a ..." approach to expose the desired features of a
-    ' System.Numerics.Complex.
-    ' Do not rename (binary serialization). ??????????????????????????????
+    '    ' Use the "has a ..." approach to expose the desired features of a
+    'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    '    ' System.Numerics.Complex.
+    '    ' Do not rename (binary serialization). ??????????????????????????????
+    '    ''' <summary>
+    '    ''' Gets the Impedance as a complex number.
+    '    ''' </summary>
+    '    Private ReadOnly AsComplex As System.Numerics.Complex
+
     ''' <summary>
-    ''' Gets the Impedance as a complex number.
+    ''' Gets the resistance component, in ohms, of the current <c>Impedance</c>
+    ''' instance.
     ''' </summary>
-    Private ReadOnly m_Complex As System.Numerics.Complex
+    Private ReadOnly m_Resistance As System.Double
+
+    ''' <summary>
+    ''' Gets the reactance component, in ohms, of the current <c>Impedance</c>
+    ''' instance.
+    ''' </summary>
+    Private ReadOnly m_Reactance As System.Double
 
     ''' <summary>
     ''' Gets the resistance component, in ohms, of the current <c>Impedance</c>
@@ -78,7 +92,7 @@ Public Structure Impedance
     ''' </summary>
     Public ReadOnly Property Resistance As System.Double
         Get
-            Return Me.m_Complex.Real
+            Return m_Resistance
         End Get
     End Property
 
@@ -88,7 +102,13 @@ Public Structure Impedance
     ''' </summary>
     Public ReadOnly Property Reactance As System.Double
         Get
-            Return Me.m_Complex.Imaginary
+            Return m_Reactance
+        End Get
+    End Property
+
+    Private ReadOnly Property AsComplex As System.Numerics.Complex
+        Get
+            Return New System.Numerics.Complex(Me.Resistance, Me.Reactance)
         End Get
     End Property
 
@@ -275,7 +295,7 @@ Public Structure Impedance
         ByVal provider As System.IFormatProvider) _
         As System.String
 
-        Return Me.m_Complex.ToString(format, provider).Replace(CHARI, CHARJ)
+        Return Me.AsComplex.ToString(format, provider).Replace(CHARI, CHARJ)
     End Function ' ToString
 
     Private Function IFormattable_ToString(
@@ -300,7 +320,7 @@ Public Structure Impedance
             ByVal format As System.String) _
         As System.String
 
-        Return Me.m_Complex.ToString(format).Replace(CHARI, CHARJ)
+        Return Me.AsComplex.ToString(format).Replace(CHARI, CHARJ)
     End Function ' ToString
 
     '    public string ToString(IFormatProvider? provider)
@@ -316,7 +336,7 @@ Public Structure Impedance
     Public Overloads Function ToString(
         ByVal provider As System.IFormatProvider) As System.String
 
-        Return Me.m_Complex.ToString(provider).Replace(CHARI, CHARJ)
+        Return Me.AsComplex.ToString(provider).Replace(CHARI, CHARJ)
     End Function ' ToString
 
     '    public override string ToString()
@@ -328,7 +348,7 @@ Public Structure Impedance
     ''' </summary>
     ''' <returns>The current Impedance expressed in Cartesian form.</returns>
     Public Overrides Function ToString() As System.String
-        Return Me.m_Complex.ToString().Replace(CHARI, CHARJ)
+        Return Me.AsComplex.ToString().Replace(CHARI, CHARJ)
     End Function ' ToString
 
 #End Region ' "ToString Implementations"
@@ -383,7 +403,7 @@ Public Structure Impedance
         ByVal provider As System.IFormatProvider) _
         As System.String
 
-        Return Me.m_Complex.ToStandardString(standardizationStyle, format,
+        Return Me.AsComplex.ToStandardString(standardizationStyle, format,
                                              provider).Replace(CHARI, CHARJ)
     End Function ' ToStandardString
 
@@ -402,7 +422,7 @@ Public Structure Impedance
         ByVal standardizationStyle As StandardizationStyles) _
         As System.String
 
-        Return Me.m_Complex.ToStandardString(
+        Return Me.AsComplex.ToStandardString(
             standardizationStyle).Replace(CHARI, CHARJ)
     End Function ' ToStandardString
 
@@ -424,7 +444,7 @@ Public Structure Impedance
             ByVal format As System.String) _
         As System.String
 
-        Return Me.m_Complex.ToStandardString(standardizationStyle,
+        Return Me.AsComplex.ToStandardString(standardizationStyle,
                                            format).Replace(CHARI, CHARJ)
     End Function ' ToStandardString
 
@@ -446,7 +466,7 @@ Public Structure Impedance
         ByVal provider As System.IFormatProvider) _
         As System.String
 
-        Return Me.m_Complex.ToStandardString(standardizationStyle,
+        Return Me.AsComplex.ToStandardString(standardizationStyle,
                                              provider).Replace(CHARI, CHARJ)
     End Function ' ToStandardString
 
@@ -459,7 +479,7 @@ Public Structure Impedance
     ''' </summary>
     ''' <returns>The current Impedance expressed in standard form.</returns>
     Public Function ToStandardString() As System.String
-        Return Me.m_Complex.ToStandardString().Replace(CHARI, CHARJ)
+        Return Me.AsComplex.ToStandardString().Replace(CHARI, CHARJ)
     End Function ' ToStandardString
 
 #End Region ' "ToStandardString Implementations"
@@ -733,8 +753,11 @@ Public Structure Impedance
     ''' other calculations.
     ''' </para>
     ''' </remarks>
+    <JsonConstructor>
     Public Sub New(ByVal resistance As System.Double,
                    ByVal reactance As System.Double)
+        ' REF: Use immutable types and properties
+        ' https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/immutability
 
         ' Input checking.
         If resistance < 0.0 Then
@@ -743,7 +766,9 @@ Public Structure Impedance
             Throw New System.ArgumentOutOfRangeException(NameOf(resistance))
         End If
 
-        Me.m_Complex = New System.Numerics.Complex(resistance, reactance)
+        '        Me.AsComplex = New System.Numerics.Complex(resistance, reactance)
+        Me.m_Resistance = resistance
+        Me.m_Reactance = reactance
 
     End Sub ' New
 
@@ -818,11 +843,10 @@ Public Structure Impedance
 
         ' Ref: How to read JSON as .NET objects (deserialize)
         ' https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/deserialization
-        'impedanceOut = System.Text.Json.JsonSerializer.Deserialize(
-        '    Of Impedance)(jsonString)
-        Dim OutI As Impedance = System.Text.Json.JsonSerializer.Deserialize(
+        ' REF: Use immutable types and properties
+        ' https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/immutability
+        impedanceOut = System.Text.Json.JsonSerializer.Deserialize(
             Of Impedance)(jsonString)
-        impedanceOut = OutI
 
         ' On getting this far,
         Return True
