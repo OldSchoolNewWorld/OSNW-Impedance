@@ -101,19 +101,6 @@ Public Structure Impedance
         End Get
     End Property
 
-    ''''' <summary>
-    ''''' DEV: For convenience and readability:
-    ''''' Gets the <see cref="System.Numerics.Complex"/> equivalent of the
-    ''''' current <c>Impedance</c> instance.
-    ''''' </summary>
-    ''''' <returns>The <see cref="System.Numerics.Complex"/> equivalent of the
-    ''''' current <c>Impedance</c> instance.</returns>
-    'Private ReadOnly Property AsComplex As System.Numerics.Complex
-    '    Get
-    '        Return New System.Numerics.Complex(Me.Resistance, Me.Reactance)
-    '    End Get
-    'End Property
-
 #End Region ' "Fields and Properties"
 
     ''' <summary>
