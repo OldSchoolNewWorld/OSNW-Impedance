@@ -2,7 +2,7 @@
 ' Finish AddParallelImpedance() and AddParallelAdmittance() when Admittance is
 '   accessible.
 ' Add AddSeriesAdmittance() when Admittance is accessible?????
-' Add Serialization to Impedance. To Admittance?????
+' Add De/Serialization to Admittance?????
 '   "the strings should be generated and parsed by using the conventions of the invariant culture."
 '   REF: Serialize and deserialize numeric data
 '   https://learn.microsoft.com/en-us/dotnet/fundamentals/runtime-libraries/system-globalization-numberformatinfo#serialize-and-deserialize-numeric-data
@@ -65,21 +65,14 @@ Public Structure Impedance
 
 #Region "Fields and Properties"
 
-    '    ' Use the "has a ..." approach to expose the desired features of a
-    'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-    '    ' System.Numerics.Complex.
-    '    ' Do not rename (binary serialization). ??????????????????????????????
-    '    ''' <summary>
-    '    ''' Gets the Impedance as a complex number.
-    '    ''' </summary>
-    '    Private ReadOnly AsComplex As System.Numerics.Complex
-
+    ' Do not rename (binary serialization). ??????????????????????????????
     ''' <summary>
     ''' Gets the resistance component, in ohms, of the current <c>Impedance</c>
     ''' instance.
     ''' </summary>
     Private ReadOnly m_Resistance As System.Double
 
+    ' Do not rename (binary serialization). ??????????????????????????????
     ''' <summary>
     ''' Gets the reactance component, in ohms, of the current <c>Impedance</c>
     ''' instance.
@@ -91,6 +84,7 @@ Public Structure Impedance
     ''' instance.
     ''' </summary>
     Public ReadOnly Property Resistance As System.Double
+        ' Do not rename (binary serialization). ??????????????????????????????
         Get
             Return m_Resistance
         End Get
@@ -101,16 +95,24 @@ Public Structure Impedance
     ''' instance.
     ''' </summary>
     Public ReadOnly Property Reactance As System.Double
+        ' Do not rename (binary serialization). ??????????????????????????????
         Get
             Return m_Reactance
         End Get
     End Property
 
-    Private ReadOnly Property AsComplex As System.Numerics.Complex
-        Get
-            Return New System.Numerics.Complex(Me.Resistance, Me.Reactance)
-        End Get
-    End Property
+    ''''' <summary>
+    ''''' DEV: For convenience and readability:
+    ''''' Gets the <see cref="System.Numerics.Complex"/> equivalent of the
+    ''''' current <c>Impedance</c> instance.
+    ''''' </summary>
+    ''''' <returns>The <see cref="System.Numerics.Complex"/> equivalent of the
+    ''''' current <c>Impedance</c> instance.</returns>
+    'Private ReadOnly Property AsComplex As System.Numerics.Complex
+    '    Get
+    '        Return New System.Numerics.Complex(Me.Resistance, Me.Reactance)
+    '    End Get
+    'End Property
 
 #End Region ' "Fields and Properties"
 
@@ -142,11 +144,6 @@ Public Structure Impedance
     ' {
     '     return obj is Complex other && Equals(other);
     ' }
-    'Public Overrides Function Equals(obj As Object) As Boolean
-    '    Return (TypeOf obj Is Impedance) AndAlso
-    '        DirectCast(Me, IEquatable(Of Impedance)).Equals(
-    '        DirectCast(obj, Impedance))
-    'End Function
     ''' <summary>
     ''' Determines whether the specified object is equal to the current object.
     ''' </summary>
@@ -207,7 +204,6 @@ Public Structure Impedance
     ''' value; otherwise, <c>False</c>.</returns>
     Public Shared Operator =(ByVal left As Impedance,
                              ByVal right As Impedance) As System.Boolean
-
         Return left.Equals(right)
     End Operator
 
@@ -221,7 +217,6 @@ Public Structure Impedance
     ''' <c>False</c>.</returns>
     Public Shared Operator <>(ByVal left As Impedance,
                               ByVal right As Impedance) As System.Boolean
-
         Return Not left = right
     End Operator
 
@@ -295,7 +290,7 @@ Public Structure Impedance
         ByVal provider As System.IFormatProvider) _
         As System.String
 
-        Return Me.AsComplex.ToString(format, provider).Replace(CHARI, CHARJ)
+        Return Me.ToComplex.ToString(format, provider).Replace(CHARI, CHARJ)
     End Function ' ToString
 
     Private Function IFormattable_ToString(
@@ -320,7 +315,7 @@ Public Structure Impedance
             ByVal format As System.String) _
         As System.String
 
-        Return Me.AsComplex.ToString(format).Replace(CHARI, CHARJ)
+        Return Me.ToComplex.ToString(format).Replace(CHARI, CHARJ)
     End Function ' ToString
 
     '    public string ToString(IFormatProvider? provider)
@@ -336,7 +331,7 @@ Public Structure Impedance
     Public Overloads Function ToString(
         ByVal provider As System.IFormatProvider) As System.String
 
-        Return Me.AsComplex.ToString(provider).Replace(CHARI, CHARJ)
+        Return Me.ToComplex.ToString(provider).Replace(CHARI, CHARJ)
     End Function ' ToString
 
     '    public override string ToString()
@@ -348,7 +343,7 @@ Public Structure Impedance
     ''' </summary>
     ''' <returns>The current Impedance expressed in Cartesian form.</returns>
     Public Overrides Function ToString() As System.String
-        Return Me.AsComplex.ToString().Replace(CHARI, CHARJ)
+        Return Me.ToComplex.ToString().Replace(CHARI, CHARJ)
     End Function ' ToString
 
 #End Region ' "ToString Implementations"
@@ -403,7 +398,7 @@ Public Structure Impedance
         ByVal provider As System.IFormatProvider) _
         As System.String
 
-        Return Me.AsComplex.ToStandardString(standardizationStyle, format,
+        Return Me.ToComplex.ToStandardString(standardizationStyle, format,
                                              provider).Replace(CHARI, CHARJ)
     End Function ' ToStandardString
 
@@ -422,7 +417,7 @@ Public Structure Impedance
         ByVal standardizationStyle As StandardizationStyles) _
         As System.String
 
-        Return Me.AsComplex.ToStandardString(
+        Return Me.ToComplex.ToStandardString(
             standardizationStyle).Replace(CHARI, CHARJ)
     End Function ' ToStandardString
 
@@ -444,8 +439,8 @@ Public Structure Impedance
             ByVal format As System.String) _
         As System.String
 
-        Return Me.AsComplex.ToStandardString(standardizationStyle,
-                                           format).Replace(CHARI, CHARJ)
+        Return Me.ToComplex.ToStandardString(standardizationStyle,
+                                             format).Replace(CHARI, CHARJ)
     End Function ' ToStandardString
 
     '    public string ToString(IFormatProvider? provider)
@@ -466,7 +461,7 @@ Public Structure Impedance
         ByVal provider As System.IFormatProvider) _
         As System.String
 
-        Return Me.AsComplex.ToStandardString(standardizationStyle,
+        Return Me.ToComplex.ToStandardString(standardizationStyle,
                                              provider).Replace(CHARI, CHARJ)
     End Function ' ToStandardString
 
@@ -479,7 +474,7 @@ Public Structure Impedance
     ''' </summary>
     ''' <returns>The current Impedance expressed in standard form.</returns>
     Public Function ToStandardString() As System.String
-        Return Me.AsComplex.ToStandardString().Replace(CHARI, CHARJ)
+        Return Me.ToComplex.ToStandardString().Replace(CHARI, CHARJ)
     End Function ' ToStandardString
 
 #End Region ' "ToStandardString Implementations"
@@ -567,6 +562,92 @@ Public Structure Impedance
     End Function ' TryParseStandard
 
 #End Region ' "Parsing Implementations"
+
+#Region "De/Serialization"
+
+    ''' <summary>
+    ''' Serializes a <see cref="Impedance"/> structure to a JSON-formatted
+    ''' string, optionally using formatting specified by
+    ''' <paramref name="jsonOptions"/>.
+    ''' </summary>
+    ''' <param name="jsonString">Specifies the target string.</param>
+    ''' <param name="jsonOptions">Optional. Specifies serialization options.
+    ''' Default is <c>Nothing</c>.</param>
+    ''' <returns><c>True</c> if the serialized export succeeds; otherwise,
+    ''' <c>False</c>. Also returns the serialized result in
+    ''' <paramref name="jsonString"/>.</returns>
+    ''' <remarks>This function does not use a specific culture for numbers; it
+    ''' always uses the <see cref="CultureInfo.InvariantCulture"/> culture for
+    ''' serialization.</remarks>
+    Public Function SerializeJSONString(ByRef jsonString As System.String,
+        Optional jsonOptions _
+            As System.Text.Json.JsonSerializerOptions = Nothing) _
+        As System.Boolean
+
+        ' Input checking.
+        If jsonString Is Nothing Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentNullException(NameOf(jsonString), MSGNOSTR)
+        End If
+
+        ' REF: Serialize and deserialize numeric data
+        ' https://learn.microsoft.com/en-us/dotnet/fundamentals/runtime-libraries/system-globalization-numberformatinfo#serialize-and-deserialize-numeric-data
+        ' When numeric data is serialized in string format and later
+        ' deserialized and parsed, the strings should be generated and parsed by
+        ' using the conventions of the invariant culture.
+
+        ' Ref: How to write .NET objects as JSON (serialize)
+        ' https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/how-to
+        jsonString = If(IsNothing(jsonOptions),
+            System.Text.Json.JsonSerializer.Serialize(Me),
+            System.Text.Json.JsonSerializer.Serialize(Me, jsonOptions))
+
+        ' On getting this far,
+        Return True
+
+    End Function ' SerializeJSONString
+
+    ''' <summary>
+    ''' Deserializes the JSON-formatted string specified by
+    ''' <paramref name="jsonString"/> into an <see cref="Impedance"/> specified
+    ''' by <paramref name="impedanceOut"/>.
+    ''' </summary>
+    ''' <param name="jsonString">Specifies the JSON-formatted string to be
+    ''' deserialized.</param>
+    ''' <param name="impedanceOut">Specifies the <see cref="Impedance"/> into
+    ''' which <paramref name="jsonString"/> is to be serialized.</param>
+    ''' <returns><c>True</c> if the deserialized import succeeds; otherwise,
+    ''' <c>False</c> and also returns the deserialized result in
+    ''' <paramref name="impedanceOut"/>.</returns>
+    Public Shared Function DeserializeJSONString(jsonString As System.String,
+        ByRef impedanceOut As Impedance) As System.Boolean
+
+        If String.IsNullOrWhiteSpace(jsonString) Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentNullException(
+                NameOf(jsonString), MSGNOSTR)
+        End If
+
+        ' Ref: How to read JSON as .NET objects (deserialize)
+        ' https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/deserialization
+
+        ' REF: Serialize and deserialize numeric data
+        ' https://learn.microsoft.com/en-us/dotnet/fundamentals/runtime-libraries/system-globalization-numberformatinfo#serialize-and-deserialize-numeric-data
+
+        ' REF: Use immutable types and properties
+        ' https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/immutability
+
+        impedanceOut = System.Text.Json.JsonSerializer.Deserialize(
+            Of Impedance)(jsonString)
+
+        ' On getting this far,
+        Return True
+
+    End Function ' DeserializeJSONString
+
+#End Region '  "De/Serialization"
 
 #Region "Other Instance Methods"
 
@@ -753,9 +834,10 @@ Public Structure Impedance
     ''' other calculations.
     ''' </para>
     ''' </remarks>
-    <JsonConstructor>
+    <JsonConstructor> ' See Use immutable types and properties.
     Public Sub New(ByVal resistance As System.Double,
                    ByVal reactance As System.Double)
+
         ' REF: Use immutable types and properties
         ' https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/immutability
 
@@ -773,86 +855,5 @@ Public Structure Impedance
     End Sub ' New
 
 #End Region ' "Constructors"
-
-#Region "Serialization"
-
-    ''' <summary>
-    ''' Serializes a <see cref="Impedance"/> structure to a JSON-formatted
-    ''' string, optionally using formatting specified by
-    ''' <paramref name="jsonOptions"/>.
-    ''' </summary>
-    ''' <param name="jsonString">Specifies the target string.</param>
-    ''' <param name="jsonOptions">Optional. Specifies serialization options.
-    ''' Default is <c>Nothing</c>.</param>
-    ''' <returns><c>True</c> if the serialized export succeeds; otherwise,
-    ''' <c>False</c>. Also returns the serialized result in
-    ''' <paramref name="jsonString"/>.</returns>
-    ''' <remarks>This function does not use a specific culture for numbers; it
-    ''' always uses the <see cref="CultureInfo.InvariantCulture"/> culture for
-    ''' serialization.</remarks>
-    Public Function SerializeJSONString(ByRef jsonString As System.String,
-        Optional jsonOptions _
-            As System.Text.Json.JsonSerializerOptions = Nothing) _
-        As System.Boolean
-
-        ' Input checking.
-        If jsonString Is Nothing Then
-            'Dim CaughtBy As System.Reflection.MethodBase =
-            '    System.Reflection.MethodBase.GetCurrentMethod
-            Throw New System.ArgumentNullException(NameOf(jsonString), MSGNOSTR)
-        End If
-
-        ' REF: Serialize and deserialize numeric data
-        ' https://learn.microsoft.com/en-us/dotnet/fundamentals/runtime-libraries/system-globalization-numberformatinfo#serialize-and-deserialize-numeric-data
-        ' When numeric data is serialized in string format and later
-        ' deserialized and parsed, the strings should be generated and parsed by
-        ' using the conventions of the invariant culture.
-
-        ' Ref: How to write .NET objects as JSON (serialize)
-        ' https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/how-to
-        jsonString = If(IsNothing(jsonOptions),
-            System.Text.Json.JsonSerializer.Serialize(Me),
-            System.Text.Json.JsonSerializer.Serialize(Me, jsonOptions))
-
-        ' On getting this far,
-        Return True
-
-    End Function ' SerializeJSONString
-
-    ''' <summary>
-    ''' Deserializes the JSON-formatted string specified by
-    ''' <paramref name="jsonString"/> into an <see cref="Impedance"/> specified
-    ''' by <paramref name="impedanceOut"/>.
-    ''' </summary>
-    ''' <param name="jsonString">Specifies the JSON-formatted string to be
-    ''' deserialized.</param>
-    ''' <param name="impedanceOut">Specifies the <see cref="Impedance"/> into
-    ''' which <paramref name="jsonString"/> is to be serialized.</param>
-    ''' <returns><c>True</c> if the deserialized import succeeds; otherwise,
-    ''' <c>False</c>. Also returns the deserialized result in
-    ''' <paramref name="impedanceOut"/>.</returns>
-    Public Shared Function DeserializeJSONString(jsonString As System.String,
-        ByRef impedanceOut As Impedance) As System.Boolean
-
-        If String.IsNullOrWhiteSpace(jsonString) Then
-            'Dim CaughtBy As System.Reflection.MethodBase =
-            '    System.Reflection.MethodBase.GetCurrentMethod
-            Throw New System.ArgumentNullException(
-                NameOf(jsonString), MSGNOSTR)
-        End If
-
-        ' Ref: How to read JSON as .NET objects (deserialize)
-        ' https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/deserialization
-        ' REF: Use immutable types and properties
-        ' https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/immutability
-        impedanceOut = System.Text.Json.JsonSerializer.Deserialize(
-            Of Impedance)(jsonString)
-
-        ' On getting this far,
-        Return True
-
-    End Function ' DeserializeJSONString
-
-#End Region '  "Serialization"
 
 End Structure ' Impedance

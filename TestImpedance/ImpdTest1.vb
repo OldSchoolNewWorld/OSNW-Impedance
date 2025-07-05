@@ -4,9 +4,9 @@ Option Compare Binary
 Option Infer Off
 
 Imports System.Globalization
-Imports Xunit
+Imports System.Runtime.InteropServices.JavaScript.JSType
 Imports OSNW.Numerics
-
+Imports Xunit
 
 Namespace DevelopmentTests
 
@@ -364,7 +364,6 @@ Namespace TestSerialization
 
         End Sub
 
-
         <Fact>
         Sub Deserialize_Simple_Passes()
 
@@ -379,18 +378,27 @@ Namespace TestSerialization
 
         End Sub
 
-        '
-        '
-        '
-        '
-        '
+        <Theory>
+        <InlineData("{""Resistance"":1,""Reactance"":2}", 1, 2)>
+        <InlineData("{""Resistance"":1.122,""Reactance"":5.677}", 1.122, 5.677)>
+        <InlineData("{""Resistance"":111111.122,""Reactance"":555555.677}", 111_111.122, 555_555.677)>
+        <InlineData("{""Resistance"":222222.127,""Reactance"":-555555.672}", 222_222.127, -555_555.672)>
+        <InlineData("{""Resistance"":333333.122,""Reactance"":555555.672}", 333_333.122, 555_555.672)>
+        <InlineData("{""Resistance"":444444.127,""Reactance"":-555555.677}", 444_444.127, -555_555.677)>
+        <InlineData("{""Resistance"":555555555.5555556,""Reactance"":555555555.5555556}",
+                    555_555_555.555_555_555, 555_555_555.555_555_555)>
+        Sub Deserialize_Default_Passes(jsonString As String, r As Double, x As Double)
+
+            Dim Imp As Impedance
+
+            If Impedance.DeserializeJSONString(jsonString, Imp) Then
+                Assert.True(Imp.Resistance.Equals(r) AndAlso Imp.Reactance.Equals(x))
+            Else
+                Assert.True(False, "Serialization failed.")
+            End If
+
+        End Sub
 
     End Class ' SerializationTest
-
-    '
-    '
-    '
-    '
-    '
 
 End Namespace ' TestSerialization
