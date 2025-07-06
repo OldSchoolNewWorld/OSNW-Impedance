@@ -6,42 +6,44 @@ Option Infer Off
 Imports System.Globalization
 Imports Xunit
 Imports OSNW.Numerics.ComplexExtensions
+Imports OsnwNumSS = OSNW.Numerics.StandardizationStyles
 
 Namespace ListValues
 
-    Public Class ConfirmStandardizationValues
+    Public Class TestStandardizationStyles
 
         <Theory>
-        <InlineData(StandardizationStyles.AiB, 1)>
-        <InlineData(StandardizationStyles.Open, 2)>
-        <InlineData(StandardizationStyles.EnforceSequence, 4)>
-        <InlineData(StandardizationStyles.EnforceSpacing, 8)>
-        Public Sub ConfirmBinaryValues(style As StandardizationStyles, expected As Integer)
-            Assert.Equal(expected, CInt(style))
+        <InlineData(OsnwNumSS.None, 0)>
+        <InlineData(OsnwNumSS.AiB, 1)>
+        <InlineData(OsnwNumSS.Open, 2)>
+        <InlineData(OsnwNumSS.EnforceSequence, 4)>
+        <InlineData(OsnwNumSS.EnforceSpacing, 8)>
+        Public Sub ConfirmBinaryValues(stdStyle As OsnwNumSS, expected As Integer)
+            Assert.Equal(expected, CInt(stdStyle))
         End Sub
 
         <Theory>
-        <InlineData(StandardizationStyles.ClosedABi, 0)>
-        <InlineData(StandardizationStyles.ClosedAiB, 1)>
-        <InlineData(StandardizationStyles.OpenABi, 2)>
-        <InlineData(StandardizationStyles.OpenAiB, 3)>
-        Public Sub ConfirmShorthandValues(style As StandardizationStyles, expected As Integer)
-            Assert.Equal(expected, CInt(style))
+        <InlineData(OsnwNumSS.ClosedABi, 0)>
+        <InlineData(OsnwNumSS.ClosedAiB, 1)>
+        <InlineData(OsnwNumSS.OpenABi, 2)>
+        <InlineData(OsnwNumSS.OpenAiB, 3)>
+        Public Sub ConfirmShorthandValues(stdStyle As OsnwNumSS, expected As Integer)
+            Assert.Equal(expected, CInt(stdStyle))
         End Sub
 
         <Theory>
-        <InlineData(StandardizationStyles.EnforceBoth, 12)>
-        <InlineData(StandardizationStyles.EnforcedClosedABi, 12)>
-        <InlineData(StandardizationStyles.EnforcedClosedAiB, 13)>
-        <InlineData(StandardizationStyles.EnforcedOpenABi, 14)>
-        <InlineData(StandardizationStyles.EnforcedOpenAiB, 15)>
-        Public Sub ConfirmEnforcedValues(style As StandardizationStyles, expected As Integer)
-            Assert.Equal(expected, CInt(style))
+        <InlineData(OsnwNumSS.EnforceBoth, 12)>
+        <InlineData(OsnwNumSS.EnforcedClosedABi, 12)>
+        <InlineData(OsnwNumSS.EnforcedClosedAiB, 13)>
+        <InlineData(OsnwNumSS.EnforcedOpenABi, 14)>
+        <InlineData(OsnwNumSS.EnforcedOpenAiB, 15)>
+        Public Sub ConfirmEnforcedValues(stdStyle As OsnwNumSS, expected As Integer)
+            Assert.Equal(expected, CInt(stdStyle))
         End Sub
 
     End Class ' ConfirmStandardizationValues
 
-End Namespace ' ListValues
+End Namespace ' TestOsnwNumSS
 
 Namespace TestToStandardString
 
@@ -64,13 +66,13 @@ Namespace TestToStandardString
 
         <Theory>
         <InlineData(1.125, 5.675, Nothing, "1.125+5.675i")>
-        <InlineData(1.125, -5.675, StandardizationStyles.AiB, "1.125-i5.675")>
-        <InlineData(-1.125, 5.675, StandardizationStyles.Open, "-1.125 + 5.675i")>
-        <InlineData(-1.125, -5.675, StandardizationStyles.OpenAiB, "-1.125 - i5.675")>
+        <InlineData(1.125, -5.675, OsnwNumSS.AiB, "1.125-i5.675")>
+        <InlineData(-1.125, 5.675, OsnwNumSS.Open, "-1.125 + 5.675i")>
+        <InlineData(-1.125, -5.675, OsnwNumSS.OpenAiB, "-1.125 - i5.675")>
         Sub ToStandardString_Standardization_Succeeds(real As Double, imaginary As Double,
-                                                      standardizationStyle As StandardizationStyles, expected As String)
+                                                      stdStyle As OsnwNumSS, expected As String)
             Dim Z As New System.Numerics.Complex(real, imaginary)
-            Dim CplxStr As String = Z.ToStandardString(standardizationStyle)
+            Dim CplxStr As String = Z.ToStandardString(stdStyle)
             Assert.Equal(expected, CplxStr)
         End Sub
 
@@ -95,15 +97,17 @@ Namespace TestToStandardString
         <Theory>
         <InlineData(111_111.122, -555_555.677, 0, "111111.122-555555.677i")> ' One round down, one up.
         <InlineData(111_111.122, -555_555.677, 1, "111111.122-555555.677i")> ' One round down, one up.
-        <InlineData(1.122, 5.677, 2, "1.122+5.677i")>
-        <InlineData(111_111.122, -555_555.677, 3, "111111,122-555555,677i")> ' One round down, one up.
-        <InlineData(-111_111.125, 555_555.675, 4, "-111111,125+555555,675i")>
+        <InlineData(111_111.122, -555_555.677, 2, "111111.122-555555.677i")> ' One round down, one up.
+        <InlineData(111_111.122, -555_555.677, 3, "111111.122-555555.677i")> ' One round down, one up.
+        <InlineData(111_111.122, -555_555.677, 4, "111111,122-555555,677i")> ' One round down, one up.
+        <InlineData(-111_111.125, 555_555.675, 5, "-111111,125+555555,675i")>
         Sub ToStandardString_Culture_Succeeds(
             real As Double, imaginary As Double, index As Integer, expected As String)
 
             Dim Providers As System.IFormatProvider() = {
                 CultureInfo.InvariantCulture,
                 CultureInfo.CurrentCulture,
+                New CultureInfo("en-US", False),
                 New CultureInfo("en-UK", False),
                 New CultureInfo("ru-RU", False),
                 New CultureInfo("fr-FR", False)
@@ -161,32 +165,31 @@ Namespace TestTryParseStandard
 
     Public Class TryParseStandardEnforceStandardizationTest
 
-        Const TightEnforcement As StandardizationStyles =
-            StandardizationStyles.EnforceSequence Or StandardizationStyles.EnforceSpacing
+        Const TightEnforcement As OsnwNumSS =
+            OsnwNumSS.EnforceSequence Or OsnwNumSS.EnforceSpacing
 
         <Theory>
-        <InlineData("1.125+i5.675", 1.125, 5.675, StandardizationStyles.ClosedABi)>
-        <InlineData("1.125-5.675i", 1.125, -5.675, StandardizationStyles.ClosedAiB)>
-        <InlineData("-1.125 + i5.675", -1.125, 5.675, StandardizationStyles.OpenABi)>
-        <InlineData("-1.125 - 5.675i", -1.125, -5.675, StandardizationStyles.OpenAiB)>
-        Sub TryParse_ValidStandardization_Succeeds(standardStr As String, real As Double, imaginary As Double,
-                                                       standardizationStyle As StandardizationStyles)
+        <InlineData("1.125+i5.675", 1.125, 5.675, OsnwNumSS.ClosedABi)>
+        <InlineData("1.125-5.675i", 1.125, -5.675, OsnwNumSS.ClosedAiB)>
+        <InlineData("-1.125 + i5.675", -1.125, 5.675, OsnwNumSS.OpenABi)>
+        <InlineData("-1.125 - 5.675i", -1.125, -5.675, OsnwNumSS.OpenAiB)>
+        Sub TryParse_ValidStandardization_Succeeds(standardStr As String, real As Double,
+                                                   imaginary As Double, stdStyle As OsnwNumSS)
             Dim Cplx As New Numerics.Complex
-            If Not TryParseStandard(standardStr, standardizationStyle, Nothing, Cplx) Then
+            If Not TryParseStandard(standardStr, stdStyle, Nothing, Cplx) Then
                 Assert.True(False)
             End If
             Assert.True(Cplx.Real.Equals(real) AndAlso Cplx.Imaginary.Equals(imaginary))
         End Sub
 
         <Theory>
-        <InlineData("1.125 + i5.675", StandardizationStyles.ClosedABi Or TightEnforcement)>
-        <InlineData("1.125-i5.675", StandardizationStyles.ClosedAiB Or TightEnforcement)>
-        <InlineData("-1.125+i5.675", StandardizationStyles.OpenABi Or TightEnforcement)>
-        <InlineData("-1.125 - i5.675", StandardizationStyles.OpenAiB Or TightEnforcement)>
-        Sub TryParse_InvalidStandardization_Fails(standardStr As String,
-                                                       standardizationStyle As StandardizationStyles)
+        <InlineData("1.125 + 5.675i'", OsnwNumSS.ClosedABi Or TightEnforcement)> ' Not closed.
+        <InlineData("1.125-5.675i", OsnwNumSS.ClosedAiB Or TightEnforcement)> ' Not AiB.
+        <InlineData("-1.125+5.675i", OsnwNumSS.OpenABi Or TightEnforcement)> ' Not Open.
+        <InlineData("-1.125 - 5.675i", OsnwNumSS.OpenAiB Or TightEnforcement)> ' Not AiB.
+        Sub TryParse_InvalidStandardization_Fails(standardStr As String, stdStyle As OsnwNumSS)
             Dim Cplx As New Numerics.Complex
-            Assert.False(TryParseStandard(standardStr, standardizationStyle, Nothing, Cplx))
+            Assert.False(TryParseStandard(standardStr, stdStyle, Nothing, Cplx))
         End Sub
 
     End Class ' TryParseStandardEnforceStandardizationTest
@@ -196,15 +199,17 @@ Namespace TestTryParseStandard
         <Theory>
         <InlineData("111111.122-i555555.677", 111_111.122, -555_555.677, 0)> ' One round down, one up.
         <InlineData("111111.122-i555555.677", 111_111.122, -555_555.677, 1)> ' One round down, one up.
-        <InlineData("1.122+i5.677", 1.122, 5.677, 2)>
-        <InlineData("111111,122-i555555,677", 111_111.122, -555_555.677, 3)> ' One round down, one up.
-        <InlineData("-111111,125+i555555,675", -111_111.125, 555_555.675, 4)>
+        <InlineData("111111.122-i555555.677", 111_111.122, -555_555.677, 2)> ' One round down, one up.
+        <InlineData("111111.122-i555555.677", 111_111.122, -555_555.677, 3)> ' One round down, one up.
+        <InlineData("111111,122-i555555,677", 111_111.122, -555_555.677, 4)> ' One round down, one up.
+        <InlineData("-111111,125+i555555,675", -111_111.125, 555_555.675, 5)>
         Sub TryParse_Culture_Succeeds(standardStr As String, real As Double, imaginary As Double,
-                                     index As Integer)
+                                      index As Integer)
 
             Dim Providers As System.IFormatProvider() = {
                 CultureInfo.InvariantCulture,
                 CultureInfo.CurrentCulture,
+                New CultureInfo("en-US", False),
                 New CultureInfo("en-UK", False),
                 New CultureInfo("ru-RU", False),
                 New CultureInfo("fr-FR", False)
@@ -222,13 +227,3 @@ Namespace TestTryParseStandard
     End Class ' TryParseStandardCultureTest
 
 End Namespace ' TestTryParseStandard
-
-Namespace TestSerialization
-
-    '
-    '
-    '
-    '
-    '
-
-End Namespace ' TestSerialization

@@ -6,6 +6,7 @@ Option Infer Off
 Imports System.Globalization
 Imports Xunit
 Imports OSNW.Numerics
+Imports OsnwNumSS = OSNW.Numerics.StandardizationStyles
 
 Namespace DevelopmentTests
 
@@ -226,10 +227,10 @@ Namespace TestTryParseStandard
         End Sub
 
         <Theory>
-        <InlineData("1.125 + i5.675", StandardizationStyles.ClosedABi Or TightEnforcement)>
-        <InlineData("1.125-i5.675", StandardizationStyles.ClosedAiB Or TightEnforcement)>
-        <InlineData("-1.125+i5.675", StandardizationStyles.OpenABi Or TightEnforcement)>
-        <InlineData("-1.125 - i5.675", StandardizationStyles.OpenAiB Or TightEnforcement)>
+        <InlineData("1.125 + 5.675j'", OsnwNumSS.ClosedABi Or TightEnforcement)> ' Not closed.
+        <InlineData("1.125-5.675j", OsnwNumSS.ClosedAiB Or TightEnforcement)> ' Not AiB.
+        <InlineData("-1.125+5.675j", OsnwNumSS.OpenABi Or TightEnforcement)> ' Not Open.
+        <InlineData("-1.125 - 5.675j", OsnwNumSS.OpenAiB Or TightEnforcement)> ' Not AiB.
         Sub TryParseStandard_InvalidStandardization_Fails(
             standardStr As String, standardizationStyle As StandardizationStyles)
 

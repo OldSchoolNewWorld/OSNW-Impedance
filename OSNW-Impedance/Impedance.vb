@@ -6,6 +6,8 @@
 '   "the strings should be generated and parsed by using the conventions of the invariant culture."
 '   REF: Serialize and deserialize numeric data
 '   https://learn.microsoft.com/en-us/dotnet/fundamentals/runtime-libraries/system-globalization-numberformatinfo#serialize-and-deserialize-numeric-data
+' Add tests of failures for bad inputs.
+' Allow both i and j to match the .NET result. Add tests for both i and j.
 
 Option Explicit On
 Option Strict On

@@ -229,14 +229,14 @@ Partial Public Module ComplexExtensions
             StandardizationStyles.EnforceSequence) > 0 Then
 
             If (standardizationStyle And StandardizationStyles.AiB) > 0 Then
-                ' Must match FormerABi.
-                If Not TrimmedStr.EndsWith(CHARI) Then
+                ' Must match AiB.
+                If Not TrimmedStr.StartsWith(CHARI) Then
                     result = New System.Numerics.Complex
                     Return False
                 End If
             Else
-                ' Must match FormerAiB.
-                If Not TrimmedStr.StartsWith(CHARI) Then
+                ' Must match ABi.
+                If Not TrimmedStr.EndsWith(CHARI) Then
                     result = New System.Numerics.Complex
                     Return False
                 End If
