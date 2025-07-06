@@ -8,9 +8,9 @@ Imports Xunit
 Imports OSNW.Numerics.ComplexExtensions
 Imports OsnwNumSS = OSNW.Numerics.StandardizationStyles
 
-Namespace ListValues
+Namespace TestStandardizationStylesValues
 
-    Public Class TestStandardizationStyles
+    Public Class ConfirmStandardizationValuesTest
 
         <Theory>
         <InlineData(OsnwNumSS.None, 0)>
@@ -41,9 +41,9 @@ Namespace ListValues
             Assert.Equal(expected, CInt(stdStyle))
         End Sub
 
-    End Class ' ConfirmStandardizationValues
+    End Class ' ConfirmStandardizationValuesTest
 
-End Namespace ' TestOsnwNumSS
+End Namespace ' TestStandardizationStylesValues
 
 Namespace TestToStandardString
 
@@ -122,7 +122,7 @@ Namespace TestToStandardString
 
     End Class ' ToStandardStringCultureTest
 
-End Namespace ' TestToString
+End Namespace ' TestToStandardString
 
 Namespace TestTryParseStandard
 

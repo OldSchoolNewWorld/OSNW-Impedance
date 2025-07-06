@@ -1,11 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <RootNamespace>TestImpedance</RootNamespace>
+    <RootNamespace>AdmittanceTest</RootNamespace>
     <TargetFramework>net8.0</TargetFramework>
 
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
+    <AssemblyName>AdmittanceTest</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,11 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <RootNamespace>TestAdmittance</RootNamespace>
+    <RootNamespace>ComplexTest</RootNamespace>
     <TargetFramework>net8.0</TargetFramework>
 
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
+    <AssemblyName>ComplexTest</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
