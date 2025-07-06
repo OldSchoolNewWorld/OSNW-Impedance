@@ -65,14 +65,12 @@ Public Structure Impedance
 
 #Region "Fields and Properties"
 
-    ' Do not rename (binary serialization). ??????????????????????????????
     ''' <summary>
     ''' Gets the resistance component, in ohms, of the current <c>Impedance</c>
     ''' instance.
     ''' </summary>
     Private ReadOnly m_Resistance As System.Double
 
-    ' Do not rename (binary serialization). ??????????????????????????????
     ''' <summary>
     ''' Gets the reactance component, in ohms, of the current <c>Impedance</c>
     ''' instance.
@@ -84,7 +82,7 @@ Public Structure Impedance
     ''' instance.
     ''' </summary>
     Public ReadOnly Property Resistance As System.Double
-        ' Do not rename (binary serialization). ??????????????????????????????
+        ' Do not rename (binary serialization).
         Get
             Return m_Resistance
         End Get
@@ -95,7 +93,7 @@ Public Structure Impedance
     ''' instance.
     ''' </summary>
     Public ReadOnly Property Reactance As System.Double
-        ' Do not rename (binary serialization). ??????????????????????????????
+        ' Do not rename (binary serialization).
         Get
             Return m_Reactance
         End Get

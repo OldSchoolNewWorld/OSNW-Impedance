@@ -7,7 +7,6 @@ Imports System.Globalization
 Imports Xunit
 Imports OSNW.Numerics
 
-
 Namespace DevelopmentTests
 
     Public Class TestEquals

@@ -4,9 +4,8 @@ Option Compare Binary
 Option Infer Off
 
 Imports System.Globalization
-Imports System.Runtime.InteropServices.JavaScript.JSType
-Imports OSNW.Numerics
 Imports Xunit
+Imports OSNW.Numerics
 
 Namespace DevelopmentTests
 

@@ -1,4 +1,9 @@
-﻿Imports System.Diagnostics.CodeAnalysis
+﻿Option Explicit On
+Option Strict On
+Option Compare Binary
+Option Infer Off
+
+Imports System.Diagnostics.CodeAnalysis
 Imports OSNW.Numerics.ComplexExtensions
 
 ''' <summary>
