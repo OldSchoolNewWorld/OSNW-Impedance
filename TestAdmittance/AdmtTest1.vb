@@ -57,9 +57,9 @@ Namespace DevelopmentTests
 
 End Namespace ' DevTests
 
-Namespace TestToString
+Namespace ToStringTests
 
-    Public Class ToStringDefaultTest
+    Public Class ToString_DefaultTests
 
         <Theory>
         <InlineData(1.125, 5.675, "<1.125; 5.675>")>
@@ -74,9 +74,9 @@ Namespace TestToString
 
     End Class ' ToStringDefaultTest
 
-End Namespace ' TestToString
+End Namespace ' ToStringTests
 
-Namespace TestToStandardString
+Namespace ToStandardStringTests
 
     Public Class ToStandardStringDefaultTest
 
@@ -155,9 +155,9 @@ Namespace TestToStandardString
 
     End Class ' ToStandardStringCultureTest
 
-End Namespace ' TestToStandardString
+End Namespace ' ToStandardStringTests
 
-Namespace TestTryParseStandard
+Namespace TryParseStandardTests
 
     Public Class TryParseStandardDefaultTest
 
@@ -262,9 +262,9 @@ Namespace TestTryParseStandard
 
     End Class ' TryParseStandardCultureTest
 
-End Namespace ' TestTryParseStandard
+End Namespace ' TryParseStandardTests
 
-Namespace TestMath
+Namespace MathTests
 
     Public Class EqualsObjectTest
 
@@ -309,4 +309,4 @@ Namespace TestMath
 
     End Class ' EqualsOtherTest
 
-End Namespace ' TestMath
+End Namespace ' MathTests

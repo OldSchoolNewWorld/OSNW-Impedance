@@ -8,7 +8,7 @@ Imports Xunit
 Imports OSNW.Numerics.ComplexExtensions
 Imports OsnwNumSS = OSNW.Numerics.StandardizationStyles
 
-Namespace TestStandardizationStylesValues
+Namespace StandardizationStylesValuesTests
 
     Public Class ConfirmStandardizationValuesTest
 
@@ -43,9 +43,9 @@ Namespace TestStandardizationStylesValues
 
     End Class ' ConfirmStandardizationValuesTest
 
-End Namespace ' TestStandardizationStylesValues
+End Namespace ' StandardizationStylesValuesTests
 
-Namespace TestToStandardString
+Namespace ToStandardStringTests
 
     Public Class ToStandardStringDefaultTest
 
@@ -122,9 +122,9 @@ Namespace TestToStandardString
 
     End Class ' ToStandardStringCultureTest
 
-End Namespace ' TestToStandardString
+End Namespace ' ToStandardStringTests
 
-Namespace TestTryParseStandard
+Namespace TryParseStandardTests
 
     Public Class TryParseStandardDefaultTest
 
@@ -226,4 +226,4 @@ Namespace TestTryParseStandard
 
     End Class ' TryParseStandardCultureTest
 
-End Namespace ' TestTryParseStandard
+End Namespace ' TryParseStandardTests
