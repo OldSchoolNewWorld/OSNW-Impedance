@@ -52,7 +52,7 @@ Namespace DevelopmentTests
             Assert.False(I1.Equals(Nothing))
         End Sub
 
-    End Class
+    End Class ' TestEquals
 
 End Namespace ' DevTests
 
@@ -274,7 +274,7 @@ End Namespace ' TryParseStandardTests
 
 Namespace MathTests
 
-    Public Class EqualsObjectTest
+    Public Class TestEqualsObject
 
         <Fact>
         Sub Equals_MismatchObjectType_Fails1()
@@ -297,9 +297,9 @@ Namespace MathTests
             Assert.False(I1.Equals(C2))
         End Sub
 
-    End Class ' EqualsObjectTest
+    End Class ' TestEqualsObject
 
-    Public Class EqualsOtherTest
+    Public Class TestEqualsOther
 
         <Fact>
         Sub Equals_MatchOther_Passes()
@@ -321,7 +321,7 @@ End Namespace ' MathTests
 
 Namespace SerializationTests
 
-    Public Class SerializationTest
+    Public Class TestSerialization
 
         <Fact>
         Sub Serialize_Simple_Passes()
@@ -399,6 +399,6 @@ Namespace SerializationTests
 
         End Sub
 
-    End Class ' SerializationTest
+    End Class ' TestSerialization
 
 End Namespace ' SerializationTests

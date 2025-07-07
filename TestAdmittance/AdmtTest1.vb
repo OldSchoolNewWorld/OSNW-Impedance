@@ -53,7 +53,7 @@ Namespace DevelopmentTests
             Assert.False(I1.Equals(Nothing))
         End Sub
 
-    End Class
+    End Class ' TestEquals
 
 End Namespace ' DevTests
 

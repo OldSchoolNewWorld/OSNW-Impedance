@@ -20,8 +20,6 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "AdmittanceTestProject", "..
 		{E825EF74-34A3-48BF-8A0A-F07B8D6BCC6A} = {E825EF74-34A3-48BF-8A0A-F07B8D6BCC6A}
 	EndProjectSection
 EndProject
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "SampleTestProject1", "..\SampleTestProject1\SampleTestProject1.vbproj", "{698B45A1-426B-4D17-9083-52D0D249D05C}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,10 +42,6 @@ Global
 		{5CFC1E29-590B-4155-96F5-34B4578B9267}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5CFC1E29-590B-4155-96F5-34B4578B9267}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5CFC1E29-590B-4155-96F5-34B4578B9267}.Release|Any CPU.Build.0 = Release|Any CPU
-		{698B45A1-426B-4D17-9083-52D0D249D05C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{698B45A1-426B-4D17-9083-52D0D249D05C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{698B45A1-426B-4D17-9083-52D0D249D05C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{698B45A1-426B-4D17-9083-52D0D249D05C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
