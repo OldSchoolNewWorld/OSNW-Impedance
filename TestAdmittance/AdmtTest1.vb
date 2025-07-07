@@ -59,7 +59,7 @@ End Namespace ' DevTests
 
 Namespace ToStringTests
 
-    Public Class ToString_DefaultTests
+    Public Class TestToStringDefault
 
         <Theory>
         <InlineData(1.125, 5.675, "<1.125; 5.675>")>
@@ -72,13 +72,13 @@ Namespace ToStringTests
             Assert.Equal(expect, AdmtStr)
         End Sub
 
-    End Class ' ToStringDefaultTest
+    End Class ' TestToStringDefault
 
 End Namespace ' ToStringTests
 
 Namespace ToStandardStringTests
 
-    Public Class ToStandardStringDefaultTest
+    Public Class TestToStandardStringDefault
 
         <Theory>
         <InlineData(1.125, 5.675, "1.125+5.675j")>
@@ -91,9 +91,9 @@ Namespace ToStandardStringTests
             Assert.Equal(expect, AdmtStr)
         End Sub
 
-    End Class ' ToStandardStringDefaultTest
+    End Class ' TestToStandardStringDefault
 
-    Public Class ToStandardStringStandardizationTest
+    Public Class TestToStandardStringStandardization
 
         <Theory>
         <InlineData(1.125, 5.675, Nothing, "1.125+5.675j")>
@@ -108,9 +108,9 @@ Namespace ToStandardStringTests
             Assert.Equal(expected, AdmtStr)
         End Sub
 
-    End Class ' ToStandardStringStandardizationTest
+    End Class ' TestToStandardStringStandardization
 
-    Public Class ToStandardStringFormatTest
+    Public Class TestToStandardStringFormat
 
         <Theory>
         <InlineData(1.122, 5.677, "F2", "1.12+5.68j")>
@@ -123,9 +123,9 @@ Namespace ToStandardStringTests
             Assert.Equal(expect, AdmtStr)
         End Sub
 
-    End Class ' ToStandardStringFormatTest
+    End Class ' TestToStandardStringFormat
 
-    Public Class ToStandardStringCultureTest
+    Public Class TestToStandardStringCulture
 
         <Theory>
         <InlineData(111_111.122, -555_555.677, 0, "111111.122-555555.677j")> ' One round down, one up.
@@ -153,13 +153,13 @@ Namespace ToStandardStringTests
 
         End Sub
 
-    End Class ' ToStandardStringCultureTest
+    End Class ' TestToStandardStringCulture
 
 End Namespace ' ToStandardStringTests
 
 Namespace TryParseStandardTests
 
-    Public Class TryParseStandardDefaultTest
+    Public Class TestTryParseStandardDefault
 
         <Theory>
         <InlineData("1.125+i5.675", 1.125, 5.675)>
@@ -174,9 +174,9 @@ Namespace TryParseStandardTests
             Assert.True(Admt.Conductance.Equals(real) AndAlso Admt.Susceptance.Equals(imaginary))
         End Sub
 
-    End Class ' TryParseStandardDefaultTest
+    End Class ' TestTryParseStandardDefault
 
-    Public Class TryParseStandardDefaultMixedTest
+    Public Class TestTryParseStandardDefaultMixed
 
         <Theory>
         <InlineData("1.125+i5.675", 1.125, 5.675)> ' A+Bi.
@@ -194,9 +194,9 @@ Namespace TryParseStandardTests
             Assert.True(Admt.Conductance.Equals(real) AndAlso Admt.Susceptance.Equals(imaginary))
         End Sub
 
-    End Class ' TryParseStandardDefaultMixedTest
+    End Class ' TestTryParseStandardDefaultMixed
 
-    Public Class TryParseStandardEnforceStandardizationTest
+    Public Class TestTryParseStandardEnforceStandardization
 
         Const TightEnforcement As OsnwNumSS =
             OsnwNumSS.EnforceSequence Or OsnwNumSS.EnforceSpacing
@@ -230,9 +230,9 @@ Namespace TryParseStandardTests
             Assert.False(OsnwAdmt.TryParseStandard(standardStr, standardizationStyle, Nothing, Admt))
         End Sub
 
-    End Class ' TryParseStandardEnforceStandardizationTest
+    End Class ' TestTryParseStandardEnforceStandardization
 
-    Public Class TryParseStandardCultureTest
+    Public Class TestTryParseStandardCulture
 
         <Theory>
         <InlineData("111111.122-i555555.677", 111_111.122, -555_555.677, 0)> ' One round down, one up.
@@ -240,7 +240,7 @@ Namespace TryParseStandardTests
         <InlineData("1.122+i5.677", 1.122, 5.677, 2)>
         <InlineData("111111,122-i555555,677", 111_111.122, -555_555.677, 3)> ' One round down, one up.
         <InlineData("111111,125+i555555,675", 111_111.125, 555_555.675, 4)>
-        Sub TryParseStandard_Culture_Succeeds(
+        Sub TryParseStandardCulture_Succeeds(
             standardStr As String, real As Double, imaginary As Double, index As Integer)
 
             Dim Providers As System.IFormatProvider() = {
@@ -260,53 +260,53 @@ Namespace TryParseStandardTests
 
         End Sub
 
-    End Class ' TryParseStandardCultureTest
+    End Class ' TestTryParseStandardCulture
 
 End Namespace ' TryParseStandardTests
 
 Namespace MathTests
 
-    Public Class EqualsObjectTest
+    Public Class TestEqualsObject
 
         <Fact>
-        Sub Equals_MismatchObjectType_Fails1()
+        Sub EqualsObject_TypeMismatch_Fails1()
             Dim I1 As New OsnwAdmt(3, 4)
             Dim C2 As New Impedance(3, 4)
             Assert.False(I1.Equals(C2))
         End Sub
 
         <Fact>
-        Sub Equals_MismatchObjectType_Fails2()
+        Sub EqualsObject_TypeMismatch_Fails2()
             Dim I1 As New OsnwAdmt(3, 4)
             Dim C2 As Object = New Impedance(3, 4)
             Assert.False(I1.Equals(C2))
         End Sub
 
         <Fact>
-        Sub Equals_MismatchObjectValue_Fails()
+        Sub EqualsObject_ValueMismatch_Fails()
             Dim I1 As New OsnwAdmt(3, 4)
             Dim C2 As Object = New OsnwAdmt(4, 5)
             Assert.False(I1.Equals(C2))
         End Sub
 
-    End Class ' EqualsObjectTest
+    End Class ' TestEqualsObject
 
-    Public Class EqualsOtherTest
+    Public Class TestEqualsOther
 
         <Fact>
-        Sub Equals_MatchOther_Passes()
+        Sub EqualsOther_Match_Passes()
             Dim I1 As New OsnwAdmt(1, 2)
             Dim I2 As New OsnwAdmt(1, 2)
             Assert.True(I1.Equals(I2))
         End Sub
 
         <Fact>
-        Sub Equals_MismatchOther_Fails()
+        Sub EqualsOther_Mismatch_Fails()
             Dim I1 As New OsnwAdmt(1, 2)
             Dim I2 As New OsnwAdmt(1, 3)
             Assert.False(I1.Equals(I2))
         End Sub
 
-    End Class ' EqualsOtherTest
+    End Class ' TestEqualsOther
 
 End Namespace ' MathTests
