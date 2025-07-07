@@ -10,7 +10,7 @@ Imports OsnwNumSS = OSNW.Numerics.StandardizationStyles
 
 Namespace StandardizationStylesValuesTests
 
-    Public Class ConfirmStandardizationValuesTest
+    Public Class TestStandardizationStylesValues
 
         <Theory>
         <InlineData(OsnwNumSS.None, 0)>
@@ -41,13 +41,13 @@ Namespace StandardizationStylesValuesTests
             Assert.Equal(expected, CInt(stdStyle))
         End Sub
 
-    End Class ' ConfirmStandardizationValuesTest
+    End Class ' TestStandardizationStylesValues
 
 End Namespace ' StandardizationStylesValuesTests
 
 Namespace ToStandardStringTests
 
-    Public Class ToStandardStringDefaultTest
+    Public Class TestToStandardStringDefault
 
         <Theory>
         <InlineData(1.125, 5.675, "1.125+5.675i")>
@@ -60,9 +60,9 @@ Namespace ToStandardStringTests
             Assert.Equal(expected, CplxStr)
         End Sub
 
-    End Class ' ToStandardStringDefaultTest
+    End Class ' TestToStandardStringDefault
 
-    Public Class ToStandardStringStandardizationTest
+    Public Class TestToStandardStringStandardization
 
         <Theory>
         <InlineData(1.125, 5.675, Nothing, "1.125+5.675i")>
@@ -76,9 +76,9 @@ Namespace ToStandardStringTests
             Assert.Equal(expected, CplxStr)
         End Sub
 
-    End Class ' ToStandardStringStandardizationTest
+    End Class ' TestToStandardStringStandardization
 
-    Public Class ToStandardStringFormatTest
+    Public Class TestToStandardStringFormat
 
         <Theory>
         <InlineData(1.122, 5.677, "F2", "1.12+5.68i")> ' One round down, one up.
@@ -90,9 +90,9 @@ Namespace ToStandardStringTests
             Assert.Equal(expected, CplxStr)
         End Sub
 
-    End Class ' ToStandardStringFormatTest
+    End Class ' TestToStandardStringFormat
 
-    Public Class ToStandardStringCultureTest
+    Public Class TestToStandardStringCulture
 
         <Theory>
         <InlineData(111_111.122, -555_555.677, 0, "111111.122-555555.677i")> ' One round down, one up.
@@ -120,13 +120,13 @@ Namespace ToStandardStringTests
 
         End Sub
 
-    End Class ' ToStandardStringCultureTest
+    End Class ' TestToStandardStringCulture
 
 End Namespace ' ToStandardStringTests
 
 Namespace TryParseStandardTests
 
-    Public Class TryParseStandardDefaultTest
+    Public Class TestTryParseStandardDefault
 
         <Theory>
         <InlineData("1.125+i5.675", 1.125, 5.675)>
@@ -141,9 +141,9 @@ Namespace TryParseStandardTests
             Assert.True(Cplx.Real.Equals(real) AndAlso Cplx.Imaginary.Equals(imaginary))
         End Sub
 
-    End Class ' TryParseStandardDefaultTest
+    End Class ' TestTryParseStandardDefault
 
-    Public Class TryParseStandardDefaultMixedTest
+    Public Class TestTryParseStandardDefaultMixed
 
         <Theory>
         <InlineData("1.125+i5.675", 1.125, 5.675)> ' A+Bi.
@@ -161,9 +161,9 @@ Namespace TryParseStandardTests
             Assert.True(Cplx.Real.Equals(real) AndAlso Cplx.Imaginary.Equals(imaginary))
         End Sub
 
-    End Class ' TryParseStandardDefaultMixedTest
+    End Class ' TestTryParseStandardDefaultMixed
 
-    Public Class TryParseStandardEnforceStandardizationTest
+    Public Class TestTryParseStandardEnforceStandardization
 
         Const TightEnforcement As OsnwNumSS =
             OsnwNumSS.EnforceSequence Or OsnwNumSS.EnforceSpacing
@@ -192,7 +192,7 @@ Namespace TryParseStandardTests
             Assert.False(TryParseStandard(standardStr, stdStyle, Nothing, Cplx))
         End Sub
 
-    End Class ' TryParseStandardEnforceStandardizationTest
+    End Class ' TestTryParseStandardEnforceStandardization
 
     Public Class TryParseStandardCultureTest
 
@@ -224,6 +224,6 @@ Namespace TryParseStandardTests
 
         End Sub
 
-    End Class ' TryParseStandardCultureTest
+    End Class ' TestTryParseStandardCulture
 
 End Namespace ' TryParseStandardTests
