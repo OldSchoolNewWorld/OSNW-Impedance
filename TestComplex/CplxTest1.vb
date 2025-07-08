@@ -84,6 +84,8 @@ Namespace ToStandardStringTests
         <InlineData(1.122, 5.677, "F2", "1.12+5.68i")> ' One round down, one up.
         <InlineData(111_111.122, -555_555.677, "N2", "111,111.12-555,555.68i")> ' One round down, one up.
         <InlineData(-111_111.125, 555_555.675, "G5", "-1.1111E+05+5.5556E+05i")>
+        <InlineData(-111_111.125, 555_555.675, "G", "-111111.125+555555.675i")>
+        <InlineData(Math.PI, Math.E, "G", "3.141592653589793+2.718281828459045i")>
         Sub ToStandardString_Format_Succeeds(real As Double, imaginary As Double, format As String, expected As String)
             Dim Z As New System.Numerics.Complex(real, imaginary)
             Dim CplxStr As String = Z.ToStandardString(Nothing, format)
@@ -95,12 +97,12 @@ Namespace ToStandardStringTests
     Public Class TestToStandardStringCulture
 
         <Theory>
-        <InlineData(111_111.122, -555_555.677, 0, "111111.122-555555.677i")> ' One round down, one up.
+        <InlineData(111_111.122, 555_555.677, 0, "111111.122+555555.677i")> ' One round down, one up.
         <InlineData(111_111.122, -555_555.677, 1, "111111.122-555555.677i")> ' One round down, one up.
-        <InlineData(111_111.122, -555_555.677, 2, "111111.122-555555.677i")> ' One round down, one up.
-        <InlineData(111_111.122, -555_555.677, 3, "111111.122-555555.677i")> ' One round down, one up.
-        <InlineData(111_111.122, -555_555.677, 4, "111111,122-555555,677i")> ' One round down, one up.
-        <InlineData(-111_111.125, 555_555.675, 5, "-111111,125+555555,675i")>
+        <InlineData(-111_111.122, 555_555.677, 2, "-111111.122+555555.677i")> ' One round down, one up.
+        <InlineData(-111_111.122, -555_555.677, 3, "-111111.122-555555.677i")> ' One round down, one up.
+        <InlineData(111_111.122, 555_555.677, 4, "111111,122+555555,677i")> ' One round down, one up.
+        <InlineData(111_111.125, 555_555.675, 5, "111111,125+555555,675i")>
         Sub ToStandardString_Culture_Succeeds(
             real As Double, imaginary As Double, index As Integer, expected As String)
 
@@ -120,6 +122,8 @@ Namespace ToStandardStringTests
 
         End Sub
 
+        ' No failure tests. Any valid double values should be allowed.
+
     End Class ' TestToStandardStringCulture
 
 End Namespace ' ToStandardStringTests
@@ -133,7 +137,9 @@ Namespace TryParseStandardTests
         <InlineData("1.125-i5.675", 1.125, -5.675)>
         <InlineData("-1.125+i5.675", -1.125, 5.675)>
         <InlineData("-1.125-i5.675", -1.125, -5.675)>
-        Sub TryParseStandard_Default_Succeeds(standardStr As String, real As Double, imaginary As Double)
+        <InlineData(".1125e1+i.5675E1", 1.125, 5.675)>
+        <InlineData("112.5E-2+i567.5e-2", 1.125, 5.675)>
+        Sub TryParseStandardDefault_GoodInput_Succeeds(standardStr As String, real As Double, imaginary As Double)
             Dim Cplx As New Numerics.Complex
             If Not TryParseStandard(standardStr, Nothing, Nothing, Cplx) Then
                 Assert.True(False)
@@ -141,6 +147,19 @@ Namespace TryParseStandardTests
             Assert.True(Cplx.Real.Equals(real) AndAlso Cplx.Imaginary.Equals(imaginary))
         End Sub
 
+
+        ' DO SOME FAILURE CASES HERE:
+        ' XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+        ' j vs i
+        ' bad exponential
+
+        Sub TryParseStandardDefault_BadInput_Fails(standardStr As String, real As Double, imaginary As Double)
+            Dim Cplx As New Numerics.Complex
+            If Not TryParseStandard(standardStr, Nothing, Nothing, Cplx) Then
+                Assert.True(False)
+            End If
+            Assert.True(Cplx.Real.Equals(real) AndAlso Cplx.Imaginary.Equals(imaginary))
+        End Sub
     End Class ' TestTryParseStandardDefault
 
     Public Class TestTryParseStandardDefaultMixed

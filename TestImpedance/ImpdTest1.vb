@@ -6,6 +6,7 @@ Option Infer Off
 Imports System.Globalization
 Imports Xunit
 Imports OSNW.Numerics
+Imports OsnwImpd = OSNW.Numerics.Impedance
 Imports OsnwNumSS = OSNW.Numerics.StandardizationStyles
 
 Namespace DevelopmentTests
@@ -58,7 +59,7 @@ End Namespace ' DevTests
 
 Namespace ToStringTests
 
-    Public Class ToStringDefaultTest
+    Public Class TestToStringDefault
 
         <Theory>
         <InlineData(1.125, 5.675, "<1.125; 5.675>")>
@@ -71,13 +72,23 @@ Namespace ToStringTests
             Assert.Equal(expect, ImpdStr)
         End Sub
 
-    End Class ' ToStringDefaultTest
+        '<Fact>
+        'Public Sub ToString_NegativeConductance_Fails()
+        '    Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
+        '        Sub()
+        '            ' Code that throws the exception
+        '            Dim Z As New OSNW.Numerics.Impedance(-1.125, 5.675)
+        '            Dim AdmtStr As String = Z.ToString()
+        '        End Sub)
+        'End Sub
+
+    End Class ' TestToStringDefault
 
 End Namespace ' ToStringTests
 
 Namespace ToStandardStringTests
 
-    Public Class ToStandardStringDefaultTest
+    Public Class TestToStandardStringDefault
 
         <Theory>
         <InlineData(1.125, 5.675, "1.125+5.675j")>
@@ -90,9 +101,9 @@ Namespace ToStandardStringTests
             Assert.Equal(expect, ImpdStr)
         End Sub
 
-    End Class ' ToStandardStringDefaultTest
+    End Class ' TestToStandardStringDefault
 
-    Public Class ToStandardStringStandardizationTest
+    Public Class TestToStandardStringStandardization
 
         <Theory>
         <InlineData(1.125, 5.675, Nothing, "1.125+5.675j")>
@@ -107,9 +118,9 @@ Namespace ToStandardStringTests
             Assert.Equal(expected, ImpdStr)
         End Sub
 
-    End Class ' ToStandardStringStandardizationTest
+    End Class ' TestToStandardStringStandardization
 
-    Public Class ToStandardStringFormatTest
+    Public Class TestToStandardStringFormat
 
         <Theory>
         <InlineData(1.122, 5.677, "F2", "1.12+5.68j")>
@@ -122,9 +133,9 @@ Namespace ToStandardStringTests
             Assert.Equal(expect, ImpdStr)
         End Sub
 
-    End Class ' ToStandardStringFormatTest
+    End Class ' TestToStandardStringFormat
 
-    Public Class ToStandardStringCultureTest
+    Public Class TestToStandardStringCulture
 
         ' Something that was seen indicated that French could have a space as
         ' the thousands separator, but that does not match that result of the
@@ -163,30 +174,34 @@ Namespace ToStandardStringTests
 
         End Sub
 
-    End Class ' ToStandardStringCultureTest
+    End Class ' TestToStandardStringCulture
 
 End Namespace ' ToStandardStringTests
 
 Namespace TryParseStandardTests
 
-    Public Class TryParseStandardDefaultTest
+
+    ' PARSING IS WHERE TO ADD SOME FAILURE TESTS.
+
+
+    Public Class TestTryParseStandardDefault
 
         <Theory>
         <InlineData("1.125+i5.675", 1.125, 5.675)>
         <InlineData("1.125-i5.675", 1.125, -5.675)>
-        <InlineData("0+i5.675", 0, 5.675)>
-        <InlineData("0-i5.675", 0, -5.675)>
+        <InlineData(".1125e1+i.5675E1", 1.125, 5.675)>
+        <InlineData("112.5E-2+i567.5e-2", 1.125, 5.675)>
         Sub TryParseStandard_Default_Succeeds(standardStr As String, real As Double, imaginary As Double)
-            Dim Impd As New OSNW.Numerics.Impedance
-            If Not OSNW.Numerics.Impedance.TryParseStandard(standardStr, Nothing, Nothing, Impd) Then
-                Assert.True(False)
+            Dim Admt As New OsnwImpd
+            If Not OsnwImpd.TryParseStandard(standardStr, Nothing, Nothing, Admt) Then
+                Assert.True(False, "Failed to parse.")
             End If
-            Assert.True(Impd.Resistance.Equals(real) AndAlso Impd.Reactance.Equals(imaginary))
+            Assert.True(Admt.Resistance.Equals(real) AndAlso Admt.Reactance.Equals(imaginary), "Parsed with bad conversion.")
         End Sub
 
-    End Class ' TryParseStandardDefaultTest
+    End Class ' TestTryParseStandardDefault
 
-    Public Class TryParseStandardDefaultMixedTest
+    Public Class TestTryParseStandardDefaultMixed
 
         <Theory>
         <InlineData("1.125+i5.675", 1.125, 5.675)> ' A+Bi.
@@ -204,9 +219,9 @@ Namespace TryParseStandardTests
             Assert.True(Impd.Resistance.Equals(real) AndAlso Impd.Reactance.Equals(imaginary))
         End Sub
 
-    End Class ' TryParseStandardDefaultMixedTest
+    End Class ' TestTryParseStandardDefaultMixed
 
-    Public Class TryParseStandardEnforceStandardizationTest
+    Public Class TestTryParseStandardEnforceStandardization
 
         Const TightEnforcement As StandardizationStyles =
             StandardizationStyles.EnforceSequence Or StandardizationStyles.EnforceSpacing
@@ -238,9 +253,9 @@ Namespace TryParseStandardTests
             Assert.False(OSNW.Numerics.Impedance.TryParseStandard(standardStr, standardizationStyle, Nothing, Impd))
         End Sub
 
-    End Class ' TryParseStandardEnforceStandardizationTest
+    End Class ' TestTryParseStandardEnforceStandardization
 
-    Public Class TryParseStandardCultureTest
+    Public Class TestTryParseStandardCulture
 
         <Theory>
         <InlineData("111111.122-i555555.677", 111_111.122, -555_555.677, 0)> ' One round down, one up.
@@ -268,7 +283,7 @@ Namespace TryParseStandardTests
 
         End Sub
 
-    End Class ' TryParseStandardCultureTest
+    End Class ' TestTryParseStandardCulture
 
 End Namespace ' TryParseStandardTests
 

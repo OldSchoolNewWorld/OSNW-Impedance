@@ -11,46 +11,37 @@ Imports OsnwNumSS = OSNW.Numerics.StandardizationStyles
 
 Namespace DevelopmentTests
 
+    ' Tests to confirm, or identify, behaviors.
+
     Public Class TestEquals
 
         <Fact>
         Sub Equals_GoodMatch_Passes()
-            Dim I1 As New OsnwAdmt(1, 2)
-            Dim I2 As New OsnwAdmt(1, 2)
-            Assert.True(I1.Equals(I2))
+            Dim A1 As New OsnwAdmt(1, 2)
+            Dim A2 As New OsnwAdmt(1, 2)
+            Assert.True(A1.Equals(A2))
         End Sub
 
         <Fact>
         Sub Equals_Mismatch_Fails()
-            Dim I1 As New OsnwAdmt(1, 2)
-            Dim I2 As New OsnwAdmt(2, 3)
-            Assert.False(I1.Equals(I2))
+            Dim A1 As New OsnwAdmt(1, 2)
+            Dim A2 As New OsnwAdmt(2, 3)
+            Assert.False(A1.Equals(A2))
         End Sub
 
         <Fact>
-        Sub Equals_DoubleDefault_Passes()
-            ' What happens the nothing is sent?
-            ' Is a null check needed?
-            Dim I1 As OsnwAdmt
-            Dim I2 As OsnwAdmt
-            Assert.True(I1.Equals(I2))
-        End Sub
-
-        <Fact>
-        Sub Equals_DoubleEmpty_Passes()
-            ' What happens when nothing is set?
-            ' Is a null check needed?
-            Dim I1 As New OsnwAdmt()
-            Dim I2 As New OsnwAdmt()
-            Assert.True(I1.Equals(Nothing))
+        Sub Equals_Default_Passes()
+            Dim A1 As OsnwAdmt
+            Dim A2 As New OsnwAdmt()
+            Assert.True(A1.Equals(A2))
         End Sub
 
         <Fact>
         Sub Equals_Nothing_Fails()
             ' What happens the "Nothing" is sent?
             ' Is a null check needed?
-            Dim I1 As New OsnwAdmt(1, 2)
-            Assert.False(I1.Equals(Nothing))
+            Dim A1 As New OsnwAdmt(1, 2)
+            Assert.False(A1.Equals(Nothing))
         End Sub
 
     End Class ' TestEquals
@@ -71,6 +62,18 @@ Namespace ToStringTests
             Dim AdmtStr As String = Y.ToString()
             Assert.Equal(expect, AdmtStr)
         End Sub
+
+        '<Fact>
+        'Public Sub ToString_NegativeConductance_Fails()
+
+        '    Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
+        '        Sub()
+        '            ' Code that throws the exception
+        '            Dim Y As New OsnwAdmt(-1.125, 5.675)
+        '            Dim AdmtStr As String = Y.ToString()
+        '        End Sub)
+
+        'End Sub
 
     End Class ' TestToStringDefault
 
@@ -159,19 +162,23 @@ End Namespace ' ToStandardStringTests
 
 Namespace TryParseStandardTests
 
+
+    ' PARSING IS WHERE TO ADD SOME FAILURE TESTS.
+
+
     Public Class TestTryParseStandardDefault
 
         <Theory>
         <InlineData("1.125+i5.675", 1.125, 5.675)>
         <InlineData("1.125-i5.675", 1.125, -5.675)>
-        <InlineData("0+i5.675", 0, 5.675)>
-        <InlineData("0-i5.675", 0, -5.675)>
+        <InlineData(".1125e1+i.5675E1", 1.125, 5.675)>
+        <InlineData("112.5E-2+i567.5e-2", 1.125, 5.675)>
         Sub TryParseStandard_Default_Succeeds(standardStr As String, real As Double, imaginary As Double)
             Dim Admt As New OsnwAdmt
             If Not OsnwAdmt.TryParseStandard(standardStr, Nothing, Nothing, Admt) Then
-                Assert.True(False)
+                Assert.True(False, "Failed to parse.")
             End If
-            Assert.True(Admt.Conductance.Equals(real) AndAlso Admt.Susceptance.Equals(imaginary))
+            Assert.True(Admt.Conductance.Equals(real) AndAlso Admt.Susceptance.Equals(imaginary), "Parsed with bad conversion.")
         End Sub
 
     End Class ' TestTryParseStandardDefault
