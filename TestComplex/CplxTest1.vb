@@ -51,9 +51,9 @@ Namespace ToStandardStringTests
 
         <Theory>
         <InlineData(1.125, 5.675, "1.125+5.675i")>
-        <InlineData(1.125, -5.675, "1.125-5.675i")>
-        <InlineData(-1.125, 5.675, "-1.125+5.675i")>
-        <InlineData(-1.125, -5.675, "-1.125-5.675i")>
+        <InlineData(-1.125, 5.675, "-1.125+5.675i")>  ' -A
+        <InlineData(1.125, -5.675, "1.125-5.675i")> ' -B
+        <InlineData(-1.125, -5.675, "-1.125-5.675i")> ' -A, -B
         Sub ToStandardString_Default_Succeeds(real As Double, imaginary As Double, expected As String)
             Dim Z As New System.Numerics.Complex(real, imaginary)
             Dim CplxStr As String = Z.ToStandardString()
@@ -66,9 +66,9 @@ Namespace ToStandardStringTests
 
         <Theory>
         <InlineData(1.125, 5.675, Nothing, "1.125+5.675i")>
-        <InlineData(1.125, -5.675, OsnwNumSS.AiB, "1.125-i5.675")>
-        <InlineData(-1.125, 5.675, OsnwNumSS.Open, "-1.125 + 5.675i")>
-        <InlineData(-1.125, -5.675, OsnwNumSS.OpenAiB, "-1.125 - i5.675")>
+        <InlineData(-1.125, 5.675, OsnwNumSS.Open, "-1.125 + 5.675i")> ' -A
+        <InlineData(1.125, -5.675, OsnwNumSS.AiB, "1.125-i5.675")> ' -B
+        <InlineData(-1.125, -5.675, OsnwNumSS.OpenAiB, "-1.125 - i5.675")> ' -A, -B
         Sub ToStandardString_Standardization_Succeeds(real As Double, imaginary As Double,
                                                       stdStyle As OsnwNumSS, expected As String)
             Dim Z As New System.Numerics.Complex(real, imaginary)
@@ -81,10 +81,10 @@ Namespace ToStandardStringTests
     Public Class TestToStandardStringFormat
 
         <Theory>
-        <InlineData(1.122, 5.677, "F2", "1.12+5.68i")> ' One round down, one up.
+        <InlineData(111_111.125, 555_555.675, "G", "111111.125+555555.675i")>
+        <InlineData(-111_111.122, 555_555.677, "F2", "-111111.12+555555.68i")> ' One round down, one up.
         <InlineData(111_111.122, -555_555.677, "N2", "111,111.12-555,555.68i")> ' One round down, one up.
-        <InlineData(-111_111.125, 555_555.675, "G5", "-1.1111E+05+5.5556E+05i")>
-        <InlineData(-111_111.125, 555_555.675, "G", "-111111.125+555555.675i")>
+        <InlineData(-111_111.125, -555_555.675, "G5", "-1.1111E+05-5.5556E+05i")>
         <InlineData(Math.PI, Math.E, "G", "3.141592653589793+2.718281828459045i")>
         Sub ToStandardString_Format_Succeeds(real As Double, imaginary As Double, format As String, expected As String)
             Dim Z As New System.Numerics.Complex(real, imaginary)
@@ -97,12 +97,12 @@ Namespace ToStandardStringTests
     Public Class TestToStandardStringCulture
 
         <Theory>
-        <InlineData(111_111.122, 555_555.677, 0, "111111.122+555555.677i")> ' One round down, one up.
-        <InlineData(111_111.122, -555_555.677, 1, "111111.122-555555.677i")> ' One round down, one up.
-        <InlineData(-111_111.122, 555_555.677, 2, "-111111.122+555555.677i")> ' One round down, one up.
-        <InlineData(-111_111.122, -555_555.677, 3, "-111111.122-555555.677i")> ' One round down, one up.
-        <InlineData(111_111.122, 555_555.677, 4, "111111,122+555555,677i")> ' One round down, one up.
-        <InlineData(111_111.125, 555_555.675, 5, "111111,125+555555,675i")>
+        <InlineData(111_111.125, 555_555.675, 0, "111111.125+555555.675i")>
+        <InlineData(-111_111.122, 555_555.677, 1, "-111111.122+555555.677i")>
+        <InlineData(111_111.122, -555_555.677, 2, "111111.122-555555.677i")>
+        <InlineData(-111_111.122, -555_555.677, 3, "-111111.122-555555.677i")>
+        <InlineData(111_111.122, 555_555.677, 4, "111111,122+555555,677i")> ' Comma decimal.
+        <InlineData(111_111.122, 555_555.677, 5, "111111,122+555555,677i")> ' Comma decimal.
         Sub ToStandardString_Culture_Succeeds(
             real As Double, imaginary As Double, index As Integer, expected As String)
 
@@ -133,12 +133,12 @@ Namespace TryParseStandardTests
     Public Class TestTryParseStandardDefault
 
         <Theory>
-        <InlineData("1.125+i5.675", 1.125, 5.675)>
+        <InlineData("1.125+5.675i", 1.125, 5.675)> ' i at end.
+        <InlineData("-1.125+i5.675", -1.125, 5.675)> ' i in middle.
         <InlineData("1.125-i5.675", 1.125, -5.675)>
-        <InlineData("-1.125+i5.675", -1.125, 5.675)>
         <InlineData("-1.125-i5.675", -1.125, -5.675)>
-        <InlineData(".1125e1+i.5675E1", 1.125, 5.675)>
-        <InlineData("112.5E-2+i567.5e-2", 1.125, 5.675)>
+        <InlineData(".1125E1+i.5675e1", 1.125, 5.675)> ' Mixed E/e.
+        <InlineData("112.5e-2+i567.5E-2", 1.125, 5.675)>
         Sub TryParseStandardDefault_GoodInput_Succeeds(standardStr As String, real As Double, imaginary As Double)
             Dim Cplx As New Numerics.Complex
             If Not TryParseStandard(standardStr, Nothing, Nothing, Cplx) Then
@@ -150,9 +150,10 @@ Namespace TryParseStandardTests
         <Theory>
         <InlineData("", 1.125, 5.675)> ' Empty.
         <InlineData("123", 1.125, 5.675)> ' Too short.
+        <InlineData("1.125+5.675Q", 1.125, 5.675)> ' Bad char Q.
         <InlineData("1.125+Q5.675", 1.125, 5.675)> ' Bad char Q.
-        <InlineData("1.125+j5.675", 1.125, 5.675)> ' j, not i
-        <InlineData("2.125+i5.675i", 1.125, 5.675)> ' Excess i.
+        <InlineData("1.125+5.675j", 1.125, 5.675)> ' j, not i
+        <InlineData("1.125+i5.675i", 1.125, 5.675)> ' Excess i.
         <InlineData(".1125e1+i.5675F1", 1.125, 5.675)> ' F, not E.
         <InlineData("112.5E-2.2+i567.5e-2", 1.125, 5.675)> ' Non-integer exponent.
         Sub TryParseStandardDefault_BadInput_Fails(standardStr As String, real As Double, imaginary As Double)
@@ -218,12 +219,12 @@ Namespace TryParseStandardTests
     Public Class TestTryParseStandardCulture
 
         <Theory>
-        <InlineData("111111.122-i555555.677", 111_111.122, -555_555.677, 0)> ' One round down, one up.
-        <InlineData("111111.122-i555555.677", 111_111.122, -555_555.677, 1)> ' One round down, one up.
-        <InlineData("111111.122-i555555.677", 111_111.122, -555_555.677, 2)> ' One round down, one up.
-        <InlineData("111111.122-i555555.677", 111_111.122, -555_555.677, 3)> ' One round down, one up.
-        <InlineData("111111,122-i555555,677", 111_111.122, -555_555.677, 4)> ' One round down, one up.
-        <InlineData("-111111,125+i555555,675", -111_111.125, 555_555.675, 5)>
+        <InlineData("111111,125+i555555,675", 111_111.125, 555_555.675, 5)>
+        <InlineData("111111.122+i555555.677", 111_111.122, 555_555.677, 0)> ' One round down, one up.
+        <InlineData("111111.122+i555555.677", 111_111.122, 555_555.677, 1)> ' One round down, one up.
+        <InlineData("111111.122+i555555.677", 111_111.122, 555_555.677, 2)> ' One round down, one up.
+        <InlineData("111111.122+i555555.677", 111_111.122, 555_555.677, 3)> ' One round down, one up.
+        <InlineData("111111,122+i555555,677", 111_111.122, 555_555.677, 4)> ' One round down, one up.
         Sub TryParse_Culture_Succeeds(standardStr As String, real As Double, imaginary As Double,
                                       index As Integer)
 
