@@ -63,18 +63,6 @@ Namespace ToStringTests
             Assert.Equal(expect, AdmtStr)
         End Sub
 
-        '<Fact>
-        'Public Sub ToString_NegativeConductance_Fails()
-
-        '    Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
-        '        Sub()
-        '            ' Code that throws the exception
-        '            Dim Y As New OsnwAdmt(-1.125, 5.675)
-        '            Dim AdmtStr As String = Y.ToString()
-        '        End Sub)
-
-        'End Sub
-
     End Class ' TestToStringDefault
 
 End Namespace ' ToStringTests
@@ -173,7 +161,7 @@ Namespace TryParseStandardTests
         <InlineData("1.125-i5.675", 1.125, -5.675)>
         <InlineData(".1125e1+i.5675E1", 1.125, 5.675)>
         <InlineData("112.5E-2+i567.5e-2", 1.125, 5.675)>
-        Sub TryParseStandard_Default_Succeeds(standardStr As String, real As Double, imaginary As Double)
+        Sub TryParseStandardDefault_GoodInput_Succeeds(standardStr As String, real As Double, imaginary As Double)
             Dim Admt As New OsnwAdmt
             If Not OsnwAdmt.TryParseStandard(standardStr, Nothing, Nothing, Admt) Then
                 Assert.True(False, "Failed to parse.")
@@ -196,7 +184,7 @@ Namespace TryParseStandardTests
         Sub TryParseStandard_Default_Succeeds(standardStr As String, real As Double, imaginary As Double)
             Dim Admt As New OsnwAdmt
             If Not OsnwAdmt.TryParseStandard(standardStr, Nothing, Nothing, Admt) Then
-                Assert.True(False)
+                Assert.Fail("Failed to parse.")
             End If
             Assert.True(Admt.Conductance.Equals(real) AndAlso Admt.Susceptance.Equals(imaginary))
         End Sub
@@ -218,7 +206,7 @@ Namespace TryParseStandardTests
 
             Dim Admt As New OsnwAdmt
             If Not OsnwAdmt.TryParseStandard(standardStr, standardizationStyle, Nothing, Admt) Then
-                Assert.True(False)
+                Assert.Fail("Failed to parse.")
             End If
             Assert.True(Admt.Conductance.Equals(real) AndAlso Admt.Susceptance.Equals(imaginary))
         End Sub
@@ -242,25 +230,27 @@ Namespace TryParseStandardTests
     Public Class TestTryParseStandardCulture
 
         <Theory>
-        <InlineData("111111.122-i555555.677", 111_111.122, -555_555.677, 0)> ' One round down, one up.
-        <InlineData("111111.122-i555555.677", 111_111.122, -555_555.677, 1)> ' One round down, one up.
-        <InlineData("1.122+i5.677", 1.122, 5.677, 2)>
-        <InlineData("111111,122-i555555,677", 111_111.122, -555_555.677, 3)> ' One round down, one up.
-        <InlineData("111111,125+i555555,675", 111_111.125, 555_555.675, 4)>
-        Sub TryParseStandardCulture_Succeeds(
+        <InlineData("111111.122-555555.677j", 111_111.122, -555_555.677, 0)> ' One round down, one up.
+        <InlineData("111111.122-555555.677j", 111_111.122, -555_555.677, 1)> ' One round down, one up.
+        <InlineData("111111.122-555555.677j", 111_111.122, -555_555.677, 2)> ' One round down, one up.
+        <InlineData("111111.122-555555.677j", 111_111.122, -555_555.677, 3)> ' One round down, one up.
+        <InlineData("111111,122-555555,677j", 111_111.122, -555_555.677, 4)> ' One round down, one up.
+        <InlineData("111111,125+555555,675j", 111_111.125, 555_555.675, 5)>
+        Sub TryParseStandard_Culture_Succeeds(
             standardStr As String, real As Double, imaginary As Double, index As Integer)
 
             Dim Providers As System.IFormatProvider() = {
                 CultureInfo.InvariantCulture,
                 CultureInfo.CurrentCulture,
+                New CultureInfo("en-US", False),
                 New CultureInfo("en-UK", False),
                 New CultureInfo("ru-RU", False),
                 New CultureInfo("fr-FR", False)
             }
             Dim Admt As New OsnwAdmt
 
-            If Not OsnwAdmt.TryParseStandard(standardStr, Nothing, Providers(index), Admt) Then
-                Assert.True(False)
+            If Not OSNW.Numerics.Admittance.TryParseStandard(standardStr, Nothing, Providers(index), Admt) Then
+                Assert.Fail("Failed to parse.")
             End If
 
             Assert.True(Admt.Conductance.Equals(real) AndAlso Admt.Susceptance.Equals(imaginary))

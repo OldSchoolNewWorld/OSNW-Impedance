@@ -832,7 +832,8 @@ Public Structure Impedance
         If resistance < 0.0 Then
             Dim CaughtBy As System.Reflection.MethodBase =
                 System.Reflection.MethodBase.GetCurrentMethod
-            Throw New System.ArgumentOutOfRangeException(NameOf(resistance))
+            Throw New System.ArgumentOutOfRangeException(NameOf(resistance),
+                                                         MSGVMBGTZ)
         End If
 
         '        Me.AsComplex = New System.Numerics.Complex(resistance, reactance)

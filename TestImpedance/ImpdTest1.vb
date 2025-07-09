@@ -55,6 +55,32 @@ Namespace DevelopmentTests
 
     End Class ' TestEquals
 
+    Public Class TestUnitTestExceptions
+
+        <Fact>
+        Public Sub ToString_NegativeResistance_Fails()
+            Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
+                Sub()
+                    ' Code that throws the exception
+                    Dim Z As New OSNW.Numerics.Impedance(-1.125, 5.675)
+                    Dim AdmtStr As String = Z.ToString()
+                End Sub)
+        End Sub
+
+        <Fact>
+        Public Sub ToString_NegativeConductance_Fails()
+
+            Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
+                Sub()
+                    ' Code that throws the exception
+                    Dim Y As New OSNW.Numerics.Admittance(-1.125, 5.675)
+                    Dim AdmtStr As String = Y.ToString()
+                End Sub)
+
+        End Sub
+
+    End Class ' TestUnitTestExceptions
+
 End Namespace ' DevTests
 
 Namespace ToStringTests
@@ -71,16 +97,6 @@ Namespace ToStringTests
             Dim ImpdStr As String = Z.ToString()
             Assert.Equal(expect, ImpdStr)
         End Sub
-
-        '<Fact>
-        'Public Sub ToString_NegativeConductance_Fails()
-        '    Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
-        '        Sub()
-        '            ' Code that throws the exception
-        '            Dim Z As New OSNW.Numerics.Impedance(-1.125, 5.675)
-        '            Dim AdmtStr As String = Z.ToString()
-        '        End Sub)
-        'End Sub
 
     End Class ' TestToStringDefault
 
@@ -191,7 +207,7 @@ Namespace TryParseStandardTests
         <InlineData("1.125-i5.675", 1.125, -5.675)>
         <InlineData(".1125e1+i.5675E1", 1.125, 5.675)>
         <InlineData("112.5E-2+i567.5e-2", 1.125, 5.675)>
-        Sub TryParseStandard_Default_Succeeds(standardStr As String, real As Double, imaginary As Double)
+        Sub TryParseStandardDefault_GoodInput_Succeeds(standardStr As String, real As Double, imaginary As Double)
             Dim Admt As New OsnwImpd
             If Not OsnwImpd.TryParseStandard(standardStr, Nothing, Nothing, Admt) Then
                 Assert.True(False, "Failed to parse.")
@@ -214,7 +230,7 @@ Namespace TryParseStandardTests
         Sub TryParseStandard_Default_Succeeds(standardStr As String, real As Double, imaginary As Double)
             Dim Impd As New OSNW.Numerics.Impedance
             If Not OSNW.Numerics.Impedance.TryParseStandard(standardStr, Nothing, Nothing, Impd) Then
-                Assert.True(False)
+                Assert.Fail("Failed to parse.")
             End If
             Assert.True(Impd.Resistance.Equals(real) AndAlso Impd.Reactance.Equals(imaginary))
         End Sub
@@ -236,7 +252,7 @@ Namespace TryParseStandardTests
 
             Dim Impd As New OSNW.Numerics.Impedance
             If Not OSNW.Numerics.Impedance.TryParseStandard(standardStr, standardizationStyle, Nothing, Impd) Then
-                Assert.True(False)
+                Assert.Fail("Failed to parse.")
             End If
             Assert.True(Impd.Resistance.Equals(real) AndAlso Impd.Reactance.Equals(imaginary))
         End Sub
@@ -258,17 +274,19 @@ Namespace TryParseStandardTests
     Public Class TestTryParseStandardCulture
 
         <Theory>
-        <InlineData("111111.122-i555555.677", 111_111.122, -555_555.677, 0)> ' One round down, one up.
-        <InlineData("111111.122-i555555.677", 111_111.122, -555_555.677, 1)> ' One round down, one up.
-        <InlineData("1.122+i5.677", 1.122, 5.677, 2)>
-        <InlineData("111111,122-i555555,677", 111_111.122, -555_555.677, 3)> ' One round down, one up.
-        <InlineData("111111,125+i555555,675", 111_111.125, 555_555.675, 4)>
+        <InlineData("111111.122-555555.677j", 111_111.122, -555_555.677, 0)> ' One round down, one up.
+        <InlineData("111111.122-555555.677j", 111_111.122, -555_555.677, 1)> ' One round down, one up.
+        <InlineData("111111.122-555555.677j", 111_111.122, -555_555.677, 2)> ' One round down, one up.
+        <InlineData("111111.122-555555.677j", 111_111.122, -555_555.677, 3)> ' One round down, one up.
+        <InlineData("111111,122-555555,677j", 111_111.122, -555_555.677, 4)> ' One round down, one up.
+        <InlineData("111111,125+555555,675j", 111_111.125, 555_555.675, 5)>
         Sub TryParseStandard_Culture_Succeeds(
             standardStr As String, real As Double, imaginary As Double, index As Integer)
 
             Dim Providers As System.IFormatProvider() = {
                 CultureInfo.InvariantCulture,
                 CultureInfo.CurrentCulture,
+                New CultureInfo("en-US", False),
                 New CultureInfo("en-UK", False),
                 New CultureInfo("ru-RU", False),
                 New CultureInfo("fr-FR", False)
@@ -276,7 +294,7 @@ Namespace TryParseStandardTests
             Dim Impd As New OSNW.Numerics.Impedance
 
             If Not OSNW.Numerics.Impedance.TryParseStandard(standardStr, Nothing, Providers(index), Impd) Then
-                Assert.True(False)
+                Assert.Fail("Failed to parse.")
             End If
 
             Assert.True(Impd.Resistance.Equals(real) AndAlso Impd.Reactance.Equals(imaginary))

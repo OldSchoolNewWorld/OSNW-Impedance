@@ -264,7 +264,6 @@ Partial Public Module ComplexExtensions
             WorkStr = Rebuilt.ToString()
         End If
 
-        ' This is failing, but should be used this way when style is sent in.
         Return System.Numerics.Complex.TryParse(
             $"<{RealStr}; {WorkStr}>", style, provider, result)
 

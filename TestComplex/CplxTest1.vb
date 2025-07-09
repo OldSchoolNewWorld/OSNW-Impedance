@@ -142,23 +142,25 @@ Namespace TryParseStandardTests
         Sub TryParseStandardDefault_GoodInput_Succeeds(standardStr As String, real As Double, imaginary As Double)
             Dim Cplx As New Numerics.Complex
             If Not TryParseStandard(standardStr, Nothing, Nothing, Cplx) Then
-                Assert.True(False)
+                Assert.Fail("Failed to parse.")
             End If
             Assert.True(Cplx.Real.Equals(real) AndAlso Cplx.Imaginary.Equals(imaginary))
         End Sub
 
-
-        ' DO SOME FAILURE CASES HERE:
-        ' XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-        ' j vs i
-        ' bad exponential
-
+        <Theory>
+        <InlineData("", 1.125, 5.675)> ' Empty.
+        <InlineData("123", 1.125, 5.675)> ' Too short.
+        <InlineData("1.125+Q5.675", 1.125, 5.675)> ' Bad char Q.
+        <InlineData("1.125+j5.675", 1.125, 5.675)> ' j, not i
+        <InlineData("2.125+i5.675i", 1.125, 5.675)> ' Excess i.
+        <InlineData(".1125e1+i.5675F1", 1.125, 5.675)> ' F, not E.
+        <InlineData("112.5E-2.2+i567.5e-2", 1.125, 5.675)> ' Non-integer exponent.
         Sub TryParseStandardDefault_BadInput_Fails(standardStr As String, real As Double, imaginary As Double)
             Dim Cplx As New Numerics.Complex
-            If Not TryParseStandard(standardStr, Nothing, Nothing, Cplx) Then
-                Assert.True(False)
+            If TryParseStandard(standardStr, Nothing, Nothing, Cplx) Then
+                Assert.Fail("Parsed despite bad entry.")
             End If
-            Assert.True(Cplx.Real.Equals(real) AndAlso Cplx.Imaginary.Equals(imaginary))
+            Assert.False(Cplx.Real.Equals(real) AndAlso Cplx.Imaginary.Equals(imaginary))
         End Sub
     End Class ' TestTryParseStandardDefault
 
@@ -175,7 +177,7 @@ Namespace TryParseStandardTests
         Sub TryParse_Default_Succeeds(standardStr As String, real As Double, imaginary As Double)
             Dim Cplx As New Numerics.Complex
             If Not TryParseStandard(standardStr, Nothing, Nothing, Cplx) Then
-                Assert.True(False)
+                Assert.Fail("Failed to parse.")
             End If
             Assert.True(Cplx.Real.Equals(real) AndAlso Cplx.Imaginary.Equals(imaginary))
         End Sub
@@ -196,7 +198,7 @@ Namespace TryParseStandardTests
                                                    imaginary As Double, stdStyle As OsnwNumSS)
             Dim Cplx As New Numerics.Complex
             If Not TryParseStandard(standardStr, stdStyle, Nothing, Cplx) Then
-                Assert.True(False)
+                Assert.Fail("Failed to parse.")
             End If
             Assert.True(Cplx.Real.Equals(real) AndAlso Cplx.Imaginary.Equals(imaginary))
         End Sub
@@ -213,7 +215,7 @@ Namespace TryParseStandardTests
 
     End Class ' TestTryParseStandardEnforceStandardization
 
-    Public Class TryParseStandardCultureTest
+    Public Class TestTryParseStandardCulture
 
         <Theory>
         <InlineData("111111.122-i555555.677", 111_111.122, -555_555.677, 0)> ' One round down, one up.
@@ -236,7 +238,7 @@ Namespace TryParseStandardTests
             Dim Cplx As New Numerics.Complex
 
             If Not TryParseStandard(standardStr, Nothing, Providers(index), Cplx) Then
-                Assert.True(False)
+                Assert.Fail("Failed to parse.")
             End If
 
             Assert.True(Cplx.Real.Equals(real) AndAlso Cplx.Imaginary.Equals(imaginary))
