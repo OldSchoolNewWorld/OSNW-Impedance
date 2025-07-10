@@ -118,7 +118,15 @@ Partial Public Module ComplexExtensions
             result = New System.Numerics.Complex
             Return False ' Early exit.
         Else
-            Dim ValidChars As System.String = GetValidComplexChars()
+
+            ' Some cultures use a comma as a decimal, or as a thousands,
+            ' separator. French may include narrow no-break space as a thousands
+            ' separator. The open form includes spaces.
+
+            'Dim ValidChars As System.String =
+            '    "1234567890" & CHARNNBSP & ".+-iEe ,"
+            Dim ValidChars As System.String = "1234567890 .+-iEe ,"
+
             For I As System.Int32 = 0 To StrLen - 1
                 If Not ValidChars.Contains(s(I)) Then
                     ' Allow only the specified characters.
@@ -126,6 +134,7 @@ Partial Public Module ComplexExtensions
                     Return False
                 End If
             Next
+
         End If
 
         ' Expect the string to be in the, "A+Bi" or "A+iB", closed or open,

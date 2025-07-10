@@ -55,14 +55,14 @@ Public Module ComplexExtensions
 
     ' REF: Mystery of The French Thousands Separator
     ' https://haacked.com/archive/2020/05/17/french-thousand-separator-mystery/
-    ' Public allows use for unit testing.
+    ' This is set as Public to allow use for access by unit tests.
     ''' <summary>
     ''' The narrow no-break space character, used in some cultures as a
     ''' thousands separator.
     ''' </summary>
     ''' <remarks>
-    ''' This character is used in some cultures, such as French, as a
-    ''' thousands separator. It is defined as Unicode character U+202F.
+    ''' This character is used in some cultures, such as French, as a thousands
+    ''' separator. It is defined as Unicode character U+202F.
     ''' </remarks>
     Public Const CHARNNBSP As String = ChrW(&H202F) ' NARROW NO-BREAK SPACE
 
@@ -216,13 +216,5 @@ Public Module ComplexExtensions
     '''' </summary>
     Private Const DEFAULTSTANDARDIZATIONSTYLE As StandardizationStyles =
         StandardizationStyles.None
-
-    ' Some cultures use a comma as a decimal, or as a thousands, separator.
-    ' French may include narrow no-break space as a thousands separator.
-    ' The open form includes spaces.
-    Private Function GetValidComplexChars() As System.String
-        Const VALIDCOMPLEXCHARS As System.String = "1234567890.+-iEe ,"
-        Return VALIDCOMPLEXCHARS & CHARNNBSP ' (narrow no-break space)
-    End Function ' GetValidComplexChars
 
 End Module ' ComplexExtensions
