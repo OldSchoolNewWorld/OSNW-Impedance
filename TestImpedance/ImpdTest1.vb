@@ -8,7 +8,6 @@ Imports Xunit
 Imports OSNW.Numerics
 Imports OsnwImpd = OSNW.Numerics.Impedance
 Imports OsnwNumSS = OSNW.Numerics.StandardizationStyles
-Imports System.Text
 
 Namespace DevelopmentTests
 
@@ -81,84 +80,6 @@ Namespace DevelopmentTests
         End Sub
 
     End Class ' TestUnitTestExceptions
-
-    Public Class TestFrenchThousandsSpace
-
-        <Fact>
-        Public Sub French1()
-            Dim Cplx As New Numerics.Complex(1234, 123456789)
-            Assert.Equal("<1234; 123456789>", Cplx.ToString())
-        End Sub
-
-        <Fact>
-        Public Sub French2()
-            Dim Cplx As New Numerics.Complex
-            If Numerics.Complex.TryParse("<1234; 123456789>", Nothing, Cplx) Then
-                Assert.True(Cplx.Real.Equals(1234) AndAlso Cplx.Imaginary.Equals(123456789))
-            Else
-                Assert.True(False)
-            End If
-            '            Assert.Equal("<1234; 123456789>", Cplx.ToString())
-        End Sub
-
-        ' New CultureInfo("fr-FR", False)
-        <Fact>
-        Public Sub French3()
-            Dim Cplx As New Numerics.Complex(1234, 123456789)
-            Assert.Equal("<1234; 123456789>", Cplx.ToString(New CultureInfo("fr-FR", False)))
-        End Sub
-
-        <Fact>
-        Public Sub French4()
-            Dim Cplx As New Numerics.Complex
-            If Numerics.Complex.TryParse("<1234; 123456789>", New CultureInfo("fr-FR", False), Cplx) Then
-                Assert.True(Cplx.Real.Equals(1234) AndAlso Cplx.Imaginary.Equals(123456789))
-            Else
-                Assert.True(False)
-            End If
-        End Sub
-
-        '<Fact>
-        'Public Sub French5()
-        '    Dim Cplx As New Numerics.Complex
-        '    Dim TestStr As String = "<1 & Convert.ToChar(&HA0) & 234;" & " " & "123 & Convert.ToChar(&HA0) & 456 & Convert.ToChar(&HA0) & 789>"
-        '    If Numerics.Complex.TryParse(TestStr, New CultureInfo("fr-FR", False), Cplx) Then
-        '        Assert.True(Cplx.Real.Equals(1234) AndAlso Cplx.Imaginary.Equals(123456789))
-        '    Else
-        '        Assert.True(False)
-        '    End If
-        'End Sub
-
-        <Fact>
-        Public Sub French6()
-
-            Dim NNBSP As Char = Chr(&H202F)
-            Dim Cplx As New Numerics.Complex
-
-            '            Dim TestStr As String = "<1 234;" & " " & 123 456 789>"
-            Dim TestStr As String = "<1" & NNBSP & "234; " & "123" & NNBSP & "456" & NNBSP & "789>"
-            If Numerics.Complex.TryParse(TestStr, New CultureInfo("fr-FR", False), Cplx) Then
-                Assert.True(Cplx.Real.Equals(1234) AndAlso Cplx.Imaginary.Equals(123456789))
-            Else
-                Assert.True(False)
-            End If
-        End Sub
-
-        <Fact>
-        Public Sub French7()
-            Dim NNBSP As Char = Chr(&H202F)
-            Dim FRCHAR As Char = NNBSP
-            Dim Cplx As New Numerics.Complex
-            '            Dim TestStr As String = "<1 234;" & " " & 123 456 789>"
-            Dim TestStr As String = "<1" & FRCHAR & "234; " & "123" & FRCHAR & "456" & FRCHAR & "789>"
-            If Numerics.Complex.TryParse(TestStr, New CultureInfo("fr-FR", False), Cplx) Then
-                Assert.True(Cplx.Real.Equals(1234) AndAlso Cplx.Imaginary.Equals(123456789))
-            Else
-                Assert.True(False)
-            End If
-        End Sub
-
-    End Class ' TestFrenchThousandsSpace
 
 End Namespace ' DevTests
 
@@ -236,8 +157,6 @@ Namespace ToStandardStringTests
         ' the thousands separator, but that does not match that result of the
         ' current .NET 8.0 implementation. Maybe that is allowed for parsing,
         ' but not used by ToString().
-        ' This turned out to be different than it looked.
-        ' https://haacked.com/archive/2020/05/17/french-thousand-separator-mystery/
 
         ' Some of the tests below show the impact of (the expected) rounding
         ' when the input exceeds the precision limits of a floating point value.

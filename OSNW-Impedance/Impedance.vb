@@ -1,9 +1,4 @@
-﻿
-
-'        ReadOnly NNBSP As Char = Chr(&H202F)
-
-
-'TODO:
+﻿'TODO:
 ' Finish AddParallelImpedance() and AddParallelAdmittance() when Admittance is
 '   accessible.
 ' Add AddSeriesAdmittance() when Admittance is accessible?????

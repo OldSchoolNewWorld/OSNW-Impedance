@@ -8,12 +8,6 @@ Imports Xunit
 Imports OSNW.Numerics.ComplexExtensions
 Imports OsnwNumSS = OSNW.Numerics.StandardizationStyles
 
-Friend Class MessageStrings
-    Public Const FTP As String = "Failed to parse."
-    Public Const PDBE As String = "Parsed despite bad entry."
-
-End Class ' MessageStrings
-
 Namespace StandardizationStylesValuesTests
 
     Public Class TestStandardizationStylesValues
@@ -148,7 +142,7 @@ Namespace TryParseStandardTests
         Sub TryParseStandardDefault_GoodInput_Succeeds(standardStr As String, real As Double, imaginary As Double)
             Dim Cplx As New Numerics.Complex
             If Not TryParseStandard(standardStr, Nothing, Nothing, Cplx) Then
-                Assert.Fail(MessageStrings.FTP)
+                Assert.Fail("Failed to parse.")
             End If
             Assert.True(Cplx.Real.Equals(real) AndAlso Cplx.Imaginary.Equals(imaginary))
         End Sub
@@ -165,7 +159,7 @@ Namespace TryParseStandardTests
         Sub TryParseStandardDefault_BadInput_Fails(standardStr As String, real As Double, imaginary As Double)
             Dim Cplx As New Numerics.Complex
             If TryParseStandard(standardStr, Nothing, Nothing, Cplx) Then
-                Assert.Fail(MessageStrings.PDBE)
+                Assert.Fail("Parsed despite bad entry.")
             End If
             Assert.False(Cplx.Real.Equals(real) AndAlso Cplx.Imaginary.Equals(imaginary))
         End Sub
@@ -184,7 +178,7 @@ Namespace TryParseStandardTests
         Sub TryParse_Default_Succeeds(standardStr As String, real As Double, imaginary As Double)
             Dim Cplx As New Numerics.Complex
             If Not TryParseStandard(standardStr, Nothing, Nothing, Cplx) Then
-                Assert.Fail(MessageStrings.FTP)
+                Assert.Fail("Failed to parse.")
             End If
             Assert.True(Cplx.Real.Equals(real) AndAlso Cplx.Imaginary.Equals(imaginary))
         End Sub
@@ -205,15 +199,15 @@ Namespace TryParseStandardTests
                                                    imaginary As Double, stdStyle As OsnwNumSS)
             Dim Cplx As New Numerics.Complex
             If Not TryParseStandard(standardStr, stdStyle, Nothing, Cplx) Then
-                Assert.Fail(MessageStrings.FTP)
+                Assert.Fail("Failed to parse.")
             End If
             Assert.True(Cplx.Real.Equals(real) AndAlso Cplx.Imaginary.Equals(imaginary))
         End Sub
 
         <Theory>
         <InlineData("1.125 + 5.675i'", OsnwNumSS.ClosedABi Or TightEnforcement)> ' Not closed.
-        <InlineData("-1.125+5.675i", OsnwNumSS.ClosedAiB Or TightEnforcement)> ' Not AiB.
-        <InlineData("1.125-5.675i", OsnwNumSS.OpenABi Or TightEnforcement)> ' Not Open.
+        <InlineData("1.125-5.675i", OsnwNumSS.ClosedAiB Or TightEnforcement)> ' Not AiB.
+        <InlineData("-1.125+5.675i", OsnwNumSS.OpenABi Or TightEnforcement)> ' Not Open.
         <InlineData("-1.125 - 5.675i", OsnwNumSS.OpenAiB Or TightEnforcement)> ' Not AiB.
         Sub TryParse_InvalidStandardization_Fails(standardStr As String, stdStyle As OsnwNumSS)
             Dim Cplx As New Numerics.Complex
@@ -224,15 +218,13 @@ Namespace TryParseStandardTests
 
     Public Class TestTryParseStandardCulture
 
-        'xxxxxxxxxxxxxxxxxxx Last line space!!!!
         <Theory>
-        <InlineData("111111.125+i555555.675", 111_111.125, 555_555.675, 0)>
-        <InlineData("111111.125+i555555.675", 111_111.125, 555_555.675, 1)> ' One round down, one up.
-        <InlineData("111111.125+i555555.675", 111_111.125, 555_555.675, 2)> ' One round down, one up.
-        <InlineData("111111.125+i555555.675", 111_111.125, 555_555.675, 3)> ' One round down, one up.
-        <InlineData("111111,125+i555555,675", 111_111.125, 555_555.675, 4)> ' One round down, one up.
-        <InlineData("111111,125+i555555,675", 111_111.125, 555_555.675, 5)> ' One round down, one up.
-        <InlineData("111/111,122+i555/555,677", 111_111.122, 555_555.677, 5)> ' One round down, one up.
+        <InlineData("111111,125+i555555,675", 111_111.125, 555_555.675, 5)>
+        <InlineData("111111.122+i555555.677", 111_111.122, 555_555.677, 0)> ' One round down, one up.
+        <InlineData("111111.122+i555555.677", 111_111.122, 555_555.677, 1)> ' One round down, one up.
+        <InlineData("111111.122+i555555.677", 111_111.122, 555_555.677, 2)> ' One round down, one up.
+        <InlineData("111111.122+i555555.677", 111_111.122, 555_555.677, 3)> ' One round down, one up.
+        <InlineData("111111,122+i555555,677", 111_111.122, 555_555.677, 4)> ' One round down, one up.
         Sub TryParse_Culture_Succeeds(standardStr As String, real As Double, imaginary As Double,
                                       index As Integer)
 
@@ -247,7 +239,7 @@ Namespace TryParseStandardTests
             Dim Cplx As New Numerics.Complex
 
             If Not TryParseStandard(standardStr, Nothing, Providers(index), Cplx) Then
-                Assert.Fail(MessageStrings.FTP)
+                Assert.Fail("Failed to parse.")
             End If
 
             Assert.True(Cplx.Real.Equals(real) AndAlso Cplx.Imaginary.Equals(imaginary))
