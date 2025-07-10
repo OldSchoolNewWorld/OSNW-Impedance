@@ -219,12 +219,13 @@ Namespace TryParseStandardTests
     Public Class TestTryParseStandardCulture
 
         <Theory>
-        <InlineData("111111,125+i555555,675", 111_111.125, 555_555.675, 5)>
-        <InlineData("111111.122+i555555.677", 111_111.122, 555_555.677, 0)> ' One round down, one up.
-        <InlineData("111111.122+i555555.677", 111_111.122, 555_555.677, 1)> ' One round down, one up.
-        <InlineData("111111.122+i555555.677", 111_111.122, 555_555.677, 2)> ' One round down, one up.
-        <InlineData("111111.122+i555555.677", 111_111.122, 555_555.677, 3)> ' One round down, one up.
-        <InlineData("111111,122+i555555,677", 111_111.122, 555_555.677, 4)> ' One round down, one up.
+        <InlineData("111111.122+i555555.675", 111_111.122, 555_555.675, 0)>
+        <InlineData("111111.122+i555555.675", 111_111.122, 555_555.675, 1)>
+        <InlineData("111111.122+i555555.675", 111_111.122, 555_555.675, 2)>
+        <InlineData("111111.122+i555555.675", 111_111.122, 555_555.675, 3)>
+        <InlineData("111111,122+i555555,675", 111_111.122, 555_555.675, 4)>
+        <InlineData("111111,122+i555555,675", 111_111.122, 555_555.675, 5)>
+        <InlineData("111" & CHARNNBSP & "111,122+i555" & CHARNNBSP & "555,675", 111_111.122, 555_555.675, 5)>
         Sub TryParse_Culture_Succeeds(standardStr As String, real As Double, imaginary As Double,
                                       index As Integer)
 

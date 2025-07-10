@@ -52,10 +52,15 @@ Public Module ComplexExtensions
     Private Const CHARUPPERE As System.Char = "E"c
     Private Const CHARSEMI As System.Char = ";"c
     Private Const CHARSPACE As System.Char = " "c
+    Public Const CHARNNBSP As String = ChrW(&H202F) ' NARROW NO-BREAK SPACE
 
     ' Some cultures use a comma as a decimal, or as a thousands, separator.
+    ' French may include narrow no-break space as a thousands separator.
     ' The open form includes spaces.
-    Private Const VALIDCOMPLEXCHARS As System.String = "1234567890.+-iEe ,"
+    Private Function GetValidComplexChars() As System.String
+        Const VALIDCOMPLEXCHARS As System.String = "1234567890.+-iEe ,"
+        Return VALIDCOMPLEXCHARS & CHARNNBSP ' (narrow no-break space)
+    End Function ' GetValidComplexChars
 
     ' private const NumberStyles DefaultNumberStyle = NumberStyles.Float | NumberStyles.AllowThousands;
     ''' <summary>
