@@ -218,14 +218,17 @@ Namespace TryParseStandardTests
 
     Public Class TestTryParseStandardCulture
 
+        Const SAMEREAL As Double = 111_111.125
+        Const SAMEIMAG As Double = 555_555.675
+
         <Theory>
-        <InlineData("111111.122+i555555.675", 111_111.122, 555_555.675, 0)>
-        <InlineData("111111.122+i555555.675", 111_111.122, 555_555.675, 1)>
-        <InlineData("111111.122+i555555.675", 111_111.122, 555_555.675, 2)>
-        <InlineData("111111.122+i555555.675", 111_111.122, 555_555.675, 3)>
-        <InlineData("111111,122+i555555,675", 111_111.122, 555_555.675, 4)>
-        <InlineData("111111,122+i555555,675", 111_111.122, 555_555.675, 5)>
-        <InlineData("111" & CHARNNBSP & "111,122+i555" & CHARNNBSP & "555,675", 111_111.122, 555_555.675, 5)>
+        <InlineData("111111.125+i555555.675", SAMEREAL, SAMEIMAG, 0)>
+        <InlineData("111111.125+i555555.675", SAMEREAL, SAMEIMAG, 1)> ' When current is "en-US".
+        <InlineData("111111.125+555555.675i", SAMEREAL, SAMEIMAG, 2)> ' A+Bi, i at end.
+        <InlineData("111111.125 + i555555.675", SAMEREAL, SAMEIMAG, 3)> ' Open, one space.
+        <InlineData("111111,125+i555555,675", SAMEREAL, SAMEIMAG, 4)> ' Comma decimal.
+        <InlineData("111" & CHARNNBSP & "111,125+i555" & CHARNNBSP & "555,675",
+                    SAMEREAL, SAMEIMAG, 5)> ' Comma decimal, Non-breaking space.
         Sub TryParse_Culture_Succeeds(standardStr As String, real As Double, imaginary As Double,
                                       index As Integer)
 
