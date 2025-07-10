@@ -49,11 +49,14 @@ Namespace ToStandardStringTests
 
     Public Class TestToStandardStringDefault
 
+        Const SAMEREAL As Double = 1.125
+        Const SAMEIMAG As Double = 5.6875
+
         <Theory>
-        <InlineData(1.125, 5.675, "1.125+5.675i")>
-        <InlineData(-1.125, 5.675, "-1.125+5.675i")>  ' -A
-        <InlineData(1.125, -5.675, "1.125-5.675i")> ' -B
-        <InlineData(-1.125, -5.675, "-1.125-5.675i")> ' -A, -B
+        <InlineData(SAMEREAL, SAMEIMAG, "1.125+5.6875i")>
+        <InlineData(-SAMEREAL, SAMEIMAG, "-1.125+5.6875i")>  ' -A
+        <InlineData(SAMEREAL, -SAMEIMAG, "1.125-5.6875i")> ' -B
+        <InlineData(-SAMEREAL, -SAMEIMAG, "-1.125-5.6875i")> ' -A, -B
         Sub ToStandardString_Default_Succeeds(real As Double, imaginary As Double, expected As String)
             Dim Z As New System.Numerics.Complex(real, imaginary)
             Dim CplxStr As String = Z.ToStandardString()
@@ -64,11 +67,14 @@ Namespace ToStandardStringTests
 
     Public Class TestToStandardStringStandardization
 
+        Const SAMEREAL As Double = 1.125
+        Const SAMEIMAG As Double = 5.6875
+
         <Theory>
-        <InlineData(1.125, 5.675, Nothing, "1.125+5.675i")>
-        <InlineData(-1.125, 5.675, OsnwNumSS.Open, "-1.125 + 5.675i")> ' -A
-        <InlineData(1.125, -5.675, OsnwNumSS.AiB, "1.125-i5.675")> ' -B
-        <InlineData(-1.125, -5.675, OsnwNumSS.OpenAiB, "-1.125 - i5.675")> ' -A, -B
+        <InlineData(SAMEREAL, SAMEIMAG, Nothing, "1.125+5.6875i")>
+        <InlineData(-SAMEREAL, SAMEIMAG, OsnwNumSS.Open, "-1.125 + 5.6875i")> ' -A
+        <InlineData(SAMEREAL, -SAMEIMAG, OsnwNumSS.AiB, "1.125-i5.6875")> ' -B
+        <InlineData(-SAMEREAL, -SAMEIMAG, OsnwNumSS.OpenAiB, "-1.125 - i5.6875")> ' -A, -B
         Sub ToStandardString_Standardization_Succeeds(real As Double, imaginary As Double,
                                                       stdStyle As OsnwNumSS, expected As String)
             Dim Z As New System.Numerics.Complex(real, imaginary)
@@ -81,10 +87,10 @@ Namespace ToStandardStringTests
     Public Class TestToStandardStringFormat
 
         <Theory>
-        <InlineData(111_111.125, 555_555.675, "G", "111111.125+555555.675i")>
-        <InlineData(-111_111.122, 555_555.677, "F2", "-111111.12+555555.68i")> ' One round down, one up.
-        <InlineData(111_111.122, -555_555.677, "N2", "111,111.12-555,555.68i")> ' One round down, one up.
-        <InlineData(-111_111.125, -555_555.675, "G5", "-1.1111E+05-5.5556E+05i")>
+        <InlineData(111_111.125, 555_555.6875, "G", "111111.125+555555.6875i")>
+        <InlineData(-111_111.122, 555_555.6875, "F2", "-111111.12+555555.69i")> ' One round down, one up.
+        <InlineData(111_111.122, -555_555.6875, "N2", "111,111.12-555,555.69i")> ' One round down, one up.
+        <InlineData(-111_111.125, -555_555.6875, "G5", "-1.1111E+05-5.5556E+05i")>
         <InlineData(Math.PI, Math.E, "G", "3.141592653589793+2.718281828459045i")>
         Sub ToStandardString_Format_Succeeds(real As Double, imaginary As Double, format As String, expected As String)
             Dim Z As New System.Numerics.Complex(real, imaginary)
@@ -97,12 +103,12 @@ Namespace ToStandardStringTests
     Public Class TestToStandardStringCulture
 
         <Theory>
-        <InlineData(111_111.125, 555_555.675, 0, "111111.125+555555.675i")>
-        <InlineData(-111_111.122, 555_555.677, 1, "-111111.122+555555.677i")>
-        <InlineData(111_111.122, -555_555.677, 2, "111111.122-555555.677i")>
-        <InlineData(-111_111.122, -555_555.677, 3, "-111111.122-555555.677i")>
-        <InlineData(111_111.122, 555_555.677, 4, "111111,122+555555,677i")> ' Comma decimal.
-        <InlineData(111_111.122, 555_555.677, 5, "111111,122+555555,677i")> ' Comma decimal.
+        <InlineData(111_111.125, 555_555.687_5, 0, "111111.125+555555.6875i")>
+        <InlineData(-111_111.122, 555_555.687_5, 1, "-111111.122+555555.6875i")>
+        <InlineData(111_111.122, -555_555.687_5, 2, "111111.122-555555.6875i")>
+        <InlineData(-111_111.122, -555_555.687_5, 3, "-111111.122-555555.6875i")>
+        <InlineData(111_111.122, 555_555.687_5, 4, "111111,122+555555,6875i")> ' Comma decimal.
+        <InlineData(111_111.122, 555_555.687_5, 5, "111111,122+555555,6875i")> ' Comma decimal.
         Sub ToStandardString_Culture_Succeeds(
             real As Double, imaginary As Double, index As Integer, expected As String)
 
@@ -132,30 +138,33 @@ Namespace TryParseStandardTests
 
     Public Class TestTryParseStandardDefault
 
+        Const SAMEREAL As Double = 1.125
+        Const SAMEIMAG As Double = 5.6875
+
         <Theory>
-        <InlineData("1.125+5.675i", 1.125, 5.675)> ' i at end.
-        <InlineData("-1.125+i5.675", -1.125, 5.675)> ' i in middle.
-        <InlineData("1.125-i5.675", 1.125, -5.675)>
-        <InlineData("-1.125-i5.675", -1.125, -5.675)>
-        <InlineData(".1125E1+i.5675e1", 1.125, 5.675)> ' Mixed E/e.
-        <InlineData("112.5e-2+i567.5E-2", 1.125, 5.675)>
+        <InlineData("1.125+5.6875i", SAMEREAL, SAMEIMAG)>
+        <InlineData("-1.125+i5.6875", -SAMEREAL, SAMEIMAG)> ' A+iB, i in middle.
+        <InlineData("1.125-5.6875i", SAMEREAL, -SAMEIMAG)>
+        <InlineData("-1.125-5.6875i", -SAMEREAL, -SAMEIMAG)>
+        <InlineData(".1125E1+.56875e1i", SAMEREAL, SAMEIMAG)> ' Mixed E/e.
+        <InlineData("112.5e-2+5687.5E-3i", SAMEREAL, SAMEIMAG)>
         Sub TryParseStandardDefault_GoodInput_Succeeds(standardStr As String, real As Double, imaginary As Double)
             Dim Cplx As New Numerics.Complex
             If Not TryParseStandard(standardStr, Nothing, Nothing, Cplx) Then
                 Assert.Fail("Failed to parse.")
             End If
-            Assert.True(Cplx.Real.Equals(real) AndAlso Cplx.Imaginary.Equals(imaginary))
+            Assert.True(real.Equals(Cplx.Real) AndAlso imaginary.Equals(Cplx.Imaginary))
         End Sub
 
         <Theory>
-        <InlineData("", 1.125, 5.675)> ' Empty.
-        <InlineData("123", 1.125, 5.675)> ' Too short.
-        <InlineData("1.125+5.675Q", 1.125, 5.675)> ' Bad char Q.
-        <InlineData("1.125+Q5.675", 1.125, 5.675)> ' Bad char Q.
-        <InlineData("1.125+5.675j", 1.125, 5.675)> ' j, not i
-        <InlineData("1.125+i5.675i", 1.125, 5.675)> ' Excess i.
-        <InlineData(".1125e1+i.5675F1", 1.125, 5.675)> ' F, not E.
-        <InlineData("112.5E-2.2+i567.5e-2", 1.125, 5.675)> ' Non-integer exponent.
+        <InlineData("", SAMEREAL, SAMEIMAG)> ' Empty.
+        <InlineData("123", SAMEREAL, SAMEIMAG)> ' Too short.
+        <InlineData("1.125+5.6875Q", SAMEREAL, SAMEIMAG)> ' Bad char Q.
+        <InlineData("1.125+Q5.6875", SAMEREAL, SAMEIMAG)> ' Bad char Q.
+        <InlineData("1.125+5.6875j", SAMEREAL, SAMEIMAG)> ' j, not i
+        <InlineData("1.125+i5.6875i", SAMEREAL, SAMEIMAG)> ' Excess i.
+        <InlineData(".1125e1+i.56875F1", SAMEREAL, SAMEIMAG)> ' F, not E.
+        <InlineData("112.5E-2.2+i5687.5e-3", SAMEREAL, SAMEIMAG)> ' Non-integer exponent.
         Sub TryParseStandardDefault_BadInput_Fails(standardStr As String, real As Double, imaginary As Double)
             Dim Cplx As New Numerics.Complex
             If TryParseStandard(standardStr, Nothing, Nothing, Cplx) Then
@@ -163,18 +172,22 @@ Namespace TryParseStandardTests
             End If
             Assert.False(Cplx.Real.Equals(real) AndAlso Cplx.Imaginary.Equals(imaginary))
         End Sub
+
     End Class ' TestTryParseStandardDefault
 
     Public Class TestTryParseStandardDefaultMixed
 
+        Const SAMEREAL As Double = 1.125
+        Const SAMEIMAG As Double = 5.6875
+
         <Theory>
-        <InlineData("1.125+i5.675", 1.125, 5.675)> ' A+Bi.
-        <InlineData("1.125-5.675i", 1.125, -5.675)> ' A+Bi.
-        <InlineData("-1.125 + i5.675", -1.125, 5.675)> ' Open, one space.
-        <InlineData(" -1.125  -   5.675i  ", -1.125, -5.675)> ' Open, asymmetric spaces.
-        <InlineData("-1.125+ i5.675", -1.125, 5.675)> ' Open, space one side.
-        <InlineData("-1.125 +i5.675", -1.125, 5.675)> ' Open, space one side.
-        <InlineData("1125e-3+i.5675E1", 1.125, 5.675)> ' Exponential notation, upper and lower E.
+        <InlineData("1.125+i5.6875", SAMEREAL, SAMEIMAG)> ' A+Bi.
+        <InlineData("-1.125+5.6875i", -SAMEREAL, SAMEIMAG)> ' A+Bi.
+        <InlineData("+1.125 - i5.6875", SAMEREAL, -SAMEIMAG)> ' Open, one space.
+        <InlineData(" -1.125  -   5.6875i  ", -SAMEREAL, -SAMEIMAG)> ' Open, asymmetric spaces.
+        <InlineData("-1.125+ i5.6875", -SAMEREAL, SAMEIMAG)> ' Open, space one side.
+        <InlineData("-1.125 +i5.6875", -SAMEREAL, SAMEIMAG)> ' Open, space one side.
+        <InlineData("1125e-3+i.56875E1", SAMEREAL, SAMEIMAG)> ' Exponential notation, upper and lower E.
         Sub TryParse_Default_Succeeds(standardStr As String, real As Double, imaginary As Double)
             Dim Cplx As New Numerics.Complex
             If Not TryParseStandard(standardStr, Nothing, Nothing, Cplx) Then
@@ -187,14 +200,16 @@ Namespace TryParseStandardTests
 
     Public Class TestTryParseStandardEnforceStandardization
 
+        Const SAMEREAL As Double = 1.125
+        Const SAMEIMAG As Double = 5.6875
         Const TightEnforcement As OsnwNumSS =
             OsnwNumSS.EnforceSequence Or OsnwNumSS.EnforceSpacing
 
         <Theory>
-        <InlineData("1.125+i5.675", 1.125, 5.675, OsnwNumSS.ClosedABi)>
-        <InlineData("1.125-5.675i", 1.125, -5.675, OsnwNumSS.ClosedAiB)>
-        <InlineData("-1.125 + i5.675", -1.125, 5.675, OsnwNumSS.OpenABi)>
-        <InlineData("-1.125 - 5.675i", -1.125, -5.675, OsnwNumSS.OpenAiB)>
+        <InlineData("1.125+i5.6875", SAMEREAL, SAMEIMAG, OsnwNumSS.ClosedABi)>
+        <InlineData("-1.125+5.6875i", -SAMEREAL, SAMEIMAG, OsnwNumSS.ClosedAiB)>
+        <InlineData("1.125 - i5.6875", SAMEREAL, -SAMEIMAG, OsnwNumSS.OpenABi)>
+        <InlineData("-1.125 - 5.6875i", -SAMEREAL, -SAMEIMAG, OsnwNumSS.OpenAiB)>
         Sub TryParse_ValidStandardization_Succeeds(standardStr As String, real As Double,
                                                    imaginary As Double, stdStyle As OsnwNumSS)
             Dim Cplx As New Numerics.Complex
@@ -205,10 +220,10 @@ Namespace TryParseStandardTests
         End Sub
 
         <Theory>
-        <InlineData("1.125 + 5.675i'", OsnwNumSS.ClosedABi Or TightEnforcement)> ' Not closed.
-        <InlineData("1.125-5.675i", OsnwNumSS.ClosedAiB Or TightEnforcement)> ' Not AiB.
-        <InlineData("-1.125+5.675i", OsnwNumSS.OpenABi Or TightEnforcement)> ' Not Open.
-        <InlineData("-1.125 - 5.675i", OsnwNumSS.OpenAiB Or TightEnforcement)> ' Not AiB.
+        <InlineData("1.125 + 5.6875i'", OsnwNumSS.ClosedABi Or TightEnforcement)> ' Not closed.
+        <InlineData("-1.125+5.6875i", OsnwNumSS.ClosedAiB Or TightEnforcement)> ' Not AiB.
+        <InlineData("1.125-5.6875i", OsnwNumSS.OpenABi Or TightEnforcement)> ' Not Open.
+        <InlineData("-1.125 - 5.6875i", OsnwNumSS.OpenAiB Or TightEnforcement)> ' Not AiB.
         Sub TryParse_InvalidStandardization_Fails(standardStr As String, stdStyle As OsnwNumSS)
             Dim Cplx As New Numerics.Complex
             Assert.False(TryParseStandard(standardStr, stdStyle, Nothing, Cplx))
@@ -219,15 +234,15 @@ Namespace TryParseStandardTests
     Public Class TestTryParseStandardCulture
 
         Const SAMEREAL As Double = 111_111.125
-        Const SAMEIMAG As Double = 555_555.675
+        Const SAMEIMAG As Double = 555_555.6875
 
         <Theory>
-        <InlineData("111111.125+i555555.675", SAMEREAL, SAMEIMAG, 0)>
-        <InlineData("111111.125+i555555.675", SAMEREAL, SAMEIMAG, 1)> ' When current is "en-US".
-        <InlineData("111111.125+555555.675i", SAMEREAL, SAMEIMAG, 2)> ' A+Bi, i at end.
-        <InlineData("111111.125 + i555555.675", SAMEREAL, SAMEIMAG, 3)> ' Open, one space.
-        <InlineData("111111,125+i555555,675", SAMEREAL, SAMEIMAG, 4)> ' Comma decimal.
-        <InlineData("111" & CHARNNBSP & "111,125+i555" & CHARNNBSP & "555,675",
+        <InlineData("111111.125+i555555.6875", SAMEREAL, SAMEIMAG, 0)>
+        <InlineData("111111.125+i555555.6875", SAMEREAL, SAMEIMAG, 1)> ' When current is "en-US".
+        <InlineData("111111.125+555555.6875i", SAMEREAL, SAMEIMAG, 2)> ' A+Bi, i at end.
+        <InlineData("111111.125 + i555555.6875", SAMEREAL, SAMEIMAG, 3)> ' Open, one space.
+        <InlineData("111111,125+i555555,6875", SAMEREAL, SAMEIMAG, 4)> ' Comma decimal.
+        <InlineData("111" & CHARNNBSP & "111,125+i555" & CHARNNBSP & "555,6875",
                     SAMEREAL, SAMEIMAG, 5)> ' Comma decimal, Non-breaking space.
         Sub TryParse_Culture_Succeeds(standardStr As String, real As Double, imaginary As Double,
                                       index As Integer)
