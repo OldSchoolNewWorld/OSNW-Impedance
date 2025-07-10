@@ -157,7 +157,7 @@ Partial Public Module ComplexExtensions
         Dim TestD As System.Double
         Dim KeepGoing As System.Boolean = True
         While KeepGoing
-            If System.Double.TryParse(RealStr, TestD) Then
+            If System.Double.TryParse(RealStr, provider, TestD) Then
                 ' There is now a valid double.
                 KeepGoing = False
             Else
