@@ -119,7 +119,7 @@ Partial Public Module ComplexExtensions
             Return False ' Early exit.
         Else
             For I As System.Int32 = 0 To StrLen - 1
-                If Not VALIDCOMPLEXCHARS.Contains(s(I)) Then
+                If Not MoreValidChars.Contains(s(I)) Then
                     ' Allow only the specified characters.
                     result = New System.Numerics.Complex
                     Return False

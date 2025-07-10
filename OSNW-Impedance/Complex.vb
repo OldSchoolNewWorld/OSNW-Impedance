@@ -56,6 +56,7 @@ Public Module ComplexExtensions
     ' Some cultures use a comma as a decimal, or as a thousands, separator.
     ' The open form includes spaces.
     Private Const VALIDCOMPLEXCHARS As System.String = "1234567890.+-iEe ,"
+    ReadOnly MoreValidChars As System.String = VALIDCOMPLEXCHARS & Chr(&H202F)
 
     ' private const NumberStyles DefaultNumberStyle = NumberStyles.Float | NumberStyles.AllowThousands;
     ''' <summary>
