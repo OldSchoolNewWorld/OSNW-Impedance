@@ -83,72 +83,26 @@ Namespace DevelopmentTests
 
     Public Class CultureStuff
 
-        '<Fact>
-        'Public Sub ListCulturesAI()
-        '    Dim Cultures As CultureInfo() = CultureInfo.GetCultures(CultureTypes.AllCultures)
-        '    For Each OneCulture As CultureInfo In Cultures
-        '        'Console.WriteLine(OneCulture.Name & " - " & OneCulture.DisplayName)
-        '        'System.Diagnostics.Debug.WriteLine()
-        '        System.Diagnostics.Debug.WriteLine(OneCulture.Name & " - " & OneCulture.DisplayName)
-        '    Next
-        'End Sub
+        '    <Fact>
+        '    Public Sub ListCulturesNumerics()
 
-        '<Fact>
-        'Public Sub ListCulturesWeb()
+        '        ' Use Debug|Windows|Immediate to see the output.
+        '        ' That only updates when debugging.
 
-        '    ' https://zetcode.com/csharp/cultureinfo/
+        '        Dim Dbl As Double = 1111_222_333.444_555_666
 
-        '    Console.OutputEncoding = System.Text.Encoding.UTF8
-        '    '            Console.WriteLine("{0,-15}{0,-5}{0,-45}{0,-40}", "Culture", "ISO", "Display name", "English Name")
-        '    Console.WriteLine($"{0,-15}{0,-5}{0,-45}{0,-40}", "Culture", "ISO", "Display name", "English Name")
-        '    For Each ci As CultureInfo In CultureInfo.GetCultures(CultureTypes.AllCultures)
-        '        Console.Write("{0,-15}", ci.Name)
-        '        Console.Write("{0,-5}", ci.TwoLetterISOLanguageName)
-        '        Console.Write("{0,-45}", ci.DisplayName)
-        '        Console.WriteLine("{0,-40}", ci.EnglishName)
-        '    Next
+        '        ' https://zetcode.com/csharp/cultureinfo/
+        '        System.Diagnostics.Debug.WriteLine($"{"Culture",-15}{"ISO",-5}{"Display name",-52}{"English Name",-52}{"Output",-20}")
+        '        For Each OneCI As CultureInfo In CultureInfo.GetCultures(CultureTypes.AllCultures)
+        '            System.Diagnostics.Debug.Write($"{OneCI.Name,-15}")
+        '            System.Diagnostics.Debug.Write($"{OneCI.TwoLetterISOLanguageName,-5}")
+        '            System.Diagnostics.Debug.Write($"{OneCI.DisplayName,-52}")
+        '            System.Diagnostics.Debug.Write($"{OneCI.EnglishName,-52}")
+        '            Dim DblStr As String = $"'{Dbl.ToString(OneCI)}'"
+        '            System.Diagnostics.Debug.WriteLine($"{DblStr,-20}")
+        '        Next
 
-        'End Sub
-        '<Fact>
-        'Public Sub ListCulturesWeb()
-
-        '    ' Use Debug|Windows|Immediate to see the output
-        '    ' https://zetcode.com/csharp/cultureinfo/
-
-        '    '            System.Diagnostics.Debug.OutputEncoding = System.Text.Encoding.UTF8
-        '    '            System.Diagnostics.Debug.WriteLine("{0,-15}{0,-5}{0,-45}{0,-40}", "Culture", "ISO", "Display name", "English Name")
-        '    '            System.Diagnostics.Debug.WriteLine($"{0,-15}{0,-5}{0,-45}{0,-40}",
-        '    '                                               "Culture", "ISO", "Display name", "English Name")
-        '    System.Diagnostics.Debug.WriteLine($"{0,-15}{1,-5}{2,-45}{3,-40}",
-        '                                       "Culture", "ISO", "Display name", "English Name")
-        '    For Each ci As CultureInfo In CultureInfo.GetCultures(CultureTypes.AllCultures)
-        '        System.Diagnostics.Debug.Write($"{0,-15}", ci.Name)
-        '        System.Diagnostics.Debug.Write($"{0,-5}", ci.TwoLetterISOLanguageName)
-        '        System.Diagnostics.Debug.Write($"{0,-45}", ci.DisplayName)
-        '        System.Diagnostics.Debug.WriteLine($"{0,-40}", ci.EnglishName)
-        '    Next
-
-        'End Sub
-        <Fact>
-        Public Sub ListCulturesWeb()
-
-            ' Use Debug|Windows|Immediate to see the output
-            ' https://zetcode.com/csharp/cultureinfo/
-
-            '            System.Diagnostics.Debug.OutputEncoding = System.Text.Encoding.UTF8
-            '            System.Diagnostics.Debug.WriteLine("{0,-15}{0,-5}{0,-45}{0,-40}", "Culture", "ISO", "Display name", "English Name")
-            '            System.Diagnostics.Debug.WriteLine($"{0,-15}{0,-5}{0,-45}{0,-40}",
-            '                                               "Culture", "ISO", "Display name", "English Name")
-            System.Diagnostics.Debug.WriteLine($"{"Culture",-15}{"ISO",-5}{"Display name",-45}{"English Name",-40}")
-            For Each ci As CultureInfo In CultureInfo.GetCultures(CultureTypes.AllCultures)
-                System.Diagnostics.Debug.Write($"{ci.Name,-15}")
-                System.Diagnostics.Debug.Write($"{ci.TwoLetterISOLanguageName,-5}")
-                System.Diagnostics.Debug.Write($"{ci.DisplayName,-45}")
-                System.Diagnostics.Debug.WriteLine($"{ci.EnglishName,-40}")
-            Next
-
-        End Sub
-
+        '    End Sub
 
     End Class ' CultureStuff
 

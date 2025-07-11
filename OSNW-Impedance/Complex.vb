@@ -55,7 +55,7 @@ Public Module ComplexExtensions
 
     ' REF: Mystery of The French Thousands Separator
     ' https://haacked.com/archive/2020/05/17/french-thousand-separator-mystery/
-    ' This is set as Public to allow use for access by unit tests.
+    ' This is set as Public to allow for access by unit tests.
     ''' <summary>
     ''' The narrow no-break space character, used in some cultures as a
     ''' thousands separator.
@@ -64,7 +64,38 @@ Public Module ComplexExtensions
     ''' This character is used in some cultures, such as French, as a thousands
     ''' separator. It is defined as Unicode character U+202F.
     ''' </remarks>
-    Public Const CHARNNBSP As String = ChrW(&H202F) ' NARROW NO-BREAK SPACE
+    Public Const CHARNNBSP As String = ChrW(&H202F)
+
+    ' REF: Decimal separator
+    ' https://en.wikipedia.org/wiki/Decimal_separator
+    ' In the Arab world, where Eastern Arabic numerals are used for
+    ' writing numbers, a different character is used to separate the
+    ' integer and fractional parts of numbers. It is referred to as an
+    ' Arabic decimal separator (U+066B, rendered: ٫‎) in Unicode.
+    ' An Arabic thousands separator (U+066C, rendered: ٬‎) also
+    ' exists. Example: ۹٬۹۹۹٫۹۹‎ (9,999.99)
+
+    ' This is set as Public to allow for access by unit tests.
+    ''' <summary>
+    ''' The Arabic comma character, used in some cultures as a decimal
+    ''' separator.
+    ''' </summary>
+    ''' <remarks>
+    ''' This character is used in some cultures, such as Arabic and Persian, as
+    ''' a decimal separator. It is defined as Unicode character U+066B.
+    ''' </remarks>
+    Public Const CHARARABCOMMA66B As String = ChrW(&H66B)
+
+    ' This is set as Public to allow for access by unit tests.
+    ''' <summary>
+    ''' The Arabic comma character, used in some cultures as a decimal
+    ''' separator.
+    ''' </summary>
+    ''' <remarks>
+    ''' This character is used in some cultures, such as Arabic and Persian, as
+    ''' a decimal separator. It is defined as Unicode character U+066C.
+    ''' </remarks>
+    Public Const CHARARABCOMMA66C As String = ChrW(&H66C)
 
     ' private const NumberStyles DefaultNumberStyle = NumberStyles.Float | NumberStyles.AllowThousands;
     ''' <summary>

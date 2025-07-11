@@ -122,10 +122,12 @@ Partial Public Module ComplexExtensions
             ' Some cultures use a comma as a decimal, or as a thousands,
             ' separator. French may include narrow no-break space as a thousands
             ' separator. The open form includes spaces.
-
-            'Dim ValidChars As System.String =
-            '    "1234567890" & CHARNNBSP & ".+-iEe ,"
-            Dim ValidChars As System.String = "1234567890 .+-iEe ,"
+            ' There is a special comma character, used as the decimal separator
+            ' in Arabic, as well as some other cultures.
+            '            Dim ValidChars As System.String = "1234567890 .+-iEe ,"
+            Dim ValidChars As System.String =
+                "1234567890" & CHARNNBSP & CHARARABCOMMA66B &
+                CHARARABCOMMA66C & ".+-iEe ,"
 
             For I As System.Int32 = 0 To StrLen - 1
                 If Not ValidChars.Contains(s(I)) Then
