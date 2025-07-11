@@ -1,4 +1,4 @@
-Option Explicit On
+﻿Option Explicit On
 Option Strict On
 Option Compare Binary
 Option Infer Off
@@ -109,6 +109,7 @@ Namespace ToStandardStringTests
         <InlineData(-111_111.122, -555_555.687_5, 3, "-111111.122-555555.6875i")>
         <InlineData(111_111.122, 555_555.687_5, 4, "111111,122+555555,6875i")> ' Comma decimal.
         <InlineData(111_111.122, 555_555.687_5, 5, "111111,122+555555,6875i")> ' Comma decimal.
+        <InlineData(111_111.122, 555_555.687_5, 6, "111111٫122+555555٫6875i")> ' Arabic comma CHARARABCOMMA66B.
         Sub ToStandardString_Culture_Succeeds(
             real As Double, imaginary As Double, index As Integer, expected As String)
 
@@ -118,7 +119,8 @@ Namespace ToStandardStringTests
                 New CultureInfo("en-US", False),
                 New CultureInfo("en-UK", False),
                 New CultureInfo("ru-RU", False),
-                New CultureInfo("fr-FR", False)
+                New CultureInfo("fr-FR", False),
+                New CultureInfo("ar-001", False)
             }
             Dim Z As New System.Numerics.Complex(real, imaginary)
 
@@ -244,6 +246,7 @@ Namespace TryParseStandardTests
         <InlineData("111111,125+i555555,6875", SAMEREAL, SAMEIMAG, 4)> ' Comma decimal.
         <InlineData("111" & CHARNNBSP & "111,125+i555" & CHARNNBSP & "555,6875",
                     SAMEREAL, SAMEIMAG, 5)> ' Comma decimal, Non-breaking space.
+        <InlineData("111111٫125+555555٫675i", 111_111.125, 555_555.675, 6)> ' Arabic comma CHARARABCOMMA66B.
         Sub TryParse_Culture_Succeeds(standardStr As String, real As Double, imaginary As Double,
                                       index As Integer)
 
@@ -253,8 +256,9 @@ Namespace TryParseStandardTests
                 New CultureInfo("en-US", False),
                 New CultureInfo("en-UK", False),
                 New CultureInfo("ru-RU", False),
-                New CultureInfo("fr-FR", False)
-            }
+                New CultureInfo("fr-FR", False),
+                New CultureInfo("ar-001", False)
+                }
             Dim Cplx As New Numerics.Complex
 
             If Not TryParseStandard(standardStr, Nothing, Providers(index), Cplx) Then

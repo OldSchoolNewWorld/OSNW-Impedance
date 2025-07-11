@@ -1,4 +1,4 @@
-Option Explicit On
+﻿Option Explicit On
 Option Strict On
 Option Compare Binary
 Option Infer Off
@@ -304,7 +304,9 @@ Namespace TryParseStandardTests
         <InlineData("111111.122-555555.677j", 111_111.122, -555_555.677, 2)> ' One round down, one up.
         <InlineData("111111.122-555555.677j", 111_111.122, -555_555.677, 3)> ' One round down, one up.
         <InlineData("111111,122-555555,677j", 111_111.122, -555_555.677, 4)> ' One round down, one up.
-        <InlineData("111111,125+555555,675j", 111_111.125, 555_555.675, 5)>
+        <InlineData("111111,125+555555,675j", 111_111.125, 555_555.675, 5)> ' Comma decimal.
+        <InlineData("111 111,125+555 555,675j", 111_111.125, 555_555.675, 5)> ' Comma decimal. French narrow space.
+        <InlineData("111111٫125+555555٫675j", 111_111.125, 555_555.675, 6)> ' Arabic comma CHARARABCOMMA66B.
         Sub TryParseStandard_Culture_Succeeds(
             standardStr As String, real As Double, imaginary As Double, index As Integer)
 
@@ -314,7 +316,8 @@ Namespace TryParseStandardTests
                 New CultureInfo("en-US", False),
                 New CultureInfo("en-UK", False),
                 New CultureInfo("ru-RU", False),
-                New CultureInfo("fr-FR", False)
+                New CultureInfo("fr-FR", False),
+                New CultureInfo("ar-001", False)
             }
             Dim Impd As New OSNW.Numerics.Impedance
 

@@ -125,9 +125,9 @@ Partial Public Module ComplexExtensions
             ' There is a special comma character, used as the decimal separator
             ' in Arabic, as well as some other cultures.
             '            Dim ValidChars As System.String = "1234567890 .+-iEe ,"
-            Dim ValidChars As System.String =
-                "1234567890" & CHARNNBSP & CHARARABCOMMA66B &
-                CHARARABCOMMA66C & ".+-iEe ,"
+            'Dim ValidChars As System.String =
+            '    "1234567890" & CHARNNBSP & CHARARABCOMMA66B & ".+-iEe ,"
+            Dim ValidChars As System.String = "1234567890 ٫.+-iEe ,"
 
             For I As System.Int32 = 0 To StrLen - 1
                 If Not ValidChars.Contains(s(I)) Then

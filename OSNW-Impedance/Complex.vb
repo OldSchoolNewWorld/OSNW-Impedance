@@ -86,16 +86,17 @@ Public Module ComplexExtensions
     ''' </remarks>
     Public Const CHARARABCOMMA66B As String = ChrW(&H66B)
 
-    ' This is set as Public to allow for access by unit tests.
-    ''' <summary>
-    ''' The Arabic comma character, used in some cultures as a decimal
-    ''' separator.
-    ''' </summary>
-    ''' <remarks>
-    ''' This character is used in some cultures, such as Arabic and Persian, as
-    ''' a decimal separator. It is defined as Unicode character U+066C.
-    ''' </remarks>
-    Public Const CHARARABCOMMA66C As String = ChrW(&H66C)
+    '' This is set as Public to allow for access by unit tests.
+    '' CHARARABCOMMA66C failed in tests, but CHARARABCOMMA66B worked.
+    '''' <summary>
+    '''' The Arabic comma character, used in some cultures as a decimal
+    '''' separator.
+    '''' </summary>
+    '''' <remarks>
+    '''' This character is used in some cultures, such as Arabic and Persian, as
+    '''' a decimal separator. It is defined as Unicode character U+066C.
+    '''' </remarks>
+    'Public Const CHARARABCOMMA66C As String = ChrW(&H66C)
 
     ' private const NumberStyles DefaultNumberStyle = NumberStyles.Float | NumberStyles.AllowThousands;
     ''' <summary>
