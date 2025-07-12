@@ -4,6 +4,7 @@ Option Compare Binary
 Option Infer Off
 
 Imports System.Globalization
+Imports OSNW.Numerics.ComplexExtensions
 
 ' REF: System.Numerics.Complex struct
 ' https://github.com/dotnet/docs/blob/main/docs/fundamentals/runtime-libraries/system-numerics-complex.md
@@ -105,13 +106,22 @@ Public Module ComplexExtensions
     '                                                  | NumberStyles.AllowParentheses | NumberStyles.AllowDecimalPoint
     '                                                  | NumberStyles.AllowThousands | NumberStyles.AllowExponent
     '                                                  | NumberStyles.AllowCurrencySymbol | NumberStyles.AllowHexSpecifier);
-    Private Const InvalidNumberStyles _
-        As System.Globalization.NumberStyles = Not (
-        NumberStyles.AllowLeadingWhite Or NumberStyles.AllowTrailingWhite Or
-        NumberStyles.AllowLeadingSign Or NumberStyles.AllowTrailingSign Or
-        NumberStyles.AllowParentheses Or NumberStyles.AllowDecimalPoint Or
-        NumberStyles.AllowThousands Or NumberStyles.AllowExponent Or
-        NumberStyles.AllowCurrencySymbol Or NumberStyles.AllowHexSpecifier)
+
+    'Private Const ValidStandardizationStyles As StandardizationStyles = StandardizationStyles.AiB Or
+    '        StandardizationStyles.Open Or
+    '        StandardizationStyles.EnforceSequence Or
+    '        StandardizationStyles.EnforceSpacing
+    'Private Const InvalidStandardizationStyles As StandardizationStyles = Not ValidStandardizationStyles
+
+    Private Const InvalidStandardizationStyles As StandardizationStyles = Not (
+        StandardizationStyles.AiB Or StandardizationStyles.Open Or
+        StandardizationStyles.EnforceSequence Or
+        StandardizationStyles.EnforceSpacing)
+
+
+
+
+
 
     ''' <summary>
     ''' The layout style to use when converting a complex number to its standard
@@ -241,5 +251,25 @@ Public Module ComplexExtensions
     '''' </summary>
     Private Const DEFAULTSTANDARDIZATIONSTYLE As StandardizationStyles =
         StandardizationStyles.None
+
+    ' static void ValidateParseStyleFloatingPoint(NumberStyles style)
+    ''' <summary>
+    ''' Check for undefined flags or hex number.
+    ''' </summary>
+    ''' <param name="standardizationStyle">The standardization style to be
+    ''' validated.</param>
+    Private Sub ValidateStandardizationStyle(
+        standardizationStyle As StandardizationStyles)
+
+        Const MSGISSWV As System.String =
+            "Invalid standardization style with value"
+        If (standardizationStyle And InvalidStandardizationStyles) <> 0 Then
+            'Throw New ArgumentException(
+            '    $"{MSGISSWV} {CInt(standardizationStyle)}",
+            '        NameOf(standardizationStyle))
+            Throw New ArgumentException(
+                $"{MSGISSWV} {CInt(standardizationStyle)}")
+        End If
+    End Sub ' ValidateStandardizationStyle
 
 End Module ' ComplexExtensions

@@ -104,11 +104,11 @@ Partial Public Module ComplexExtensions
         ByRef result As System.Numerics.Complex) _
         As System.Boolean
 
-        ' This is called at the top of Complex.TryParse. Is somthing similar
-        ' needed here? Maybe do something regarding standardizationStyle and
-        ' leave style to be handled by the call Complex.TryParse below, after
-        ' the components are extracted.
-        '        ValidateParseStyleFloatingPoint(style)
+        ' ValidateParseStyleFloatingPoint(style) is called at the top of
+        ' Complex.TryParse. Do somthing similar here regarding
+        ' standardizationStyle and leave style to be handled by the call to
+        ' Complex.TryParse below, after the components are extracted.
+        ValidateStandardizationStyle(standardizationStyle)
 
         ' Start with the most basic failures.
         If String.IsNullOrWhiteSpace(s) Then
