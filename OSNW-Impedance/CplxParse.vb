@@ -110,7 +110,7 @@ Partial Public Module ComplexExtensions
         ' ValidateParseStyleFloatingPoint(style) is called at the top of
         ' Complex.TryParse. Do somthing similar here regarding
         ' standardizationStyle and leave style to be handled by the call to
-        ' Complex.TryParse below, after the components are extracted.
+        ' Complex.TryParse, after the components are extracted below.
         ValidateStandardizationStyle(standardizationStyle)
 
         ' Start with the most basic failures.
@@ -129,10 +129,9 @@ Partial Public Module ComplexExtensions
             ' separator. The open form includes spaces.
             ' There is a special comma character, used as the decimal separator
             ' in Arabic, as well as some other cultures.
-            '            Dim ValidChars As System.String = "1234567890 .+-iEe ,"
             'Dim ValidChars As System.String =
-            '    "1234567890" & CHARNNBSP & CHARARABCOMMA66B & ".+-iEe ,"
-            Dim ValidChars As System.String = "1234567890 ٫.+-iEe ,"
+            '    "1234567890." & CHARNNBSP & "+-iEe ," & CHARARABCOMMA66B
+            Dim ValidChars As System.String = "1234567890. +-iEe ,٫"
 
             For I As System.Int32 = 0 To StrLen - 1
                 If Not ValidChars.Contains(s(I)) Then

@@ -264,9 +264,6 @@ Public Module ComplexExtensions
         Const MSGISSWV As System.String =
             "Invalid standardization style with value"
         If (standardizationStyle And InvalidStandardizationStyles) <> 0 Then
-            'Throw New ArgumentException(
-            '    $"{MSGISSWV} {CInt(standardizationStyle)}",
-            '        NameOf(standardizationStyle))
             Throw New ArgumentException(
                 $"{MSGISSWV} {CInt(standardizationStyle)}")
         End If
