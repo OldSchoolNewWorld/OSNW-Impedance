@@ -66,16 +66,9 @@ Public Module ComplexExtensions
     ''' </remarks>
     Public Const CHARNNBSP As String = ChrW(&H202F)
 
+    ' This is set as Public to allow for access by unit tests.
     ' REF: Decimal separator
     ' https://en.wikipedia.org/wiki/Decimal_separator
-    ' In the Arab world, where Eastern Arabic numerals are used for
-    ' writing numbers, a different character is used to separate the
-    ' integer and fractional parts of numbers. It is referred to as an
-    ' Arabic decimal separator (U+066B, rendered: ٫‎) in Unicode.
-    ' An Arabic thousands separator (U+066C, rendered: ٬‎) also
-    ' exists. Example: ۹٬۹۹۹٫۹۹‎ (9,999.99)
-
-    ' This is set as Public to allow for access by unit tests.
     ''' <summary>
     ''' The Arabic comma character, used in some cultures as a decimal
     ''' separator.

@@ -8,18 +8,18 @@ Imports System.Runtime.CompilerServices
 
 Partial Public Module ComplexExtensions
 
-#Region "ToString Utils"
+#Region "ToStandardString Utils"
 
-    ''' <summary>
-    ''' Converts a Complex.ToString() string into a standard form string using
-    ''' the specified <c>StandardizationStyles</c>.
-    ''' </summary>
-    ''' <param name="standardizationStyle">Specifies the 
-    ''' <see cref="StandardizationStyles"/> to be used to generate the standard
-    ''' form string.</param>
-    ''' <param name="complexStr">The Complex.ToString() string to be
-    ''' converted to standard form.</param>
-    ''' <param name="standardizedStr">Returns the standardized string.</param>
+    '''' <summary>
+    '''' Converts a Complex.ToString() string into a standard form string using
+    '''' the specified <c>StandardizationStyles</c>.
+    '''' </summary>
+    '''' <param name="standardizationStyle">Specifies the 
+    '''' <see cref="StandardizationStyles"/> to be used to generate the standard
+    '''' form string.</param>
+    '''' <param name="complexStr">The Complex.ToString() string to be
+    '''' converted to standard form.</param>
+    '''' <param name="standardizedStr">Returns the standardized string.</param>
     Private Sub StandardizeString(
         ByVal standardizationStyle As StandardizationStyles,
         ByVal complexStr As System.String,
@@ -61,7 +61,7 @@ Partial Public Module ComplexExtensions
 
     End Sub ' StandardizeString
 
-#End Region ' "ToString Utils"
+#End Region ' "ToStandardString Utils"
 
 #Region "ToStandardString Implementations"
 
@@ -140,10 +140,9 @@ Partial Public Module ComplexExtensions
         ByVal standardizationStyle As StandardizationStyles) _
         As System.String
 
-        'Dim ComplexStr As System.String = complex.ToString(Nothing, Nothing)
         Dim StdStr As System.String = System.String.Empty
         OSNW.Numerics.ComplexExtensions.StandardizeString(standardizationStyle,
-                          complex.ToString(Nothing, Nothing), StdStr)
+            complex.ToString(Nothing, Nothing), StdStr)
         Return StdStr
     End Function ' ToStandardString
 
@@ -171,10 +170,9 @@ Partial Public Module ComplexExtensions
             ByVal format As System.String) _
         As System.String
 
-        'Dim ComplexStr As System.String = complex.ToString(format, Nothing)
         Dim StdStr As System.String = System.String.Empty
         OSNW.Numerics.ComplexExtensions.StandardizeString(standardizationStyle,
-                          complex.ToString(format, Nothing), StdStr)
+            complex.ToString(format, Nothing), StdStr)
         Return StdStr
     End Function ' ToStandardString
 
@@ -187,24 +185,23 @@ Partial Public Module ComplexExtensions
     ''' </summary>
     ''' <param name="complex">The <see cref="System.Numerics.Complex"/> to be
     ''' converted.</param>
-    ''' <param name="aStandardizationStyle">Specifies the 
+    ''' <param name="standardizationStyle">Specifies the 
     ''' <see cref="StandardizationStyles"/> to be used to generate the standard
     ''' form string.</param>
-    ''' <param name="aProvider">An object that supplies culture-specific
+    ''' <param name="provider">An object that supplies culture-specific
     ''' formatting information.</param>
     ''' <returns>The current complex number expressed in standard
     ''' form.</returns>
     <Extension()>
     Public Function ToStandardString(
         ByVal complex As System.Numerics.Complex,
-        ByVal aStandardizationStyle As StandardizationStyles,
-        ByVal aProvider As System.IFormatProvider) _
+        ByVal standardizationStyle As StandardizationStyles,
+        ByVal provider As System.IFormatProvider) _
         As System.String
 
-        'Dim ComplexStr As System.String = complex.ToString(Nothing, aProvider)
         Dim StdStr As System.String = System.String.Empty
         OSNW.Numerics.ComplexExtensions.StandardizeString(
-            aStandardizationStyle, complex.ToString(Nothing, aProvider), StdStr)
+            standardizationStyle, complex.ToString(Nothing, provider), StdStr)
         Return StdStr
     End Function ' ToStandardString
 
@@ -228,7 +225,6 @@ Partial Public Module ComplexExtensions
         OSNW.Numerics.ComplexExtensions.StandardizeString(
             DEFAULTSTANDARDIZATIONSTYLE,
             complex.ToString(Nothing, Nothing), StdStr)
-
         Return StdStr
     End Function ' ToStandardString
 
