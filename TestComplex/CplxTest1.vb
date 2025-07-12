@@ -86,11 +86,14 @@ Namespace ToStandardStringTests
 
     Public Class TestToStandardStringFormat
 
+        Const SAMEREAL As Double = 111_111.125
+        Const SAMEIMAG As Double = 555_555.687_5
+
         <Theory>
-        <InlineData(111_111.125, 555_555.6875, "G", "111111.125+555555.6875i")>
-        <InlineData(-111_111.122, 555_555.6875, "F2", "-111111.12+555555.69i")> ' One round down, one up.
-        <InlineData(111_111.122, -555_555.6875, "N2", "111,111.12-555,555.69i")> ' One round down, one up.
-        <InlineData(-111_111.125, -555_555.6875, "G5", "-1.1111E+05-5.5556E+05i")>
+        <InlineData(SAMEREAL, SAMEIMAG, "G", "111111.125+555555.6875i")>
+        <InlineData(-SAMEREAL, SAMEIMAG, "F2", "-111111.12+555555.69i")> ' One round down, one up.
+        <InlineData(SAMEREAL, -SAMEIMAG, "N2", "111,111.12-555,555.69i")> ' One round down, one up.
+        <InlineData(-SAMEREAL, -SAMEIMAG, "G5", "-1.1111E+05-5.5556E+05i")>
         <InlineData(Math.PI, Math.E, "G", "3.141592653589793+2.718281828459045i")>
         Sub ToStandardString_Format_Succeeds(real As Double, imaginary As Double, format As String, expected As String)
             Dim Z As New System.Numerics.Complex(real, imaginary)
@@ -102,14 +105,19 @@ Namespace ToStandardStringTests
 
     Public Class TestToStandardStringCulture
 
+        Const SAMEREAL As Double = 111_111.125
+        Const SAMEIMAG As Double = 555_555.687_5
+
         <Theory>
-        <InlineData(111_111.125, 555_555.687_5, 0, "111111.125+555555.6875i")>
-        <InlineData(-111_111.122, 555_555.687_5, 1, "-111111.122+555555.6875i")>
-        <InlineData(111_111.122, -555_555.687_5, 2, "111111.122-555555.6875i")>
-        <InlineData(-111_111.122, -555_555.687_5, 3, "-111111.122-555555.6875i")>
-        <InlineData(111_111.122, 555_555.687_5, 4, "111111,122+555555,6875i")> ' Comma decimal.
-        <InlineData(111_111.122, 555_555.687_5, 5, "111111,122+555555,6875i")> ' Comma decimal.
-        <InlineData(111_111.122, 555_555.687_5, 6, "111111٫122+555555٫6875i")> ' Arabic comma CHARARABCOMMA66B.
+        <InlineData(SAMEREAL, SAMEIMAG, 0, "111111.125+555555.6875i")>
+        <InlineData(-SAMEREAL, SAMEIMAG, 1, "-111111.125+555555.6875i")>
+        <InlineData(SAMEREAL, -SAMEIMAG, 2, "111111.125-555555.6875i")>
+        <InlineData(-SAMEREAL, -SAMEIMAG, 3, "-111111.125-555555.6875i")>
+        <InlineData(SAMEREAL, SAMEIMAG, 4, "111111,125+555555,6875i")> ' Comma decimal.
+        <InlineData(SAMEREAL, SAMEIMAG, 5, "111111,125+555555,6875i")> ' Comma decimal.
+        <InlineData(SAMEREAL, SAMEIMAG, 6,
+                    "111111" & CHARARABCOMMA66B & "125+555555" & CHARARABCOMMA66B &
+                    "6875i")> ' Arabic comma CHARARABCOMMA66B.
         Sub ToStandardString_Culture_Succeeds(
             real As Double, imaginary As Double, index As Integer, expected As String)
 
@@ -236,7 +244,7 @@ Namespace TryParseStandardTests
     Public Class TestTryParseStandardCulture
 
         Const SAMEREAL As Double = 111_111.125
-        Const SAMEIMAG As Double = 555_555.6875
+        Const SAMEIMAG As Double = 555_555.687_5
 
         <Theory>
         <InlineData("111111.125+i555555.6875", SAMEREAL, SAMEIMAG, 0)>
@@ -246,7 +254,8 @@ Namespace TryParseStandardTests
         <InlineData("111111,125+i555555,6875", SAMEREAL, SAMEIMAG, 4)> ' Comma decimal.
         <InlineData("111" & CHARNNBSP & "111,125+i555" & CHARNNBSP & "555,6875",
                     SAMEREAL, SAMEIMAG, 5)> ' Comma decimal, Non-breaking space.
-        <InlineData("111111٫125+555555٫675i", 111_111.125, 555_555.675, 6)> ' Arabic comma CHARARABCOMMA66B.
+        <InlineData("111111" & CHARARABCOMMA66B & "125+555555" & CHARARABCOMMA66B & "6875i",
+                    SAMEREAL, SAMEIMAG, 6)> ' Arabic comma CHARARABCOMMA66B.
         Sub TryParse_Culture_Succeeds(standardStr As String, real As Double, imaginary As Double,
                                       index As Integer)
 
