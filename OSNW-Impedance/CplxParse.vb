@@ -95,6 +95,9 @@ Partial Public Module ComplexExtensions
     ''' represented by <paramref name="s"/>.</param>
     ''' <returns>Returns <c>True</c> if the conversion succeeds; otherwise,
     ''' <c>False</c>.</returns>
+    ''' <exception cref="System.ArgumentException">
+    ''' When <paramref name="standardizationStyle"/> is invalid.
+    ''' </exception>
     Public Function TryParseStandard(
         <System.Diagnostics.CodeAnalysis.NotNullWhen(True)>
             ByVal s As System.String,

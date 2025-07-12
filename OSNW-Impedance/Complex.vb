@@ -252,12 +252,12 @@ Public Module ComplexExtensions
     Private Const DEFAULTSTANDARDIZATIONSTYLE As StandardizationStyles =
         StandardizationStyles.None
 
-    ' static void ValidateParseStyleFloatingPoint(NumberStyles style)
-    ''' <summary>
-    ''' Check for undefined flags or hex number.
-    ''' </summary>
-    ''' <param name="standardizationStyle">The standardization style to be
-    ''' validated.</param>
+    '' static void ValidateParseStyleFloatingPoint(NumberStyles style)
+    '''' <summary>
+    '''' Check for undefined flags or hex number.
+    '''' </summary>
+    '''' <param name="standardizationStyle">The standardization style to be
+    '''' validated.</param>
     Private Sub ValidateStandardizationStyle(
         standardizationStyle As StandardizationStyles)
 
