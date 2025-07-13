@@ -13,7 +13,7 @@ Partial Public Module ComplexExtensions
     Friend Function GetCharCount(ByVal s As System.String,
         ByVal searchChar As System.Char) As System.Int32
 
-        If String.IsNullOrWhiteSpace(s) Then
+        If System.String.IsNullOrWhiteSpace(s) Then
             Return 0
         End If
         Dim Count As System.Int32 = 0
@@ -31,7 +31,7 @@ Partial Public Module ComplexExtensions
     '''' multiple times in a row.
     '''' </summary>
     Private Function GetSignCount(ByVal s As System.String) As System.Int32
-        If String.IsNullOrWhiteSpace(s) Then
+        If System.String.IsNullOrWhiteSpace(s) Then
             Return 0
         End If
         Return OSNW.Numerics.ComplexExtensions.GetCharCount(s, CHARPLUS) +
@@ -44,7 +44,7 @@ Partial Public Module ComplexExtensions
     '''' row.
     '''' </summary>
     Private Function GetECount(ByVal s As System.String) As System.Int32
-        If String.IsNullOrWhiteSpace(s) Then
+        If System.String.IsNullOrWhiteSpace(s) Then
             Return 0
         End If
         Dim ECount As System.Int32
@@ -114,7 +114,7 @@ Partial Public Module ComplexExtensions
         ValidateStandardizationStyle(standardizationStyle)
 
         ' Start with the most basic failures.
-        If String.IsNullOrWhiteSpace(s) Then
+        If System.String.IsNullOrWhiteSpace(s) Then
             result = New System.Numerics.Complex
             Return False
         End If

@@ -87,7 +87,7 @@ Public Structure Impedance
     Public ReadOnly Property Resistance As System.Double
         ' Do not rename (binary serialization).
         Get
-            Return m_Resistance
+            Return Me.m_Resistance
         End Get
     End Property
 
@@ -98,7 +98,7 @@ Public Structure Impedance
     Public ReadOnly Property Reactance As System.Double
         ' Do not rename (binary serialization).
         Get
-            Return m_Reactance
+            Return Me.m_Reactance
         End Get
     End Property
 
@@ -286,7 +286,7 @@ Public Structure Impedance
         ByVal provider As System.IFormatProvider) _
         As String Implements IFormattable.ToString
 
-        Return ToString(format, provider)
+        Return Me.ToString(format, provider)
     End Function ' IFormattable_ToString
 
     '    public string ToString([StringSyntax(StringSyntaxAttribute.NumericFormat)] string? format)
@@ -614,7 +614,7 @@ Public Structure Impedance
     Public Shared Function DeserializeJSONString(jsonString As System.String,
         ByRef impedanceOut As Impedance) As System.Boolean
 
-        If String.IsNullOrWhiteSpace(jsonString) Then
+        If System.String.IsNullOrWhiteSpace(jsonString) Then
             'Dim CaughtBy As System.Reflection.MethodBase =
             '    System.Reflection.MethodBase.GetCurrentMethod
             Throw New System.ArgumentNullException(
@@ -682,8 +682,8 @@ Public Structure Impedance
 
         ' Input checking.
         If z0 <= 0.0 Then
-            Dim CaughtBy As System.Reflection.MethodBase =
-                System.Reflection.MethodBase.GetCurrentMethod
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
             Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGVMBGTZ)
         End If
 
@@ -715,13 +715,12 @@ Public Structure Impedance
 
         ' Input checking.
         If z0 <= 0.0 Then
-            Dim CaughtBy As System.Reflection.MethodBase =
-                System.Reflection.MethodBase.GetCurrentMethod
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
             Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGVMBGTZ)
         End If
 
         Dim VRC As System.Numerics.Complex = Me.VoltageReflectionCoefficient(z0)
-        '        Return System.Numerics.Complex.Multiply(VRC, VRC)
         Return VRC * VRC
 
     End Function ' PowerReflectionCoefficient
