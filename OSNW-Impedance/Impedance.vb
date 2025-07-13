@@ -1,5 +1,5 @@
 ﻿'TODO:
-' Add Arabic to parsingntests, for the Arabic comma?
+' Add Arabic to parsing tests, for the Arabic comma?
 ' Finish AddParallelImpedance() and AddParallelAdmittance() when Admittance is
 '   accessible.
 ' Add AddSeriesAdmittance() when Admittance is accessible?????
@@ -507,10 +507,13 @@ Public Structure Impedance
         ByRef result As OSNW.Numerics.Impedance) _
         As System.Boolean
 
+        If Not GetCharCount(s, "j"c).Equals(1) Then
+            result = New OSNW.Numerics.Impedance
+            Return False
+        End If
         Dim Cplx As New System.Numerics.Complex
         If OSNW.Numerics.ComplexExtensions.TryParseStandard(
-            s.Replace(CHARJ, CHARI), standardizationStyle, style, provider,
-            Cplx) Then
+            s.Replace(CHARJ, CHARI), standardizationStyle, style, provider, Cplx) Then
 
             result = New Impedance(Cplx.Real, Cplx.Imaginary)
             Return True

@@ -9,6 +9,11 @@ Imports OSNW.Numerics
 Imports OsnwImpd = OSNW.Numerics.Impedance
 Imports OsnwNumSS = OSNW.Numerics.StandardizationStyles
 
+Public Class TestVals
+    Public Const SAMERESISTANCE As Double = 111_111.125 ' 1/8 is good for binary fractions.
+    Public Const SAMEREACTANCE As Double = 555_555.687_5 ' 11/16 is good for binary fractions.
+End Class
+
 Namespace DevelopmentTests
 
     Public Class TestEquals
@@ -132,14 +137,12 @@ Namespace ToStandardStringTests
     Public Class TestToStandardStringDefault
 
         <Theory>
-        <InlineData(1.125, 5.675, "1.125+5.675j")>
-        <InlineData(1.125, -5.675, "1.125-5.675j")>
-        <InlineData(0, 5.675, "0+5.675j")>
-        <InlineData(0, -5.675, "0-5.675j")>
-        Sub ToStandardString_Default_Succeeds(r As Double, x As Double, expect As String)
-            Dim Z As New OSNW.Numerics.Impedance(r, x)
-            Dim ImpdStr As String = Z.ToStandardString()
-            Assert.Equal(expect, ImpdStr)
+        <InlineData(TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE, "111111.125+555555.6875j")>
+        <InlineData(TestVals.SAMERESISTANCE, -TestVals.SAMEREACTANCE, "111111.125-555555.6875j")> ' -B
+        Sub ToStandardString_Default_Succeeds(resistance As Double, reactance As Double, expected As String)
+            Dim Z As New OSNW.Numerics.Impedance(resistance, reactance)
+            Dim WasImpdStr As String = Z.ToStandardString()
+            Assert.Equal(expected, WasImpdStr)
         End Sub
 
     End Class ' TestToStandardStringDefault
@@ -147,16 +150,15 @@ Namespace ToStandardStringTests
     Public Class TestToStandardStringStandardization
 
         <Theory>
-        <InlineData(1.125, 5.675, Nothing, "1.125+5.675j")>
-        <InlineData(1.125, -5.675, StandardizationStyles.AiB, "1.125-j5.675")>
-        <InlineData(0, 5.675, StandardizationStyles.Open, "0 + 5.675j")>
-        <InlineData(0, -5.675, StandardizationStyles.OpenAiB, "0 - j5.675")>
-        Sub ToStandardString_Standardization_Succeeds(
-            r As Double, x As Double, standardizationStyle As StandardizationStyles, expected As String)
-
-            Dim Z As New OSNW.Numerics.Impedance(r, x)
-            Dim ImpdStr As String = Z.ToStandardString(standardizationStyle)
-            Assert.Equal(expected, ImpdStr)
+        <InlineData(TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE, Nothing, "111111.125+555555.6875j")>
+        <InlineData(TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE, OsnwNumSS.Open, "111111.125 + 555555.6875j")>
+        <InlineData(TestVals.SAMERESISTANCE, -TestVals.SAMEREACTANCE, OsnwNumSS.AiB, "111111.125-j555555.6875")>
+        <InlineData(TestVals.SAMERESISTANCE, -TestVals.SAMEREACTANCE, OsnwNumSS.OpenAiB, "111111.125 - j555555.6875")>
+        Sub ToStandardString_Standardization_Succeeds(resistance As Double, reactance As Double,
+                                                      stdStyle As OsnwNumSS, expected As String)
+            Dim Z As New OSNW.Numerics.Impedance(resistance, reactance)
+            Dim WasImpdStr As String = Z.ToStandardString(stdStyle)
+            Assert.Equal(expected, WasImpdStr)
         End Sub
 
     End Class ' TestToStandardStringStandardization
@@ -164,151 +166,33 @@ Namespace ToStandardStringTests
     Public Class TestToStandardStringFormat
 
         <Theory>
-        <InlineData(1.122, 5.677, "F2", "1.12+5.68j")>
-        <InlineData(111_111.122, -555_555.677, "N2", "111,111.12-555,555.68j")>
-        <InlineData(111_111.125, 555_555.675, "G5", "1.1111E+05+5.5556E+05j")>
-        Sub ToStandardString_Format_Succeeds(r As Double, x As Double, format As String, expect As String)
-            ' One round down, one up.
-            Dim Z As New OSNW.Numerics.Impedance(r, x)
-            Dim ImpdStr As String = Z.ToStandardString(Nothing, format)
-            Assert.Equal(expect, ImpdStr)
+        <InlineData(TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE, "G", "111111.125+555555.6875j")>
+        <InlineData(111_111.122, 111_111.127, "F2", "111111.12+111111.13j")> ' One round down, one up.
+        <InlineData(111_111.127, -111_111.122, "N2", "111,111.13-111,111.12j")> ' One round up, one down.
+        <InlineData(TestVals.SAMERESISTANCE, -TestVals.SAMEREACTANCE, "G5", "1.1111E+05-5.5556E+05j")>
+        <InlineData(Math.PI, Math.E, "G", "3.141592653589793+2.718281828459045j")>
+        Sub ToStandardString_Format_Succeeds(resistance As Double, reactance As Double, format As String, expected As String)
+            Dim Z As New OSNW.Numerics.Impedance(resistance, reactance)
+            Dim WasImpdStr As String = Z.ToStandardString(Nothing, format)
+            Assert.Equal(expected, WasImpdStr)
         End Sub
 
     End Class ' TestToStandardStringFormat
 
     Public Class TestToStandardStringCulture
 
-        ' Something that was seen indicated that French could have a space as
-        ' the thousands separator, but that does not match that result of the
-        ' current .NET 8.0 implementation. Maybe that is allowed for parsing,
-        ' but not used by ToString().
-
-        ' Some of the tests below show the impact of (the expected) rounding
-        ' when the input exceeds the precision limits of a floating point value.
-
         <Theory>
-        <InlineData(111_111.122, -555_555.677, 0, "111111.122-555555.677j")> ' One round down, one up.
-        <InlineData(222_222.122, -555_555.677, 1, "222222.122-555555.677j")> ' One round down, one up.
-        <InlineData(1.122, 5.677, 2, "1.122+5.677j")>
-        <InlineData(333_333.122, -555_555.677, 3, "333333,122-555555,677j")> ' One round down, one up.
-        <InlineData(444_444.125, 555_555.675, 4, "444444,125+555555,675j")>
-        <InlineData(555_555_555.555_555_555, -555_555_555.555_555_555, 0, "555555555.5555556-555555555.5555556j")>
-        <InlineData(666_666_666.666_666_666, -666_666_666.666_666_666, 1, "666666666.6666666-666666666.6666666j")>
-        <InlineData(777_777_777.777_777_777, -777_777_777.777_777_777, 2, "777777777.7777778-777777777.7777778j")>
-        <InlineData(888_888_888.888_888_888, -888_888_888.888_888_888, 3, "888888888,8888888-888888888,8888888j")>
-        <InlineData(999_999_999.999_999_999, -999_999_999.999_999_999, 4, "1000000000-1000000000j")>
+        <InlineData(TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE, 0, "111111.125+555555.6875j")>
+        <InlineData(TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE, 1, "111111.125+555555.6875j")>
+        <InlineData(TestVals.SAMERESISTANCE, -TestVals.SAMEREACTANCE, 2, "111111.125-555555.6875j")>
+        <InlineData(TestVals.SAMERESISTANCE, -TestVals.SAMEREACTANCE, 3, "111111.125-555555.6875j")>
+        <InlineData(TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE, 4, "111111,125+555555,6875j")> ' Comma decimal.
+        <InlineData(TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE, 5, "111111,125+555555,6875j")> ' Comma decimal.
+        <InlineData(TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE, 6,
+                    "111111" & CHARARABCOMMA66B & "125+555555" & CHARARABCOMMA66B &
+                    "6875j")> ' Arabic comma CHARARABCOMMA66B.
         Sub ToStandardString_Culture_Succeeds(
-            r As Double, x As Double, index As Integer, expected As String)
-
-            Dim Providers As System.IFormatProvider() = {
-                CultureInfo.InvariantCulture,
-                CultureInfo.CurrentCulture,
-                New CultureInfo("en-UK", False),
-                New CultureInfo("ru-RU", False),
-                New CultureInfo("fr-FR", False)
-            }
-            Dim Z As New OSNW.Numerics.Impedance(r, x)
-
-            Dim ImpdStr As String = Z.ToStandardString(Nothing, Providers(index))
-
-            Assert.Equal(expected, ImpdStr)
-
-        End Sub
-
-    End Class ' TestToStandardStringCulture
-
-End Namespace ' ToStandardStringTests
-
-Namespace TryParseStandardTests
-
-
-    ' PARSING IS WHERE TO ADD SOME FAILURE TESTS.
-
-
-    Public Class TestTryParseStandardDefault
-
-        <Theory>
-        <InlineData("1.125+i5.675", 1.125, 5.675)>
-        <InlineData("1.125-i5.675", 1.125, -5.675)>
-        <InlineData(".1125e1+i.5675E1", 1.125, 5.675)>
-        <InlineData("112.5E-2+i567.5e-2", 1.125, 5.675)>
-        Sub TryParseStandardDefault_GoodInput_Succeeds(standardStr As String, real As Double, imaginary As Double)
-            Dim Admt As New OsnwImpd
-            If Not OsnwImpd.TryParseStandard(standardStr, Nothing, Nothing, Admt) Then
-                Assert.True(False, "Failed to parse.")
-            End If
-            Assert.True(Admt.Resistance.Equals(real) AndAlso Admt.Reactance.Equals(imaginary), "Parsed with bad conversion.")
-        End Sub
-
-    End Class ' TestTryParseStandardDefault
-
-    Public Class TestTryParseStandardDefaultMixed
-
-        <Theory>
-        <InlineData("1.125+i5.675", 1.125, 5.675)> ' A+Bi.
-        <InlineData("1.125-5.675i", 1.125, -5.675)> ' A+Bi.
-        <InlineData("0 + i5.675", 0, 5.675)> ' Open, one space.
-        <InlineData(" 0  -   5.675i  ", 0, -5.675)> ' Open, asymmetric spaces.
-        <InlineData("0+ i5.675", 0, 5.675)> ' Open, space one side.
-        <InlineData("0 +i5.675", 0, 5.675)> ' Open, space one side.
-        <InlineData("1125e-3+i.5675E1", 1.125, 5.675)> ' Exponential notation.
-        Sub TryParseStandard_Default_Succeeds(standardStr As String, real As Double, imaginary As Double)
-            Dim Impd As New OSNW.Numerics.Impedance
-            If Not OSNW.Numerics.Impedance.TryParseStandard(standardStr, Nothing, Nothing, Impd) Then
-                Assert.Fail("Failed to parse.")
-            End If
-            Assert.True(Impd.Resistance.Equals(real) AndAlso Impd.Reactance.Equals(imaginary))
-        End Sub
-
-    End Class ' TestTryParseStandardDefaultMixed
-
-    Public Class TestTryParseStandardEnforceStandardization
-
-        Const TightEnforcement As StandardizationStyles =
-            StandardizationStyles.EnforceSequence Or StandardizationStyles.EnforceSpacing
-
-        <Theory>
-        <InlineData("1.125+i5.675", 1.125, 5.675, StandardizationStyles.ClosedABi)>
-        <InlineData("1.125-5.675i", 1.125, -5.675, StandardizationStyles.ClosedAiB)>
-        <InlineData("0 + i5.675", 0, 5.675, StandardizationStyles.OpenABi)>
-        <InlineData("0 - 5.675i", 0, -5.675, StandardizationStyles.OpenAiB)>
-        Sub TryParseStandard_ValidStandardization_Succeeds(standardStr As String, real As Double,
-            imaginary As Double, standardizationStyle As StandardizationStyles)
-
-            Dim Impd As New OSNW.Numerics.Impedance
-            If Not OSNW.Numerics.Impedance.TryParseStandard(standardStr, standardizationStyle, Nothing, Impd) Then
-                Assert.Fail("Failed to parse.")
-            End If
-            Assert.True(Impd.Resistance.Equals(real) AndAlso Impd.Reactance.Equals(imaginary))
-        End Sub
-
-        <Theory>
-        <InlineData("1.125 + 5.675j'", OsnwNumSS.ClosedABi Or TightEnforcement)> ' Not closed.
-        <InlineData("1.125-5.675j", OsnwNumSS.ClosedAiB Or TightEnforcement)> ' Not AiB.
-        <InlineData("-1.125+5.675j", OsnwNumSS.OpenABi Or TightEnforcement)> ' Not Open.
-        <InlineData("-1.125 - 5.675j", OsnwNumSS.OpenAiB Or TightEnforcement)> ' Not AiB.
-        Sub TryParseStandard_InvalidStandardization_Fails(
-            standardStr As String, standardizationStyle As StandardizationStyles)
-
-            Dim Impd As New OSNW.Numerics.Impedance
-            Assert.False(OSNW.Numerics.Impedance.TryParseStandard(standardStr, standardizationStyle, Nothing, Impd))
-        End Sub
-
-    End Class ' TestTryParseStandardEnforceStandardization
-
-    Public Class TestTryParseStandardCulture
-
-        <Theory>
-        <InlineData("111111.122-555555.677j", 111_111.122, -555_555.677, 0)> ' One round down, one up.
-        <InlineData("111111.122-555555.677j", 111_111.122, -555_555.677, 1)> ' One round down, one up.
-        <InlineData("111111.122-555555.677j", 111_111.122, -555_555.677, 2)> ' One round down, one up.
-        <InlineData("111111.122-555555.677j", 111_111.122, -555_555.677, 3)> ' One round down, one up.
-        <InlineData("111111,122-555555,677j", 111_111.122, -555_555.677, 4)> ' One round down, one up.
-        <InlineData("111111,125+555555,675j", 111_111.125, 555_555.675, 5)> ' Comma decimal.
-        <InlineData("111 111,125+555 555,675j", 111_111.125, 555_555.675, 5)> ' Comma decimal. French narrow space.
-        <InlineData("111111٫125+555555٫675j", 111_111.125, 555_555.675, 6)> ' Arabic comma CHARARABCOMMA66B.
-        Sub TryParseStandard_Culture_Succeeds(
-            standardStr As String, real As Double, imaginary As Double, index As Integer)
+            resistance As Double, reactance As Double, index As Integer, expected As String)
 
             Dim Providers As System.IFormatProvider() = {
                 CultureInfo.InvariantCulture,
@@ -319,66 +203,160 @@ Namespace TryParseStandardTests
                 New CultureInfo("fr-FR", False),
                 New CultureInfo("ar-001", False)
             }
+            Dim Z As New OSNW.Numerics.Impedance(resistance, reactance)
+
+            Dim WasImpdStr As String = Z.ToStandardString(Nothing, Providers(index))
+
+            Assert.Equal(expected, WasImpdStr)
+
+        End Sub
+
+        ' No failure tests. Any valid double values should be allowed.
+
+    End Class ' TestToStandardStringCulture
+
+End Namespace ' ToStandardStringTests
+
+Namespace TryParseStandardTests
+
+    Public Class TestTryParseStandardDefault
+
+        <Theory>
+        <InlineData("111111.125+555555.6875j", TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE)>
+        <InlineData("111111.125+j555555.6875", TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE)> ' A+iB, j in middle.
+        <InlineData("111111.125 - 555555.6875j", TestVals.SAMERESISTANCE, -TestVals.SAMEREACTANCE)> ' Open.
+        <InlineData("111111.125-555555.6875j", TestVals.SAMERESISTANCE, -TestVals.SAMEREACTANCE)>
+        <InlineData("1.11111125E5+.5555556875e6j", TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE)> ' Mixed E/e.
+        <InlineData("11111112.5e-2+555555687.5E-3j", TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE)> ' Mixed e/E.
+        Sub TryParseStandardDefault_GoodInput_Succeeds(standardStr As String, resistance As Double, reactance As Double)
+            Dim Impd As New OSNW.Numerics.Impedance
+            If Not OSNW.Numerics.Impedance.TryParseStandard(standardStr, Nothing, Nothing, Impd) Then
+                Assert.Fail("Failed to parse.")
+            End If
+            Assert.True(resistance.Equals(Impd.Resistance) AndAlso reactance.Equals(Impd.Reactance))
+        End Sub
+
+        <Fact>
+        Sub TryParseStandardDefault_NegativeResistance_Fails()
+            Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
+                Sub()
+                    ' Code that throws the exception
+                    Dim Impd As New OSNW.Numerics.Impedance
+                    If OSNW.Numerics.Impedance.TryParseStandard("-111111.125+555555.6875j", Nothing, Nothing, Impd) Then
+                        Assert.Fail("Parsed despite bad entry.")
+                    End If
+                    Assert.False(Impd.Resistance.Equals(-TestVals.SAMERESISTANCE) AndAlso
+                                 Impd.Reactance.Equals(TestVals.SAMEREACTANCE))
+                End Sub)
+        End Sub
+
+        <Theory>
+        <InlineData("", TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE)> ' Empty.
+        <InlineData("123", TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE)> ' Too short.
+        <InlineData("111111.125+555555.6875Q", TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE)> ' Bad char Q.
+        <InlineData("111111.125+Q5.6875", TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE)> ' Bad char Q.
+        <InlineData("111111.125+555555.6875i", TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE)> ' i, not j
+        <InlineData("111111.125+j555555.6875j", TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE)> ' Excess j.
+        <InlineData(".1125e1+j.56875F1", TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE)> ' F, not E.
+        <InlineData("112.5E-2.2+i5687.5e-3", TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE)> ' Non-integer exponent.
+        Sub TryParseStandardDefault_BadInput_Fails(standardStr As String, resistance As Double, reactance As Double)
+            Dim Impd As New OSNW.Numerics.Impedance
+            If OSNW.Numerics.Impedance.TryParseStandard(standardStr, Nothing, Nothing, Impd) Then
+                Assert.Fail("Parsed despite bad entry.")
+            End If
+            Assert.False(Impd.Resistance.Equals(resistance) AndAlso Impd.Reactance.Equals(reactance))
+        End Sub
+
+    End Class ' TestTryParseStandardDefault
+
+    Public Class TestTryParseStandardDefaultMixed
+
+        <Theory>
+        <InlineData("111111.125+j555555.6875", TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE)> ' A+Bi.
+        <InlineData("111111.125+555555.6875j", TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE)> ' A+Bi.
+        <InlineData("+111111.125 - j555555.6875", TestVals.SAMERESISTANCE, -TestVals.SAMEREACTANCE)> ' Open, one space.
+        <InlineData(" 111111.125  -   555555.6875j  ", TestVals.SAMERESISTANCE, -TestVals.SAMEREACTANCE)> ' Open, asymmetric spaces.
+        <InlineData("111111.125+ j555555.6875", TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE)> ' Open, space one side.
+        <InlineData("111111.125 +j555555.6875", TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE)> ' Open, space one side.
+        <InlineData("111111125e-3+j.5555556875E6", TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE)> ' Exponential notation, upper and lower E.
+        Sub TryParse_Default_Succeeds(standardStr As String, resistance As Double, reactance As Double)
+            Dim Impd As New OSNW.Numerics.Impedance
+            If Not OSNW.Numerics.Impedance.TryParseStandard(standardStr, Nothing, Nothing, Impd) Then
+                Assert.Fail("Failed to parse.")
+            End If
+            Assert.True(Impd.Resistance.Equals(resistance) AndAlso Impd.Reactance.Equals(reactance))
+        End Sub
+
+    End Class ' TestTryParseStandardDefaultMixed
+
+    Public Class TestTryParseStandardEnforceStandardization
+
+        Const TightEnforcement As OsnwNumSS =
+            OsnwNumSS.EnforceSequence Or OsnwNumSS.EnforceSpacing
+
+        <Theory>
+        <InlineData("111111.125+j555555.6875", TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE, OsnwNumSS.ClosedABi)>
+        <InlineData("111111.125+555555.6875j", TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE, OsnwNumSS.ClosedAiB)>
+        <InlineData("111111.125 - j555555.6875", TestVals.SAMERESISTANCE, -TestVals.SAMEREACTANCE, OsnwNumSS.OpenABi)>
+        <InlineData("111111.125 - 555555.6875j", TestVals.SAMERESISTANCE, -TestVals.SAMEREACTANCE, OsnwNumSS.OpenAiB)>
+        Sub TryParse_ValidStandardization_Succeeds(standardStr As String, resistance As Double,
+                                                   reactance As Double, stdStyle As OsnwNumSS)
+            Dim Impd As New OSNW.Numerics.Impedance
+            If Not OSNW.Numerics.Impedance.TryParseStandard(standardStr, stdStyle, Nothing, Impd) Then
+                Assert.Fail("Failed to parse.")
+            End If
+            Assert.True(Impd.Resistance.Equals(resistance) AndAlso Impd.Reactance.Equals(reactance))
+        End Sub
+
+        <Theory>
+        <InlineData("1.125 + 5.6875j'", OsnwNumSS.ClosedABi Or TightEnforcement)> ' Not closed.
+        <InlineData("1.125+5.6875j", OsnwNumSS.ClosedAiB Or TightEnforcement)> ' Not AiB.
+        <InlineData("1.125-5.6875j", OsnwNumSS.OpenABi Or TightEnforcement)> ' Not Open.
+        <InlineData("1.125 - 5.6875j", OsnwNumSS.OpenAiB Or TightEnforcement)> ' Not AiB.
+        Sub TryParse_InvalidStandardization_Fails(standardStr As String, stdStyle As OsnwNumSS)
+            Dim Impd As New OSNW.Numerics.Impedance
+            Assert.False(OSNW.Numerics.Impedance.TryParseStandard(standardStr, stdStyle, Nothing, Impd))
+        End Sub
+
+    End Class ' TestTryParseStandardEnforceStandardization
+
+    Public Class TestTryParseStandardCulture
+
+        <Theory>
+        <InlineData("111111.125+j555555.6875", TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE, 0)>
+        <InlineData("111111.125+j555555.6875", TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE, 1)> ' When current is "en-US".
+        <InlineData("111111.125-555555.6875j", TestVals.SAMERESISTANCE, -TestVals.SAMEREACTANCE, 2)> ' A+Bi, i at end.
+        <InlineData("111111.125 - j555555.6875", TestVals.SAMERESISTANCE, -TestVals.SAMEREACTANCE, 3)> ' Open, one space.
+        <InlineData("111111,125+j555555,6875", TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE, 4)> ' Comma decimal.
+        <InlineData("111" & CHARNNBSP & "111,125+j555" & CHARNNBSP & "555,6875",
+                    TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE, 5)> ' Comma decimal, Non-breaking space.
+        <InlineData("111111" & CHARARABCOMMA66B & "125+555555" & CHARARABCOMMA66B & "6875j",
+                    TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE, 6)> ' Arabic comma CHARARABCOMMA66B.
+        Sub TryParseStandard_Culture_Succeeds(standardStr As String, resistance As Double, reactance As Double,
+                                              index As Integer)
+
+            Dim Providers As System.IFormatProvider() = {
+                CultureInfo.InvariantCulture,
+                CultureInfo.CurrentCulture,
+                New CultureInfo("en-US", False),
+                New CultureInfo("en-UK", False),
+                New CultureInfo("ru-RU", False),
+                New CultureInfo("fr-FR", False),
+                New CultureInfo("ar-001", False)
+                }
             Dim Impd As New OSNW.Numerics.Impedance
 
             If Not OSNW.Numerics.Impedance.TryParseStandard(standardStr, Nothing, Providers(index), Impd) Then
                 Assert.Fail("Failed to parse.")
             End If
 
-            Assert.True(Impd.Resistance.Equals(real) AndAlso Impd.Reactance.Equals(imaginary))
+            Assert.True(Impd.Resistance.Equals(resistance) AndAlso Impd.Reactance.Equals(reactance))
 
         End Sub
 
     End Class ' TestTryParseStandardCulture
 
 End Namespace ' TryParseStandardTests
-
-Namespace MathTests
-
-    Public Class TestEqualsObject
-
-        <Fact>
-        Sub Equals_MismatchObjectType_Fails1()
-            Dim I1 As New Impedance(3, 4)
-            Dim C2 As New Admittance(3, 4)
-            Assert.False(I1.Equals(C2))
-        End Sub
-
-        <Fact>
-        Sub Equals_MismatchObjectType_Fails2()
-            Dim I1 As New Impedance(3, 4)
-            Dim C2 As Object = New Admittance(3, 4)
-            Assert.False(I1.Equals(C2))
-        End Sub
-
-        <Fact>
-        Sub Equals_MismatchObjectValue_Fails()
-            Dim I1 As New Impedance(3, 4)
-            Dim C2 As Object = New Impedance(4, 5)
-            Assert.False(I1.Equals(C2))
-        End Sub
-
-    End Class ' TestEqualsObject
-
-    Public Class TestEqualsOther
-
-        <Fact>
-        Sub Equals_MatchOther_Passes()
-            Dim I1 As New Impedance(1, 2)
-            Dim I2 As New Impedance(1, 2)
-            Assert.True(I1.Equals(I2))
-        End Sub
-
-        <Fact>
-        Sub Equals_MismatchOther_Fails()
-            Dim I1 As New Impedance(1, 2)
-            Dim I2 As New Impedance(1, 3)
-            Assert.False(I1.Equals(I2))
-        End Sub
-
-    End Class ' EqualsOtherTest
-
-End Namespace ' MathTests
 
 Namespace SerializationTests
 
@@ -388,9 +366,9 @@ Namespace SerializationTests
         Sub Serialize_Simple_Passes()
 
             Dim Imp As New Impedance(1, 2)
-            Dim ResultStr As System.String = System.String.Empty
             Dim ExpectedSerialized As String = "{""Resistance"":1,""Reactance"":2}"
 
+            Dim ResultStr As System.String = System.String.Empty
             If Imp.SerializeJSONString(ResultStr) Then
                 Assert.True(ExpectedSerialized.Equals(ResultStr))
             Else
@@ -415,8 +393,8 @@ Namespace SerializationTests
             ' value.
 
             Dim Imp As New Impedance(r, x)
-            Dim ResultStr As System.String = System.String.Empty
 
+            Dim ResultStr As System.String = System.String.Empty
             If Imp.SerializeJSONString(ResultStr) Then
                 Assert.True(expectedStr.Equals(ResultStr))
             Else
@@ -429,8 +407,8 @@ Namespace SerializationTests
         Sub Deserialize_Simple_Passes()
 
             Dim jsonString As String = "{""Resistance"":1,""Reactance"":2}"
-            Dim Imp As Impedance
 
+            Dim Imp As Impedance
             If Impedance.DeserializeJSONString(jsonString, Imp) Then
                 Assert.True(Imp.Resistance.Equals(1) AndAlso Imp.Reactance.Equals(2))
             Else
@@ -449,15 +427,12 @@ Namespace SerializationTests
         <InlineData("{""Resistance"":555555555.5555556,""Reactance"":555555555.5555556}",
                     555_555_555.555_555_555, 555_555_555.555_555_555)>
         Sub Deserialize_Default_Passes(jsonString As String, r As Double, x As Double)
-
             Dim Imp As Impedance
-
             If Impedance.DeserializeJSONString(jsonString, Imp) Then
                 Assert.True(Imp.Resistance.Equals(r) AndAlso Imp.Reactance.Equals(x))
             Else
                 Assert.True(False, "Serialization failed.")
             End If
-
         End Sub
 
     End Class ' TestSerialization

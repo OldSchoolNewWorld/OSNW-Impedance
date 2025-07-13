@@ -10,7 +10,7 @@ Partial Public Module ComplexExtensions
     '''' <summary>
     '''' Counts the appearances of a specified character in a string.
     '''' </summary>
-    Private Function GetCharCount(ByVal s As System.String,
+    Friend Function GetCharCount(ByVal s As System.String,
         ByVal searchChar As System.Char) As System.Int32
 
         If String.IsNullOrWhiteSpace(s) Then
