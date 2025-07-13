@@ -4,6 +4,7 @@ Option Compare Binary
 Option Infer Off
 
 Imports System.Diagnostics.CodeAnalysis
+Imports System.Text.Json.Serialization
 Imports OSNW.Numerics.ComplexExtensions
 
 ''' <summary>
@@ -47,26 +48,34 @@ Public Structure Admittance
 
 #End Region ' "Fields and Properties"
 
-    ' Use the "has a ..." approach to expose the desired features of a
-    ' System.Numerics.Complex.
-    ' Do not rename (binary serialization). ??????????????????????????????
-    Private ReadOnly m_Complex As System.Numerics.Complex
 
     ''' <summary>
     ''' Gets the conductance (G) component, in siemens, of the current instance.
     ''' </summary>
-    Public ReadOnly Property Conductance As Double
+    Private ReadOnly m_Conductance As System.Double
+
+    ''' <summary>
+    ''' Gets the susceptance (B) component, in siemens, of the current instance.
+    ''' </summary>
+    Private ReadOnly m_Susceptance As System.Double
+
+    ''' <summary>
+    ''' Gets the conductance (G) component, in siemens, of the current instance.
+    ''' </summary>
+    Public ReadOnly Property Conductance As System.Double
+        ' Do not rename (binary serialization).
         Get
-            Return m_Complex.Real
+            Return Me.m_Conductance
         End Get
     End Property
 
     ''' <summary>
     ''' Gets the susceptance (B) component, in siemens, of the current instance.
     ''' </summary>
-    Public ReadOnly Property Susceptance As Double
+    Public ReadOnly Property Susceptance As System.Double
+        ' Do not rename (binary serialization).
         Get
-            Return m_Complex.Imaginary
+            Return Me.m_Susceptance
         End Get
     End Property
 
@@ -249,7 +258,7 @@ Public Structure Admittance
             ByVal format As System.String) _
         As System.String
 
-        Return Me.m_Complex.ToString(format).Replace(CHARI, CHARJ)
+        Return Me.ToComplex.ToString(format).Replace(CHARI, CHARJ)
     End Function ' ToString
 
     '    public string ToString(IFormatProvider? provider)
@@ -265,7 +274,7 @@ Public Structure Admittance
     Public Overloads Function ToString(
         ByVal provider As System.IFormatProvider) As System.String
 
-        Return Me.m_Complex.ToString(provider).Replace(CHARI, CHARJ)
+        Return Me.ToComplex.ToString(provider).Replace(CHARI, CHARJ)
     End Function ' ToString
 
     '    public override string ToString()
@@ -277,7 +286,7 @@ Public Structure Admittance
     ''' </summary>
     ''' <returns>The current Admittance expressed in Cartesian form.</returns>
     Public Overrides Function ToString() As System.String
-        Return Me.m_Complex.ToString().Replace(CHARI, CHARJ)
+        Return Me.ToComplex.ToString().Replace(CHARI, CHARJ)
     End Function ' ToString
 
 #End Region ' "ToString Implementations"
@@ -332,7 +341,7 @@ Public Structure Admittance
         ByVal provider As System.IFormatProvider) _
         As System.String
 
-        Return Me.m_Complex.ToStandardString(standardizationStyle, format,
+        Return Me.ToComplex.ToStandardString(standardizationStyle, format,
                                              provider).Replace(CHARI, CHARJ)
     End Function ' ToStandardString
 
@@ -351,7 +360,7 @@ Public Structure Admittance
         ByVal standardizationStyle As StandardizationStyles) _
         As System.String
 
-        Return Me.m_Complex.ToStandardString(
+        Return Me.ToComplex.ToStandardString(
             standardizationStyle).Replace(CHARI, CHARJ)
     End Function ' ToStandardString
 
@@ -373,7 +382,7 @@ Public Structure Admittance
             ByVal format As System.String) _
         As System.String
 
-        Return Me.m_Complex.ToStandardString(standardizationStyle,
+        Return Me.ToComplex.ToStandardString(standardizationStyle,
                                              format).Replace(CHARI, CHARJ)
     End Function ' ToStandardString
 
@@ -395,8 +404,8 @@ Public Structure Admittance
         ByVal provider As System.IFormatProvider) _
         As System.String
 
-        Return Me.m_Complex.ToStandardString(standardizationStyle,
-                                           provider).Replace(CHARI, CHARJ)
+        Return Me.ToComplex.ToStandardString(standardizationStyle,
+                                             provider).Replace(CHARI, CHARJ)
     End Function ' ToStandardString
 
     '    public override string ToString()
@@ -408,7 +417,7 @@ Public Structure Admittance
     ''' </summary>
     ''' <returns>The current <c>Admittance</c> expressed in standard form.</returns>
     Public Function ToStandardString() As System.String
-        Return Me.m_Complex.ToStandardString().Replace(CHARI, CHARJ)
+        Return Me.ToComplex.ToStandardString().Replace(CHARI, CHARJ)
     End Function ' ToStandardString
 
 #End Region ' "ToStandardString Implementations"
@@ -522,18 +531,24 @@ Public Structure Admittance
     ''' other calculations.
     ''' </para>
     ''' </remarks>
+    <JsonConstructor> ' See Use immutable types and properties.
     Public Sub New(ByVal conductance As System.Double,
                    ByVal susceptance As System.Double)
+
+        ' REF: Use immutable types and properties
+        ' https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/immutability
 
         ' Input checking.
         If conductance < 0.0 Then
             Dim CaughtBy As System.Reflection.MethodBase =
-                    System.Reflection.MethodBase.GetCurrentMethod
+                System.Reflection.MethodBase.GetCurrentMethod
             Throw New System.ArgumentOutOfRangeException(NameOf(conductance),
                                                          MSGVMBGTZ)
         End If
 
-        Me.m_Complex = New System.Numerics.Complex(conductance, susceptance)
+        '        Me.AsComplex = New System.Numerics.Complex(resistance, reactance)
+        Me.m_Conductance = conductance
+        Me.m_Susceptance = susceptance
 
     End Sub ' New
 
