@@ -25,31 +25,6 @@ Public Structure Admittance
 #Region "Fields and Properties"
 
     ''' <summary>
-    '''  This is for some internal conveniences. It provides easy access to
-    '''  <c>Complex</c> functionality.
-    ''' </summary>
-    ''' <returns>A new instance of the <see cref="System.Numerics.Complex"/>
-    ''' structure.</returns>
-    Friend Function ToComplex() As System.Numerics.Complex
-        Return New System.Numerics.Complex(Me.Conductance, Me.Susceptance)
-    End Function
-
-    ''' <summary>
-    ''' Returns a value that represents this instance as its equivalent
-    ''' <see cref="Impedance"/>.
-    ''' </summary>
-    ''' <returns>The equivalent <c>Impedance</c> value of the current
-    ''' instance.</returns>
-    Public Function ToImpedance() As Impedance
-        Dim ComplexRecip As System.Numerics.Complex =
-            System.Numerics.Complex.Reciprocal(Me.ToComplex())
-        Return New Impedance(ComplexRecip.Real, ComplexRecip.Imaginary)
-    End Function
-
-#End Region ' "Fields and Properties"
-
-
-    ''' <summary>
     ''' Gets the conductance (G) component, in siemens, of the current instance.
     ''' </summary>
     Private ReadOnly m_Conductance As System.Double
@@ -78,6 +53,30 @@ Public Structure Admittance
             Return Me.m_Susceptance
         End Get
     End Property
+
+#End Region ' "Fields and Properties"
+
+    ''' <summary>
+    '''  This is for some internal conveniences. It provides easy access to
+    '''  <c>Complex</c> functionality.
+    ''' </summary>
+    ''' <returns>A new instance of the <see cref="System.Numerics.Complex"/>
+    ''' structure.</returns>
+    Friend Function ToComplex() As System.Numerics.Complex
+        Return New System.Numerics.Complex(Me.Conductance, Me.Susceptance)
+    End Function
+
+    ''' <summary>
+    ''' Returns a value that represents this instance as its equivalent
+    ''' <see cref="Impedance"/>.
+    ''' </summary>
+    ''' <returns>The equivalent <c>Impedance</c> value of the current
+    ''' instance.</returns>
+    Public Function ToImpedance() As Impedance
+        Dim ComplexRecip As System.Numerics.Complex =
+            System.Numerics.Complex.Reciprocal(Me.ToComplex())
+        Return New Impedance(ComplexRecip.Real, ComplexRecip.Imaginary)
+    End Function
 
 #Region "System.ValueType Implementations"
 
@@ -461,6 +460,10 @@ Public Structure Admittance
         ByRef result As OSNW.Numerics.Admittance) _
         As System.Boolean
 
+        If Not GetCharCount(s, "j"c).Equals(1) Then
+            result = New OSNW.Numerics.Admittance
+            Return False
+        End If
         Dim Cplx As New System.Numerics.Complex
         If OSNW.Numerics.ComplexExtensions.TryParseStandard(
             s.Replace(CHARJ, CHARI), standardizationStyle, style, provider,

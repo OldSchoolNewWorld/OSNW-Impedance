@@ -16,50 +16,6 @@ End Class
 
 Namespace DevelopmentTests
 
-    Public Class TestEquals
-
-        <Fact>
-        Sub Equals_GoodMatch_Passes()
-            Dim I1 As New Impedance(1, 2)
-            Dim I2 As New Impedance(1, 2)
-            Assert.True(I1.Equals(I2))
-        End Sub
-
-        <Fact>
-        Sub Equals_Mismatch_Fails()
-            Dim I1 As New Impedance(1, 2)
-            Dim I2 As New Impedance(2, 3)
-            Assert.False(I1.Equals(I2))
-        End Sub
-
-        <Fact>
-        Sub Equals_DoubleDefault_Passes()
-            ' What happens the nothing is sent?
-            ' Is a null check needed?
-            Dim I1 As Impedance
-            Dim I2 As Impedance
-            Assert.True(I1.Equals(I2))
-        End Sub
-
-        <Fact>
-        Sub Equals_DoubleEmpty_Passes()
-            ' What happens when nothing is set?
-            ' Is a null check needed?
-            Dim I1 As New Impedance()
-            Dim I2 As New Impedance()
-            Assert.True(I1.Equals(Nothing))
-        End Sub
-
-        <Fact>
-        Sub Equals_Nothing_Fails()
-            ' What happens the "Nothing" is sent?
-            ' Is a null check needed?
-            Dim I1 As New Impedance(1, 2)
-            Assert.False(I1.Equals(Nothing))
-        End Sub
-
-    End Class ' TestEquals
-
     Public Class TestUnitTestExceptions
 
         <Fact>
@@ -86,7 +42,7 @@ Namespace DevelopmentTests
 
     End Class ' TestUnitTestExceptions
 
-    Public Class CultureStuff
+    Public Class TestCultureStuff
 
         '    <Fact>
         '    Public Sub ListCulturesNumerics()
@@ -109,7 +65,7 @@ Namespace DevelopmentTests
 
         '    End Sub
 
-    End Class ' CultureStuff
+    End Class ' TestCultureStuff
 
 End Namespace ' DevTests
 
@@ -118,10 +74,10 @@ Namespace ToStringTests
     Public Class TestToStringDefault
 
         <Theory>
-        <InlineData(1.125, 5.675, "<1.125; 5.675>")>
-        <InlineData(1.125, -5.675, "<1.125; -5.675>")>
-        <InlineData(0, 5.675, "<0; 5.675>")>
-        <InlineData(0, -5.675, "<0; -5.675>")>
+        <InlineData(TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE, "<111111.125; 555555.6875>")>
+        <InlineData(TestVals.SAMERESISTANCE, -TestVals.SAMEREACTANCE, "<111111.125; -555555.6875>")>
+        <InlineData(0, TestVals.SAMEREACTANCE, "<0; 555555.6875>")>
+        <InlineData(0, -TestVals.SAMEREACTANCE, "<0; -555555.6875>")>
         Sub ToString_Default_Succeeds(r As Double, x As Double, expect As String)
             Dim Z As New OSNW.Numerics.Impedance(r, x)
             Dim ImpdStr As String = Z.ToString()
@@ -138,11 +94,11 @@ Namespace ToStandardStringTests
 
         <Theory>
         <InlineData(TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE, "111111.125+555555.6875j")>
-        <InlineData(TestVals.SAMERESISTANCE, -TestVals.SAMEREACTANCE, "111111.125-555555.6875j")> ' -B
+        <InlineData(TestVals.SAMERESISTANCE, -TestVals.SAMEREACTANCE, "111111.125-555555.6875j")> ' -X
         Sub ToStandardString_Default_Succeeds(resistance As Double, reactance As Double, expected As String)
             Dim Z As New OSNW.Numerics.Impedance(resistance, reactance)
-            Dim WasImpdStr As String = Z.ToStandardString()
-            Assert.Equal(expected, WasImpdStr)
+            Dim ImpdStr As String = Z.ToStandardString()
+            Assert.Equal(expected, ImpdStr)
         End Sub
 
     End Class ' TestToStandardStringDefault
@@ -157,8 +113,8 @@ Namespace ToStandardStringTests
         Sub ToStandardString_Standardization_Succeeds(resistance As Double, reactance As Double,
                                                       stdStyle As OsnwNumSS, expected As String)
             Dim Z As New OSNW.Numerics.Impedance(resistance, reactance)
-            Dim WasImpdStr As String = Z.ToStandardString(stdStyle)
-            Assert.Equal(expected, WasImpdStr)
+            Dim ImpdStr As String = Z.ToStandardString(stdStyle)
+            Assert.Equal(expected, ImpdStr)
         End Sub
 
     End Class ' TestToStandardStringStandardization
@@ -173,8 +129,8 @@ Namespace ToStandardStringTests
         <InlineData(Math.PI, Math.E, "G", "3.141592653589793+2.718281828459045j")>
         Sub ToStandardString_Format_Succeeds(resistance As Double, reactance As Double, format As String, expected As String)
             Dim Z As New OSNW.Numerics.Impedance(resistance, reactance)
-            Dim WasImpdStr As String = Z.ToStandardString(Nothing, format)
-            Assert.Equal(expected, WasImpdStr)
+            Dim ImpdStr As String = Z.ToStandardString(Nothing, format)
+            Assert.Equal(expected, ImpdStr)
         End Sub
 
     End Class ' TestToStandardStringFormat
@@ -205,9 +161,9 @@ Namespace ToStandardStringTests
             }
             Dim Z As New OSNW.Numerics.Impedance(resistance, reactance)
 
-            Dim WasImpdStr As String = Z.ToStandardString(Nothing, Providers(index))
+            Dim ImpdStr As String = Z.ToStandardString(Nothing, Providers(index))
 
-            Assert.Equal(expected, WasImpdStr)
+            Assert.Equal(expected, ImpdStr)
 
         End Sub
 
@@ -357,6 +313,87 @@ Namespace TryParseStandardTests
     End Class ' TestTryParseStandardCulture
 
 End Namespace ' TryParseStandardTests
+
+Namespace MathTests
+
+    Public Class TestEqualsObject
+
+        <Fact>
+        Sub EqualsObject_TypeMismatch_Fails1()
+            Dim I1 As New OsnwImpd(3, 4)
+            Dim C2 As New System.Numerics.Complex(3, 4)
+            Assert.False(I1.Equals(C2))
+        End Sub
+
+        <Fact>
+        Sub EqualsObject_TypeMismatch_Fails2()
+            Dim I1 As New OsnwImpd(3, 4)
+            Dim C2 As Object = New System.Numerics.Complex(3, 4)
+            Assert.False(I1.Equals(C2))
+        End Sub
+
+        <Fact>
+        Sub EqualsObject_ValueMismatch_Fails()
+            Dim I1 As New OsnwImpd(3, 4)
+            Dim I2 As Object = New OsnwImpd(4, 5)
+            Assert.False(I1.Equals(I2))
+        End Sub
+
+    End Class ' TestEqualsObject
+
+    Public Class TestEqualsOther
+
+        <Fact>
+        Sub Equals_GoodMatch_Passes()
+            Dim I1 As New OsnwImpd(1, 2)
+            Dim I2 As New OsnwImpd(1, 2)
+            Assert.True(I1.Equals(I2))
+        End Sub
+
+        <Fact>
+        Sub Equals_Mismatch_Fails()
+            Dim I1 As New OsnwImpd(1, 2)
+            Dim I2 As New OsnwImpd(2, 3)
+            Assert.False(I1.Equals(I2))
+        End Sub
+
+        <Fact>
+        Sub Equals_DoubleDefault_Passes()
+            Dim I1 As OsnwImpd
+            Dim I2 As OsnwImpd
+            Assert.True(I1.Equals(I2))
+        End Sub
+
+        <Fact>
+        Sub Equals_DoubleEmpty_Passes()
+            Dim I1 As New OsnwImpd()
+            Dim I2 As New OsnwImpd()
+            Assert.True(I1.Equals(Nothing))
+        End Sub
+
+        <Fact>
+        Sub Equals_Nothing_Fails()
+            Dim I1 As New OsnwImpd(1, 2)
+            Assert.False(I1.Equals(Nothing))
+        End Sub
+
+        <Fact>
+        Sub EqualsOther_Match_Passes()
+            Dim I1 As New OsnwImpd(1, 2)
+            Dim I2 As New OsnwImpd(1, 2)
+            Assert.True(I1.Equals(I2))
+        End Sub
+
+        <Fact>
+        Sub EqualsOther_Mismatch_Fails()
+            Dim I1 As New OsnwImpd(1, 2)
+            Dim I2 As New OsnwImpd(1, 3)
+            Assert.False(I1.Equals(I2))
+        End Sub
+
+    End Class ' TestEqualsOther
+
+End Namespace ' MathTests
 
 Namespace SerializationTests
 

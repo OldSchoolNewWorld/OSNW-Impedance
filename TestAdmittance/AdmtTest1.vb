@@ -9,57 +9,23 @@ Imports OSNW.Numerics
 Imports OsnwAdmt = OSNW.Numerics.Admittance
 Imports OsnwNumSS = OSNW.Numerics.StandardizationStyles
 
-Namespace DevelopmentTests
-
-    ' Tests to confirm, or identify, behaviors.
-
-    Public Class TestEquals
-
-        <Fact>
-        Sub Equals_GoodMatch_Passes()
-            Dim A1 As New OsnwAdmt(1, 2)
-            Dim A2 As New OsnwAdmt(1, 2)
-            Assert.True(A1.Equals(A2))
-        End Sub
-
-        <Fact>
-        Sub Equals_Mismatch_Fails()
-            Dim A1 As New OsnwAdmt(1, 2)
-            Dim A2 As New OsnwAdmt(2, 3)
-            Assert.False(A1.Equals(A2))
-        End Sub
-
-        <Fact>
-        Sub Equals_Default_Passes()
-            Dim A1 As OsnwAdmt
-            Dim A2 As New OsnwAdmt()
-            Assert.True(A1.Equals(A2))
-        End Sub
-
-        <Fact>
-        Sub Equals_Nothing_Fails()
-            ' What happens the "Nothing" is sent?
-            ' Is a null check needed?
-            Dim A1 As New OsnwAdmt(1, 2)
-            Assert.False(A1.Equals(Nothing))
-        End Sub
-
-    End Class ' TestEquals
-
-End Namespace ' DevTests
+Public Class TestVals
+    Public Const SAMECONDUCTANCE As Double = 111_111.125 ' 1/8 is good for binary fractions.
+    Public Const SAMESUSCEPTANCE As Double = 555_555.687_5 ' 11/16 is good for binary fractions.
+End Class
 
 Namespace ToStringTests
 
     Public Class TestToStringDefault
 
         <Theory>
-        <InlineData(1.125, 5.675, "<1.125; 5.675>")>
-        <InlineData(1.125, -5.675, "<1.125; -5.675>")>
-        <InlineData(0, 5.675, "<0; 5.675>")>
-        <InlineData(0, -5.675, "<0; -5.675>")>
+        <InlineData(TestVals.SAMECONDUCTANCE, TestVals.SAMESUSCEPTANCE, "<111111.125; 555555.6875>")>
+        <InlineData(TestVals.SAMECONDUCTANCE, -TestVals.SAMESUSCEPTANCE, "<111111.125; -555555.6875>")>
+        <InlineData(0, TestVals.SAMESUSCEPTANCE, "<0; 555555.6875>")>
+        <InlineData(0, -TestVals.SAMESUSCEPTANCE, "<0; -555555.6875>")>
         Sub ToString_Default_Succeeds(g As Double, b As Double, expect As String)
-            Dim Y As New OsnwAdmt(g, b)
-            Dim AdmtStr As String = Y.ToString()
+            Dim Z As New OsnwAdmt(g, b)
+            Dim AdmtStr As String = Z.ToString()
             Assert.Equal(expect, AdmtStr)
         End Sub
 
@@ -72,14 +38,12 @@ Namespace ToStandardStringTests
     Public Class TestToStandardStringDefault
 
         <Theory>
-        <InlineData(1.125, 5.675, "1.125+5.675j")>
-        <InlineData(1.125, -5.675, "1.125-5.675j")>
-        <InlineData(0, 5.675, "0+5.675j")>
-        <InlineData(0, -5.675, "0-5.675j")>
-        Sub ToStandardString_Default_Succeeds(g As Double, b As Double, expect As String)
-            Dim Y As New OsnwAdmt(g, b)
-            Dim AdmtStr As String = Y.ToStandardString()
-            Assert.Equal(expect, AdmtStr)
+        <InlineData(TestVals.SAMECONDUCTANCE, TestVals.SAMESUSCEPTANCE, "111111.125+555555.6875j")>
+        <InlineData(TestVals.SAMECONDUCTANCE, -TestVals.SAMESUSCEPTANCE, "111111.125-555555.6875j")> ' -B
+        Sub ToStandardString_Default_Succeeds(conductance As Double, susceptance As Double, expected As String)
+            Dim Z As New OsnwAdmt(conductance, susceptance)
+            Dim AdmtStr As String = Z.ToStandardString()
+            Assert.Equal(expected, AdmtStr)
         End Sub
 
     End Class ' TestToStandardStringDefault
@@ -87,15 +51,14 @@ Namespace ToStandardStringTests
     Public Class TestToStandardStringStandardization
 
         <Theory>
-        <InlineData(1.125, 5.675, Nothing, "1.125+5.675j")>
-        <InlineData(1.125, -5.675, OsnwNumSS.AiB, "1.125-j5.675")>
-        <InlineData(0, 5.675, OsnwNumSS.Open, "0 + 5.675j")>
-        <InlineData(0, -5.675, OsnwNumSS.OpenAiB, "0 - j5.675")>
-        Sub ToStandardString_Standardization_Succeeds(
-            g As Double, b As Double, standardizationStyle As OsnwNumSS, expected As String)
-
-            Dim Y As New OsnwAdmt(g, b)
-            Dim AdmtStr As String = Y.ToStandardString(standardizationStyle)
+        <InlineData(TestVals.SAMECONDUCTANCE, TestVals.SAMESUSCEPTANCE, Nothing, "111111.125+555555.6875j")>
+        <InlineData(TestVals.SAMECONDUCTANCE, TestVals.SAMESUSCEPTANCE, OsnwNumSS.Open, "111111.125 + 555555.6875j")>
+        <InlineData(TestVals.SAMECONDUCTANCE, -TestVals.SAMESUSCEPTANCE, OsnwNumSS.AiB, "111111.125-j555555.6875")>
+        <InlineData(TestVals.SAMECONDUCTANCE, -TestVals.SAMESUSCEPTANCE, OsnwNumSS.OpenAiB, "111111.125 - j555555.6875")>
+        Sub ToStandardString_Standardization_Succeeds(conductance As Double, susceptance As Double,
+                                                      stdStyle As OsnwNumSS, expected As String)
+            Dim Z As New OsnwAdmt(conductance, susceptance)
+            Dim AdmtStr As String = Z.ToStandardString(stdStyle)
             Assert.Equal(expected, AdmtStr)
         End Sub
 
@@ -104,14 +67,15 @@ Namespace ToStandardStringTests
     Public Class TestToStandardStringFormat
 
         <Theory>
-        <InlineData(1.122, 5.677, "F2", "1.12+5.68j")>
-        <InlineData(111_111.122, -555_555.677, "N2", "111,111.12-555,555.68j")>
-        <InlineData(111_111.125, 555_555.675, "G5", "1.1111E+05+5.5556E+05j")>
-        Sub ToStandardString_Format_Succeeds(g As Double, b As Double, format As String, expect As String)
-            ' One round down, one up.
-            Dim Y As New OsnwAdmt(g, b)
-            Dim AdmtStr As String = Y.ToStandardString(Nothing, format)
-            Assert.Equal(expect, AdmtStr)
+        <InlineData(TestVals.SAMECONDUCTANCE, TestVals.SAMESUSCEPTANCE, "G", "111111.125+555555.6875j")>
+        <InlineData(111_111.122, 111_111.127, "F2", "111111.12+111111.13j")> ' One round down, one up.
+        <InlineData(111_111.127, -111_111.122, "N2", "111,111.13-111,111.12j")> ' One round up, one down.
+        <InlineData(TestVals.SAMECONDUCTANCE, -TestVals.SAMESUSCEPTANCE, "G5", "1.1111E+05-5.5556E+05j")>
+        <InlineData(Math.PI, Math.E, "G", "3.141592653589793+2.718281828459045j")>
+        Sub ToStandardString_Format_Succeeds(conductance As Double, susceptance As Double, format As String, expected As String)
+            Dim Z As New OsnwAdmt(conductance, susceptance)
+            Dim AdmtStr As String = Z.ToStandardString(Nothing, format)
+            Assert.Equal(expected, AdmtStr)
         End Sub
 
     End Class ' TestToStandardStringFormat
@@ -119,14 +83,17 @@ Namespace ToStandardStringTests
     Public Class TestToStandardStringCulture
 
         <Theory>
-        <InlineData(111_111.122, -555_555.677, 0, "111111.122-555555.677j")> ' One round down, one up.
-        <InlineData(111_111.122, -555_555.677, 1, "111111.122-555555.677j")> ' One round down, one up.
-        <InlineData(111_111.122, -555_555.677, 2, "111111.122-555555.677j")> ' One round down, one up.
-        <InlineData(111_111.122, -555_555.677, 3, "111111.122-555555.677j")> ' One round down, one up.
-        <InlineData(111_111.122, -555_555.677, 4, "111111,122-555555,677j")> ' One round down, one up.
-        <InlineData(111_111.125, 555_555.675, 5, "111111,125+555555,675j")>
+        <InlineData(TestVals.SAMECONDUCTANCE, TestVals.SAMESUSCEPTANCE, 0, "111111.125+555555.6875j")>
+        <InlineData(TestVals.SAMECONDUCTANCE, TestVals.SAMESUSCEPTANCE, 1, "111111.125+555555.6875j")>
+        <InlineData(TestVals.SAMECONDUCTANCE, -TestVals.SAMESUSCEPTANCE, 2, "111111.125-555555.6875j")>
+        <InlineData(TestVals.SAMECONDUCTANCE, -TestVals.SAMESUSCEPTANCE, 3, "111111.125-555555.6875j")>
+        <InlineData(TestVals.SAMECONDUCTANCE, TestVals.SAMESUSCEPTANCE, 4, "111111,125+555555,6875j")> ' Comma decimal.
+        <InlineData(TestVals.SAMECONDUCTANCE, TestVals.SAMESUSCEPTANCE, 5, "111111,125+555555,6875j")> ' Comma decimal.
+        <InlineData(TestVals.SAMECONDUCTANCE, TestVals.SAMESUSCEPTANCE, 6,
+                    "111111" & CHARARABCOMMA66B & "125+555555" & CHARARABCOMMA66B &
+                    "6875j")> ' Arabic comma CHARARABCOMMA66B.
         Sub ToStandardString_Culture_Succeeds(
-            g As Double, b As Double, index As Integer, expected As String)
+            conductance As Double, susceptance As Double, index As Integer, expected As String)
 
             Dim Providers As System.IFormatProvider() = {
                 CultureInfo.InvariantCulture,
@@ -134,15 +101,18 @@ Namespace ToStandardStringTests
                 New CultureInfo("en-US", False),
                 New CultureInfo("en-UK", False),
                 New CultureInfo("ru-RU", False),
-                New CultureInfo("fr-FR", False)
+                New CultureInfo("fr-FR", False),
+                New CultureInfo("ar-001", False)
             }
-            Dim Y As New OsnwAdmt(g, b)
+            Dim Z As New OsnwAdmt(conductance, susceptance)
 
-            Dim AdmtStr As String = Y.ToStandardString(Nothing, Providers(index))
+            Dim AdmtStr As String = Z.ToStandardString(Nothing, Providers(index))
 
             Assert.Equal(expected, AdmtStr)
 
         End Sub
+
+        ' No failure tests. Any valid double values should be allowed.
 
     End Class ' TestToStandardStringCulture
 
@@ -150,37 +120,92 @@ End Namespace ' ToStandardStringTests
 
 Namespace TryParseStandardTests
 
+    'Public Class TestTryParseStandardDefault
 
-    ' PARSING IS WHERE TO ADD SOME FAILURE TESTS.
+    '    <Theory>
+    '    <InlineData("1.125+i5.675", 1.125, 5.675)>
+    '    <InlineData("1.125-i5.675", 1.125, -5.675)>
+    '    <InlineData(".1125e1+i.5675E1", 1.125, 5.675)>
+    '    <InlineData("112.5E-2+i567.5e-2", 1.125, 5.675)>
+    '    Sub TryParseStandardDefault_GoodInput_Succeeds(standardStr As String, real As Double, imaginary As Double)
+    '        Dim Admt As New OsnwAdmt
+    '        If Not OsnwAdmt.TryParseStandard(standardStr, Nothing, Nothing, Admt) Then
+    '            Assert.True(False, "Failed to parse.")
+    '        End If
+    '        Assert.True(Admt.Conductance.Equals(real) AndAlso Admt.Susceptance.Equals(imaginary), "Parsed with bad conversion.")
+    '    End Sub
 
+    '    WHY ONLY ONE VS THREE For IMPEDANCE?
+
+    'End Class ' TestTryParseStandardDefault
 
     Public Class TestTryParseStandardDefault
 
         <Theory>
-        <InlineData("1.125+i5.675", 1.125, 5.675)>
-        <InlineData("1.125-i5.675", 1.125, -5.675)>
-        <InlineData(".1125e1+i.5675E1", 1.125, 5.675)>
-        <InlineData("112.5E-2+i567.5e-2", 1.125, 5.675)>
-        Sub TryParseStandardDefault_GoodInput_Succeeds(standardStr As String, real As Double, imaginary As Double)
+        <InlineData("111111.125+555555.6875j", TestVals.SAMECONDUCTANCE, TestVals.SAMESUSCEPTANCE)>
+        <InlineData("111111.125+j555555.6875", TestVals.SAMECONDUCTANCE, TestVals.SAMESUSCEPTANCE)> ' A+iB, j in middle.
+        <InlineData("111111.125 - 555555.6875j", TestVals.SAMECONDUCTANCE, -TestVals.SAMESUSCEPTANCE)> ' Open.
+        <InlineData("111111.125-555555.6875j", TestVals.SAMECONDUCTANCE, -TestVals.SAMESUSCEPTANCE)>
+        <InlineData("1.11111125E5+.5555556875e6j", TestVals.SAMECONDUCTANCE, TestVals.SAMESUSCEPTANCE)> ' Mixed E/e.
+        <InlineData("11111112.5e-2+555555687.5E-3j", TestVals.SAMECONDUCTANCE, TestVals.SAMESUSCEPTANCE)> ' Mixed e/E.
+        Sub TryParseStandardDefault_GoodInput_Succeeds(standardStr As String, conductance As Double, susceptance As Double)
             Dim Admt As New OsnwAdmt
             If Not OsnwAdmt.TryParseStandard(standardStr, Nothing, Nothing, Admt) Then
-                Assert.True(False, "Failed to parse.")
+                Assert.Fail("Failed to parse.")
             End If
-            Assert.True(Admt.Conductance.Equals(real) AndAlso Admt.Susceptance.Equals(imaginary), "Parsed with bad conversion.")
+            Assert.True(conductance.Equals(Admt.Conductance) AndAlso susceptance.Equals(Admt.Susceptance))
+        End Sub
+
+        <Fact>
+        Sub TryParseStandardDefault_NegativeResistance_Fails()
+            Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
+                Sub()
+                    ' Code that throws the exception
+                    Dim Admt As New OsnwAdmt
+                    If OsnwAdmt.TryParseStandard("-111111.125+555555.6875j", Nothing, Nothing, Admt) Then
+                        Assert.Fail("Parsed despite bad entry.")
+                    End If
+                    Assert.False(Admt.Conductance.Equals(-TestVals.SAMECONDUCTANCE) AndAlso
+                                 Admt.Susceptance.Equals(TestVals.SAMESUSCEPTANCE))
+                End Sub)
+        End Sub
+
+        <Theory>
+        <InlineData("", TestVals.SAMECONDUCTANCE, TestVals.SAMESUSCEPTANCE)> ' Empty.
+        <InlineData("123", TestVals.SAMECONDUCTANCE, TestVals.SAMESUSCEPTANCE)> ' Too short.
+        <InlineData("111111.125+555555.6875Q", TestVals.SAMECONDUCTANCE, TestVals.SAMESUSCEPTANCE)> ' Bad char Q.
+        <InlineData("111111.125+Q5.6875", TestVals.SAMECONDUCTANCE, TestVals.SAMESUSCEPTANCE)> ' Bad char Q.
+        <InlineData("111111.125+555555.6875i", TestVals.SAMECONDUCTANCE, TestVals.SAMESUSCEPTANCE)> ' i, not j
+        <InlineData("111111.125+j555555.6875j", TestVals.SAMECONDUCTANCE, TestVals.SAMESUSCEPTANCE)> ' Excess j.
+        <InlineData(".1125e1+j.56875F1", TestVals.SAMECONDUCTANCE, TestVals.SAMESUSCEPTANCE)> ' F, not E.
+        <InlineData("112.5E-2.2+i5687.5e-3", TestVals.SAMECONDUCTANCE, TestVals.SAMESUSCEPTANCE)> ' Non-integer exponent.
+        Sub TryParseStandardDefault_BadInput_Fails(standardStr As String, conductance As Double, susceptance As Double)
+            Dim Admt As New OsnwAdmt
+            If OsnwAdmt.TryParseStandard(standardStr, Nothing, Nothing, Admt) Then
+                Assert.Fail("Parsed despite bad entry.")
+            End If
+            Assert.False(Admt.Conductance.Equals(conductance) AndAlso Admt.Susceptance.Equals(susceptance))
         End Sub
 
     End Class ' TestTryParseStandardDefault
 
+
+
+    'xxxx GOT THROUGH AVOVE HERE xxxx
+
+
+
+
     Public Class TestTryParseStandardDefaultMixed
 
         <Theory>
-        <InlineData("1.125+i5.675", 1.125, 5.675)> ' A+Bi.
-        <InlineData("1.125-5.675i", 1.125, -5.675)> ' A+Bi.
-        <InlineData("0 + i5.675", 0, 5.675)> ' Open, one space.
-        <InlineData(" 0  -   5.675i  ", 0, -5.675)> ' Open, asymmetric spaces.
-        <InlineData("0+ i5.675", 0, 5.675)> ' Open, space one side.
-        <InlineData("0 +i5.675", 0, 5.675)> ' Open, space one side.
-        <InlineData("1125e-3+i.5675E1", 1.125, 5.675)> ' Exponential notation.
+        <InlineData("1.125+j5.675", 1.125, 5.675)> ' A+Bi.
+        <InlineData("1.125-5.675j", 1.125, -5.675)> ' A+Bi.
+        <InlineData("0 + j5.675", 0, 5.675)> ' Open, one space.
+        <InlineData(" 0  -   5.675j  ", 0, -5.675)> ' Open, asymmetric spaces.
+        <InlineData("0+ j5.675", 0, 5.675)> ' Open, space one side.
+        <InlineData("0 +j5.675", 0, 5.675)> ' Open, space one side.
+        <InlineData("1125e-3+j.5675E1", 1.125, 5.675)> ' Exponential notation.
         Sub TryParseStandard_Default_Succeeds(standardStr As String, real As Double, imaginary As Double)
             Dim Admt As New OsnwAdmt
             If Not OsnwAdmt.TryParseStandard(standardStr, Nothing, Nothing, Admt) Then
@@ -197,10 +222,10 @@ Namespace TryParseStandardTests
             OsnwNumSS.EnforceSequence Or OsnwNumSS.EnforceSpacing
 
         <Theory>
-        <InlineData("1.125+i5.675", 1.125, 5.675, OsnwNumSS.ClosedABi)>
-        <InlineData("1.125-5.675i", 1.125, -5.675, OsnwNumSS.ClosedAiB)>
-        <InlineData("0 + i5.675", 0, 5.675, OsnwNumSS.OpenABi)>
-        <InlineData("0 - 5.675i", 0, -5.675, OsnwNumSS.OpenAiB)>
+        <InlineData("1.125+j5.675", 1.125, 5.675, OsnwNumSS.ClosedABi)>
+        <InlineData("1.125-5.675j", 1.125, -5.675, OsnwNumSS.ClosedAiB)>
+        <InlineData("0 + j5.675", 0, 5.675, OsnwNumSS.OpenABi)>
+        <InlineData("0 - 5.675j", 0, -5.675, OsnwNumSS.OpenAiB)>
         Sub TryParseStandard_ValidStandardization_Succeeds(standardStr As String, real As Double,
             imaginary As Double, standardizationStyle As OsnwNumSS)
 
@@ -249,7 +274,7 @@ Namespace TryParseStandardTests
             }
             Dim Admt As New OsnwAdmt
 
-            If Not OSNW.Numerics.Admittance.TryParseStandard(standardStr, Nothing, Providers(index), Admt) Then
+            If Not OsnwAdmt.TryParseStandard(standardStr, Nothing, Providers(index), Admt) Then
                 Assert.Fail("Failed to parse.")
             End If
 
@@ -267,28 +292,62 @@ Namespace MathTests
 
         <Fact>
         Sub EqualsObject_TypeMismatch_Fails1()
-            Dim I1 As New OsnwAdmt(3, 4)
-            Dim C2 As New Impedance(3, 4)
-            Assert.False(I1.Equals(C2))
+            Dim A1 As New OsnwAdmt(3, 4)
+            Dim C2 As New System.Numerics.Complex(3, 4)
+            Assert.False(A1.Equals(C2))
         End Sub
 
         <Fact>
         Sub EqualsObject_TypeMismatch_Fails2()
-            Dim I1 As New OsnwAdmt(3, 4)
-            Dim C2 As Object = New Impedance(3, 4)
-            Assert.False(I1.Equals(C2))
+            Dim A1 As New OsnwAdmt(3, 4)
+            Dim C2 As Object = New System.Numerics.Complex(3, 4)
+            Assert.False(A1.Equals(C2))
         End Sub
 
         <Fact>
         Sub EqualsObject_ValueMismatch_Fails()
-            Dim I1 As New OsnwAdmt(3, 4)
-            Dim C2 As Object = New OsnwAdmt(4, 5)
-            Assert.False(I1.Equals(C2))
+            Dim A1 As New OsnwAdmt(3, 4)
+            Dim A2 As Object = New OsnwAdmt(4, 5)
+            Assert.False(A1.Equals(A2))
         End Sub
 
     End Class ' TestEqualsObject
 
     Public Class TestEqualsOther
+
+        <Fact>
+        Sub Equals_GoodMatch_Passes()
+            Dim I1 As New OsnwAdmt(1, 2)
+            Dim I2 As New OsnwAdmt(1, 2)
+            Assert.True(I1.Equals(I2))
+        End Sub
+
+        <Fact>
+        Sub Equals_Mismatch_Fails()
+            Dim I1 As New OsnwAdmt(1, 2)
+            Dim I2 As New OsnwAdmt(2, 3)
+            Assert.False(I1.Equals(I2))
+        End Sub
+
+        <Fact>
+        Sub Equals_DoubleDefault_Passes()
+            Dim I1 As OsnwAdmt
+            Dim I2 As OsnwAdmt
+            Assert.True(I1.Equals(I2))
+        End Sub
+
+        <Fact>
+        Sub Equals_DoubleEmpty_Passes()
+            Dim I1 As New OsnwAdmt()
+            Dim I2 As New OsnwAdmt()
+            Assert.True(I1.Equals(Nothing))
+        End Sub
+
+        <Fact>
+        Sub Equals_Nothing_Fails()
+            Dim I1 As New OsnwAdmt(1, 2)
+            Assert.False(I1.Equals(Nothing))
+        End Sub
 
         <Fact>
         Sub EqualsOther_Match_Passes()
