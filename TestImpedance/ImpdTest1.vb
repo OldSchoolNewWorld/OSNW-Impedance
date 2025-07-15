@@ -256,8 +256,10 @@ Namespace TryParseStandardTests
         <InlineData("111111.125+555555.6875j", TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE, OsnwNumSS.ClosedAiB)>
         <InlineData("111111.125 - j555555.6875", TestVals.SAMERESISTANCE, -TestVals.SAMEREACTANCE, OsnwNumSS.OpenABi)>
         <InlineData("111111.125 - 555555.6875j", TestVals.SAMERESISTANCE, -TestVals.SAMEREACTANCE, OsnwNumSS.OpenAiB)>
-        Sub TryParse_ValidStandardization_Succeeds(standardStr As String, resistance As Double,
-                                                   reactance As Double, stdStyle As OsnwNumSS)
+        Sub TryParseStandard_ValidStandardization_Succeeds(
+            standardStr As String, resistance As Double, reactance As Double,
+            stdStyle As OsnwNumSS)
+
             Dim Impd As New OSNW.Numerics.Impedance
             If Not OSNW.Numerics.Impedance.TryParseStandard(standardStr, stdStyle, Nothing, Impd) Then
                 Assert.Fail("Failed to parse.")
@@ -270,7 +272,9 @@ Namespace TryParseStandardTests
         <InlineData("1.125+5.6875j", OsnwNumSS.ClosedAiB Or TightEnforcement)> ' Not AiB.
         <InlineData("1.125-5.6875j", OsnwNumSS.OpenABi Or TightEnforcement)> ' Not Open.
         <InlineData("1.125 - 5.6875j", OsnwNumSS.OpenAiB Or TightEnforcement)> ' Not AiB.
-        Sub TryParse_InvalidStandardization_Fails(standardStr As String, stdStyle As OsnwNumSS)
+        Sub TryParseStandard_InvalidStandardization_Fails(
+            standardStr As String, stdStyle As OsnwNumSS)
+
             Dim Impd As New OSNW.Numerics.Impedance
             Assert.False(OSNW.Numerics.Impedance.TryParseStandard(standardStr, stdStyle, Nothing, Impd))
         End Sub
