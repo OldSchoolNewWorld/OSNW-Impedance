@@ -120,25 +120,6 @@ End Namespace ' ToStandardStringTests
 
 Namespace TryParseStandardTests
 
-    'Public Class TestTryParseStandardDefault
-
-    '    <Theory>
-    '    <InlineData("1.125+i5.675", 1.125, 5.675)>
-    '    <InlineData("1.125-i5.675", 1.125, -5.675)>
-    '    <InlineData(".1125e1+i.5675E1", 1.125, 5.675)>
-    '    <InlineData("112.5E-2+i567.5e-2", 1.125, 5.675)>
-    '    Sub TryParseStandardDefault_GoodInput_Succeeds(standardStr As String, real As Double, imaginary As Double)
-    '        Dim Admt As New OsnwAdmt
-    '        If Not OsnwAdmt.TryParseStandard(standardStr, Nothing, Nothing, Admt) Then
-    '            Assert.True(False, "Failed to parse.")
-    '        End If
-    '        Assert.True(Admt.Conductance.Equals(real) AndAlso Admt.Susceptance.Equals(imaginary), "Parsed with bad conversion.")
-    '    End Sub
-
-    '    WHY ONLY ONE VS THREE For IMPEDANCE?
-
-    'End Class ' TestTryParseStandardDefault
-
     Public Class TestTryParseStandardDefault
 
         <Theory>
@@ -157,7 +138,7 @@ Namespace TryParseStandardTests
         End Sub
 
         <Fact>
-        Sub TryParseStandardDefault_NegativeResistance_Fails()
+        Sub TryParseStandardDefault_NegativeConductance_Fails()
             Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
                 Sub()
                     ' Code that throws the exception
@@ -189,29 +170,22 @@ Namespace TryParseStandardTests
 
     End Class ' TestTryParseStandardDefault
 
-
-
-    'xxxx GOT THROUGH AVOVE HERE xxxx
-
-
-
-
     Public Class TestTryParseStandardDefaultMixed
 
         <Theory>
-        <InlineData("1.125+j5.675", 1.125, 5.675)> ' A+Bi.
-        <InlineData("1.125-5.675j", 1.125, -5.675)> ' A+Bi.
-        <InlineData("0 + j5.675", 0, 5.675)> ' Open, one space.
-        <InlineData(" 0  -   5.675j  ", 0, -5.675)> ' Open, asymmetric spaces.
-        <InlineData("0+ j5.675", 0, 5.675)> ' Open, space one side.
-        <InlineData("0 +j5.675", 0, 5.675)> ' Open, space one side.
-        <InlineData("1125e-3+j.5675E1", 1.125, 5.675)> ' Exponential notation.
-        Sub TryParseStandard_Default_Succeeds(standardStr As String, real As Double, imaginary As Double)
+        <InlineData("111111.125+j555555.6875", TestVals.SAMECONDUCTANCE, TestVals.SAMESUSCEPTANCE)> ' A+Bi.
+        <InlineData("111111.125-555555.6875j", TestVals.SAMECONDUCTANCE, -TestVals.SAMESUSCEPTANCE)> ' A+Bi.
+        <InlineData("0 + j555555.6875", 0, 555555.6875)> ' Open, one space.
+        <InlineData(" 0  -   555555.6875j  ", 0, -TestVals.SAMESUSCEPTANCE)> ' Open, asymmetric spaces.
+        <InlineData("0+ j555555.6875", 0, TestVals.SAMESUSCEPTANCE)> ' Open, space one side.
+        <InlineData("0 +j555555.6875", 0, TestVals.SAMESUSCEPTANCE)> ' Open, space one side.
+        <InlineData("111111125e-3+j.5555556875E6", TestVals.SAMECONDUCTANCE, TestVals.SAMESUSCEPTANCE)> ' Exponential notation.
+        Sub TryParseStandard_Default_Succeeds(standardStr As String, conductance As Double, susceptance As Double)
             Dim Admt As New OsnwAdmt
             If Not OsnwAdmt.TryParseStandard(standardStr, Nothing, Nothing, Admt) Then
                 Assert.Fail("Failed to parse.")
             End If
-            Assert.True(Admt.Conductance.Equals(real) AndAlso Admt.Susceptance.Equals(imaginary))
+            Assert.True(Admt.Conductance.Equals(conductance) AndAlso Admt.Susceptance.Equals(susceptance))
         End Sub
 
     End Class ' TestTryParseStandardDefaultMixed
@@ -222,27 +196,28 @@ Namespace TryParseStandardTests
             OsnwNumSS.EnforceSequence Or OsnwNumSS.EnforceSpacing
 
         <Theory>
-        <InlineData("1.125+j5.675", 1.125, 5.675, OsnwNumSS.ClosedABi)>
-        <InlineData("1.125-5.675j", 1.125, -5.675, OsnwNumSS.ClosedAiB)>
-        <InlineData("0 + j5.675", 0, 5.675, OsnwNumSS.OpenABi)>
-        <InlineData("0 - 5.675j", 0, -5.675, OsnwNumSS.OpenAiB)>
-        Sub TryParseStandard_ValidStandardization_Succeeds(standardStr As String, real As Double,
-            imaginary As Double, standardizationStyle As OsnwNumSS)
+        <InlineData("111111.125+j555555.6875", TestVals.SAMECONDUCTANCE, TestVals.SAMESUSCEPTANCE, OsnwNumSS.ClosedABi)>
+        <InlineData("111111.125-555555.6875j", TestVals.SAMECONDUCTANCE, -TestVals.SAMESUSCEPTANCE, OsnwNumSS.ClosedAiB)>
+        <InlineData("0 + j555555.6875", 0, TestVals.SAMESUSCEPTANCE, OsnwNumSS.OpenABi)>
+        <InlineData("0 - 555555.6875j", 0, -TestVals.SAMESUSCEPTANCE, OsnwNumSS.OpenAiB)>
+        Sub TryParseStandard_ValidStandardization_Succeeds(
+            standardStr As String, conductance As Double, susceptance As Double,
+            standardizationStyle As OsnwNumSS)
 
             Dim Admt As New OsnwAdmt
             If Not OsnwAdmt.TryParseStandard(standardStr, standardizationStyle, Nothing, Admt) Then
                 Assert.Fail("Failed to parse.")
             End If
-            Assert.True(Admt.Conductance.Equals(real) AndAlso Admt.Susceptance.Equals(imaginary))
+            Assert.True(Admt.Conductance.Equals(conductance) AndAlso Admt.Susceptance.Equals(susceptance))
         End Sub
 
         <Theory>
-        <InlineData("1.125 + j5.675", OsnwNumSS.ClosedABi Or TightEnforcement)> ' Not closed.
-        <InlineData("1.125+5.j675", OsnwNumSS.ClosedABi Or TightEnforcement)> ' Not ABi.
-        <InlineData("1.125-5.675j", OsnwNumSS.ClosedAiB Or TightEnforcement)> ' Not AiB.
-        <InlineData("1.125+j5.675", OsnwNumSS.OpenABi Or TightEnforcement)> ' Not Open.
-        <InlineData("1.125 - j5.675", OsnwNumSS.OpenABi Or TightEnforcement)> ' Not ABi.
-        <InlineData("1.125 - 5.675j", OsnwNumSS.OpenAiB Or TightEnforcement)> ' Not AiB.
+        <InlineData("111111.125 + j5555555.6875", OsnwNumSS.ClosedABi Or TightEnforcement)> ' Not closed.
+        <InlineData("111111.125+5555555.j6875", OsnwNumSS.ClosedABi Or TightEnforcement)> ' Not ABi.
+        <InlineData("111111.125-5555555.6875j", OsnwNumSS.ClosedAiB Or TightEnforcement)> ' Not AiB.
+        <InlineData("111111.125+j5555555.6875", OsnwNumSS.OpenABi Or TightEnforcement)> ' Not Open.
+        <InlineData("111111.125 - j5555555.6875", OsnwNumSS.OpenABi Or TightEnforcement)> ' Not ABi.
+        <InlineData("111111.125 - 5555555.6875j", OsnwNumSS.OpenAiB Or TightEnforcement)> ' Not AiB.
         Sub TryParseStandard_InvalidStandardization_Fails(
             standardStr As String, standardizationStyle As OsnwNumSS)
 
@@ -255,14 +230,17 @@ Namespace TryParseStandardTests
     Public Class TestTryParseStandardCulture
 
         <Theory>
-        <InlineData("111111.122-555555.677j", 111_111.122, -555_555.677, 0)> ' One round down, one up.
-        <InlineData("111111.122-555555.677j", 111_111.122, -555_555.677, 1)> ' One round down, one up.
-        <InlineData("111111.122-555555.677j", 111_111.122, -555_555.677, 2)> ' One round down, one up.
-        <InlineData("111111.122-555555.677j", 111_111.122, -555_555.677, 3)> ' One round down, one up.
-        <InlineData("111111,122-555555,677j", 111_111.122, -555_555.677, 4)> ' One round down, one up.
-        <InlineData("111111,125+555555,675j", 111_111.125, 555_555.675, 5)>
-        Sub TryParseStandard_Culture_Succeeds(
-            standardStr As String, real As Double, imaginary As Double, index As Integer)
+        <InlineData("111111.125+j555555.6875", TestVals.SAMECONDUCTANCE, TestVals.SAMESUSCEPTANCE, 0)>
+        <InlineData("111111.125+j555555.6875", TestVals.SAMECONDUCTANCE, TestVals.SAMESUSCEPTANCE, 1)> ' When current is "en-US".
+        <InlineData("111111.125-555555.6875j", TestVals.SAMECONDUCTANCE, -TestVals.SAMESUSCEPTANCE, 2)> ' A+Bi, i at end.
+        <InlineData("111111.125 - j555555.6875", TestVals.SAMECONDUCTANCE, -TestVals.SAMESUSCEPTANCE, 3)> ' Open, one space.
+        <InlineData("111111,125+j555555,6875", TestVals.SAMECONDUCTANCE, TestVals.SAMESUSCEPTANCE, 4)> ' Comma decimal.
+        <InlineData("111" & CHARNNBSP & "111,125+j555" & CHARNNBSP & "555,6875",
+                    TestVals.SAMECONDUCTANCE, TestVals.SAMESUSCEPTANCE, 5)> ' Comma decimal, Non-breaking space.
+        <InlineData("111111" & CHARARABCOMMA66B & "125+555555" & CHARARABCOMMA66B & "6875j",
+                    TestVals.SAMECONDUCTANCE, TestVals.SAMESUSCEPTANCE, 6)> ' Arabic comma CHARARABCOMMA66B.
+        Sub TryParseStandard_Culture_Succeeds(standardStr As String, conductance As Double,
+                                              susceptance As Double, index As Integer)
 
             Dim Providers As System.IFormatProvider() = {
                 CultureInfo.InvariantCulture,
@@ -270,7 +248,8 @@ Namespace TryParseStandardTests
                 New CultureInfo("en-US", False),
                 New CultureInfo("en-UK", False),
                 New CultureInfo("ru-RU", False),
-                New CultureInfo("fr-FR", False)
+                New CultureInfo("fr-FR", False),
+                New CultureInfo("ar-001", False)
             }
             Dim Admt As New OsnwAdmt
 
@@ -278,7 +257,7 @@ Namespace TryParseStandardTests
                 Assert.Fail("Failed to parse.")
             End If
 
-            Assert.True(Admt.Conductance.Equals(real) AndAlso Admt.Susceptance.Equals(imaginary))
+            Assert.True(Admt.Conductance.Equals(conductance) AndAlso Admt.Susceptance.Equals(susceptance))
 
         End Sub
 

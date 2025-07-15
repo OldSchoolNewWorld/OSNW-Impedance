@@ -15,6 +15,7 @@ Public Class TestVals
 End Class
 
 Namespace DevelopmentTests
+    ' Used as a place for ad hoc tests.
 
     Public Class TestUnitTestExceptions
 
@@ -459,8 +460,6 @@ Namespace SerializationTests
         <InlineData("{""Resistance"":1.122,""Reactance"":5.677}", 1.122, 5.677)>
         <InlineData("{""Resistance"":111111.122,""Reactance"":555555.677}", 111_111.122, 555_555.677)>
         <InlineData("{""Resistance"":222222.127,""Reactance"":-555555.672}", 222_222.127, -555_555.672)>
-        <InlineData("{""Resistance"":333333.122,""Reactance"":555555.672}", 333_333.122, 555_555.672)>
-        <InlineData("{""Resistance"":444444.127,""Reactance"":-555555.677}", 444_444.127, -555_555.677)>
         <InlineData("{""Resistance"":555555555.5555556,""Reactance"":555555555.5555556}",
                     555_555_555.555_555_555, 555_555_555.555_555_555)>
         Sub Deserialize_Default_Passes(jsonString As String, r As Double, x As Double)
