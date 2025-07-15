@@ -7,7 +7,9 @@
 '   REF: Serialize and deserialize numeric data
 '   https://learn.microsoft.com/en-us/dotnet/fundamentals/runtime-libraries/system-globalization-numberformatinfo#serialize-and-deserialize-numeric-data
 ' Add tests of failures for bad inputs.
-' Allow both i and j to match the .NET result. Add tests for both i and j.
+' Allow both i and j to match the .NET result? Add tests for both i and j.
+'   Wait, where does .NET indicate anything about allowing "j" for Complex aside from "Format a complex
+'     number"? Complex only has ToString() and TryFormat() - nothing about standard form.
 
 Option Explicit On
 Option Strict On
@@ -30,7 +32,7 @@ Imports System.Text.Json.Serialization
 ' REF: Impedance matching
 ' https://en.wikipedia.org/wiki/Impedance_matching
 
-' FROM OLD YTT CODE AND .NET~Source:
+' FROM OLD YTT CODE AND .NET Source:
 '    <SerializableAttribute()>
 ''' <summary>
 ''' Represents an electrical impedance with resistance (R) and reactance (X).
@@ -43,7 +45,7 @@ Imports System.Text.Json.Serialization
 ''' </summary>
 Public Structure Impedance
     Implements IEquatable(Of Impedance), IFormattable
-    ' FROM .NET~Source:
+    ' BASED ON .NET SOURCE:
     ' Implements IEquatable(Of Impedance),
     '     IFormattable,
     '     INumberBase(Of Impedance),
@@ -62,26 +64,22 @@ Public Structure Impedance
     ' familiar terminology but relies on Complex for most of its work.
 
     Const MSGVMBGTZ As System.String = "Must be a positive, non-zero value."
-    Const MSGNOSTR As System.String =
-        "Cannot be Null/Nothing."
+    Const MSGNOSTR As System.String = "Cannot be Null/Nothing."
 
 #Region "Fields and Properties"
 
     ''' <summary>
-    ''' Gets the resistance component, in ohms, of the current <c>Impedance</c>
-    ''' instance.
+    ''' Gets the resistance (R) component, in ohms, of the current instance.
     ''' </summary>
     Private ReadOnly m_Resistance As System.Double
 
     ''' <summary>
-    ''' Gets the reactance component, in ohms, of the current <c>Impedance</c>
-    ''' instance.
+    ''' Gets the reactance (X) component, in ohms, of the current instance.
     ''' </summary>
     Private ReadOnly m_Reactance As System.Double
 
     ''' <summary>
-    ''' Gets the resistance component, in ohms, of the current <c>Impedance</c>
-    ''' instance.
+    ''' Gets the resistance (R) component, in ohms, of the current instance.
     ''' </summary>
     Public ReadOnly Property Resistance As System.Double
         ' Do not rename (binary serialization).
@@ -91,8 +89,7 @@ Public Structure Impedance
     End Property
 
     ''' <summary>
-    ''' Gets the reactance component, in ohms, of the current <c>Impedance</c>
-    ''' instance.
+    ''' Gets the reactance (X) component, in ohms, of the current instance.
     ''' </summary>
     Public ReadOnly Property Reactance As System.Double
         ' Do not rename (binary serialization).
@@ -645,7 +642,7 @@ Public Structure Impedance
     ''' Calculates the voltage reflection coeffient (Gamma) for this instance
     ''' based on the specified characteristic impedance.
     ''' </summary>
-    ''' <param name="z0">Specifies the characteristic impedance.</param>
+    ''' <param name="z0">Specifies the characteristic impedance, in ohms.</param>
     ''' <returns>The voltage reflection coeffient for the current instance based
     ''' on the specified characteristic impedance.</returns>
     ''' <exception cref="System.ArgumentOutOfRangeException">
@@ -671,7 +668,7 @@ Public Structure Impedance
     ''' Calculates the voltage standing wave ratio for this instance based on
     ''' the specified characteristic impedance.
     ''' </summary>
-    ''' <param name="z0">The characteristic impedance in ohms.</param>
+    ''' <param name="z0">Specifies the characteristic impedance, in ohms.</param>
     ''' <returns>The voltage standing wave ratio for the current instance at the
     ''' specified characteristic impedance.</returns>
     ''' <exception cref="System.ArgumentOutOfRangeException">
@@ -703,7 +700,7 @@ Public Structure Impedance
     ''' Calculates the power reflection coeffient for this instance based on the
     ''' specified characteristic impedance.
     ''' </summary>
-    ''' <param name="z0">The characteristic impedance in ohms.</param>
+    ''' <param name="z0">Specifies the characteristic impedance, in ohms.</param>
     ''' <returns>The power reflection coeffient for the current instance at the
     ''' specified characteristic impedance.</returns>
     ''' <exception cref="System.ArgumentOutOfRangeException">

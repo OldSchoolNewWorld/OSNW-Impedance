@@ -118,11 +118,6 @@ Public Module ComplexExtensions
         StandardizationStyles.EnforceSequence Or
         StandardizationStyles.EnforceSpacing)
 
-
-
-
-
-
     ''' <summary>
     ''' The layout style to use when converting a complex number to its standard
     ''' form representation.

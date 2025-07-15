@@ -459,6 +459,8 @@ Namespace SerializationTests
 
         End Sub
 
+        ' The last case below intuitively looks like it should fail, but it does not. It passes because
+        ' the expected values also get rounded when stored.
         <Theory>
         <InlineData("{""Resistance"":1,""Reactance"":2}", 1, 2)>
         <InlineData("{""Resistance"":1.122,""Reactance"":5.677}", 1.122, 5.677)>
@@ -471,10 +473,23 @@ Namespace SerializationTests
             If Impedance.DeserializeJSONString(jsonString, Imp) Then
                 Assert.True(Imp.Resistance.Equals(r) AndAlso Imp.Reactance.Equals(x))
             Else
-                Assert.True(False, "Serialization failed.")
+                Assert.True(False, "Deserialization failed.")
             End If
         End Sub
 
     End Class ' TestSerialization
+
+    Namespace TestImpedanceMath
+
+        '
+        '
+        ' Look for some solved cases to test the math.
+        '
+        ' Some formulas and schematics are at:
+        ' https://www.mathforengineers.com/AC-circuits/formulas-of-impedances-in-ac-circuits.html
+        '
+        '
+
+    End Namespace ' TestImpedanceMath
 
 End Namespace ' SerializationTests
