@@ -1,4 +1,8 @@
 ﻿'TODO:
+' Can a tuning design be selected based on an impedance?
+'   It would not find capacitance/inductance values but maybe it would have the
+'   ability to determine the reactance values needed, which could then be used
+'   to select the component values for a specified frequency.
 ' Finish AddParallelImpedance() and AddParallelAdmittance() when Admittance is
 '   accessible.
 ' Add AddSeriesAdmittance() when Admittance is accessible?????
