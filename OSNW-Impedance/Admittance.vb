@@ -20,7 +20,10 @@ Imports OSNW.Numerics.ComplexExtensions
 Public Structure Admittance
     Implements IEquatable(Of Admittance), IFormattable
 
-    Const MSGVMBGTZ As System.String = Impedance.MSGVMBGTZ
+    Const MSGCHNV As System.String = Impedance.MSGCHNV
+    Const MSGCHZV As System.String = Impedance.MSGCHZV
+    Const MSGCHIV As System.String = Impedance.MSGCHIV
+    '    Const MSGVMBGTZ As System.String = Impedance.MSGVMBGTZ
 
 #Region "Fields and Properties"
 
@@ -546,7 +549,17 @@ Public Structure Admittance
             Dim CaughtBy As System.Reflection.MethodBase =
                 System.Reflection.MethodBase.GetCurrentMethod
             Throw New System.ArgumentOutOfRangeException(NameOf(conductance),
-                                                         MSGVMBGTZ)
+                                                         MSGCHNV)
+        ElseIf conductance.Equals(0.0) Then
+            Dim CaughtBy As System.Reflection.MethodBase =
+                System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(NameOf(conductance),
+                                                         MSGCHZV)
+        ElseIf Double.IsInfinity(conductance) Then
+            Dim CaughtBy As System.Reflection.MethodBase =
+                System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(NameOf(conductance),
+                                                         MSGCHIV)
         End If
 
         '        Me.AsComplex = New System.Numerics.Complex(resistance, reactance)
@@ -557,4 +570,4 @@ Public Structure Admittance
 
 #End Region ' "Constructors"
 
-End Structure ' Electrical
+End Structure ' Admittance

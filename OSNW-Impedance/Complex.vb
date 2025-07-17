@@ -123,7 +123,7 @@ Public Module ComplexExtensions
     ''' form representation.
     ''' </summary>
     ''' <remarks>
-    ''' The default is <c>StandardizationStyles.None</c>.
+    ''' The default is <c>StandardizationStyles.None.</c>.
     ''' </remarks>>
     <System.FlagsAttribute>
     Public Enum StandardizationStyles As System.Int32

@@ -21,8 +21,8 @@ Namespace ToStringTests
         <Theory>
         <InlineData(TestVals.SAMECONDUCTANCE, TestVals.SAMESUSCEPTANCE, "<111111.125; 555555.6875>")>
         <InlineData(TestVals.SAMECONDUCTANCE, -TestVals.SAMESUSCEPTANCE, "<111111.125; -555555.6875>")>
-        <InlineData(0, TestVals.SAMESUSCEPTANCE, "<0; 555555.6875>")>
-        <InlineData(0, -TestVals.SAMESUSCEPTANCE, "<0; -555555.6875>")>
+        <InlineData(TestVals.SAMECONDUCTANCE, TestVals.SAMESUSCEPTANCE, "<111111.125; 555555.6875>")>
+        <InlineData(TestVals.SAMECONDUCTANCE, -TestVals.SAMESUSCEPTANCE, "<111111.125; -555555.6875>")>
         Sub ToString_Default_Succeeds(g As Double, b As Double, expect As String)
             Dim Z As New OsnwAdmt(g, b)
             Dim AdmtStr As String = Z.ToString()
@@ -175,10 +175,10 @@ Namespace TryParseStandardTests
         <Theory>
         <InlineData("111111.125+j555555.6875", TestVals.SAMECONDUCTANCE, TestVals.SAMESUSCEPTANCE)> ' A+Bi.
         <InlineData("111111.125-555555.6875j", TestVals.SAMECONDUCTANCE, -TestVals.SAMESUSCEPTANCE)> ' A+Bi.
-        <InlineData("0 + j555555.6875", 0, 555555.6875)> ' Open, one space.
-        <InlineData(" 0  -   555555.6875j  ", 0, -TestVals.SAMESUSCEPTANCE)> ' Open, asymmetric spaces.
-        <InlineData("0+ j555555.6875", 0, TestVals.SAMESUSCEPTANCE)> ' Open, space one side.
-        <InlineData("0 +j555555.6875", 0, TestVals.SAMESUSCEPTANCE)> ' Open, space one side.
+        <InlineData("111111.125 + j555555.6875", TestVals.SAMECONDUCTANCE, 555555.6875)> ' Open, one space.
+        <InlineData(" 111111.125  -   555555.6875j  ", TestVals.SAMECONDUCTANCE, -TestVals.SAMESUSCEPTANCE)> ' Open, asymmetric spaces.
+        <InlineData("111111.125+ j555555.6875", TestVals.SAMECONDUCTANCE, TestVals.SAMESUSCEPTANCE)> ' Open, space one side.
+        <InlineData("111111.125 +j555555.6875", TestVals.SAMECONDUCTANCE, TestVals.SAMESUSCEPTANCE)> ' Open, space one side.
         <InlineData("111111125e-3+j.5555556875E6", TestVals.SAMECONDUCTANCE, TestVals.SAMESUSCEPTANCE)> ' Exponential notation.
         Sub TryParseStandard_Default_Succeeds(standardStr As String, conductance As Double, susceptance As Double)
             Dim Admt As New OsnwAdmt
@@ -198,8 +198,8 @@ Namespace TryParseStandardTests
         <Theory>
         <InlineData("111111.125+j555555.6875", TestVals.SAMECONDUCTANCE, TestVals.SAMESUSCEPTANCE, OsnwNumSS.ClosedABi)>
         <InlineData("111111.125-555555.6875j", TestVals.SAMECONDUCTANCE, -TestVals.SAMESUSCEPTANCE, OsnwNumSS.ClosedAiB)>
-        <InlineData("0 + j555555.6875", 0, TestVals.SAMESUSCEPTANCE, OsnwNumSS.OpenABi)>
-        <InlineData("0 - 555555.6875j", 0, -TestVals.SAMESUSCEPTANCE, OsnwNumSS.OpenAiB)>
+        <InlineData("111111.125 + j555555.6875", 111111.125, TestVals.SAMESUSCEPTANCE, OsnwNumSS.OpenABi)>
+        <InlineData("111111.125 - 555555.6875j", 111111.125, -TestVals.SAMESUSCEPTANCE, OsnwNumSS.OpenAiB)>
         Sub TryParseStandard_ValidStandardization_Succeeds(
             standardStr As String, conductance As Double, susceptance As Double,
             standardizationStyle As OsnwNumSS)

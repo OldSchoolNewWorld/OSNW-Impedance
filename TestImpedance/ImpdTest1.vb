@@ -77,8 +77,8 @@ Namespace ToStringTests
         <Theory>
         <InlineData(TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE, "<111111.125; 555555.6875>")>
         <InlineData(TestVals.SAMERESISTANCE, -TestVals.SAMEREACTANCE, "<111111.125; -555555.6875>")>
-        <InlineData(0, TestVals.SAMEREACTANCE, "<0; 555555.6875>")>
-        <InlineData(0, -TestVals.SAMEREACTANCE, "<0; -555555.6875>")>
+        <InlineData(TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE, "<111111.125; 555555.6875>")>
+        <InlineData(TestVals.SAMERESISTANCE, -TestVals.SAMEREACTANCE, "<111111.125; -555555.6875>")>
         Sub ToString_Default_Succeeds(r As Double, x As Double, expect As String)
             Dim Z As New OSNW.Numerics.Impedance(r, x)
             Dim ImpdStr As String = Z.ToString()

@@ -1,8 +1,10 @@
 ﻿'TODO:
-' Can a tuning design be selected based on an impedance?
+' Can a tuning design be selected based on an impedance, without consideration
+' of capacitance, inductance, or frequency?
 '   It would not find capacitance/inductance values but maybe it would have the
 '   ability to determine the reactance values needed, which could then be used
 '   to select the component values for a specified frequency.
+' Reject infinity for admittance and susceptance?
 ' Finish AddParallelImpedance() and AddParallelAdmittance() when Admittance is
 '   accessible.
 ' Add AddSeriesAdmittance() when Admittance is accessible?????
@@ -14,6 +16,7 @@
 ' Allow both i and j to match the .NET result? Add tests for both i and j.
 '   Wait, where does .NET indicate anything about allowing "j" for Complex aside from "Format a complex
 '     number"? Complex only has ToString() and TryFormat() - nothing about standard form.
+' Provide for conversion to arbtitrary impedances (Rtarget, Xtarget) vs. only characteristic impedances?
 
 Option Explicit On
 Option Strict On
@@ -67,7 +70,10 @@ Public Structure Impedance
     ' inherited. Given that, Impedance is created as a structure which uses
     ' familiar terminology but relies on Complex for most of its work.
 
-    Const MSGVMBGTZ As System.String = "Must be a positive, non-zero value."
+    Const MSGCHNV As System.String = "Cannot have a negative value."
+    Const MSGCHZV As System.String = "Cannot have a zero value."
+    Const MSGCHIV As System.String = "Cannot have a infinite value."
+    '    Const MSGVMBGTZ As System.String = "Must be a positive, non-zero value."
     Const MSGNOSTR As System.String = "Cannot be Null/Nothing."
 
 #Region "Fields and Properties"
@@ -659,7 +665,15 @@ Public Structure Impedance
         If z0 <= 0.0 Then
             'Dim CaughtBy As System.Reflection.MethodBase =
             '    System.Reflection.MethodBase.GetCurrentMethod
-            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGVMBGTZ)
+            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHNV)
+        ElseIf z0.Equals(0.0) Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHZV)
+        ElseIf Double.IsInfinity(z0) Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHIV)
         End If
 
         ' Ref: https://en.wikipedia.org/wiki/Standing_wave_ratio#Relationship_to_the_reflection_coefficient
@@ -684,7 +698,15 @@ Public Structure Impedance
         If z0 <= 0.0 Then
             'Dim CaughtBy As System.Reflection.MethodBase =
             '    System.Reflection.MethodBase.GetCurrentMethod
-            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGVMBGTZ)
+            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHNV)
+        ElseIf z0.Equals(0.0) Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHZV)
+        ElseIf Double.IsInfinity(z0) Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHIV)
         End If
 
         ' Ref:
@@ -717,7 +739,15 @@ Public Structure Impedance
         If z0 <= 0.0 Then
             'Dim CaughtBy As System.Reflection.MethodBase =
             '    System.Reflection.MethodBase.GetCurrentMethod
-            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGVMBGTZ)
+            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHNV)
+        ElseIf z0.Equals(0.0) Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHZV)
+        ElseIf Double.IsInfinity(z0) Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHIV)
         End If
 
         Dim VRC As System.Numerics.Complex = Me.VoltageReflectionCoefficient(z0)
@@ -832,11 +862,27 @@ Public Structure Impedance
         ' https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/immutability
 
         ' Input checking.
+        'If resistance < 0.0 Then
+        '    Dim CaughtBy As System.Reflection.MethodBase =
+        '        System.Reflection.MethodBase.GetCurrentMethod
+        '    Throw New System.ArgumentOutOfRangeException(NameOf(resistance),
+        '                                                 MSGVMBGTZ)
+        'End If
         If resistance < 0.0 Then
             Dim CaughtBy As System.Reflection.MethodBase =
                 System.Reflection.MethodBase.GetCurrentMethod
             Throw New System.ArgumentOutOfRangeException(NameOf(resistance),
-                                                         MSGVMBGTZ)
+                                                         MSGCHNV)
+        ElseIf resistance.Equals(0.0) Then
+            Dim CaughtBy As System.Reflection.MethodBase =
+                System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(NameOf(resistance),
+                                                         MSGCHZV)
+        ElseIf Double.IsInfinity(resistance) Then
+            Dim CaughtBy As System.Reflection.MethodBase =
+                System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(NameOf(resistance),
+                                                         MSGCHIV)
         End If
 
         '        Me.AsComplex = New System.Numerics.Complex(resistance, reactance)
