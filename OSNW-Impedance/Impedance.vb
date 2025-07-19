@@ -72,7 +72,7 @@ Public Structure Impedance
 
     Const MSGCHNV As System.String = "Cannot have a negative value."
     Const MSGCHZV As System.String = "Cannot have a zero value."
-    Const MSGCHIV As System.String = "Cannot have a infinite value."
+    Const MSGCHIV As System.String = "Cannot have an infinite value."
     '    Const MSGVMBGTZ As System.String = "Must be a positive, non-zero value."
     Const MSGNOSTR As System.String = "Cannot be Null/Nothing."
 
@@ -478,13 +478,13 @@ Public Structure Impedance
     ' As of when recorded, these Complex signatures match in .NET 8.0 and
     '   .NET 9.0.
     '
-    '   public static bool TryParse(ReadOnlySpan<char> s, NumberStyles style, IFormatProvider? provider, out Complex result)
+    '   public static bool TryParse(ReadOnlySpan<char> s, NumberStyles Style, IFormatProvider? provider, out Complex result)
     '   public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider? provider, out Complex result) => TryParse(s, DefaultNumberStyle, provider, out result);
-    '   public static bool TryParse([NotNullWhen(true)] string? s, NumberStyles style, IFormatProvider? provider, out Complex result)
+    '   public static bool TryParse([NotNullWhen(true)] string? s, NumberStyles Style, IFormatProvider? provider, out Complex result)
     '   public static bool TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, out Complex result) => TryParse(s, DefaultNumberStyle, provider, out result);
 
-    ' public static bool TryParse(ReadOnlySpan<char> s, NumberStyles style, IFormatProvider? provider, out Complex result)
-    ' public static bool TryParse([NotNullWhen(true)] string? s, NumberStyles style, IFormatProvider? provider, out Complex result)
+    ' public static bool TryParse(ReadOnlySpan<char> s, NumberStyles Style, IFormatProvider? provider, out Complex result)
+    ' public static bool TryParse([NotNullWhen(true)] string? s, NumberStyles Style, IFormatProvider? provider, out Complex result)
     ''' <summary>
     ''' Attempts to convert the standard form representation of an Impedance
     ''' to its <see cref="OSNW.Numerics.Impedance"/> equivalent using the

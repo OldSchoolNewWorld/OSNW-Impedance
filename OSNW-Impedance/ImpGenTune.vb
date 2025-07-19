@@ -141,6 +141,33 @@ Public Enum TransformationStyles
 
 End Enum ' TransformationStyles
 
+''' <summary>
+''' Describes a single element that contributes to transformation of an Impedance.
+''' </summary>
+Public Structure Transformation
+
+    ''' <summary>
+    ''' 
+    ''' </summary>
+    Public Style As TransformationStyles
+
+    ''' <summary>
+    ''' The first component, next to the load.
+    ''' </summary>
+    Public FirstValue As System.Double
+
+    ''' <summary>
+    ''' The next component toward the source, after FirstValue.
+    ''' </summary>
+    Public SecondValue As System.Double
+
+    ''' <summary>
+    ''' The next component toward the source, after SecondValue.
+    ''' </summary>
+    Public ThirdValue As System.Double
+
+End Structure ' Transformation
+
 Partial Public Structure Impedance
 
     ''' <summary>
@@ -148,96 +175,155 @@ Partial Public Structure Impedance
     ''' </summary>
     ''' <param name="z0">Specifies the characteristic impedance to which the
     ''' current instance should be matched.</param>
-    ''' <returns>
-    ''' xxxxxxx THE RETURN AS DOUBLE IS JUST A PLACEHOLDER xxxxxxxx
-    ''' xxxxxxx MAYBE THIS SHOULD BE A SUB AND/OR HAVE BYREF PARAMETERS TO RETURN RESULTS xxxxxxxx
-    ''' </returns>
-    Public Function SelectLayout(z0 As System.Double) _
+    ''' <param name="transformations"></param>
+    ''' <returns><c>True</c> if the xxxxxxxxxxxxxxx succeeds; otherwise,
+    ''' <c>False</c> and also returns xxxxxxxxxxxxxxx xxxxxxxxxxxxxxx.</returns>
+    Public Function TrySelectTuningLayout(ByVal z0 As System.Double,
+        ByRef transformations As Transformation()) _
         As System.Boolean
 
         ' The terminology here relates to solving conjugate matches on a Smith
         ' chart.
 
+        ' Chart location cases:
+        ' A: At the open circuit point on the right.
+        ' B: At the short circuit point on the left.
+        ' C: Anywhere else on the outer circle. Zero resistance.
+        ' D: At the center.
+        ' E: On the R=Z0 circle.
+        ' F: Inside the R=Z0 circle.
+        ' G: On the G=Y0 circle.
+        ' H: Inside the G=Y0 circle.
+        ' I: In the top remainder.
+        ' J: In the bottom remainder.
+
         Dim NormR As System.Double = Me.Resistance / z0
         Dim NormX As System.Double = Me.Reactance / z0
-        Dim NormG As System.Double = Me.ToAdmittance.Conductance / z0
-        'Dim NormB As System.Double = Me.ToAdmittance.Susceptance / z0
 
-        ' Check for an open- or short-circuit.
-        'If NormX.Equals(0.0) Then
-        '    ' Z is on the resonance line.
-        '    If NormR.Equals(0.0) OrElse System.Double.IsInfinity(NormR) Then
-
-        '        '
-        '        '
-        '        ' XXXXX WHAT NEXT? XXXXX
-        '        '
-        '        '
-
-        '    End If
-        'End If
-
-        '' Check for an open- or short-circuit.
-        'If NormX.Equals(0.0) AndAlso
-        '    (NormR.Equals(0.0) OrElse System.Double.IsInfinity(NormR)) Then
-        '    ' Z is on the resonance line, at one end.
-
-        '    '
-        '    '
-        '    ' XXXXX WHAT NEXT? XXXXX
-        '    '
-        '    '
-
-        'End If
-
+        ' LEAVE THIS HERE FOR NOW.
+        ' OPEN OR SHORT SHOULD HAVE BEEN CAUGHT IN NEW() AND THIS SHOULD NOT BE
+        ' NEEDED UNLESS SOME REASON IS DISCOVERED THAT REQUIRES EXTREMES TO BE
+        ' ALLOWED. MAYBE THAT WILL HAVE TO BE ALLOWED. THAT MIGHT HAPPEN IF AN
+        ' IMAGE IMPEDANCE HAS EXTREME VALUES THAT CANCEL OR FOR SOME OTHER
+        ' INTERIM STATE.
         ' Check for an open- or short-circuit.
         If NormR.Equals(0.0) OrElse System.Double.IsInfinity(NormR) Then
-            ' xxxxxxxxxxxxxxxxxxxxxxxxx
-
-            '
-            '
-            ' XXXXX WHAT NEXT? XXXXX
-            '
-            '
-
-            Return False ' DEFAULT UNTIL IMPLEMENTED.
+            transformations = Nothing
+            Return False
         End If
+
+        Dim NormG As System.Double = Me.ToAdmittance.Conductance / z0
+        'Dim NormB As System.Double = Me.ToAdmittance.Susceptance / z0
 
         If NormR.Equals(1.0) Then
             ' Z is on perimeter of the right (R=Z0) circle.
             If NormX.Equals(0.0) Then
-                ' Z is already at the origin, where Z=1+j0, and the conjugate
-                ' match is good.
-
-                '
-                '
-                ' XXXXX WHAT NEXT? XXXXX
-                '
-                '
-
-                Return False ' DEFAULT UNTIL IMPLEMENTED.
+                ' Z is already at the center, where Z=1+j0, and already has a
+                ' conjugate match.
+                transformations = {
+                    New Transformation With {
+                    .Style = TransformationStyles.None,
+                    .FirstValue = 0.0,
+                    .SecondValue = 0.0,
+                    .ThirdValue = 0.0}
+                }
+                Return True
             Else
-                ' Z is on perimeter of the right (R=Z0) circle and only needs a
-                ' reactance.
+                ' Z is on the perimeter of the right (R=Z0) circle and only
+                ' needs a reactance.
 
-                '
-                '
-                ' Move CW or CCW on the R circle to reach the origin.
                 ' XXXXX WHAT NEXT? XXXXX
+                ' Move CW or CCW on the R circle to reach the center.
                 ' Would there ever be a case for taking the long way around?
                 ' Maybe to favor high- or low-pass?
-                '
-                '
+                ' Is that even possible?
 
-                Return False ' DEFAULT UNTIL IMPLEMENTED.
+                ' The most obvious approach is to take the short path.
+                If Me.Reactance > 0.0 Then
+                    ' CCW on a R circle needs a series capacitor.
+                    transformations = {
+                    New Transformation With {
+                        .Style = TransformationStyles.SeriesCap,
+                        .FirstValue = Me.Reactance,
+                        .SecondValue = 0.0,
+                        .ThirdValue = 0.0}
+                    }
+                    Return True
+                Else
+                    ' CW on a R circle needs a series inductor.
+                    transformations = {
+                        New Transformation With {
+                        .Style = TransformationStyles.SeriesInd,
+                        .FirstValue = -Me.Reactance,
+                        .SecondValue = 0.0,
+                        .ThirdValue = 0.0}
+                    }
+                    Return True
+                End If
+
+                '' An alternate approach might be to take the long path.
+                '' It has not been identified how to calculate what would need
+                '' to be added.
+                'If Me.Reactance > 0.0 Then
+                '    ' CW on a R circle needs a series inductor.
+                '    ' XXXXX HOW FAR? XXXXX
+                '    transformations = {
+                '        New Transformation With {
+                '        .Style = TransformationStyles.SeriesInd,
+                '        .FirstValue = -Me.Reactance,
+                '        .SecondValue = 0.0,
+                '        .ThirdValue = 0.0}
+                '    }
+                '    Return True
+                '    ' CCW on a R circle needs a series capacitor.
+                '    ' XXXXX HOW FAR? XXXXX
+                '    transformations = {
+                '    New Transformation With {
+                '        .Style = TransformationStyles.SeriesCap,
+                '        .FirstValue = Me.Reactance,
+                '        .SecondValue = 0.0,
+                '        .ThirdValue = 0.0}
+                '    }
+                'Else
+                '    Return True
+                'End If
+
+                ' Another alternate approach might be to work with the
+                ' equivalent admittance and zero out the susceptance.
+                Dim Admt As Admittance = Me.ToAdmittance
+                If Admt.Susceptance > 0.0 Then
+                    ' CCW on a G circle needs a shunt inductor.
+                    ' XXXXX HOW FAR? XXXXX
+                    transformations = {
+                        New Transformation With {
+                        .Style = TransformationStyles.ShuntInd,
+                        .FirstValue = -Admt.Susceptance,
+                        .SecondValue = 0.0,
+                        .ThirdValue = 0.0}
+                    }
+                    Return True
+                    ' CW on a G circle needs a shunt capacitor.
+                    ' XXXXX HOW FAR? XXXXX
+                    transformations = {
+                    New Transformation With {
+                        .Style = TransformationStyles.ShuntCap,
+                        .FirstValue = Admt.Susceptance,
+                        .SecondValue = 0.0,
+                        .ThirdValue = 0.0}
+                    }
+                Else
+                    Return True
+                End If
+
             End If
         ElseIf NormG.Equals(1.0) Then
-            ' Z is on perimeter of the left (G=Y0) circle.
+            ' Z is on the perimeter of the left (G=Y0) circle.
+            'xxxxxxxxxxxxxxxxxxx
 
             '
             '
             ' XXXXX WHAT NEXT? XXXXX
-            ' Move CW or CCW on the G circle to reach the origin.
+            ' Move CW or CCW on the G circle to reach the center.
             ' Would there ever be a case for taking the long way around?
             ' Maybe to favor high- or low-pass?
             '
@@ -277,7 +363,7 @@ Partial Public Structure Impedance
                 '
                 ' XXXXX WHAT NEXT? XXXXX
                 ' Would this case have been caught above? Yes, it would be in or
-                ' on the R or G circle or at the origin.
+                ' on the R or G circle or at the center.
                 '
                 '
 
@@ -286,7 +372,7 @@ Partial Public Structure Impedance
                     System.Reflection.MethodBase.GetCurrentMethod
                 Throw New ApplicationException(
                     """NormX.Equals(0.0)"" should never be matched in " &
-                    NameOf(SelectLayout))
+                    NameOf(TrySelectTuningLayout))
 
 
                 Return False ' DEFAULT UNTIL IMPLEMENTED.
@@ -336,6 +422,6 @@ Partial Public Structure Impedance
             Return False ' DEFAULT UNTIL IMPLEMENTED.
         End If
 
-    End Function ' SelectLayout
+    End Function ' TrySelectTuningLayout
 
 End Structure ' Impedance

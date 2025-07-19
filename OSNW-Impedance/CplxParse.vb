@@ -63,9 +63,9 @@ Partial Public Module ComplexExtensions
     ' As of when recorded, these Complex signatures match in .NET 8.0 and
     '   .NET 9.0.
     '
-    '   public static bool TryParse(ReadOnlySpan<char> s, NumberStyles style, IFormatProvider? provider, out Complex result)
+    '   public static bool TryParse(ReadOnlySpan<char> s, NumberStyles Style, IFormatProvider? provider, out Complex result)
     '   public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider? provider, out Complex result) => TryParse(s, DefaultNumberStyle, provider, out result);
-    '   public static bool TryParse([NotNullWhen(true)] string? s, NumberStyles style, IFormatProvider? provider, out Complex result)
+    '   public static bool TryParse([NotNullWhen(true)] string? s, NumberStyles Style, IFormatProvider? provider, out Complex result)
     '   public static bool TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, out Complex result) => TryParse(s, DefaultNumberStyle, provider, out result);
 
     ' For these emulations,
@@ -74,8 +74,8 @@ Partial Public Module ComplexExtensions
     '   Create a string matching Complex.ToString().
     '   Use Complex.TryParse() to parse the string.
 
-    ' public static bool TryParse(ReadOnlySpan<char> s, NumberStyles style, IFormatProvider? provider, out Complex result)
-    ' public static bool TryParse([NotNullWhen(true)] string? s, NumberStyles style, IFormatProvider? provider, out Complex result)
+    ' public static bool TryParse(ReadOnlySpan<char> s, NumberStyles Style, IFormatProvider? provider, out Complex result)
+    ' public static bool TryParse([NotNullWhen(true)] string? s, NumberStyles Style, IFormatProvider? provider, out Complex result)
     ''' <summary>
     ''' Attempts to convert the standard form representation of a complex number
     ''' to its <see cref="System.Numerics.Complex"/> equivalent using the
@@ -107,9 +107,9 @@ Partial Public Module ComplexExtensions
         ByRef result As System.Numerics.Complex) _
         As System.Boolean
 
-        ' ValidateParseStyleFloatingPoint(style) is called at the top of
+        ' ValidateParseStyleFloatingPoint(Style) is called at the top of
         ' Complex.TryParse. Do somthing similar here regarding
-        ' standardizationStyle and leave style to be handled by the call to
+        ' standardizationStyle and leave Style to be handled by the call to
         ' Complex.TryParse, after the components are extracted below.
         ValidateStandardizationStyle(standardizationStyle)
 

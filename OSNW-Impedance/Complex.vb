@@ -94,7 +94,7 @@ Public Module ComplexExtensions
 
     ' private const NumberStyles DefaultNumberStyle = NumberStyles.Float | NumberStyles.AllowThousands;
     ''' <summary>
-    ''' The numeric style to use in TryParseStandard() to provide support for
+    ''' The numeric Style to use in TryParseStandard() to provide support for
     ''' <see cref="System.Globalization.CultureInfo"/>s that include commas for
     ''' thousands.
     ''' </summary>
@@ -119,7 +119,7 @@ Public Module ComplexExtensions
         StandardizationStyles.EnforceSpacing)
 
     ''' <summary>
-    ''' The layout style to use when converting a complex number to its standard
+    ''' The layout Style to use when converting a complex number to its standard
     ''' form representation.
     ''' </summary>
     ''' <remarks>
@@ -247,17 +247,17 @@ Public Module ComplexExtensions
     Private Const DEFAULTSTANDARDIZATIONSTYLE As StandardizationStyles =
         StandardizationStyles.None
 
-    '' static void ValidateParseStyleFloatingPoint(NumberStyles style)
+    '' static void ValidateParseStyleFloatingPoint(NumberStyles Style)
     '''' <summary>
     '''' Check for undefined flags or hex number.
     '''' </summary>
-    '''' <param name="standardizationStyle">The standardization style to be
+    '''' <param name="standardizationStyle">The standardization Style to be
     '''' validated.</param>
     Private Sub ValidateStandardizationStyle(
         standardizationStyle As StandardizationStyles)
 
         Const MSGISSWV As System.String =
-            "Invalid standardization style with value"
+            "Invalid standardization Style with value"
         If (standardizationStyle And InvalidStandardizationStyles) <> 0 Then
             Throw New ArgumentException(
                 $"{MSGISSWV} {CInt(standardizationStyle)}")
