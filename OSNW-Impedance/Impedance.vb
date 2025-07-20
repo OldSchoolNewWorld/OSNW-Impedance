@@ -1,5 +1,5 @@
 ﻿'TODO:
-' Can a tuning design be selected based on an impedance, without consideration
+' Can a tuning design be selected based solely on an impedance, without consideration
 ' of capacitance, inductance, or frequency?
 '   It would not find capacitance/inductance values but maybe it would have the
 '   ability to determine the reactance values needed, which could then be used
@@ -38,6 +38,10 @@ Imports System.Text.Json.Serialization
 
 ' REF: Impedance matching
 ' https://en.wikipedia.org/wiki/Impedance_matching
+
+' Spread Spectrum Scene
+' http://www.sss-mag.com/smith.html
+
 
 ' FROM OLD YTT CODE AND .NET Source:
 '    <SerializableAttribute()>
@@ -862,28 +866,30 @@ Public Structure Impedance
         ' https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/immutability
 
         ' Input checking.
+        ' Leave one consolidated test for now. The version below was based on
+        ' considering whether special cases may exist where some of the
+        ' rejections may need to be allowed.
+        If resistance <= 0.0 OrElse Double.IsInfinity(resistance) Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(NameOf(resistance))
+        End If
         'If resistance < 0.0 Then
         '    Dim CaughtBy As System.Reflection.MethodBase =
         '        System.Reflection.MethodBase.GetCurrentMethod
         '    Throw New System.ArgumentOutOfRangeException(NameOf(resistance),
-        '                                                 MSGVMBGTZ)
+        '                                                 MSGCHNV)
+        'ElseIf resistance.Equals(0.0) Then
+        '    Dim CaughtBy As System.Reflection.MethodBase =
+        '        System.Reflection.MethodBase.GetCurrentMethod
+        '    Throw New System.ArgumentOutOfRangeException(NameOf(resistance),
+        '                                                 MSGCHZV)
+        'ElseIf Double.IsInfinity(resistance) Then
+        '    Dim CaughtBy As System.Reflection.MethodBase =
+        '        System.Reflection.MethodBase.GetCurrentMethod
+        '    Throw New System.ArgumentOutOfRangeException(NameOf(resistance),
+        '                                                 MSGCHIV)
         'End If
-        If resistance < 0.0 Then
-            Dim CaughtBy As System.Reflection.MethodBase =
-                System.Reflection.MethodBase.GetCurrentMethod
-            Throw New System.ArgumentOutOfRangeException(NameOf(resistance),
-                                                         MSGCHNV)
-        ElseIf resistance.Equals(0.0) Then
-            Dim CaughtBy As System.Reflection.MethodBase =
-                System.Reflection.MethodBase.GetCurrentMethod
-            Throw New System.ArgumentOutOfRangeException(NameOf(resistance),
-                                                         MSGCHZV)
-        ElseIf Double.IsInfinity(resistance) Then
-            Dim CaughtBy As System.Reflection.MethodBase =
-                System.Reflection.MethodBase.GetCurrentMethod
-            Throw New System.ArgumentOutOfRangeException(NameOf(resistance),
-                                                         MSGCHIV)
-        End If
 
         '        Me.AsComplex = New System.Numerics.Complex(resistance, reactance)
         Me.m_Resistance = resistance

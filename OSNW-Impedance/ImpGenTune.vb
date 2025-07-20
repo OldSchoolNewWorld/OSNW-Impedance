@@ -154,21 +154,57 @@ Public Structure Transformation
     ''' <summary>
     ''' The first component, next to the load.
     ''' </summary>
-    Public FirstValue As System.Double
+    Public Value1 As System.Double
 
     ''' <summary>
-    ''' The next component toward the source, after FirstValue.
+    ''' The next component toward the source, after Value1.
     ''' </summary>
-    Public SecondValue As System.Double
+    Public Value2 As System.Double
 
     ''' <summary>
-    ''' The next component toward the source, after SecondValue.
+    ''' The next component toward the source, after Value2.
     ''' </summary>
-    Public ThirdValue As System.Double
+    Public Value3 As System.Double
 
 End Structure ' Transformation
 
 Partial Public Structure Impedance
+
+    ' USE THIS TO TRY TO SET UP MATCHING TO AN ARBITRARY TARGET IMPEDANCE.
+    '''' <summary>
+    '''' xxxxxxxxxxxxxxx
+    '''' </summary>
+    '''' <param name="targetR">Specifies the resistance component of the target
+    '''' impedance to which the current instance should be matched.</param>
+    '''' <param name="targetX">Specifies the reactance component of the target
+    '''' impedance to which the current instance should be matched.</param>
+    '''' <param name="transformations"></param>
+    '''' <returns><c>True</c> if the xxxxxxxxxxxxxxx succeeds; otherwise,
+    '''' <c>False</c> and also returns xxxxxxxxxxxxxxx xxxxxxxxxxxxxxx.</returns>
+    'Public Function TrySelectTuningLayout(ByVal targetR As System.Double, ByVal targetX As System.Double,
+    '    ByRef transformations As Transformation()) _
+    '    As System.Boolean
+
+    '    ' The terminology here relates to solving conjugate matches on a Smith
+    '    ' chart.
+
+    '    ' Chart location cases:
+    '    ' A: At the open circuit point on the right.
+    '    ' B: At the short circuit point on the left.
+    '    ' C: Anywhere else on the outer circle. Zero resistance.
+    '    ' D: At the center.
+    '    ' E: On the R=Z0 circle.
+    '    ' F: Inside the R=Z0 circle.
+    '    ' G: On the G=Y0 circle.
+    '    ' H: Inside the G=Y0 circle.
+    '    ' I: In the top remainder.
+    '    ' J: In the bottom remainder.
+
+    '    Dim NormR As System.Double = Me.Resistance / z0
+    '    Dim NormX As System.Double = Me.Reactance / z0
+
+    '    Return False ' DEFAULT UNTIL IMPLEMENTED.
+    'End Function ' TrySelectTuningLayout
 
     ''' <summary>
     ''' xxxxxxxxxxxxxxx
@@ -223,9 +259,9 @@ Partial Public Structure Impedance
                 transformations = {
                     New Transformation With {
                     .Style = TransformationStyles.None,
-                    .FirstValue = 0.0,
-                    .SecondValue = 0.0,
-                    .ThirdValue = 0.0}
+                    .Value1 = 0.0,
+                    .Value2 = 0.0,
+                    .Value3 = 0.0}
                 }
                 Return True
             Else
@@ -238,28 +274,28 @@ Partial Public Structure Impedance
                 ' Maybe to favor high- or low-pass?
                 ' Is that even possible?
 
-                ' The most obvious approach is to take the short path.
-                If Me.Reactance > 0.0 Then
-                    ' CCW on a R circle needs a series capacitor.
-                    transformations = {
-                    New Transformation With {
-                        .Style = TransformationStyles.SeriesCap,
-                        .FirstValue = Me.Reactance,
-                        .SecondValue = 0.0,
-                        .ThirdValue = 0.0}
-                    }
-                    Return True
-                Else
-                    ' CW on a R circle needs a series inductor.
-                    transformations = {
-                        New Transformation With {
-                        .Style = TransformationStyles.SeriesInd,
-                        .FirstValue = -Me.Reactance,
-                        .SecondValue = 0.0,
-                        .ThirdValue = 0.0}
-                    }
-                    Return True
-                End If
+                '' The most obvious approach is to take the short path.
+                'If Me.Reactance > 0.0 Then
+                '    ' CCW on a R circle needs a series capacitor.
+                '    transformations = {
+                '    New Transformation With {
+                '        .Style = TransformationStyles.SeriesCap,
+                '        .Value1 = Me.Reactance,
+                '        .Value2 = 0.0,
+                '        .Value3 = 0.0}
+                '    }
+                '    Return True
+                'Else
+                '    ' CW on a R circle needs a series inductor.
+                '    transformations = {
+                '        New Transformation With {
+                '        .Style = TransformationStyles.SeriesInd,
+                '        .Value1 = -Me.Reactance,
+                '        .Value2 = 0.0,
+                '        .Value3 = 0.0}
+                '    }
+                '    Return True
+                'End If
 
                 '' An alternate approach might be to take the long path.
                 '' It has not been identified how to calculate what would need
@@ -270,8 +306,8 @@ Partial Public Structure Impedance
                 '    transformations = {
                 '        New Transformation With {
                 '        .Style = TransformationStyles.SeriesInd,
-                '        .FirstValue = -Me.Reactance,
-                '        .SecondValue = 0.0,
+                '        .Value1 = -Me.Reactance,
+                '        .Value2 = 0.0,
                 '        .ThirdValue = 0.0}
                 '    }
                 '    Return True
@@ -280,8 +316,8 @@ Partial Public Structure Impedance
                 '    transformations = {
                 '    New Transformation With {
                 '        .Style = TransformationStyles.SeriesCap,
-                '        .FirstValue = Me.Reactance,
-                '        .SecondValue = 0.0,
+                '        .Value1 = Me.Reactance,
+                '        .Value2 = 0.0,
                 '        .ThirdValue = 0.0}
                 '    }
                 'Else
@@ -292,26 +328,24 @@ Partial Public Structure Impedance
                 ' equivalent admittance and zero out the susceptance.
                 Dim Admt As Admittance = Me.ToAdmittance
                 If Admt.Susceptance > 0.0 Then
-                    ' CCW on a G circle needs a shunt inductor.
-                    ' XXXXX HOW FAR? XXXXX
-                    transformations = {
-                        New Transformation With {
-                        .Style = TransformationStyles.ShuntInd,
-                        .FirstValue = -Admt.Susceptance,
-                        .SecondValue = 0.0,
-                        .ThirdValue = 0.0}
-                    }
-                    Return True
                     ' CW on a G circle needs a shunt capacitor.
-                    ' XXXXX HOW FAR? XXXXX
                     transformations = {
                     New Transformation With {
                         .Style = TransformationStyles.ShuntCap,
-                        .FirstValue = Admt.Susceptance,
-                        .SecondValue = 0.0,
-                        .ThirdValue = 0.0}
+                        .Value1 = Admt.Susceptance,
+                        .Value2 = 0.0,
+                        .Value3 = 0.0}
                     }
+                    Return True
                 Else
+                    ' CCW on a G circle needs a shunt inductor.
+                    transformations = {
+                        New Transformation With {
+                        .Style = TransformationStyles.ShuntInd,
+                        .Value1 = -Admt.Susceptance,
+                        .Value2 = 0.0,
+                        .Value3 = 0.0}
+                    }
                     Return True
                 End If
 

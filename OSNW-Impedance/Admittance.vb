@@ -545,22 +545,30 @@ Public Structure Admittance
         ' https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/immutability
 
         ' Input checking.
-        If conductance < 0.0 Then
-            Dim CaughtBy As System.Reflection.MethodBase =
-                System.Reflection.MethodBase.GetCurrentMethod
-            Throw New System.ArgumentOutOfRangeException(NameOf(conductance),
-                                                         MSGCHNV)
-        ElseIf conductance.Equals(0.0) Then
-            Dim CaughtBy As System.Reflection.MethodBase =
-                System.Reflection.MethodBase.GetCurrentMethod
-            Throw New System.ArgumentOutOfRangeException(NameOf(conductance),
-                                                         MSGCHZV)
-        ElseIf Double.IsInfinity(conductance) Then
-            Dim CaughtBy As System.Reflection.MethodBase =
-                System.Reflection.MethodBase.GetCurrentMethod
-            Throw New System.ArgumentOutOfRangeException(NameOf(conductance),
-                                                         MSGCHIV)
+        ' Leave one consolidated test for now. The version below was based on
+        ' considering whether special cases may exist where some of the
+        ' rejections may need to be allowed.
+        If conductance <= 0.0 OrElse Double.IsInfinity(conductance) Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(NameOf(conductance))
         End If
+        'If conductance < 0.0 Then
+        '    Dim CaughtBy As System.Reflection.MethodBase =
+        '        System.Reflection.MethodBase.GetCurrentMethod
+        '    Throw New System.ArgumentOutOfRangeException(NameOf(conductance),
+        '                                                 MSGCHNV)
+        'ElseIf conductance.Equals(0.0) Then
+        '    Dim CaughtBy As System.Reflection.MethodBase =
+        '        System.Reflection.MethodBase.GetCurrentMethod
+        '    Throw New System.ArgumentOutOfRangeException(NameOf(conductance),
+        '                                                 MSGCHZV)
+        'ElseIf Double.IsInfinity(conductance) Then
+        '    Dim CaughtBy As System.Reflection.MethodBase =
+        '        System.Reflection.MethodBase.GetCurrentMethod
+        '    Throw New System.ArgumentOutOfRangeException(NameOf(conductance),
+        '                                                 MSGCHIV)
+        'End If
 
         '        Me.AsComplex = New System.Numerics.Complex(resistance, reactance)
         Me.m_Conductance = conductance
