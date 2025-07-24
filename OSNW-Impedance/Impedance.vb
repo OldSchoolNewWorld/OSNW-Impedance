@@ -5,7 +5,7 @@
 '   ability to determine the reactance values needed, which could then be used
 '   to select the component values for a specified frequency.
 ' Reject infinity for admittance and susceptance?
-' Finish AddParallelImpedance() and AddParallelAdmittance() when Admittance is
+' Finish AddShuntImpedance() and AddParallelAdmittance() when Admittance is
 '   accessible.
 ' Add AddSeriesAdmittance() when Admittance is accessible?????
 ' Add De/Serialization to Admittance?????
@@ -798,13 +798,13 @@ Public Structure Impedance
     '''         o-------o-------o
     ''' </code>
     ''' </remarks>
-    Public Shared Function AddParallelImpedance(
+    Public Shared Function AddShuntImpedance(
         ByVal loadZ As Impedance, ByVal addZ As Impedance) As Impedance
 
         ' No input checking. loadZ and addZ are presumed to have been checked
         ' when created.
         Return (loadZ.ToAdmittance + addZ.ToAdmittance).ToImpedance
-    End Function ' AddParallelImpedance
+    End Function ' AddShuntImpedance
 
     '''' <summary>
     '''' Adds an <c>Admittance</c> in parallel with a load <c>Impedance</c> and
@@ -869,11 +869,16 @@ Public Structure Impedance
         ' Leave one consolidated test for now. The version below was based on
         ' considering whether special cases may exist where some of the
         ' rejections may need to be allowed.
-        If resistance <= 0.0 OrElse Double.IsInfinity(resistance) Then
+        If resistance < 0.0 OrElse Double.IsInfinity(resistance) Then
             'Dim CaughtBy As System.Reflection.MethodBase =
             '    System.Reflection.MethodBase.GetCurrentMethod
             Throw New System.ArgumentOutOfRangeException(NameOf(resistance))
         End If
+        'If resistance <= 0.0 OrElse Double.IsInfinity(resistance) Then
+        '    'Dim CaughtBy As System.Reflection.MethodBase =
+        '    '    System.Reflection.MethodBase.GetCurrentMethod
+        '    Throw New System.ArgumentOutOfRangeException(NameOf(resistance))
+        'End If
         'If resistance < 0.0 Then
         '    Dim CaughtBy As System.Reflection.MethodBase =
         '        System.Reflection.MethodBase.GetCurrentMethod

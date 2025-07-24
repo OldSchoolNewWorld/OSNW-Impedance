@@ -15,7 +15,6 @@ Imports System.Diagnostics.CodeAnalysis
 ' The comments here relate to solving conjugate matches on a Smith chart that
 ' has a horizontal resonance line, with R=0 on the left.
 
-
 ' Smith-Chart - University of Utah
 ' https://my.ece.utah.edu/~ece5321/ZY_chart.pdf
 '
@@ -38,11 +37,11 @@ Imports System.Diagnostics.CodeAnalysis
 ' A shunt capacitor moves CW on a G circle.
 
 '             Component selection
-' Move | On       | Using
-' CW   | R circle | series inductor
-' CW   | G circle | shunt capacitor
-' CCW  | R circle | series capacitor
-' CCW  | G circle | shunt inductor
+' To go | On a     | Use a
+' CW    | R circle | series inductor
+' CW    | G circle | shunt capacitor
+' CCW   | R circle | series capacitor
+' CCW   | G circle | shunt inductor
 
 ''' <summary>
 ''' The circuit layout to be used to match a load impedance to a source
@@ -129,7 +128,7 @@ Public Enum TransformationStyles
     '
     '
     ' Futures could include the addition of the ability to insert:
-    '   PI, T, M, band-pass, and notch filters.
+    '   PI, T, M, band-pass, and notch filter sections.
     '   Shunt or series, parallel tank or series-resonant, sections to construct
     '     band-pass or notch filters.
     '   Feedline segments to cause impedance rotation or quarter-wave impedance
@@ -170,18 +169,25 @@ End Structure ' Transformation
 
 Partial Public Structure Impedance
 
-    ' USE THIS TO TRY TO SET UP MATCHING TO AN ARBITRARY TARGET IMPEDANCE.
+    '' USE THIS TO TRY TO SET UP MATCHING A LOAD TO AN ARBITRARY SOURCE
+    '' IMPEDANCE. IF IT WORKS OUT, MATCHING TO A CHARACTERISTIC IMPEDANCE COULD
+    '' JUST BE A SPECIAL CASE.
     '''' <summary>
-    '''' xxxxxxxxxxxxxxx
+    '''' Attempts to obtain a conjugate match from the current load instance to
+    '''' the source impedance specified by <paramref name="sourceR"/> and
+    '''' <paramref name="sourceX"/>.
     '''' </summary>
-    '''' <param name="targetR">Specifies the resistance component of the target
-    '''' impedance to which the current instance should be matched.</param>
-    '''' <param name="targetX">Specifies the reactance component of the target
-    '''' impedance to which the current instance should be matched.</param>
+    '''' <param name="z0">Specifies the characteristic impedance to which the
+    '''' calculations should be referenced.</param>
+    '''' <param name="sourceR">Specifies the resistance component of the source
+    '''' impedance to which the current load instance should be matched.</param>
+    '''' <param name="sourceX">Specifies the reactance component of the source
+    '''' impedance to which the current load instance should be matched.</param>
     '''' <param name="transformations"></param>
     '''' <returns><c>True</c> if the xxxxxxxxxxxxxxx succeeds; otherwise,
     '''' <c>False</c> and also returns xxxxxxxxxxxxxxx xxxxxxxxxxxxxxx.</returns>
-    'Public Function TrySelectTuningLayout(ByVal targetR As System.Double, ByVal targetX As System.Double,
+    'Public Function TrySelectTuningLayout(ByVal z0 As System.Double,
+    '    ByVal sourceR As System.Double, ByVal sourceX As System.Double,
     '    ByRef transformations As Transformation()) _
     '    As System.Boolean
 
@@ -189,21 +195,55 @@ Partial Public Structure Impedance
     '    ' chart.
 
     '    ' Chart location cases:
-    '    ' A: At the open circuit point on the right.
-    '    ' B: At the short circuit point on the left.
-    '    ' C: Anywhere else on the outer circle. Zero resistance.
+    '    ' A: At the short circuit point on the left. Omit; Covered by B.
+    '    ' B: Anywhere else on the outer circle. R=0.0
+    '    ' C: At the open circuit point on the right.
     '    ' D: At the center.
     '    ' E: On the R=Z0 circle.
-    '    ' F: Inside the R=Z0 circle.
+    '    '      Omit: On the resonance line. Already covered by C or D.
+    '    '      E1: Above the resonance line. Only needs reactance.
+    '    '      E2: Below the resonance line. Only needs reactance.
+    '    ' F: Inside the R=Z0 circle. Two choices: CW or CCW on the G circle.
     '    ' G: On the G=Y0 circle.
-    '    ' H: Inside the G=Y0 circle.
+    '    '      Omit: On the resonance line. Already either B or D.
+    '    '      G1: Above the resonance line. Only needs reactance.
+    '    '      G2: Below the resonance line. Only needs reactance.
+    '    ' H: Inside the G=Y0 circle. Two choices: CW or CCW on the R circle.
     '    ' I: In the top remainder.
     '    ' J: In the bottom remainder.
 
-    '    Dim NormR As System.Double = Me.Resistance / z0
-    '    Dim NormX As System.Double = Me.Reactance / z0
+    '    Dim TargetNormR As System.Double = sourceR / z0
+    '    Dim TargetNormX As System.Double = sourceX / z0
+    '    Dim TargetNormZ As New Impedance(TargetNormR, TargetNormX)
+    '    Dim TargetNormY As Admittance = TargetNormZ.ToAdmittance()
+    '    Dim TargetNormG As System.Double = TargetNormY.Conductance
+    '    Dim TargetNormB As System.Double = TargetNormY.Susceptance
+
+    '    Dim OwnNormR As System.Double = Me.Resistance / z0
+    '    Dim OwnNormX As System.Double = Me.Reactance / z0
+
+
+
 
     '    Return False ' DEFAULT UNTIL IMPLEMENTED.
+    'End Function ' TrySelectTuningLayout
+
+    '' USE THIS TO TRY TO SET UP MATCHING TO AN ARBITRARY SOURCE IMPEDANCE.
+    '''' <summary>
+    '''' Attempts to obtain a conjugate match from the current load instance to
+    '''' the source impedance specified by <paramref name="sourceZ"/>.
+    '''' </summary>
+    '''' <param name="z0">Specifies the characteristic impedance to which the
+    '''' calculations should be referenced.</param>
+    '''' <param name="sourceZ">Specifies the source impedance to which the
+    '''' current load instance should be matched.</param>
+    '''' <returns><c>True</c> if the xxxxxxxxxxxxxxx succeeds; otherwise,
+    '''' <c>False</c> and also returns xxxxxxxxxxxxxxx xxxxxxxxxxxxxxx.</returns>
+    'Public Function TrySelectTuningLayout(ByVal z0 As System.Double,
+    '    ByVal sourceZ As Impedance, ByRef transformations As Transformation()) _
+    '    As System.Boolean
+
+    '    Return TrySelectTuningLayout(z0, sourceZ.Resistance, sourceZ.Reactance, transformations)
     'End Function ' TrySelectTuningLayout
 
     ''' <summary>
@@ -222,34 +262,42 @@ Partial Public Structure Impedance
         ' chart.
 
         ' Chart location cases:
-        ' A: At the open circuit point on the right.
-        ' B: At the short circuit point on the left.
-        ' C: Anywhere else on the outer circle. Zero resistance.
+        ' A: At the short circuit point on the left. Omit; Covered by B.
+        ' B: Anywhere else on the outer circle. R=0.0
+        ' C: At the open circuit point on the right.
         ' D: At the center.
         ' E: On the R=Z0 circle.
-        ' F: Inside the R=Z0 circle.
+        '      Omit: On the resonance line. Already covered by C or D.
+        '      E1: Above the resonance line. Only needs reactance.
+        '      E2: Below the resonance line. Only needs reactance.
+        ' F: Inside the R=Z0 circle. Two choices: CW or CCW on the G circle.
         ' G: On the G=Y0 circle.
-        ' H: Inside the G=Y0 circle.
+        '      Omit: On the resonance line. Already either B or D.
+        '      G1: Above the resonance line. Only needs reactance.
+        '      G2: Below the resonance line. Only needs reactance.
+        ' H: Inside the G=Y0 circle. Two choices: CW or CCW on the R circle.
         ' I: In the top remainder.
         ' J: In the bottom remainder.
 
         Dim NormR As System.Double = Me.Resistance / z0
-        Dim NormX As System.Double = Me.Reactance / z0
 
         ' LEAVE THIS HERE FOR NOW.
-        ' OPEN OR SHORT SHOULD HAVE BEEN CAUGHT IN NEW() AND THIS SHOULD NOT BE
-        ' NEEDED UNLESS SOME REASON IS DISCOVERED THAT REQUIRES EXTREMES TO BE
-        ' ALLOWED. MAYBE THAT WILL HAVE TO BE ALLOWED. THAT MIGHT HAPPEN IF AN
-        ' IMAGE IMPEDANCE HAS EXTREME VALUES THAT CANCEL OR FOR SOME OTHER
-        ' INTERIM STATE.
+        ' OPEN OR SHORT SHOULD HAVE BEEN REJECTED IN NEW() AND THIS SHOULD NOT
+        ' BE NEEDED UNLESS SOME REASON IS DISCOVERED THAT REQUIRES EXTREMES TO
+        ' BE ALLOWED. MAYBE THAT WILL HAVE TO BE ALLOWED. THAT MIGHT HAPPEN IF
+        ' AN IMAGE IMPEDANCE HAS EXTREME VALUES THAT CANCEL OR FOR SOME OTHER
+        ' INTERIM STATE. MAYBE IF A MATCH IS BEING MADE TO AN IMAGE IMPEDANCE OR
+        ' A SITUATION INVOLVING ACTIVE COMPONENTS THAT CAN HAVE A NEGATIVE RESITANCE.    
         ' Check for an open- or short-circuit.
         If NormR.Equals(0.0) OrElse System.Double.IsInfinity(NormR) Then
             transformations = Nothing
             Return False
         End If
 
-        Dim NormG As System.Double = Me.ToAdmittance.Conductance / z0
-        'Dim NormB As System.Double = Me.ToAdmittance.Susceptance / z0
+        Dim NormX As System.Double = Me.Reactance / z0
+        Dim Y0 As System.Double = 1.0 / z0
+        Dim NormG As System.Double = Me.ToAdmittance.Conductance / Y0
+        'Dim NormB As System.Double = Me.ToAdmittance.Susceptance / Y0
 
         If NormR.Equals(1.0) Then
             ' Z is on perimeter of the right (R=Z0) circle.
@@ -274,80 +322,53 @@ Partial Public Structure Impedance
                 ' Maybe to favor high- or low-pass?
                 ' Is that even possible?
 
-                '' The most obvious approach is to take the short path.
-                'If Me.Reactance > 0.0 Then
-                '    ' CCW on a R circle needs a series capacitor.
-                '    transformations = {
-                '    New Transformation With {
-                '        .Style = TransformationStyles.SeriesCap,
-                '        .Value1 = Me.Reactance,
-                '        .Value2 = 0.0,
-                '        .Value3 = 0.0}
-                '    }
-                '    Return True
-                'Else
-                '    ' CW on a R circle needs a series inductor.
-                '    transformations = {
-                '        New Transformation With {
-                '        .Style = TransformationStyles.SeriesInd,
-                '        .Value1 = -Me.Reactance,
-                '        .Value2 = 0.0,
-                '        .Value3 = 0.0}
-                '    }
-                '    Return True
-                'End If
-
-                '' An alternate approach might be to take the long path.
-                '' It has not been identified how to calculate what would need
-                '' to be added.
-                'If Me.Reactance > 0.0 Then
-                '    ' CW on a R circle needs a series inductor.
-                '    ' XXXXX HOW FAR? XXXXX
-                '    transformations = {
-                '        New Transformation With {
-                '        .Style = TransformationStyles.SeriesInd,
-                '        .Value1 = -Me.Reactance,
-                '        .Value2 = 0.0,
-                '        .ThirdValue = 0.0}
-                '    }
-                '    Return True
-                '    ' CCW on a R circle needs a series capacitor.
-                '    ' XXXXX HOW FAR? XXXXX
-                '    transformations = {
-                '    New Transformation With {
-                '        .Style = TransformationStyles.SeriesCap,
-                '        .Value1 = Me.Reactance,
-                '        .Value2 = 0.0,
-                '        .ThirdValue = 0.0}
-                '    }
-                'Else
-                '    Return True
-                'End If
-
-                ' Another alternate approach might be to work with the
-                ' equivalent admittance and zero out the susceptance.
-                Dim Admt As Admittance = Me.ToAdmittance
-                If Admt.Susceptance > 0.0 Then
-                    ' CW on a G circle needs a shunt capacitor.
+                ' The most obvious approach is to take the short path.
+                If Me.Reactance > 0.0 Then
+                    ' CCW on a R circle needs a series capacitor.
                     transformations = {
                     New Transformation With {
-                        .Style = TransformationStyles.ShuntCap,
-                        .Value1 = Admt.Susceptance,
+                        .Style = TransformationStyles.SeriesCap,
+                        .Value1 = Me.Reactance,
                         .Value2 = 0.0,
                         .Value3 = 0.0}
                     }
                     Return True
                 Else
-                    ' CCW on a G circle needs a shunt inductor.
+                    ' CW on a R circle needs a series inductor.
                     transformations = {
                         New Transformation With {
-                        .Style = TransformationStyles.ShuntInd,
-                        .Value1 = -Admt.Susceptance,
+                        .Style = TransformationStyles.SeriesInd,
+                        .Value1 = -Me.Reactance,
                         .Value2 = 0.0,
                         .Value3 = 0.0}
                     }
                     Return True
                 End If
+
+                '' An alternate approach might be to work with the
+                '' equivalent admittance and zero out the susceptance.
+                'Dim Admt As Admittance = Me.ToAdmittance
+                'If Admt.Susceptance > 0.0 Then
+                '    ' CW on a G circle needs a shunt capacitor.
+                '    transformations = {
+                '    New Transformation With {
+                '        .Style = TransformationStyles.ShuntCap,
+                '        .Value1 = Admt.Susceptance,
+                '        .Value2 = 0.0,
+                '        .Value3 = 0.0}
+                '    }
+                '    Return True
+                'Else
+                '    ' CCW on a G circle needs a shunt inductor.
+                '    transformations = {
+                '        New Transformation With {
+                '        .Style = TransformationStyles.ShuntInd,
+                '        .Value1 = -Admt.Susceptance,
+                '        .Value2 = 0.0,
+                '        .Value3 = 0.0}
+                '    }
+                '    Return True
+                'End If
 
             End If
         ElseIf NormG.Equals(1.0) Then

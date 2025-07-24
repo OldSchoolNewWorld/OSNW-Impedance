@@ -548,11 +548,16 @@ Public Structure Admittance
         ' Leave one consolidated test for now. The version below was based on
         ' considering whether special cases may exist where some of the
         ' rejections may need to be allowed.
-        If conductance <= 0.0 OrElse Double.IsInfinity(conductance) Then
+        If conductance < 0.0 OrElse Double.IsInfinity(conductance) Then
             'Dim CaughtBy As System.Reflection.MethodBase =
             '    System.Reflection.MethodBase.GetCurrentMethod
             Throw New System.ArgumentOutOfRangeException(NameOf(conductance))
         End If
+        'If conductance <= 0.0 OrElse Double.IsInfinity(conductance) Then
+        '    'Dim CaughtBy As System.Reflection.MethodBase =
+        '    '    System.Reflection.MethodBase.GetCurrentMethod
+        '    Throw New System.ArgumentOutOfRangeException(NameOf(conductance))
+        'End If
         'If conductance < 0.0 Then
         '    Dim CaughtBy As System.Reflection.MethodBase =
         '        System.Reflection.MethodBase.GetCurrentMethod
