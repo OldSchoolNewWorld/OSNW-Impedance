@@ -874,11 +874,6 @@ Public Structure Impedance
             '    System.Reflection.MethodBase.GetCurrentMethod
             Throw New System.ArgumentOutOfRangeException(NameOf(resistance))
         End If
-        'If resistance <= 0.0 OrElse Double.IsInfinity(resistance) Then
-        '    'Dim CaughtBy As System.Reflection.MethodBase =
-        '    '    System.Reflection.MethodBase.GetCurrentMethod
-        '    Throw New System.ArgumentOutOfRangeException(NameOf(resistance))
-        'End If
         'If resistance < 0.0 Then
         '    Dim CaughtBy As System.Reflection.MethodBase =
         '        System.Reflection.MethodBase.GetCurrentMethod

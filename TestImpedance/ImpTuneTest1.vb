@@ -29,26 +29,22 @@ Imports Xunit
 
 Namespace TrySelectTuningLayoutTests
 
-    'Public Class TestTrySelectTuningLayoutA
-    '    ' A: At the short circuit point on the left. Omit; Covered by B.
+    Public Class TestTrySelectTuningLayoutA
+        ' A: At the short circuit point on the left.
 
-    '    ' No specific tests needed?
-    '    ' Case A is just a special case of case B, with X=0.0 but no impact?
-    'End Class ' TestTrySelectTuningLayoutA
+        ' Omit; case A is just a special case of case B, with X=0.0.
+    End Class ' TestTrySelectTuningLayoutA
 
     Public Class TestTrySelectTuningLayoutB
-        ' B: Anywhere else on the outer circle. R=0.0
+        ' B: Anywhere else on the outer circle. R=0.0.
 
         <Fact>
-        Public Sub TrySelectTuning_PositionB_Fails()
-            Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
-                Sub()
-                    ' Code that throws the exception
-                    '                    Dim Z As New OSNW.Numerics.Impedance(0.0, 3.0)
-                    Dim Z As New OSNW.Numerics.Impedance(-0.01, 3.0)
-                    Dim transformations As Transformation() = Array.Empty(Of Transformation)
-                    Assert.False(Z.TrySelectTuningLayout(1.0, transformations))
-                End Sub)
+        Public Sub TrySelectTuning_PositionBZeroR_Fails()
+            ' This version, with R=0, does not throw an exception when zero is
+            ' allowed by Impedance.New(), but it does fail to tune.
+            Dim Z As New OSNW.Numerics.Impedance(0.0, 3.0)
+            Dim transformations As Transformation() = Array.Empty(Of Transformation)
+            Assert.False(Z.TrySelectTuningLayout(1.0, transformations))
         End Sub
 
     End Class ' TestTrySelectTuningLayoutB

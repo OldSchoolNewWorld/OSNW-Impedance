@@ -553,11 +553,6 @@ Public Structure Admittance
             '    System.Reflection.MethodBase.GetCurrentMethod
             Throw New System.ArgumentOutOfRangeException(NameOf(conductance))
         End If
-        'If conductance <= 0.0 OrElse Double.IsInfinity(conductance) Then
-        '    'Dim CaughtBy As System.Reflection.MethodBase =
-        '    '    System.Reflection.MethodBase.GetCurrentMethod
-        '    Throw New System.ArgumentOutOfRangeException(NameOf(conductance))
-        'End If
         'If conductance < 0.0 Then
         '    Dim CaughtBy As System.Reflection.MethodBase =
         '        System.Reflection.MethodBase.GetCurrentMethod
