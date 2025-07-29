@@ -314,16 +314,11 @@ Partial Public Structure Impedance
                 Return True
             Else
                 ' Z is on the perimeter of the right (R=Z0) circle and only
-                ' needs a reactance.
-
-                ' XXXXX WHAT NEXT? XXXXX
-                ' Move CW or CCW on the R circle to reach the center.
-                ' Would there ever be a case for taking the long way around?
-                ' Maybe to favor high- or low-pass?
-                ' Is that even possible?
+                ' needs a reactance. Move CW or CCW on the R circle to reach the
+                ' center.
 
                 ' The most obvious approach is to take the short path.
-                If Me.Reactance > 0.0 Then
+                If NormX > 0.0 Then
                     ' CCW on a R circle needs a series capacitor.
                     transformations = {
                     New Transformation With {
@@ -347,6 +342,7 @@ Partial Public Structure Impedance
 
                 '' An alternate approach might be to work with the
                 '' equivalent admittance and zero out the susceptance.
+                '' Maybe to favor high- or low-pass?
                 'Dim Admt As Admittance = Me.ToAdmittance
                 'If Admt.Susceptance > 0.0 Then
                 '    ' CW on a G circle needs a shunt capacitor.
