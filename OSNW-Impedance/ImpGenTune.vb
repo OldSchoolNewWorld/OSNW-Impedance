@@ -280,6 +280,11 @@ Partial Public Structure Impedance
         ' J: In the bottom remainder.
 
         Dim NormR As System.Double = Me.Resistance / z0
+        Dim NormX As System.Double = Me.Reactance / z0
+        Dim Y0 As System.Double = 1.0 / z0
+        Dim Y As Admittance = Me.ToAdmittance()
+        Dim NormG As System.Double = Y.Conductance / Y0
+        Dim NormB As System.Double = Y.Susceptance / Y0
 
         ' LEAVE THIS HERE FOR NOW.
         ' OPEN OR SHORT SHOULD HAVE BEEN REJECTED IN NEW() AND THIS SHOULD NOT
@@ -293,11 +298,6 @@ Partial Public Structure Impedance
             transformations = Nothing
             Return False
         End If
-
-        Dim NormX As System.Double = Me.Reactance / z0
-        Dim Y0 As System.Double = 1.0 / z0
-        Dim NormG As System.Double = Me.ToAdmittance.Conductance / Y0
-        'Dim NormB As System.Double = Me.ToAdmittance.Susceptance / Y0
 
         If NormR.Equals(1.0) Then
             ' Z is on perimeter of the right (R=Z0) circle.
