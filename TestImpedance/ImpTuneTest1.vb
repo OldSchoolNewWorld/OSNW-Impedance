@@ -96,12 +96,12 @@ Namespace TrySelectTuningLayoutTests
             If Not TestZ.TrySelectTuningLayout(1.0, transformations) Then
                 Assert.True(False, "Tuning failed.")
             End If
-            Dim AddZ As New Impedance(0.0, -transformations(0).Value1)
+            Dim AddZ As New Impedance(0.0, transformations(0).Value1)
             Dim CombinedZ As Impedance = Impedance.AddSeriesImpedance(TestZ, AddZ)
 
             Assert.True(transformations.Length = 1, "Incorrect transformation count.")
             Assert.True(transformations(0).Style.Equals(TransformationStyles.SeriesCap), "Incorrect transformation style")
-            Assert.Equal(3, transformations(0).Value1)
+            Assert.Equal(-3, transformations(0).Value1)
             Assert.Equal(TargetZ, CombinedZ)
 
         End Sub

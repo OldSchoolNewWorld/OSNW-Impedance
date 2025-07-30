@@ -293,7 +293,7 @@ Partial Public Structure Impedance
         ' AN IMAGE IMPEDANCE HAS EXTREME VALUES THAT CANCEL OR FOR SOME OTHER
         ' INTERIM STATE. MAYBE IF A MATCH IS BEING MADE TO AN IMAGE IMPEDANCE OR
         ' A SITUATION INVOLVING ACTIVE COMPONENTS THAT CAN HAVE A NEGATIVE RESITANCE.    
-        ' Check for an open- or short-circuit.
+        ' Check for a short- or open-circuit.
         If NormR.Equals(0.0) OrElse System.Double.IsInfinity(NormR) Then
             transformations = Nothing
             Return False
@@ -313,17 +313,15 @@ Partial Public Structure Impedance
                 }
                 Return True
             Else
-                ' Z is on the perimeter of the right (R=Z0) circle and only
-                ' needs a reactance. Move CW or CCW on the R circle to reach the
-                ' center.
+                ' Z is on the perimeter of the R=Z0 circle and only needs a
+                ' reactance.
 
-                ' The most obvious approach is to take the short path.
                 If NormX > 0.0 Then
                     ' CCW on a R circle needs a series capacitor.
                     transformations = {
                     New Transformation With {
                         .Style = TransformationStyles.SeriesCap,
-                        .Value1 = Me.Reactance,
+                        .Value1 = -Me.Reactance,
                         .Value2 = 0.0,
                         .Value3 = 0.0}
                     }
@@ -339,33 +337,6 @@ Partial Public Structure Impedance
                     }
                     Return True
                 End If
-
-                '' An alternate approach might be to work with the
-                '' equivalent admittance and zero out the susceptance.
-                '' Maybe to favor high- or low-pass?
-                'Dim Admt As Admittance = Me.ToAdmittance
-                'If Admt.Susceptance > 0.0 Then
-                '    ' CW on a G circle needs a shunt capacitor.
-                '    transformations = {
-                '    New Transformation With {
-                '        .Style = TransformationStyles.ShuntCap,
-                '        .Value1 = Admt.Susceptance,
-                '        .Value2 = 0.0,
-                '        .Value3 = 0.0}
-                '    }
-                '    Return True
-                'Else
-                '    ' CCW on a G circle needs a shunt inductor.
-                '    transformations = {
-                '        New Transformation With {
-                '        .Style = TransformationStyles.ShuntInd,
-                '        .Value1 = -Admt.Susceptance,
-                '        .Value2 = 0.0,
-                '        .Value3 = 0.0}
-                '    }
-                '    Return True
-                'End If
-
             End If
         ElseIf NormG.Equals(1.0) Then
             ' Z is on the perimeter of the left (G=Y0) circle.
