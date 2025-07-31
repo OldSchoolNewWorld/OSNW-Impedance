@@ -4,8 +4,8 @@ Option Compare Binary
 Option Infer Off
 
 Imports System.Globalization
-Imports Xunit
 Imports OSNW.Numerics
+Imports Xunit
 Imports OsnwAdmt = OSNW.Numerics.Admittance
 Imports OsnwNumSS = OSNW.Numerics.StandardizationStyles
 

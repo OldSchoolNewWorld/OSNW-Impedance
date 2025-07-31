@@ -3,8 +3,6 @@ Option Strict On
 Option Compare Binary
 Option Infer Off
 
-Imports System.Diagnostics.CodeAnalysis
-
 ' The generic tuning process is intended to be able to select a method to obtain
 ' a conjugate match for a load impedance to a source characteristic impedance.
 ' It is not intended to select specific capacitance or inductance values. The

@@ -4,8 +4,8 @@ Option Compare Binary
 Option Infer Off
 
 Imports System.Globalization
-Imports Xunit
 Imports OSNW.Numerics.ComplexExtensions
+Imports Xunit
 Imports OsnwNumSS = OSNW.Numerics.StandardizationStyles
 
 Public Class TestVals

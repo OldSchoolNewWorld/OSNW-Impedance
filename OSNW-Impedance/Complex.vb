@@ -4,7 +4,6 @@ Option Compare Binary
 Option Infer Off
 
 Imports System.Globalization
-Imports OSNW.Numerics.ComplexExtensions
 
 ' REF: System.Numerics.Complex struct
 ' https://github.com/dotnet/docs/blob/main/docs/fundamentals/runtime-libraries/system-numerics-complex.md
