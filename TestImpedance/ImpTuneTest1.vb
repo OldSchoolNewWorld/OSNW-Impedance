@@ -129,13 +129,61 @@ Namespace TrySelectTuningLayoutTests
 
     End Class ' TestTrySelectTuningLayoutE
 
-    Public Class TestTrySelectTuningX
-        ' Chart location cases:
-        ' F: Inside the R=Z0 circle. Two choices: CW or CCW on the G circle.
+    Public Class TestTrySelectTuningLayoutG
         ' G: On the G=Y0 circle.
         '      Omit: On the resonance line. Already either B or D.
         '      G1: Above the resonance line. Only needs reactance.
         '      G2: Below the resonance line. Only needs reactance.
+
+        <Fact>
+        Public Sub TrySelectTuning_PositionG1_Succeeds()
+
+            Dim TestY As New OSNW.Numerics.Admittance(1.0, 3.0)
+            Dim TestZ As OSNW.Numerics.Impedance = TestY.ToImpedance
+            Dim TestZ0 As Double = 1.0
+
+            Dim TargetZ As New Impedance(TestZ0, 0.0)
+            Dim transformations As Transformation() = Array.Empty(Of Transformation)
+            If Not TestZ.TrySelectTuningLayout(1.0, transformations) Then
+                Assert.True(False, "Tuning failed.")
+            End If
+            Dim AddZ As New Impedance(0.0, transformations(0).Value1)
+            Dim CombinedZ As Impedance = Impedance.AddShuntImpedance(TestZ, AddZ)
+
+            Assert.True(transformations.Length = 1, "Incorrect transformation count.")
+            Assert.True(transformations(0).Style.Equals(TransformationStyles.ShuntCap), "Incorrect transformation style")
+            Assert.Equal(1 / 3, transformations(0).Value1)
+            Assert.Equal(TargetZ, CombinedZ)
+
+        End Sub
+
+        <Fact>
+        Public Sub TrySelectTuning_PositionG2_Succeeds()
+
+            Dim TestY As New OSNW.Numerics.Admittance(1.0, -3.0)
+            Dim TestZ As OSNW.Numerics.Impedance = TestY.ToImpedance
+            Dim TestZ0 As Double = 1.0
+
+            Dim TargetZ As New Impedance(TestZ0, 0.0)
+            Dim transformations As Transformation() = Array.Empty(Of Transformation)
+            If Not TestZ.TrySelectTuningLayout(1.0, transformations) Then
+                Assert.True(False, "Tuning failed.")
+            End If
+            Dim AddZ As New Impedance(0.0, transformations(0).Value1)
+            Dim CombinedZ As Impedance = Impedance.AddShuntImpedance(TestZ, AddZ)
+
+            Assert.True(transformations.Length = 1, "Incorrect transformation count.")
+            Assert.True(transformations(0).Style.Equals(TransformationStyles.ShuntInd), "Incorrect transformation style")
+            Assert.Equal(-1 / 3, transformations(0).Value1)
+            Assert.Equal(TargetZ, CombinedZ)
+
+        End Sub
+
+    End Class ' TestTrySelectTuningLayoutG
+
+    Public Class TestTrySelectTuningX
+        ' Chart location cases:
+        ' F: Inside the R=Z0 circle. Two choices: CW or CCW on the G circle.
         ' H: Inside the G=Y0 circle. Two choices: CW or CCW on the R circle.
         ' I: In the top remainder.
         ' J: In the bottom remainder.

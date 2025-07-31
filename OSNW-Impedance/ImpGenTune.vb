@@ -292,7 +292,8 @@ Partial Public Structure Impedance
         ' BE ALLOWED. MAYBE THAT WILL HAVE TO BE ALLOWED. THAT MIGHT HAPPEN IF
         ' AN IMAGE IMPEDANCE HAS EXTREME VALUES THAT CANCEL OR FOR SOME OTHER
         ' INTERIM STATE. MAYBE IF A MATCH IS BEING MADE TO AN IMAGE IMPEDANCE OR
-        ' A SITUATION INVOLVING ACTIVE COMPONENTS THAT CAN HAVE A NEGATIVE RESITANCE.    
+        ' A SITUATION INVOLVING ACTIVE COMPONENTS THAT CAN HAVE A NEGATIVE
+        ' RESITANCE.    
         ' Check for a short- or open-circuit.
         If NormR.Equals(0.0) OrElse System.Double.IsInfinity(NormR) Then
             transformations = Nothing
@@ -301,6 +302,7 @@ Partial Public Structure Impedance
 
         If NormR.Equals(1.0) Then
             ' Z is on perimeter of the right (R=Z0) circle.
+            ' THAT SHOULD HAVE ALREADY BEEN CAUGHT???
             If NormX.Equals(0.0) Then
                 ' Z is already at the center, where Z=1+j0, and already has a
                 ' conjugate match.
@@ -321,7 +323,7 @@ Partial Public Structure Impedance
                     transformations = {
                     New Transformation With {
                         .Style = TransformationStyles.SeriesCap,
-                        .Value1 = -Me.Reactance,
+                        .Value1 = -NormX,
                         .Value2 = 0.0,
                         .Value3 = 0.0}
                     }
@@ -331,7 +333,7 @@ Partial Public Structure Impedance
                     transformations = {
                         New Transformation With {
                         .Style = TransformationStyles.SeriesInd,
-                        .Value1 = -Me.Reactance,
+                        .Value1 = -NormX,
                         .Value2 = 0.0,
                         .Value3 = 0.0}
                     }
@@ -340,18 +342,51 @@ Partial Public Structure Impedance
             End If
         ElseIf NormG.Equals(1.0) Then
             ' Z is on the perimeter of the left (G=Y0) circle.
-            'xxxxxxxxxxxxxxxxxxx
 
-            '
-            '
-            ' XXXXX WHAT NEXT? XXXXX
-            ' Move CW or CCW on the G circle to reach the center.
-            ' Would there ever be a case for taking the long way around?
-            ' Maybe to favor high- or low-pass?
-            '
-            '
+            If NormB.Equals(0.0) Then
+                ' Z is already at the center, where Z=1+j0, and already has a
+                ' conjugate match.
+                ' THAT SHOULD HAVE ALREADY BEEN CAUGHT???
+                transformations = {
+                    New Transformation With {
+                    .Style = TransformationStyles.None,
+                    .Value1 = 0.0,
+                    .Value2 = 0.0,
+                    .Value3 = 0.0}
+                }
+                Return True
+            Else
+                ' Z is on the perimeter of the G=Y0 circle and only needs a
+                ' reactance.
 
-            Return False ' DEFAULT UNTIL IMPLEMENTED.
+                If NormB > 0.0 Then
+                    ' CW on a G circle needs a shunt capacitor.
+                    Dim V1 As System.Double = -NormB
+                    Dim EffectiveY As New Admittance(0, V1)
+                    Dim EffectiveZ As Impedance = EffectiveY.ToImpedance
+                    transformations = {
+                    New Transformation With {
+                        .Style = TransformationStyles.ShuntCap,
+                        .Value1 = EffectiveZ.Reactance,
+                        .Value2 = 0.0,
+                        .Value3 = 0.0}
+                    }
+                    Return True
+                Else
+                    ' CCW on a G circle needs a shunt inductor.
+                    Dim V1 As System.Double = -NormB
+                    Dim EffectiveY As New Admittance(0, V1)
+                    Dim EffectiveZ As Impedance = EffectiveY.ToImpedance
+                    transformations = {
+                        New Transformation With {
+                        .Style = TransformationStyles.ShuntInd,
+                        .Value1 = EffectiveZ.Reactance,
+                        .Value2 = 0.0,
+                        .Value3 = 0.0}
+                    }
+                    Return True
+                End If
+            End If
         ElseIf NormR < 1.0 Then
             ' Z is INSIDE the right (R=Z0) circle.
 
