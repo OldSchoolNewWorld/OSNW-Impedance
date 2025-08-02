@@ -28,6 +28,9 @@ Option Infer Off
 ' Microsoft Word - The Smith Chart.doc
 ' https://ittc.ku.edu/~jstiles/723/handouts/The%20Smith%20Chart.pdf
 
+' Smith Chart Table of Contents
+' http://www.antenna-theory.com/tutorial/smith/chart.php
+
 '              Component impact
 ' A series inductor moves CW on a R circle.
 ' A shunt inductor moves CCW on a G circle.
@@ -294,22 +297,24 @@ Partial Public Structure Impedance
         ' RESITANCE.    
         ' Check for a short- or open-circuit.
         If NormR.Equals(0.0) OrElse System.Double.IsInfinity(NormR) Then
+            ' A: At the short circuit point on the left. Omit; Covered by B.
+            ' B: Anywhere else on the outer circle. R=0.0
+            ' C: At the open circuit point on the right.
             transformations = Nothing
             Return False
         End If
 
-        If NormR.Equals(1.0) Then
-            ' Z is on perimeter of the right (R=Z0) circle.
-            ' THAT SHOULD HAVE ALREADY BEEN CAUGHT???
+        If NormR.Equals(z0) Then
+            ' Z is on perimeter of the R=Z0 circle.
             If NormX.Equals(0.0) Then
-                ' Z is already at the center, where Z=1+j0, and already has a
-                ' conjugate match.
+                ' This happens at two places. One would have been handled as
+                ' position C. The other is at the center of the chart.
+
+                ' D: At the center.
+                ' Z is at the center point and already has a conjugate match.
                 transformations = {
                     New Transformation With {
-                    .Style = TransformationStyles.None,
-                    .Value1 = 0.0,
-                    .Value2 = 0.0,
-                    .Value3 = 0.0}
+                    .Style = TransformationStyles.None}
                 }
                 Return True
             Else
@@ -317,6 +322,7 @@ Partial Public Structure Impedance
                 ' reactance.
 
                 If NormX > 0.0 Then
+                    ' E1: Above the resonance line. Only needs reactance.
                     ' CCW on a R circle needs a series capacitor.
                     transformations = {
                     New Transformation With {
@@ -326,7 +332,21 @@ Partial Public Structure Impedance
                         .Value3 = 0.0}
                     }
                     Return True
+
+
+                    ' CW on a R circle would need a series inductor, increasing
+                    ' the inductance of an already inductive load. NO.
+                    ' What about tuning the equivalent admittance?
+                    ' The short path for Y=0.1-j0.3 would want CCW on a G circle
+                    ' which would need a shunt inductor, reducing but not
+                    ' resonating the impedance. NO.
+                    ' The long path for Y=0.1-j0.3 would want CW on a G circle
+                    ' which would need a shunt capacitor. MAYBE?
+
+
+
                 Else
+                    ' E2: Below the resonance line. Only needs reactance.
                     ' CW on a R circle needs a series inductor.
                     transformations = {
                         New Transformation With {

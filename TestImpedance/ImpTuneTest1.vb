@@ -30,9 +30,21 @@ Imports Xunit
 Namespace TrySelectTuningLayoutTests
 
     Public Class TestTrySelectTuningLayoutA
-        ' A: At the short circuit point on the left.
+        ' A: At the short circuit point on the left. Omit; Covered by B.
 
-        ' Omit; case A is just a special case of case B, with X=0.0.
+        <Fact>
+        Public Sub TrySelectTuning_PositionA_Fails()
+
+            Dim Z As New OSNW.Numerics.Impedance(0.0, 0.0)
+            Dim transformations As Transformation() = Array.Empty(Of Transformation)
+
+            ' This version, with R=0, X=0, does not throw an exception when R=0 is
+            ' allowed by Impedance.New(), but it does fail to tune.
+            Assert.False(Z.TrySelectTuningLayout(1.0, transformations))
+            Assert.True(transformations Is Nothing)
+
+        End Sub
+
     End Class ' TestTrySelectTuningLayoutA
 
     Public Class TestTrySelectTuningLayoutB
@@ -40,11 +52,15 @@ Namespace TrySelectTuningLayoutTests
 
         <Fact>
         Public Sub TrySelectTuning_PositionBZeroR_Fails()
-            ' This version, with R=0, does not throw an exception when zero is
-            ' allowed by Impedance.New(), but it does fail to tune.
+
             Dim Z As New OSNW.Numerics.Impedance(0.0, 3.0)
             Dim transformations As Transformation() = Array.Empty(Of Transformation)
+
+            ' This version, with R=0, does not throw an exception when R=0 is
+            ' allowed by Impedance.New(), but it does fail to tune.
             Assert.False(Z.TrySelectTuningLayout(1.0, transformations))
+            Assert.True(transformations Is Nothing)
+
         End Sub
 
     End Class ' TestTrySelectTuningLayoutB
@@ -56,8 +72,8 @@ Namespace TrySelectTuningLayoutTests
         Public Sub TrySelectTuning_PositionC_Fails()
             Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
                 Sub()
-                    ' Code that throws the exception
-                    Dim Z As New OSNW.Numerics.Impedance(Double.PositiveInfinity, 3.0)
+                    ' Code that throws the exception.
+                    Dim Z As New OSNW.Numerics.Impedance(Double.PositiveInfinity, 0.0)
                     Dim transformations As Transformation() = Array.Empty(Of Transformation)
                     Assert.False(Z.TrySelectTuningLayout(1.0, transformations))
                 End Sub)
@@ -70,18 +86,21 @@ Namespace TrySelectTuningLayoutTests
 
         <Fact>
         Public Sub TestTrySelectTuningLayoutD()
+
             Dim Z As New OSNW.Numerics.Impedance(1.0, 0.0)
             Dim transformations As Transformation() = Array.Empty(Of Transformation)
+
             Assert.True(Z.TrySelectTuningLayout(1.0, transformations), "Tuning failed.")
             Assert.True(transformations.Length = 1, "Incorrect transformation count.")
             Assert.True(transformations(0).Style.Equals(TransformationStyles.None), "Incorrect transformation style")
+
         End Sub
 
     End Class ' TestTrySelectTuningLayoutD
 
     Public Class TestTrySelectTuningLayoutE
         ' E: On the R=Z0 circle.
-        '      Omit: On the resonance line. Already covered by C or D.
+        '      Omit: On the resonance line. Tested as C or D.
         '      E1: Above the resonance line. Only needs reactance.
         '      E2: Below the resonance line. Only needs reactance.
 
