@@ -331,18 +331,15 @@ Partial Public Structure Impedance
                     }
                     Return True
 
-
-                    ' Look for alternative approaches.
-
+                    ' Consider alternative approaches.
                     ' CW on a R circle would need a series inductor, increasing
                     ' the inductance of an already inductive load. NO.
                     ' What about tuning the equivalent admittance?
-
-                    ' CCW on a G circle would need a shunt inductor, reducing but not
-                    ' canceling the reactance. NO.
-
-                    ' CW on a G circle would need a shunt capacitor. MAYBE.
-
+                    ' CCW on a G circle would need a shunt inductor, reducing
+                    ' but not canceling the reactance. NO.
+                    ' CW on a G circle would need a shunt capacitor. For Z=1+j3,
+                    ' Y=0.1-j0.3. Adding a shunt capacitor 0+j0.3 results in a
+                    ' total admittance Y=0.1+j0. For Y=0.1+j0, Z=10+j0. NO.
 
                 Else
                     ' E2: Below the resonance line. Only needs reactance.

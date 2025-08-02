@@ -11,7 +11,7 @@ Imports Xunit
 
 ' Chart location cases:
 ' A: At the short circuit point on the left. Omit; Covered by B.
-' B: Anywhere else on the outer circle. R=0.0
+' B: Anywhere else on the outer circle. R=0.0.
 ' C: At the open circuit point on the right.
 ' D: At the center.
 ' E: On the R=Z0 circle.
@@ -26,6 +26,12 @@ Imports Xunit
 ' H: Inside the G=Y0 circle. Two choices: CW or CCW on the R circle.
 ' I: In the top remainder.
 ' J: In the bottom remainder.
+
+Class Messages
+    Public Const GTF As String = "Tuning failed."
+    Public Const ITC As String = "Incorrect transformation count."
+    Public Const ITS As String = "Incorrect transformation style"
+End Class ' Messages
 
 Namespace TrySelectTuningLayoutTests
 
@@ -90,9 +96,9 @@ Namespace TrySelectTuningLayoutTests
             Dim Z As New OSNW.Numerics.Impedance(1.0, 0.0)
             Dim transformations As Transformation() = Array.Empty(Of Transformation)
 
-            Assert.True(Z.TrySelectTuningLayout(1.0, transformations), "Tuning failed.")
-            Assert.True(transformations.Length = 1, "Incorrect transformation count.")
-            Assert.True(transformations(0).Style.Equals(TransformationStyles.None), "Incorrect transformation style")
+            Assert.True(Z.TrySelectTuningLayout(1.0, transformations), Messages.GTF)
+            Assert.True(transformations.Length = 1, Messages.ITC)
+            Assert.True(transformations(0).Style.Equals(TransformationStyles.None), Messages.ITS)
 
         End Sub
 
@@ -100,9 +106,9 @@ Namespace TrySelectTuningLayoutTests
 
     Public Class TestTrySelectTuningLayoutE
         ' E: On the R=Z0 circle.
-        '      Omit: On the resonance line. Tested as C or D.
-        '      E1: Above the resonance line. Only needs reactance.
-        '      E2: Below the resonance line. Only needs reactance.
+        '     Omit: On the resonance line. Already covered by C or D.
+        '     E1: Above the resonance line. Only needs reactance.
+        '     E2: Below the resonance line. Only needs reactance.
 
         <Fact>
         Public Sub TrySelectTuning_PositionE1_Succeeds()
@@ -113,13 +119,13 @@ Namespace TrySelectTuningLayoutTests
             Dim TargetZ As New Impedance(TestZ0, 0.0)
             Dim transformations As Transformation() = Array.Empty(Of Transformation)
             If Not TestZ.TrySelectTuningLayout(1.0, transformations) Then
-                Assert.True(False, "Tuning failed.")
+                Assert.True(False, Messages.GTF)
             End If
             Dim AddZ As New Impedance(0.0, transformations(0).Value1)
             Dim CombinedZ As Impedance = Impedance.AddSeriesImpedance(TestZ, AddZ)
 
-            Assert.True(transformations.Length = 1, "Incorrect transformation count.")
-            Assert.True(transformations(0).Style.Equals(TransformationStyles.SeriesCap), "Incorrect transformation style")
+            Assert.True(transformations.Length = 1, Messages.ITC)
+            Assert.True(transformations(0).Style.Equals(TransformationStyles.SeriesCap), Messages.ITS)
             Assert.Equal(-3, transformations(0).Value1)
             Assert.Equal(TargetZ, CombinedZ)
 
@@ -134,13 +140,13 @@ Namespace TrySelectTuningLayoutTests
             Dim TargetZ As New Impedance(TestZ0, 0.0)
             Dim transformations As Transformation() = Array.Empty(Of Transformation)
             If Not TestZ.TrySelectTuningLayout(1.0, transformations) Then
-                Assert.True(False, "Tuning failed.")
+                Assert.True(False, Messages.GTF)
             End If
             Dim AddZ As New Impedance(0.0, transformations(0).Value1)
             Dim CombinedZ As Impedance = Impedance.AddSeriesImpedance(TestZ, AddZ)
 
-            Assert.True(transformations.Length = 1, "Incorrect transformation count.")
-            Assert.True(transformations(0).Style.Equals(TransformationStyles.SeriesInd), "Incorrect transformation style")
+            Assert.True(transformations.Length = 1, Messages.ITC)
+            Assert.True(transformations(0).Style.Equals(TransformationStyles.SeriesInd), Messages.ITS)
             Assert.Equal(3, transformations(0).Value1)
             Assert.Equal(TargetZ, CombinedZ)
 
@@ -150,9 +156,9 @@ Namespace TrySelectTuningLayoutTests
 
     Public Class TestTrySelectTuningLayoutG
         ' G: On the G=Y0 circle.
-        '      Omit: On the resonance line. Already either B or D.
-        '      G1: Above the resonance line. Only needs reactance.
-        '      G2: Below the resonance line. Only needs reactance.
+        '     Omit: On the resonance line. Already either B or D.
+        '     G1: Above the resonance line. Only needs reactance.
+        '     G2: Below the resonance line. Only needs reactance.
 
         <Fact>
         Public Sub TrySelectTuning_PositionG1_Succeeds()
@@ -164,13 +170,13 @@ Namespace TrySelectTuningLayoutTests
             Dim TargetZ As New Impedance(TestZ0, 0.0)
             Dim transformations As Transformation() = Array.Empty(Of Transformation)
             If Not TestZ.TrySelectTuningLayout(1.0, transformations) Then
-                Assert.True(False, "Tuning failed.")
+                Assert.True(False, Messages.GTF)
             End If
             Dim AddZ As New Impedance(0.0, transformations(0).Value1)
             Dim CombinedZ As Impedance = Impedance.AddShuntImpedance(TestZ, AddZ)
 
-            Assert.True(transformations.Length = 1, "Incorrect transformation count.")
-            Assert.True(transformations(0).Style.Equals(TransformationStyles.ShuntCap), "Incorrect transformation style")
+            Assert.True(transformations.Length = 1, Messages.ITC)
+            Assert.True(transformations(0).Style.Equals(TransformationStyles.ShuntCap), Messages.ITS)
             Assert.Equal(1 / 3, transformations(0).Value1)
             Assert.Equal(TargetZ, CombinedZ)
 
@@ -186,13 +192,13 @@ Namespace TrySelectTuningLayoutTests
             Dim TargetZ As New Impedance(TestZ0, 0.0)
             Dim transformations As Transformation() = Array.Empty(Of Transformation)
             If Not TestZ.TrySelectTuningLayout(1.0, transformations) Then
-                Assert.True(False, "Tuning failed.")
+                Assert.True(False, Messages.GTF)
             End If
             Dim AddZ As New Impedance(0.0, transformations(0).Value1)
             Dim CombinedZ As Impedance = Impedance.AddShuntImpedance(TestZ, AddZ)
 
-            Assert.True(transformations.Length = 1, "Incorrect transformation count.")
-            Assert.True(transformations(0).Style.Equals(TransformationStyles.ShuntInd), "Incorrect transformation style")
+            Assert.True(transformations.Length = 1, Messages.ITC)
+            Assert.True(transformations(0).Style.Equals(TransformationStyles.ShuntInd), Messages.ITS)
             Assert.Equal(-1 / 3, transformations(0).Value1)
             Assert.Equal(TargetZ, CombinedZ)
 
@@ -211,9 +217,9 @@ Namespace TrySelectTuningLayoutTests
         Public Sub TestTrySelectTuningLayoutAmris23()
             'Dim Z As New OSNW.Numerics.Impedance(0.2, 0.2)
             'Dim transformations As Transformation() = Array.Empty(Of Transformation)
-            'Assert.True(Z.TrySelectTuningLayout(1.0, transformations), "Tuning failed.")
-            'Assert.True(transformations.Length = 1, "Incorrect transformation count.")
-            'Assert.True(transformations(0).Style.Equals(TransformationStyles.None), "Incorrect transformation style")
+            'Assert.True(Z.TrySelectTuningLayout(1.0, transformations), Messages.GTF)
+            'Assert.True(transformations.Length = 1, Messages.ITC)
+            'Assert.True(transformations(0).Style.Equals(TransformationStyles.None), Messages.ITS)
         End Sub
 
     End Class ' TestTrySelectTuningX
