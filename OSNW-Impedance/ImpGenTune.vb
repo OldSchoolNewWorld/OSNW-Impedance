@@ -327,22 +327,21 @@ Partial Public Structure Impedance
                     transformations = {
                     New Transformation With {
                         .Style = TransformationStyles.SeriesCap,
-                        .Value1 = -NormX,
-                        .Value2 = 0.0,
-                        .Value3 = 0.0}
+                        .Value1 = -NormX}
                     }
                     Return True
 
 
+                    ' Look for alternative approaches.
+
                     ' CW on a R circle would need a series inductor, increasing
                     ' the inductance of an already inductive load. NO.
                     ' What about tuning the equivalent admittance?
-                    ' The short path for Y=0.1-j0.3 would want CCW on a G circle
-                    ' which would need a shunt inductor, reducing but not
-                    ' resonating the impedance. NO.
-                    ' The long path for Y=0.1-j0.3 would want CW on a G circle
-                    ' which would need a shunt capacitor. MAYBE?
 
+                    ' CCW on a G circle would need a shunt inductor, reducing but not
+                    ' canceling the reactance. NO.
+
+                    ' CW on a G circle would need a shunt capacitor. MAYBE.
 
 
                 Else
@@ -351,9 +350,7 @@ Partial Public Structure Impedance
                     transformations = {
                         New Transformation With {
                         .Style = TransformationStyles.SeriesInd,
-                        .Value1 = -NormX,
-                        .Value2 = 0.0,
-                        .Value3 = 0.0}
+                        .Value1 = -NormX}
                     }
                     Return True
                 End If
