@@ -309,8 +309,6 @@ Partial Public Structure Impedance
         'Dim NormG As System.Double = Y.Conductance / Y0
         'Dim NormB As System.Double = Y.Susceptance / Y0
 
-
-
         '
         '
         ' XXXXX WHAT NEXT? XXXXX
@@ -328,7 +326,7 @@ Partial Public Structure Impedance
     'xxxx
 
     '''' <summary>
-    '''' Z is INSIDE the R=Z0 circle.
+    '''' Z is INSIDE the G=Y0 circle.
     '''' </summary>
     '''' <param name="z0">xxxxxxxxxx</param>
     '''' <param name="transformations">xxxxxxxxxx</param>
@@ -426,101 +424,82 @@ Partial Public Structure Impedance
 
         If NormR.Equals(z0) Then
             ' Z is on perimeter of the R=Z0 circle.
-            Return NormREqualsZ0(z0, transformations)
+            Return Me.NormREqualsZ0(z0, transformations)
         ElseIf NormG.Equals(1.0) Then
             ' Z is on the perimeter of the G=Y0 circle.
-            Return NormGEquals1(z0, transformations)
+            Return Me.NormGEquals1(z0, transformations)
         ElseIf NormR > z0 Then
             ' Z is INSIDE the R=Z0 circle.
-
-            '
-            '
-            ' XXXXX WHAT NEXT? XXXXX
-            ' Move CW or CCW on the G circle to reach the R=Z0 circle.
-            ' Would there ever be a case for taking the long path?
-            ' Maybe to favor high- or low-pass?
-            '
-            '
-
-            Return False ' DEFAULT UNTIL IMPLEMENTED.
-            'xxxx
+            Return Me.InsideREqualsZ0(z0, transformations)
         ElseIf NormG > Y0 Then
             ' Z is INSIDE the G=Y0 circle.
-
-            '
-            '
-            ' XXXXX WHAT NEXT? XXXXX
-            ' Move CW or CCW on the R circle to reach the G=Y0 circle.
-            ' Would there ever be a case for taking the long path?
-            ' Maybe to favor high- or low-pass?
-            '
-            '
+            Return Me.InsideGEqualsY0(z0, transformations)
 
             ' On getting this far, the impedance will, usually, fall into either
             ' the top or bottom center section.
-            If NormX.Equals(0.0) Then
-                ' Z is ON the resonance line.
+        ElseIf NormX.Equals(0.0) Then
+            ' Z is ON the resonance line.
 
-                '
-                '
-                ' XXXXX WHAT NEXT? XXXXX
-                ' Would this case have been caught above? Yes, it would be in or
-                ' on the R or G circle or at the center.
-                '
-                '
+            '
+            '
+            ' XXXXX WHAT NEXT? XXXXX
+            ' Would this case have been caught above? Yes, it would be in or
+            ' on the R or G circle or at the center.
+            '
+            '
 
-                ' DELETE THIS AFTER TESTING CONFIRMS THAT IT IS NOT HIT BY ANY TEST CASES.
-                Dim CaughtBy As System.Reflection.MethodBase =
+            ' DELETE THIS AFTER TESTING CONFIRMS THAT IT IS NOT HIT BY ANY TEST CASES.
+            Dim CaughtBy As System.Reflection.MethodBase =
                     System.Reflection.MethodBase.GetCurrentMethod
-                Throw New ApplicationException(
+            Throw New ApplicationException(
                     """NormX.Equals(0.0)"" should never be matched in " &
                     NameOf(TrySelectTuningLayout))
 
 
-                Return False ' DEFAULT UNTIL IMPLEMENTED.
-            ElseIf NormX > 0.0 Then
-                ' Z is ABOVE the resonance line, between the left (G=Y0) and
-                ' right (R=Z0) circles.
+            Return False ' DEFAULT UNTIL IMPLEMENTED.
+        ElseIf NormX > 0.0 Then
+            ' Z is ABOVE the resonance line, between the left (G=Y0) and
+            ' right (R=Z0) circles.
 
-                '
-                '
-                ' XXXXX WHAT NEXT? XXXXX
-                ' Move CW on the G circle to reach the R=Z0 circle. Use a shunt
-                ' capacitor.
-                ' Would there ever be a case to prefer the first or second
-                ' intersection? Maybe to favor high- or low-pass?
-                '          or
-                ' Move CCW on the R circle to reach the G=Y0 circle. Use a
-                ' series capacitor.
-                ' Would there ever be a case to prefer the first or second
-                ' intersection? Maybe to favor high- or low-pass?
-                '
-                '
+            '
+            '
+            ' XXXXX WHAT NEXT? XXXXX
+            ' Move CW on the G circle to reach the R=Z0 circle. Use a shunt
+            ' capacitor.
+            ' Would there ever be a case to prefer the first or second
+            ' intersection? Maybe to favor high- or low-pass?
+            '          or
+            ' Move CCW on the R circle to reach the G=Y0 circle. Use a
+            ' series capacitor.
+            ' Would there ever be a case to prefer the first or second
+            ' intersection? Maybe to favor high- or low-pass?
+            '
+            '
 
-                Return False ' DEFAULT UNTIL IMPLEMENTED.
-            Else
-                ' Z is BELOW the resonance line, between the left (G=Y0) and
-                ' right (R=Z0) circles.
+            Return False ' DEFAULT UNTIL IMPLEMENTED.
+        ElseIf NormX < 0.0 Then
+            ' Z is BELOW the resonance line, between the left (G=Y0) and
+            ' right (R=Z0) circles.
 
-                '
-                '
-                ' XXXXX WHAT NEXT? XXXXX
-                ' Move CCW on the G circle to reach the R=Z0 circle. Use a shunt
-                ' inductor.
-                ' Would there ever be a case to prefer the first or second
-                ' intersection? Maybe to favor high- or low-pass?
-                '          or
-                ' Move CW on the R circle to reach the G=Y0 circle. Use a
-                ' series inductor.
-                ' Would there ever be a case to prefer the first or second
-                ' intersection? Maybe to favor high- or low-pass?
-                '
-                '
+            '
+            '
+            ' XXXXX WHAT NEXT? XXXXX
+            ' Move CCW on the G circle to reach the R=Z0 circle. Use a shunt
+            ' inductor.
+            ' Would there ever be a case to prefer the first or second
+            ' intersection? Maybe to favor high- or low-pass?
+            '          or
+            ' Move CW on the R circle to reach the G=Y0 circle. Use a
+            ' series inductor.
+            ' Would there ever be a case to prefer the first or second
+            ' intersection? Maybe to favor high- or low-pass?
+            '
+            '
 
-                Return False ' DEFAULT UNTIL IMPLEMENTED.
-            End If
+            Return False ' DEFAULT UNTIL IMPLEMENTED.
 
         Else
+            ' GETTING HERE MEANS THAT NO CASES MATCHED.
             Return False ' DEFAULT UNTIL IMPLEMENTED.
         End If
 
