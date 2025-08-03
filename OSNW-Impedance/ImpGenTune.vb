@@ -292,11 +292,75 @@ Partial Public Structure Impedance
 
     End Function ' NormGEquals1
 
+    '''' <summary>
+    '''' Z is INSIDE the R=Z0 circle.
+    '''' </summary>
+    '''' <param name="z0">xxxxxxxxxx</param>
+    '''' <param name="transformations">xxxxxxxxxx</param>
+    '''' <returns>xxxxxxxxxx</returns>
+    Private Function InsideREqualsZ0(ByVal z0 As System.Double,
+        ByRef transformations As Transformation()) _
+        As System.Boolean
+
+        'Dim NormR As System.Double = Me.Resistance / z0
+        'Dim NormX As System.Double = Me.Reactance / z0
+        'Dim Y0 As System.Double = 1.0 / z0
+        'Dim Y As Admittance = Me.ToAdmittance()
+        'Dim NormG As System.Double = Y.Conductance / Y0
+        'Dim NormB As System.Double = Y.Susceptance / Y0
 
 
 
+        '
+        '
+        ' XXXXX WHAT NEXT? XXXXX
+        ' Move CW or CCW on the G circle to reach the R=Z0 circle.
+        ' Would there ever be a case for taking the long path?
+        ' Maybe to favor high- or low-pass?
+        '
+        '
+
+        Return False ' DEFAULT UNTIL IMPLEMENTED.
+        'xxxx
+
+
+    End Function ' InsideREqualsZ0
     'xxxx
 
+    '''' <summary>
+    '''' Z is INSIDE the R=Z0 circle.
+    '''' </summary>
+    '''' <param name="z0">xxxxxxxxxx</param>
+    '''' <param name="transformations">xxxxxxxxxx</param>
+    '''' <returns>xxxxxxxxxx</returns>
+    Private Function InsideGEqualsY0(ByVal z0 As System.Double,
+        ByRef transformations As Transformation()) _
+        As System.Boolean
+
+        'Dim NormR As System.Double = Me.Resistance / z0
+        'Dim NormX As System.Double = Me.Reactance / z0
+        'Dim Y0 As System.Double = 1.0 / z0
+        'Dim Y As Admittance = Me.ToAdmittance()
+        'Dim NormG As System.Double = Y.Conductance / Y0
+        'Dim NormB As System.Double = Y.Susceptance / Y0
+
+        '
+        '
+        ' XXXXX WHAT NEXT? XXXXX
+        ' Move CW or CCW on the R circle to reach the G=Y0 circle.
+        ' Would there ever be a case for taking the long path?
+        ' Maybe to favor high- or low-pass?
+        '
+        '
+
+        Return False ' DEFAULT UNTIL IMPLEMENTED.
+        'xxxx
+
+
+
+
+    End Function ' InsideGEqualsY0
+    'xxxx
 
 
 
@@ -367,7 +431,7 @@ Partial Public Structure Impedance
             ' Z is on the perimeter of the G=Y0 circle.
             Return NormGEquals1(z0, transformations)
         ElseIf NormR > z0 Then
-            ' Z is INSIDE the right (R=Z0) circle.
+            ' Z is INSIDE the R=Z0 circle.
 
             '
             '
@@ -381,7 +445,7 @@ Partial Public Structure Impedance
             Return False ' DEFAULT UNTIL IMPLEMENTED.
             'xxxx
         ElseIf NormG > Y0 Then
-            ' Z is INSIDE the left (G=Y0) circle.
+            ' Z is INSIDE the G=Y0 circle.
 
             '
             '
