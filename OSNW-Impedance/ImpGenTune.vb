@@ -170,91 +170,16 @@ End Structure ' Transformation
 
 Partial Public Structure Impedance
 
-    '' USE THIS TO TRY TO SET UP MATCHING A LOAD TO AN ARBITRARY SOURCE
-    '' IMPEDANCE. IF IT WORKS OUT, MATCHING TO A CHARACTERISTIC IMPEDANCE COULD
-    '' JUST BE A SPECIAL CASE.
-    '''' <summary>
-    '''' Attempts to obtain a conjugate match from the current load instance to
-    '''' the source impedance specified by <paramref name="sourceR"/> and
-    '''' <paramref name="sourceX"/>.
-    '''' </summary>
-    '''' <param name="z0">Specifies the characteristic impedance to which the
-    '''' calculations should be referenced.</param>
-    '''' <param name="sourceR">Specifies the resistance component of the source
-    '''' impedance to which the current load instance should be matched.</param>
-    '''' <param name="sourceX">Specifies the reactance component of the source
-    '''' impedance to which the current load instance should be matched.</param>
-    '''' <param name="transformations"></param>
-    '''' <returns><c>True</c> if the xxxxxxxxxxxxxxx succeeds; otherwise,
-    '''' <c>False</c> and also returns xxxxxxxxxxxxxxx xxxxxxxxxxxxxxx.</returns>
-    'Public Function TrySelectTuningLayout(ByVal z0 As System.Double,
-    '    ByVal sourceR As System.Double, ByVal sourceX As System.Double,
-    '    ByRef transformations As Transformation()) _
-    '    As System.Boolean
-
-    '    ' The terminology here relates to solving conjugate matches on a Smith
-    '    ' chart.
-
-    '    ' Chart location cases:
-    '    ' A: At the short circuit point on the left. Omit; Covered by B.
-    '    ' B: Anywhere else on the outer circle. R=0.0
-    '    ' C: At the open circuit point on the right.
-    '    ' D: At the center.
-    '    ' E: On the R=Z0 circle.
-    '    '      Omit: On the resonance line. Already covered by C or D.
-    '    '      E1: Above the resonance line. Only needs reactance.
-    '    '      E2: Below the resonance line. Only needs reactance.
-    '    ' F: Inside the R=Z0 circle. Two choices: CW or CCW on the G circle.
-    '    ' G: On the G=Y0 circle.
-    '    '      Omit: On the resonance line. Already either B or D.
-    '    '      G1: Above the resonance line. Only needs reactance.
-    '    '      G2: Below the resonance line. Only needs reactance.
-    '    ' H: Inside the G=Y0 circle. Two choices: CW or CCW on the R circle.
-    '    ' I: In the top remainder.
-    '    ' J: In the bottom remainder.
-
-    '    Dim TargetNormR As System.Double = sourceR / z0
-    '    Dim TargetNormX As System.Double = sourceX / z0
-    '    Dim TargetNormZ As New Impedance(TargetNormR, TargetNormX)
-    '    Dim TargetNormY As Admittance = TargetNormZ.ToAdmittance()
-    '    Dim TargetNormG As System.Double = TargetNormY.Conductance
-    '    Dim TargetNormB As System.Double = TargetNormY.Susceptance
-
-    '    Dim OwnNormR As System.Double = Me.Resistance / z0
-    '    Dim OwnNormX As System.Double = Me.Reactance / z0
-
-
-
-
-    '    Return False ' DEFAULT UNTIL IMPLEMENTED.
-    'End Function ' TrySelectTuningLayout
-
-    '' USE THIS TO TRY TO SET UP MATCHING TO AN ARBITRARY SOURCE IMPEDANCE.
-    '''' <summary>
-    '''' Attempts to obtain a conjugate match from the current load instance to
-    '''' the source impedance specified by <paramref name="sourceZ"/>.
-    '''' </summary>
-    '''' <param name="z0">Specifies the characteristic impedance to which the
-    '''' calculations should be referenced.</param>
-    '''' <param name="sourceZ">Specifies the source impedance to which the
-    '''' current load instance should be matched.</param>
-    '''' <returns><c>True</c> if the xxxxxxxxxxxxxxx succeeds; otherwise,
-    '''' <c>False</c> and also returns xxxxxxxxxxxxxxx xxxxxxxxxxxxxxx.</returns>
-    'Public Function TrySelectTuningLayout(ByVal z0 As System.Double,
-    '    ByVal sourceZ As Impedance, ByRef transformations As Transformation()) _
-    '    As System.Boolean
-
-    '    Return TrySelectTuningLayout(z0, sourceZ.Resistance, sourceZ.Reactance, transformations)
-    'End Function ' TrySelectTuningLayout
-
     ''' <summary>
-    ''' xxxxxxxxxxxxxxx
+    ''' Attempts to obtain a conjugate match from the current load instance to
+    ''' the source characteristic impedance specified by <paramref name="z0"/>.
     ''' </summary>
     ''' <param name="z0">Specifies the characteristic impedance to which the
     ''' current instance should be matched.</param>
     ''' <param name="transformations"></param>
-    ''' <returns><c>True</c> if the xxxxxxxxxxxxxxx succeeds; otherwise,
-    ''' <c>False</c> and also returns xxxxxxxxxxxxxxx xxxxxxxxxxxxxxx.</returns>
+    ''' <returns><c>True</c> if a conjugate match solution is found and also
+    ''' returns the components to construct the match; otherwise, <c>False</c>.
+    ''' </returns>
     Public Function TrySelectTuningLayout(ByVal z0 As System.Double,
         ByRef transformations As Transformation()) _
         As System.Boolean
@@ -264,18 +189,18 @@ Partial Public Structure Impedance
 
         ' Chart location cases:
         ' A: At the short circuit point on the left. Omit; Covered by B.
-        ' B: Anywhere else on the outer circle. R=0.0
+        ' B: Anywhere else on the outer circle. R=0.0.
         ' C: At the open circuit point on the right.
         ' D: At the center.
         ' E: On the R=Z0 circle.
-        '      Omit: On the resonance line. Already covered by C or D.
-        '      E1: Above the resonance line. Only needs reactance.
-        '      E2: Below the resonance line. Only needs reactance.
+        '     Omit: On the resonance line. Already covered by C or D.
+        '     E1: Above the resonance line. Only needs reactance.
+        '     E2: Below the resonance line. Only needs reactance.
         ' F: Inside the R=Z0 circle. Two choices: CW or CCW on the G circle.
         ' G: On the G=Y0 circle.
-        '      Omit: On the resonance line. Already either B or D.
-        '      G1: Above the resonance line. Only needs reactance.
-        '      G2: Below the resonance line. Only needs reactance.
+        '     Omit: On the resonance line. Already either B or D.
+        '     G1: Above the resonance line. Only needs reactance.
+        '     G2: Below the resonance line. Only needs reactance.
         ' H: Inside the G=Y0 circle. Two choices: CW or CCW on the R circle.
         ' I: In the top remainder.
         ' J: In the bottom remainder.
@@ -399,26 +324,28 @@ Partial Public Structure Impedance
                     Return True
                 End If
             End If
-        ElseIf NormR < 1.0 Then
+        ElseIf NormR > z0 Then
             ' Z is INSIDE the right (R=Z0) circle.
 
             '
             '
             ' XXXXX WHAT NEXT? XXXXX
             ' Move CW or CCW on the G circle to reach the R=Z0 circle.
-            ' Would there ever be a case for taking the long way around?
+            ' Would there ever be a case for taking the long path?
             ' Maybe to favor high- or low-pass?
             '
             '
 
             Return False ' DEFAULT UNTIL IMPLEMENTED.
-        ElseIf NormG < 1.0 Then
+            'xxxx
+        ElseIf NormG > Y0 Then
             ' Z is INSIDE the left (G=Y0) circle.
 
             '
             '
             ' XXXXX WHAT NEXT? XXXXX
-            ' Would there ever be a case for taking the long way around?
+            ' Move CW or CCW on the R circle to reach the G=Y0 circle.
+            ' Would there ever be a case for taking the long path?
             ' Maybe to favor high- or low-pass?
             '
             '
@@ -492,5 +419,89 @@ Partial Public Structure Impedance
         End If
 
     End Function ' TrySelectTuningLayout
+
+    '' USE THIS TO TRY TO SET UP MATCHING A LOAD TO AN ARBITRARY SOURCE
+    '' IMPEDANCE. IF IT WORKS OUT, MATCHING TO A CHARACTERISTIC IMPEDANCE COULD
+    '' JUST BE A SPECIAL CASE.
+    '''' <summary>
+    '''' Attempts to obtain a conjugate match from the current load instance to
+    '''' the source impedance specified by <paramref name="sourceR"/> and
+    '''' <paramref name="sourceX"/>.
+    '''' </summary>
+    '''' <param name="z0">Specifies the characteristic impedance to which the
+    '''' calculations should be referenced.</param>
+    '''' <param name="sourceR">Specifies the resistance component of the source
+    '''' impedance to which the current load instance should be matched.</param>
+    '''' <param name="sourceX">Specifies the reactance component of the source
+    '''' impedance to which the current load instance should be matched.</param>
+    '''' <param name="transformations"></param>
+    '''' <returns><c>True</c> if the xxxxxxxxxxxxxxx succeeds; otherwise,
+    '''' <c>False</c> and also returns xxxxxxxxxxxxxxx xxxxxxxxxxxxxxx.</returns>
+    'Public Function TrySelectTuningLayout(ByVal z0 As System.Double,
+    '    ByVal sourceR As System.Double, ByVal sourceX As System.Double,
+    '    ByRef transformations As Transformation()) _
+    '    As System.Boolean
+
+    '    ' The terminology here relates to solving conjugate matches on a Smith
+    '    ' chart.
+
+    '    ' Chart location cases:
+    '    ' A: At the short circuit point on the left. Omit; Covered by B.
+    '    ' B: Anywhere else on the outer circle. R=0.0.
+    '    ' C: At the open circuit point on the right.
+    '    ' D: At the center.
+    '    ' E: On the R=Z0 circle.
+    '    '     Omit: On the resonance line. Already covered by C or D.
+    '    '     E1: Above the resonance line. Only needs reactance.
+    '    '     E2: Below the resonance line. Only needs reactance.
+    '    ' F: Inside the R=Z0 circle. Two choices: CW or CCW on the G circle.
+    '    ' G: On the G=Y0 circle.
+    '    '     Omit: On the resonance line. Already either B or D.
+    '    '     G1: Above the resonance line. Only needs reactance.
+    '    '     G2: Below the resonance line. Only needs reactance.
+    '    ' H: Inside the G=Y0 circle. Two choices: CW or CCW on the R circle.
+    '    ' I: In the top remainder.
+    '    ' J: In the bottom remainder.
+
+    '    ' A series inductor moves CW on a R circle.
+    '    ' A series capacitor moves CCW on a R circle.
+    '    ' A shunt inductor moves CCW on a G circle.
+    '    ' A shunt capacitor moves CW on a G circle.
+    '    ' A series resistor moves an impedance along the R circles. 
+    '    ' A shunt resistor moves an impedance along the constant G circles.
+
+    '    Dim TargetNormR As System.Double = sourceR / z0
+    '    Dim TargetNormX As System.Double = sourceX / z0
+    '    Dim TargetNormZ As New Impedance(TargetNormR, TargetNormX)
+    '    Dim TargetNormY As Admittance = TargetNormZ.ToAdmittance()
+    '    Dim TargetNormG As System.Double = TargetNormY.Conductance
+    '    Dim TargetNormB As System.Double = TargetNormY.Susceptance
+
+    '    Dim OwnNormR As System.Double = Me.Resistance / z0
+    '    Dim OwnNormX As System.Double = Me.Reactance / z0
+
+
+
+
+    '    Return False ' DEFAULT UNTIL IMPLEMENTED.
+    'End Function ' TrySelectTuningLayout
+
+    '' USE THIS TO TRY TO SET UP MATCHING TO AN ARBITRARY SOURCE IMPEDANCE.
+    '''' <summary>
+    '''' Attempts to obtain a conjugate match from the current load instance to
+    '''' the source impedance specified by <paramref name="sourceZ"/>.
+    '''' </summary>
+    '''' <param name="z0">Specifies the characteristic impedance to which the
+    '''' calculations should be referenced.</param>
+    '''' <param name="sourceZ">Specifies the source impedance to which the
+    '''' current load instance should be matched.</param>
+    '''' <returns><c>True</c> if the xxxxxxxxxxxxxxx succeeds; otherwise,
+    '''' <c>False</c> and also returns xxxxxxxxxxxxxxx xxxxxxxxxxxxxxx.</returns>
+    'Public Function TrySelectTuningLayout(ByVal z0 As System.Double,
+    '    ByVal sourceZ As Impedance, ByRef transformations As Transformation()) _
+    '    As System.Boolean
+
+    '    Return TrySelectTuningLayout(z0, sourceZ.Resistance, sourceZ.Reactance, transformations)
+    'End Function ' TrySelectTuningLayout
 
 End Structure ' Impedance

@@ -206,6 +206,44 @@ Namespace TrySelectTuningLayoutTests
 
     End Class ' TestTrySelectTuningLayoutG
 
+
+
+
+    Public Class TestTrySelectTuningLayoutF
+        ' F: Inside the R=Z0 circle. Two choices: CW or CCW on the G circle.
+
+        <Fact>
+        Public Sub TrySelectTuning_PositionFCW_Succeeds()
+
+            Dim TestZ As New OSNW.Numerics.Impedance(2.0, 1.0)
+            Dim TestZ0 As Double = 1.0
+
+
+
+
+
+        End Sub
+
+        <Fact>
+        Public Sub TrySelectTuning_PositionFCCW_Succeeds()
+
+            Dim TestZ As New OSNW.Numerics.Impedance(2.0, 1.0)
+            Dim TestZ0 As Double = 1.0
+
+
+
+
+
+
+        End Sub
+
+    End Class ' TestTrySelectTuningLayoutF
+    'xxxx
+
+
+
+
+
     Public Class TestTrySelectTuningX
         ' Chart location cases:
         ' F: Inside the R=Z0 circle. Two choices: CW or CCW on the G circle.
