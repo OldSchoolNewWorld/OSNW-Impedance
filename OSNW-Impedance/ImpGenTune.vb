@@ -235,6 +235,68 @@ Partial Public Structure Impedance
         End If
     End Function ' NormREqualsZ0
 
+    '''' <summary>
+    '''' Z is on the perimeter of the G=Y0 circle.
+    '''' </summary>
+    '''' <param name="z0">xxxxxxxxxx</param>
+    '''' <param name="transformations">xxxxxxxxxx</param>
+    '''' <returns>xxxxxxxxxx</returns>
+    Private Function NormGEquals1(ByVal z0 As System.Double,
+        ByRef transformations As Transformation()) _
+        As System.Boolean
+
+        'Dim NormR As System.Double = Me.Resistance / z0
+        'Dim NormX As System.Double = Me.Reactance / z0
+        Dim Y0 As System.Double = 1.0 / z0
+        Dim Y As Admittance = Me.ToAdmittance()
+        'Dim NormG As System.Double = Y.Conductance / Y0
+        Dim NormB As System.Double = Y.Susceptance / Y0
+
+        If NormB.Equals(0.0) Then
+            ' Z is already at the center, where Z=1+j0, and already has a
+            ' conjugate match.
+            ' THAT SHOULD HAVE ALREADY BEEN CAUGHT???
+            transformations = {
+                New Transformation With {
+                .Style = TransformationStyles.None}
+            }
+            Return True
+        Else
+            ' Z is on the perimeter of the G=Y0 circle and only needs a
+            ' reactance.
+
+            If NormB > 0.0 Then
+                ' CW on a G circle needs a shunt capacitor.
+                Dim V1 As System.Double = -NormB
+                Dim EffectiveY As New Admittance(0, V1)
+                Dim EffectiveZ As Impedance = EffectiveY.ToImpedance
+                transformations = {
+                    New Transformation With {
+                    .Style = TransformationStyles.ShuntCap,
+                    .Value1 = EffectiveZ.Reactance}
+                }
+                Return True
+            Else
+                ' CCW on a G circle needs a shunt inductor.
+                Dim V1 As System.Double = -NormB
+                Dim EffectiveY As New Admittance(0, V1)
+                Dim EffectiveZ As Impedance = EffectiveY.ToImpedance
+                transformations = {
+                    New Transformation With {
+                    .Style = TransformationStyles.ShuntInd,
+                    .Value1 = EffectiveZ.Reactance}
+                }
+                Return True
+            End If
+        End If
+
+    End Function ' NormGEquals1
+
+
+
+
+    'xxxx
+
 
 
 
@@ -302,52 +364,8 @@ Partial Public Structure Impedance
             ' Z is on perimeter of the R=Z0 circle.
             Return NormREqualsZ0(z0, transformations)
         ElseIf NormG.Equals(1.0) Then
-            ' Z is on the perimeter of the left (G=Y0) circle.
-
-            If NormB.Equals(0.0) Then
-                ' Z is already at the center, where Z=1+j0, and already has a
-                ' conjugate match.
-                ' THAT SHOULD HAVE ALREADY BEEN CAUGHT???
-                transformations = {
-                    New Transformation With {
-                    .Style = TransformationStyles.None,
-                    .Value1 = 0.0,
-                    .Value2 = 0.0,
-                    .Value3 = 0.0}
-                }
-                Return True
-            Else
-                ' Z is on the perimeter of the G=Y0 circle and only needs a
-                ' reactance.
-
-                If NormB > 0.0 Then
-                    ' CW on a G circle needs a shunt capacitor.
-                    Dim V1 As System.Double = -NormB
-                    Dim EffectiveY As New Admittance(0, V1)
-                    Dim EffectiveZ As Impedance = EffectiveY.ToImpedance
-                    transformations = {
-                    New Transformation With {
-                        .Style = TransformationStyles.ShuntCap,
-                        .Value1 = EffectiveZ.Reactance,
-                        .Value2 = 0.0,
-                        .Value3 = 0.0}
-                    }
-                    Return True
-                Else
-                    ' CCW on a G circle needs a shunt inductor.
-                    Dim V1 As System.Double = -NormB
-                    Dim EffectiveY As New Admittance(0, V1)
-                    Dim EffectiveZ As Impedance = EffectiveY.ToImpedance
-                    transformations = {
-                        New Transformation With {
-                        .Style = TransformationStyles.ShuntInd,
-                        .Value1 = EffectiveZ.Reactance,
-                        .Value2 = 0.0,
-                        .Value3 = 0.0}
-                    }
-                    Return True
-                End If
-            End If
+            ' Z is on the perimeter of the G=Y0 circle.
+            Return NormGEquals1(z0, transformations)
         ElseIf NormR > z0 Then
             ' Z is INSIDE the right (R=Z0) circle.
 
