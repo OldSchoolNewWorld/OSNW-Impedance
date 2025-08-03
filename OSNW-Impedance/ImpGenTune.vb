@@ -170,6 +170,75 @@ End Structure ' Transformation
 
 Partial Public Structure Impedance
 
+    '''' <summary>
+    '''' Z is on perimeter of the R=Z0 circle.
+    '''' </summary>
+    '''' <param name="z0">xxxxxxxxxx</param>
+    '''' <param name="transformations">xxxxxxxxxx</param>
+    '''' <returns>xxxxxxxxxx</returns>
+    Private Function NormREqualsZ0(ByVal z0 As System.Double,
+        ByRef transformations As Transformation()) _
+        As System.Boolean
+
+        'Dim NormR As System.Double = Me.Resistance / z0
+        Dim NormX As System.Double = Me.Reactance / z0
+        'Dim Y0 As System.Double = 1.0 / z0
+        'Dim Y As Admittance = Me.ToAdmittance()
+        'Dim NormG As System.Double = Y.Conductance / Y0
+        'Dim NormB As System.Double = Y.Susceptance / Y0
+
+        If NormX.Equals(0.0) Then
+            ' This happens at two places. One would have been handled as
+            ' position C. The other is at the center of the chart.
+
+            ' D: At the center.
+            ' Z is at the center point and already has a conjugate match.
+            transformations = {
+                New Transformation With {
+                .Style = TransformationStyles.None}
+            }
+            Return True
+        Else
+            ' Z is on the perimeter of the R=Z0 circle and only needs a
+            ' reactance.
+
+            If NormX > 0.0 Then
+                ' E1: Above the resonance line. Only needs reactance.
+                ' CCW on a R circle needs a series capacitor.
+                transformations = {
+                    New Transformation With {
+                    .Style = TransformationStyles.SeriesCap,
+                    .Value1 = -NormX}
+                }
+                Return True
+
+                ' Consider alternative approaches.
+                ' CW on a R circle would need a series inductor, increasing
+                ' the inductance of an already inductive load. NO.
+                ' What about tuning the equivalent admittance?
+                ' CCW on a G circle would need a shunt inductor, reducing
+                ' but not canceling the reactance. NO.
+                ' CW on a G circle would need a shunt capacitor. For Z=1+j3,
+                ' Y=0.1-j0.3. Adding a shunt capacitor 0+j0.3 results in a
+                ' total admittance Y=0.1+j0. For Y=0.1+j0, Z=10+j0. NO.
+
+            Else
+                ' E2: Below the resonance line. Only needs reactance.
+                ' CW on a R circle needs a series inductor.
+                transformations = {
+                    New Transformation With {
+                    .Style = TransformationStyles.SeriesInd,
+                    .Value1 = -NormX}
+                }
+                Return True
+            End If
+        End If
+    End Function ' NormREqualsZ0
+
+
+
+
+
     ''' <summary>
     ''' Attempts to obtain a conjugate match from the current load instance to
     ''' the source characteristic impedance specified by <paramref name="z0"/>.
@@ -231,52 +300,7 @@ Partial Public Structure Impedance
 
         If NormR.Equals(z0) Then
             ' Z is on perimeter of the R=Z0 circle.
-            If NormX.Equals(0.0) Then
-                ' This happens at two places. One would have been handled as
-                ' position C. The other is at the center of the chart.
-
-                ' D: At the center.
-                ' Z is at the center point and already has a conjugate match.
-                transformations = {
-                    New Transformation With {
-                    .Style = TransformationStyles.None}
-                }
-                Return True
-            Else
-                ' Z is on the perimeter of the R=Z0 circle and only needs a
-                ' reactance.
-
-                If NormX > 0.0 Then
-                    ' E1: Above the resonance line. Only needs reactance.
-                    ' CCW on a R circle needs a series capacitor.
-                    transformations = {
-                    New Transformation With {
-                        .Style = TransformationStyles.SeriesCap,
-                        .Value1 = -NormX}
-                    }
-                    Return True
-
-                    ' Consider alternative approaches.
-                    ' CW on a R circle would need a series inductor, increasing
-                    ' the inductance of an already inductive load. NO.
-                    ' What about tuning the equivalent admittance?
-                    ' CCW on a G circle would need a shunt inductor, reducing
-                    ' but not canceling the reactance. NO.
-                    ' CW on a G circle would need a shunt capacitor. For Z=1+j3,
-                    ' Y=0.1-j0.3. Adding a shunt capacitor 0+j0.3 results in a
-                    ' total admittance Y=0.1+j0. For Y=0.1+j0, Z=10+j0. NO.
-
-                Else
-                    ' E2: Below the resonance line. Only needs reactance.
-                    ' CW on a R circle needs a series inductor.
-                    transformations = {
-                        New Transformation With {
-                        .Style = TransformationStyles.SeriesInd,
-                        .Value1 = -NormX}
-                    }
-                    Return True
-                End If
-            End If
+            Return NormREqualsZ0(z0, transformations)
         ElseIf NormG.Equals(1.0) Then
             ' Z is on the perimeter of the left (G=Y0) circle.
 
