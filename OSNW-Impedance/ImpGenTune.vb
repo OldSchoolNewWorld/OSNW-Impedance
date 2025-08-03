@@ -171,12 +171,12 @@ End Structure ' Transformation
 Partial Public Structure Impedance
 
     '''' <summary>
-    '''' Z is on perimeter of the R=Z0 circle.
+    '''' E: On the R=Z0 circle.
     '''' </summary>
     '''' <param name="z0">xxxxxxxxxx</param>
     '''' <param name="transformations">xxxxxxxxxx</param>
     '''' <returns>xxxxxxxxxx</returns>
-    Private Function NormREqualsZ0(ByVal z0 As System.Double,
+    Private Function OnREqualsZ0(ByVal z0 As System.Double,
         ByRef transformations As Transformation()) _
         As System.Boolean
 
@@ -233,15 +233,15 @@ Partial Public Structure Impedance
                 Return True
             End If
         End If
-    End Function ' NormREqualsZ0
+    End Function ' OnREqualsZ0
 
     '''' <summary>
-    '''' Z is on the perimeter of the G=Y0 circle.
+    '''' G: On the G=Y0 circle.
     '''' </summary>
     '''' <param name="z0">xxxxxxxxxx</param>
     '''' <param name="transformations">xxxxxxxxxx</param>
     '''' <returns>xxxxxxxxxx</returns>
-    Private Function NormGEquals1(ByVal z0 As System.Double,
+    Private Function OnGEqualsY0(ByVal z0 As System.Double,
         ByRef transformations As Transformation()) _
         As System.Boolean
 
@@ -266,6 +266,7 @@ Partial Public Structure Impedance
             ' reactance.
 
             If NormB > 0.0 Then
+                ' G1: Above the resonance line. Only needs reactance.
                 ' CW on a G circle needs a shunt capacitor.
                 Dim V1 As System.Double = -NormB
                 Dim EffectiveY As New Admittance(0, V1)
@@ -277,6 +278,7 @@ Partial Public Structure Impedance
                 }
                 Return True
             Else
+                ' G2: Below the resonance line. Only needs reactance.
                 ' CCW on a G circle needs a shunt inductor.
                 Dim V1 As System.Double = -NormB
                 Dim EffectiveY As New Admittance(0, V1)
@@ -290,10 +292,10 @@ Partial Public Structure Impedance
             End If
         End If
 
-    End Function ' NormGEquals1
+    End Function ' OnGEqualsY0
 
     '''' <summary>
-    '''' Z is INSIDE the R=Z0 circle.
+    '''' F: Inside the R=Z0 circle. Two choices: CW or CCW on the G circle.
     '''' </summary>
     '''' <param name="z0">xxxxxxxxxx</param>
     '''' <param name="transformations">xxxxxxxxxx</param>
@@ -313,7 +315,7 @@ Partial Public Structure Impedance
         '
         ' XXXXX WHAT NEXT? XXXXX
         ' Move CW or CCW on the G circle to reach the R=Z0 circle.
-        ' Would there ever be a case for taking the long path?
+        ' Would there ever be a case to prefer the long path?
         ' Maybe to favor high- or low-pass?
         '
         '
@@ -326,7 +328,7 @@ Partial Public Structure Impedance
     'xxxx
 
     '''' <summary>
-    '''' Z is INSIDE the G=Y0 circle.
+    '''' H: Inside the G=Y0 circle. Two choices: CW or CCW on the R circle.
     '''' </summary>
     '''' <param name="z0">xxxxxxxxxx</param>
     '''' <param name="transformations">xxxxxxxxxx</param>
@@ -346,7 +348,7 @@ Partial Public Structure Impedance
         '
         ' XXXXX WHAT NEXT? XXXXX
         ' Move CW or CCW on the R circle to reach the G=Y0 circle.
-        ' Would there ever be a case for taking the long path?
+        ' Would there ever be a case to prefer the long path?
         ' Maybe to favor high- or low-pass?
         '
         '
@@ -422,22 +424,19 @@ Partial Public Structure Impedance
             Return False
         End If
 
-        If NormR.Equals(z0) Then
-            ' Z is on perimeter of the R=Z0 circle.
-            Return Me.NormREqualsZ0(z0, transformations)
-        ElseIf NormG.Equals(1.0) Then
-            ' Z is on the perimeter of the G=Y0 circle.
-            Return Me.NormGEquals1(z0, transformations)
-        ElseIf NormR > z0 Then
-            ' Z is INSIDE the R=Z0 circle.
-            Return Me.InsideREqualsZ0(z0, transformations)
-        ElseIf NormG > Y0 Then
-            ' Z is INSIDE the G=Y0 circle.
-            Return Me.InsideGEqualsY0(z0, transformations)
+        If NormR >= z0 Then
+            Return If(NormR.Equals(z0),
+                Me.OnREqualsZ0(z0, transformations),
+                Me.InsideREqualsZ0(z0, transformations))
+        ElseIf NormG >= Y0 Then
+            Return If(NormG.Equals(Y0),
+                Me.OnGEqualsY0(z0, transformations),
+                Me.InsideGEqualsY0(z0, transformations))
+        End If
 
-            ' On getting this far, the impedance will, usually, fall into either
-            ' the top or bottom center section.
-        ElseIf NormX.Equals(0.0) Then
+        ' On getting this far, the impedance will, usually, fall into either
+        ' the top or bottom center section.
+        If NormX.Equals(0.0) Then
             ' Z is ON the resonance line.
 
             '
@@ -458,8 +457,7 @@ Partial Public Structure Impedance
 
             Return False ' DEFAULT UNTIL IMPLEMENTED.
         ElseIf NormX > 0.0 Then
-            ' Z is ABOVE the resonance line, between the left (G=Y0) and
-            ' right (R=Z0) circles.
+            ' Z is ABOVE the resonance line, between the G=Y0 and R=Z0 circles.
 
             '
             '
@@ -478,8 +476,7 @@ Partial Public Structure Impedance
 
             Return False ' DEFAULT UNTIL IMPLEMENTED.
         ElseIf NormX < 0.0 Then
-            ' Z is BELOW the resonance line, between the left (G=Y0) and
-            ' right (R=Z0) circles.
+            ' Z is BELOW the resonance line, between the G=Y0 and R=Z0 circles.
 
             '
             '
