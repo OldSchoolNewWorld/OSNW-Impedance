@@ -56,7 +56,18 @@ Public Class GenericCircle
             Return Me.m_Radius
         End Get
         Set(value As System.Double)
+
+            ' Input checking.
+            ' A zero value is useless, but possibly valid.
+            If value < 0.0 Then
+                'Dim CaughtBy As System.Reflection.MethodBase =
+                '    System.Reflection.MethodBase.GetCurrentMethod
+                Throw New System.ArgumentOutOfRangeException(
+                    NameOf(value), Impedance.MSGCHNV)
+            End If
+
             Me.m_Radius = value
+
         End Set
     End Property
 
@@ -72,7 +83,18 @@ Public Class GenericCircle
             Return Me.m_Radius * 2.0
         End Get
         Set(value As System.Double)
+
+            ' Input checking.
+            ' A zero value is useless, but possibly valid.
+            If value < 0.0 Then
+                'Dim CaughtBy As System.Reflection.MethodBase =
+                '    System.Reflection.MethodBase.GetCurrentMethod
+                Throw New System.ArgumentOutOfRangeException(
+                    NameOf(value), Impedance.MSGCHNV)
+            End If
+
             Me.m_Radius = value / 2.0
+
         End Set
     End Property
 
@@ -84,9 +106,9 @@ Public Class GenericCircle
     ''' </remarks>
     Public Sub New()
         With Me
-            .m_CenterX = 0.0
-            .m_CenterY = 0.0
-            .m_Radius = 0.0
+            '.m_CenterX = 0.0
+            '.m_CenterY = 0.0
+            .m_Radius = 1.0
         End With
     End Sub ' New
 
@@ -103,11 +125,21 @@ Public Class GenericCircle
                    ByVal centerY As System.Double,
                    ByVal diameter As System.Double)
 
+        ' Input checking.
+        ' A zero value is useless, but possibly valid.
+        If diameter < 0.0 Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(
+                    NameOf(diameter), Impedance.MSGCHNV)
+        End If
+
         With Me
             .m_CenterX = centerX
             .m_CenterY = centerY
             .Diameter = diameter
         End With
+
     End Sub ' New
 
 End Class ' GenericCircle
@@ -130,7 +162,17 @@ Public Class SmithMainCircle
             Return Me.m_Z0
         End Get
         Set(value As System.Double)
+
+            ' Input checking.
+            If value <= 0.0 Then
+                'Dim CaughtBy As System.Reflection.MethodBase =
+                '    System.Reflection.MethodBase.GetCurrentMethod
+                Throw New System.ArgumentOutOfRangeException(
+                    NameOf(value), Impedance.MSGVMBGTZ)
+            End If
+
             Me.m_Z0 = value
+
         End Set
     End Property
 
@@ -187,12 +229,26 @@ Public Class SmithMainCircle
                    ByVal diameter As System.Double,
                    ByVal z0 As System.Double)
 
+        ' Input checking.
+        If diameter < 0.0 Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(
+                NameOf(diameter), Impedance.MSGCHNV)
+        End If
+        If z0 <= 0.0 Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(NameOf(z0), Impedance.MSGVMBGTZ)
+        End If
+
         With Me
             .CenterX = centerX
             .CenterY = centerY
             .Diameter = diameter
             .m_Z0 = z0
         End With
+
     End Sub ' New
 
 End Class ' SmithMainCircle
@@ -228,14 +284,26 @@ Public Class RCircle
     ''' <summary>
     ''' xxxxxxxxxx
     ''' </summary>
-    ''' <param name="mainCircle">xxxxxxxxxx</param>
+    ''' <param name="mainCircle">Specifies the
+    ''' <see cref="SmithMainCircle"></see> with which the circle is
+    ''' associated.</param>
     ''' <param name="resistance">xxxxxxxxxx in ohms.</param>
     Public Sub New(ByVal mainCircle As SmithMainCircle,
                    ByVal resistance As System.Double)
 
         MyBase.New()
+
+        ' Input checking.
+        If resistance <= 0.0 Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(
+                NameOf(resistance), Impedance.MSGVMBGTZ)
+        End If
+
         Me.m_MainCircle = mainCircle
         Me.m_Resistance = resistance
+
     End Sub ' New
 
 End Class ' RCircle
@@ -259,7 +327,7 @@ Public Class XCircle
 
     Private ReadOnly m_Reactance As System.Double
     ''' <summary>
-    ''' xxxxxxxxxx in ohms.
+    ''' xxxxxxxxxx in siemens.
     ''' </summary>
     ''' <returns>xxxxxxxxxx</returns>
     Public ReadOnly Property Reactance As System.Double
@@ -271,7 +339,9 @@ Public Class XCircle
     ''' <summary>
     ''' xxxxxxxxxx in ohms.
     ''' </summary>
-    ''' <param name="mainCircle">xxxxxxxxxx</param>
+    ''' <param name="mainCircle">Specifies the
+    ''' <see cref="SmithMainCircle"></see> with which the circle is
+    ''' associated.</param>
     ''' <param name="reactance">xxxxxxxxxx</param>
     Public Sub New(ByVal mainCircle As SmithMainCircle,
                    ByVal reactance As System.Double)
@@ -312,16 +382,28 @@ Public Class GCircle
     End Property
 
     ''' <summary>
-    ''' xxxxxxxxxx
+    ''' xxxxxxxxxx in siemens.
     ''' </summary>
-    ''' <param name="mainCircle">xxxxxxxxxx</param>
+    ''' <param name="mainCircle">Specifies the
+    ''' <see cref="SmithMainCircle"></see> with which the circle is
+    ''' associated.</param>
     ''' <param name="conductance">xxxxxxxxxx in siemens.</param>
-    Public Sub New(ByVal conductance As System.Double,
-                   ByVal mainCircle As SmithMainCircle)
+    Public Sub New(ByVal mainCircle As SmithMainCircle,
+                   ByVal conductance As System.Double)
 
         MyBase.New()
+
+        ' Input checking.
+        If conductance <= 0.0 Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(
+                NameOf(conductance), Impedance.MSGVMBGTZ)
+        End If
+
         Me.m_MainCircle = mainCircle
         Me.m_Conductance = conductance
+
     End Sub ' New
 
 End Class ' GCircle
@@ -357,7 +439,9 @@ Public Class BCircle
     ''' <summary>
     ''' xxxxxxxxxx
     ''' </summary>
-    ''' <param name="mainCircle">xxxxxxxxxx</param>
+    ''' <param name="mainCircle">Specifies the
+    ''' <see cref="SmithMainCircle"></see> with which the circle is
+    ''' associated.</param>
     ''' <param name="susceptance">xxxxxxxxxx in siemens.</param>
     Public Sub New(ByVal mainCircle As SmithMainCircle,
                    ByVal susceptance As System.Double)
@@ -400,14 +484,26 @@ Public Class VSWRCircle
     ''' <summary>
     ''' xxxxxxxxxx
     ''' </summary>
-    ''' <param name="mainCircle">xxxxxxxxxx</param>
+    ''' <param name="mainCircle">Specifies the
+    ''' <see cref="SmithMainCircle"></see> with which the circle is
+    ''' associated.</param>
     ''' <param name="vswr">xxxxxxxxxx</param>
     Public Sub New(ByVal mainCircle As SmithMainCircle,
                    ByVal vswr As System.Double)
 
         MyBase.New()
+
+        ' Input checking.
+        If vswr < 1.0 Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(
+                NameOf(vswr), Impedance.MSGVMBGTE1)
+        End If
+
         Me.m_MainCircle = mainCircle
         Me.m_VSWR = vswr
+
     End Sub ' New
 
 End Class ' VSWRCircle

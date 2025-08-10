@@ -77,7 +77,8 @@ Public Structure Impedance
     Const MSGCHNV As System.String = "Cannot have a negative value."
     Const MSGCHZV As System.String = "Cannot have a zero value."
     Const MSGCHIV As System.String = "Cannot have an infinite value."
-    '    Const MSGVMBGTZ As System.String = "Must be a positive, non-zero value."
+    Const MSGVMBGTZ As System.String = "Must be a positive, non-zero value."
+    Const MSGVMBGTE1 As System.String = "Must be greater than or equal to 1."
     Const MSGNOSTR As System.String = "Cannot be Null/Nothing."
 
 #Region "Fields and Properties"
