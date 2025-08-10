@@ -327,7 +327,7 @@ Public Class XCircle
 
     Private ReadOnly m_Reactance As System.Double
     ''' <summary>
-    ''' xxxxxxxxxx in siemens.
+    ''' xxxxxxxxxx in ohms.
     ''' </summary>
     ''' <returns>xxxxxxxxxx</returns>
     Public ReadOnly Property Reactance As System.Double
