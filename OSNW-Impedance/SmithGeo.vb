@@ -4,11 +4,9 @@ Option Compare Binary
 Option Infer Off
 
 ''' <summary>
-''' Represents a base class to define a generic circle.
+''' Represents a base class to define a generic circle, with a center and
+''' radius, for use on a Cartesian grid. Dimensions are in generic "units".
 ''' </summary>
-''' <remarks>
-''' Dimensions are in generic "units".
-''' </remarks>
 Public Class GenericCircle
 
     Private m_CenterX As System.Double
@@ -205,7 +203,7 @@ End Class ' SmithMainCircle
 Public Class RCircle
     Inherits GenericCircle
 
-    Private m_MainCircle As SmithMainCircle
+    Private ReadOnly m_MainCircle As SmithMainCircle
     ''' <summary>
     ''' Specifies the <see cref="SmithMainCircle"/> with which this instance is
     ''' associated.
@@ -216,33 +214,28 @@ Public Class RCircle
         End Get
     End Property
 
-    Private m_Resistance As System.Double
+    Private ReadOnly m_Resistance As System.Double
     ''' <summary>
     ''' xxxxxxxxxx in ohms.
     ''' </summary>
     ''' <returns>xxxxxxxxxx</returns>
-    Public Property Resistance As System.Double
+    Public ReadOnly Property Resistance As System.Double
         Get
             Return Me.m_Resistance
         End Get
-        Set(value As System.Double)
-            Me.m_Resistance = value
-        End Set
     End Property
 
     ''' <summary>
     ''' xxxxxxxxxx
     ''' </summary>
-    ''' <param name="resistance">xxxxxxxxxx in ohms.</param>
     ''' <param name="mainCircle">xxxxxxxxxx</param>
-    Public Sub New(ByVal resistance As System.Double,
-                   ByVal mainCircle As SmithMainCircle)
+    ''' <param name="resistance">xxxxxxxxxx in ohms.</param>
+    Public Sub New(ByVal mainCircle As SmithMainCircle,
+                   ByVal resistance As System.Double)
 
         MyBase.New()
-        With Me
-            .m_Resistance = resistance
-            .m_MainCircle = mainCircle
-        End With
+        Me.m_MainCircle = mainCircle
+        Me.m_Resistance = resistance
     End Sub ' New
 
 End Class ' RCircle
@@ -253,7 +246,7 @@ End Class ' RCircle
 Public Class XCircle
     Inherits GenericCircle
 
-    Private m_MainCircle As SmithMainCircle
+    Private ReadOnly m_MainCircle As SmithMainCircle
     ''' <summary>
     ''' Specifies the <see cref="SmithMainCircle"/> with which this instance is
     ''' associated.
@@ -264,33 +257,28 @@ Public Class XCircle
         End Get
     End Property
 
-    Private m_Reactance As System.Double
+    Private ReadOnly m_Reactance As System.Double
     ''' <summary>
     ''' xxxxxxxxxx in ohms.
     ''' </summary>
     ''' <returns>xxxxxxxxxx</returns>
-    Public Property Reactance As System.Double
+    Public ReadOnly Property Reactance As System.Double
         Get
             Return Me.m_Reactance
         End Get
-        Set(value As System.Double)
-            Me.m_Reactance = value
-        End Set
     End Property
 
     ''' <summary>
     ''' xxxxxxxxxx in ohms.
     ''' </summary>
-    ''' <param name="reactance">xxxxxxxxxx</param>
     ''' <param name="mainCircle">xxxxxxxxxx</param>
-    Public Sub New(ByVal reactance As System.Double,
-                   ByVal mainCircle As SmithMainCircle)
+    ''' <param name="reactance">xxxxxxxxxx</param>
+    Public Sub New(ByVal mainCircle As SmithMainCircle,
+                   ByVal reactance As System.Double)
 
         MyBase.New()
-        With Me
-            .m_Reactance = reactance
-            .m_MainCircle = mainCircle
-        End With
+        Me.m_MainCircle = mainCircle
+        Me.m_Reactance = reactance
     End Sub ' New
 
 End Class ' XCircle
@@ -301,7 +289,7 @@ End Class ' XCircle
 Public Class GCircle
     Inherits GenericCircle
 
-    Private m_MainCircle As SmithMainCircle
+    Private ReadOnly m_MainCircle As SmithMainCircle
     ''' <summary>
     ''' Specifies the <see cref="SmithMainCircle"/> with which this instance is
     ''' associated.
@@ -312,33 +300,28 @@ Public Class GCircle
         End Get
     End Property
 
-    Private m_Conductance As System.Double
+    Private ReadOnly m_Conductance As System.Double
     ''' <summary>
     ''' xxxxxxxxxx in siemens.
     ''' </summary>
     ''' <returns>xxxxxxxxxx</returns>
-    Public Property Conductance As System.Double
+    Public ReadOnly Property Conductance As System.Double
         Get
             Return Me.m_Conductance
         End Get
-        Set(value As System.Double)
-            Me.m_Conductance = value
-        End Set
     End Property
 
     ''' <summary>
     ''' xxxxxxxxxx
     ''' </summary>
-    ''' <param name="conductance">xxxxxxxxxx in siemens.</param>
     ''' <param name="mainCircle">xxxxxxxxxx</param>
+    ''' <param name="conductance">xxxxxxxxxx in siemens.</param>
     Public Sub New(ByVal conductance As System.Double,
                    ByVal mainCircle As SmithMainCircle)
 
         MyBase.New()
-        With Me
-            .m_Conductance = conductance
-            .m_MainCircle = mainCircle
-        End With
+        Me.m_MainCircle = mainCircle
+        Me.m_Conductance = conductance
     End Sub ' New
 
 End Class ' GCircle
@@ -349,7 +332,7 @@ End Class ' GCircle
 Public Class BCircle
     Inherits GenericCircle
 
-    Private m_MainCircle As SmithMainCircle
+    Private ReadOnly m_MainCircle As SmithMainCircle
     ''' <summary>
     ''' Specifies the <see cref="SmithMainCircle"/> with which this instance is
     ''' associated.
@@ -360,33 +343,28 @@ Public Class BCircle
         End Get
     End Property
 
-    Private m_Susceptance As System.Double
+    Private ReadOnly m_Susceptance As System.Double
     ''' <summary>
     ''' xxxxxxxxxx in siemens.
     ''' </summary>
     ''' <returns>xxxxxxxxxx</returns>
-    Public Property Susceptance As System.Double
+    Public ReadOnly Property Susceptance As System.Double
         Get
             Return Me.m_Susceptance
         End Get
-        Set(value As System.Double)
-            Me.m_Susceptance = value
-        End Set
     End Property
 
     ''' <summary>
     ''' xxxxxxxxxx
     ''' </summary>
-    ''' <param name="susceptance">xxxxxxxxxx in siemens.</param>
     ''' <param name="mainCircle">xxxxxxxxxx</param>
-    Public Sub New(ByVal susceptance As System.Double,
-                   ByVal mainCircle As SmithMainCircle)
+    ''' <param name="susceptance">xxxxxxxxxx in siemens.</param>
+    Public Sub New(ByVal mainCircle As SmithMainCircle,
+                   ByVal susceptance As System.Double)
 
         MyBase.New()
-        With Me
-            .m_Susceptance = susceptance
-            .m_MainCircle = mainCircle
-        End With
+        Me.m_MainCircle = mainCircle
+        Me.m_Susceptance = susceptance
     End Sub ' New
 
 End Class ' BCircle
@@ -397,18 +375,39 @@ End Class ' BCircle
 Public Class VSWRCircle
     Inherits GenericCircle
 
-    Private m_XXXXXX As System.Double
+    Private ReadOnly m_MainCircle As SmithMainCircle
+    ''' <summary>
+    ''' Specifies the <see cref="SmithMainCircle"/> with which this instance is
+    ''' associated.
+    ''' </summary>
+    Public ReadOnly Property MainCircle As SmithMainCircle
+        Get
+            Return Me.m_MainCircle
+        End Get
+    End Property
+
+    Private ReadOnly m_VSWR As System.Double
     ''' <summary>
     ''' xxxxxxxxxx
     ''' </summary>
     ''' <returns>xxxxxxxxxx</returns>
-    Public Property XXXXXX As System.Double
+    Public ReadOnly Property VSWR As System.Double
         Get
-            Return Me.m_XXXXXX
+            Return Me.m_VSWR
         End Get
-        Set(value As System.Double)
-            Me.m_XXXXXX = value
-        End Set
     End Property
+
+    ''' <summary>
+    ''' xxxxxxxxxx
+    ''' </summary>
+    ''' <param name="mainCircle">xxxxxxxxxx</param>
+    ''' <param name="vswr">xxxxxxxxxx</param>
+    Public Sub New(ByVal mainCircle As SmithMainCircle,
+                   ByVal vswr As System.Double)
+
+        MyBase.New()
+        Me.m_MainCircle = mainCircle
+        Me.m_VSWR = vswr
+    End Sub ' New
 
 End Class ' VSWRCircle
