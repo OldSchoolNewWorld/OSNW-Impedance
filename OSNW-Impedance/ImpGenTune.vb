@@ -10,7 +10,7 @@ Option Infer Off
 ' each component. Those reactance values could then be used to select
 ' appropriate component values based on frequency.
 
-' The comments here relate to solving conjugate matches on a Smith chart that
+' The comments here relate to solving conjugate matches on a Smith Chart that
 ' has a horizontal resonance line, with R=0 on the left.
 
 ' Smith-Chart - University of Utah
@@ -304,28 +304,97 @@ Partial Public Structure Impedance
         ByRef transformations As Transformation()) _
         As System.Boolean
 
-        'Dim NormR As System.Double = Me.Resistance / z0
-        'Dim NormX As System.Double = Me.Reactance / z0
-        'Dim Y0 As System.Double = 1.0 / z0
-        'Dim Y As Admittance = Me.ToAdmittance()
+        ''Dim NormR As System.Double = Me.Resistance / z0
+        ''Dim NormX As System.Double = Me.Reactance / z0
+        ''Dim Y0 As System.Double = 1.0 / z0
+        ''Dim Y As Admittance = Me.ToAdmittance()
         'Dim NormG As System.Double = Y.Conductance / Y0
-        'Dim NormB As System.Double = Y.Susceptance / Y0
+        ''Dim NormB As System.Double = Y.Susceptance / Y0
 
-        '
-        '
-        ' XXXXX WHAT NEXT? XXXXX
-        ' Move CW or CCW on the G circle to reach the R=Z0 circle.
-        ' Would there ever be a case to prefer the long path?
-        ' Maybe to favor high- or low-pass?
-        '
-        '
+        ''
+        ''
+        '' XXXXX WHAT NEXT? XXXXX
+        '' Move CW or CCW on the G circle to reach the R=Z0 circle.
+        '' Would there ever be a case to prefer the long path?
+        '' Maybe to favor high- or low-pass?
+        ''
+        ''
+
+        '' Whether moving CW or CCW, the R and G circles through Z will intersect at two points that have
+        '' the same R and and same G values.
+
+
+
+
+
+        '''' CW on a G circle needs a shunt capacitor.
+        ''Dim Val11 As System.Double = -NormB
+        ''Dim EffectiveY1 As New Admittance(0, Val11)
+        ''Dim EffectiveZ1 As Impedance = EffectiveY1.ToImpedance
+        ''Dim Image1 As Impedance = Impedance.AddShuntImpedance(Me, EffectiveZ1)
+
+        '' CW on a G circle needs a shunt capacitor.
+        '' Move to the image impedance point.
+
+        'Dim ImageZR As System.Double = z0
+        'Dim ImageZX As System.Double
+        'Dim ImageYG As System.Double = normg
+        'Dim ImageYB As System.Double
+
+
+
+
+
+        'Dim WantToMoveToZ As New Impedance(1.0, NormX)
+        'Dim WantToMoveToY As Admittance = WantToMoveToZ.ToAdmittance
+        'Dim DeltaYComp As System.Numerics.Complex =
+        '    WantToMoveToY.ToComplex - Y.ToComplex
+        'Dim DeltaY As New Admittance(DeltaYComp.Real, DeltaYComp.Imaginary)
+
+
+
+        '''' Then CW on a R circle needs a series inductor.
+        ''        Dim Val12 As System.Double = -Image1.Reactance
+        ''        Dim EffectiveZ2 As New Impedance(0, Val12)
+
+
+        '''' Then construct the transformation.
+        ''Dim T1 As New Transformation With {
+        ''    .Style = TransformationStyles.ShuntCap,
+        ''    .Value1 = EffectiveZ1.Reactance,
+        ''    .Value2 = EffectiveZ2.Reactance
+        ''}
+
+
+
+
+        '''' CCW on a G circle needs a shunt inductor.
+        ''Dim V21 As System.Double = -NormB
+        ''Dim EffectiveY2 As New Admittance(0, V21)
+        ''Dim EffectiveZ2 As Impedance = EffectiveY2.ToImpedance
+
+        '''' Then that needs xxxxxxxxxxxxxx.
+
+        '''' Then construct the transformation.
+        ''Dim T2 As New Transformation With {
+        ''    .Style = TransformationStyles.ShuntInd,
+        ''    .Value1 = EffectiveZ2.Reactance
+        ''}
+        'Dim T2 As New Transformation
+
+
+
+
+        'transformations = {T1, T2}
+        'Return True
+
+
+
 
         Return False ' DEFAULT UNTIL IMPLEMENTED.
-        'xxxx
 
 
     End Function ' InsideREqualsZ0
-    'xxxx
 
     '''' <summary>
     '''' H: Inside the G=Y0 circle. Two choices: CW or CCW on the R circle.

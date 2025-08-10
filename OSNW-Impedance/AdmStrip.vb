@@ -6,7 +6,7 @@
 '     ''' <declaration>
 '     ''' Public Structure Admittance
 '     ''' </declaration>
-'     ''' <remarks></remarks>
+'     ''' <remarks>xxxxxxxxxx</remarks>
 '     <SerializableAttribute()>
 '     Public Structure Admittance
 '         Implements IEquatable(Of Ytt.Util.Electrical.Admittance), IFormattable
@@ -32,7 +32,7 @@
 '         '''   <p>Type: Ytt.Util.Electrical.Admittance</p>
 '         '''   <p>Value: The result of the division.</p>
 '         ''' </returns>
-'         ''' <remarks></remarks>
+'         ''' <remarks>xxxxxxxxxx</remarks>
 '         Public Shared Operator /(y As Ytt.Util.Electrical.Admittance, scalar As System.Double) As Ytt.Util.Electrical.Admittance
 '             ' No input checking. y is presumed to have been checked when created.
 '             Dim Quotient = (y.ToComplex / scalar)
@@ -58,7 +58,7 @@
 '         '''   <p>Type: Ytt.Util.Electrical.Admittance</p>
 '         '''   <p>Value: The product of the admittance and the scalar value.</p>
 '         ''' </returns>
-'         ''' <remarks></remarks>
+'         ''' <remarks>xxxxxxxxxx</remarks>
 '         Public Shared Operator *(y As Ytt.Util.Electrical.Admittance, scalar As System.Double) As Ytt.Util.Electrical.Admittance
 '             ' No input checking. y is presumed to have been checked when created.
 '             Dim ResultC = (y.ToComplex * scalar)

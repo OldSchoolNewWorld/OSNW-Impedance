@@ -598,7 +598,7 @@ Public Structure Impedance
         ' deserialized and parsed, the strings should be generated and parsed by
         ' using the conventions of the invariant culture.
 
-        ' Ref: How to write .NET objects as JSON (serialize)
+        ' REF: How to write .NET objects as JSON (serialize)
         ' https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/how-to
         jsonString = If(IsNothing(jsonOptions),
             System.Text.Json.JsonSerializer.Serialize(Me),
@@ -631,7 +631,7 @@ Public Structure Impedance
                 NameOf(jsonString), MSGNOSTR)
         End If
 
-        ' Ref: How to read JSON as .NET objects (deserialize)
+        ' REF: How to read JSON as .NET objects (deserialize)
         ' https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/deserialization
 
         ' REF: Serialize and deserialize numeric data
@@ -680,7 +680,7 @@ Public Structure Impedance
             Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHIV)
         End If
 
-        ' Ref: https://en.wikipedia.org/wiki/Standing_wave_ratio#Relationship_to_the_reflection_coefficient
+        ' REF: https://en.wikipedia.org/wiki/Standing_wave_ratio#Relationship_to_the_reflection_coefficient
         Dim MeAsComplex As System.Numerics.Complex = Me.ToComplex()
         Return (MeAsComplex - z0) / (MeAsComplex + z0)
 
@@ -713,7 +713,7 @@ Public Structure Impedance
             Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHIV)
         End If
 
-        ' Ref:
+        ' REF:
         ' https://www.antenna-theory.com/definitions/vswr.php
         ' https://www.antenna-theory.com/definitions/vswr-calculator.php
         ' https://www.microwaves101.com/encyclopedias/voltage-standing-wave-ratio-vswr

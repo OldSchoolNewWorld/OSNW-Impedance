@@ -218,24 +218,34 @@ Namespace TrySelectTuningLayoutTests
             Dim TestZ As New OSNW.Numerics.Impedance(2.0, 1.0)
             Dim TestZ0 As Double = 1.0
 
+            Dim TargetZ As New Impedance(TestZ0, 0.0)
+            Dim transformations As Transformation() = Array.Empty(Of Transformation)
+            If Not TestZ.TrySelectTuningLayout(TestZ0, transformations) Then
+                Assert.True(False, Messages.TF)
+            End If
 
-
-
-
-        End Sub
-
-        <Fact>
-        Public Sub TrySelectTuning_PositionFCCW_Succeeds()
-
-            Dim TestZ As New OSNW.Numerics.Impedance(2.0, 1.0)
-            Dim TestZ0 As Double = 1.0
-
-
-
+            'xxxx
 
 
 
         End Sub
+
+        '<Fact>
+        'Public Sub TrySelectTuning_PositionFCCW_Succeeds()
+
+        '    Dim TestZ As New OSNW.Numerics.Impedance(2.0, 1.0)
+        '    Dim TestZ0 As Double = 1.0
+
+        '    Dim TargetZ As New Impedance(TestZ0, 0.0)
+        '    Dim transformations As Transformation() = Array.Empty(Of Transformation)
+
+
+        '    xxxx
+
+
+
+
+        'End Sub
 
     End Class ' TestTrySelectTuningLayoutF
     'xxxx
