@@ -115,6 +115,8 @@ Public Structure Impedance
 
 #End Region ' "Fields and Properties"
 
+#Region "Conversions"
+
     ''' <summary>
     '''  This is for some internal conveniences. It provides easy access to
     '''  <c>Complex</c> functionality.
@@ -136,6 +138,8 @@ Public Structure Impedance
             System.Numerics.Complex.Reciprocal(Me.ToComplex())
         Return New Admittance(ComplexRecip.Real, ComplexRecip.Imaginary)
     End Function
+
+#End Region ' "Conversions"
 
 #Region "System.ValueType Implementations"
 
@@ -232,6 +236,38 @@ Public Structure Impedance
         Dim TotalC As System.Numerics.Complex =
             impedance1.ToComplex + impedance2.ToComplex
         Return New Impedance(TotalC.Real, TotalC.Imaginary)
+    End Operator
+
+    ''' <summary>
+    ''' Returns the result of the subtraction of one <c>Impedance</c>
+    ''' (<paramref name="subtrahend"/>) from another
+    ''' (<paramref name="minuend"/>).
+    ''' </summary>
+    ''' <param name="minuend"> the number from which another number is being subtracted</param>
+    ''' <param name="subtrahend">denote the number being subtracted from another</param>
+    ''' <returns></returns>
+    Public Shared Operator -(minuend As Impedance,
+                             subtrahend As Impedance) As Impedance
+        ' No input checking. impedance1 and impedance2 are presumed to have been
+        ' checked when created.
+        Dim RemainderC As System.Numerics.Complex =
+            minuend.ToComplex - subtrahend.ToComplex
+        Return New Impedance(RemainderC.Real, RemainderC.Imaginary)
+    End Operator
+
+    ''' <summary>
+    ''' Returns the result of the division of one <c>Impedance</c>
+    ''' (<paramref name="numerator"/>) by another
+    ''' (<paramref name="denominator"/>).
+    ''' </summary>
+    ''' <returns>The result of the division.</returns>
+    Public Shared Operator /(numerator As Impedance,
+                             denominator As Impedance) As Impedance
+        ' No input checking. numerator and denominator are presumed to have been
+        ' checked when created.
+        Dim QuotientC As System.Numerics.Complex =
+            numerator.ToComplex / denominator.ToComplex
+        Return New Impedance(QuotientC.Real, QuotientC.Imaginary)
     End Operator
 
 #End Region ' "Operator Implementations"
@@ -651,18 +687,78 @@ Public Structure Impedance
 
 #End Region '  "De/Serialization"
 
-#Region "Other Instance Methods"
+#Region "Other Shared Methods"
 
     ''' <summary>
-    ''' Calculates the voltage reflection coeffient (Gamma) for this instance
-    ''' based on the specified characteristic impedance.
+    ''' Calculates the voltage reflection coefficient (Gamma) when the specified
+    ''' <paramref name="zLoad"/> <c>Impedance</c> is connected to the specified
+    ''' <paramref name="zSource"/> <c>Impedance</c>.
+    ''' </summary>
+    ''' <param name="zSource">Specifies the impedance of the source.</param>
+    ''' <param name="zLoad">Specifies the impedance of the load.</param>
+    ''' <returns>The voltage reflection coefficient.</returns>
+    Public Shared Function VoltageReflectionCoefficient(
+        ByVal zSource As Impedance, ByVal zLoad As Impedance) _
+        As System.Numerics.Complex
+
+        ' REF: Reflection and Transmission Coefficients Explained
+        ' https://www.rfwireless-world.com/terminology/reflection-and-transmission-coefficients
+        ' has the numerator shown as "Zload - Zsource".
+
+        ' REF: Mathematical Construction and Properties of the Smith Chart
+        ' https://www.allaboutcircuits.com/technical-articles/mathematical-construction-and-properties-of-the-smith-chart/
+        ' has mostly the same but with the numerator shown as "Zsource - Zload".
+
+        Return ((zLoad - zSource) / (zLoad + zSource)).ToComplex
+
+    End Function ' VoltageReflectionCoefficient
+
+    ''' <summary>
+    ''' Calculates the power reflection coefficient (COMMON NAME???) when the specified
+    ''' <paramref name="zLoad"/> <c>Impedance</c> is connected to the specified
+    ''' <paramref name="zSource"/> <c>Impedance</c>.
+    ''' </summary>
+    ''' <param name="zSource">Specifies the impedance of the source.</param>
+    ''' <param name="zLoad">Specifies the impedance of the load.</param>
+    ''' <returns>the power reflection coefficient.</returns>
+    Public Shared Function PowerReflectionCoefficient(
+        ByVal zSource As Impedance, ByVal zLoad As Impedance) _
+        As System.Numerics.Complex
+
+        Dim Gamma As System.Numerics.Complex =
+            Impedance.VoltageReflectionCoefficient(zSource, zLoad)
+        Return Gamma * Gamma
+    End Function ' PowerReflectionCoefficient
+
+#End Region ' "Other Shared Methods"
+
+#Region "Other Instance Methods"
+
+#Region "VoltageReflectionCoefficient"
+
+    ''' <summary>
+    ''' Calculates the voltage reflection coefficient (Gamma) when this instance
+    ''' is connected to the specified
+    ''' <paramref name="zSource"/> <c>Impedance</c>.
+    ''' </summary>
+    ''' <param name="zSource">Specifies the impedance of the source.</param>
+    ''' <returns>The voltage reflection coefficient.</returns>
+    Public Function VoltageReflectionCoefficient(ByVal zSource As Impedance) _
+        As System.Numerics.Complex
+
+        Return Impedance.VoltageReflectionCoefficient(zSource, Me)
+    End Function ' VoltageReflectionCoefficient
+
+    ''' <summary>
+    ''' Calculates the voltage reflection coefficient (Gamma) when this instance
+    ''' is connected to the specified characteristic impedance.
     ''' </summary>
     ''' <param name="z0">Specifies the characteristic impedance, in ohms.</param>
-    ''' <returns>The voltage reflection coeffient for the current instance based
+    ''' <returns>The voltage reflection coefficient for the current instance based
     ''' on the specified characteristic impedance.</returns>
-    ''' <exception cref="System.ArgumentOutOfRangeException">
-    ''' When <paramref name="z0"/> is not a positive, non-zero value.
-    ''' </exception>
+    ''' <exception cref="System.ArgumentOutOfRangeException">When
+    ''' <paramref name="z0"/> is not a positive, non-zero value or is
+    ''' infinite.</exception>
     Public Function VoltageReflectionCoefficient(ByVal z0 As System.Double) _
         As System.Numerics.Complex
 
@@ -670,22 +766,69 @@ Public Structure Impedance
         If z0 <= 0.0 Then
             'Dim CaughtBy As System.Reflection.MethodBase =
             '    System.Reflection.MethodBase.GetCurrentMethod
-            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHNV)
-        ElseIf z0.Equals(0.0) Then
-            'Dim CaughtBy As System.Reflection.MethodBase =
-            '    System.Reflection.MethodBase.GetCurrentMethod
-            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHZV)
+            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGVMBGTZ)
         ElseIf Double.IsInfinity(z0) Then
             'Dim CaughtBy As System.Reflection.MethodBase =
             '    System.Reflection.MethodBase.GetCurrentMethod
             Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHIV)
         End If
 
-        ' REF: https://en.wikipedia.org/wiki/Standing_wave_ratio#Relationship_to_the_reflection_coefficient
-        Dim MeAsComplex As System.Numerics.Complex = Me.ToComplex()
-        Return (MeAsComplex - z0) / (MeAsComplex + z0)
+        Return Impedance.VoltageReflectionCoefficient(New Impedance(z0, 0), Me)
 
     End Function ' VoltageReflectionCoefficient
+
+#End Region ' "VoltageReflectionCoefficient"
+
+#Region "PowerReflectionCoefficient"
+
+    ''' <summary>
+    ''' Calculates the power reflection coefficient (COMMON NAME???) when this instance
+    ''' is connected to the specified
+    ''' <paramref name="zSource"/> <c>Impedance</c>.
+    ''' </summary>
+    ''' <param name="zSource">Specifies the impedance of the source.</param>
+    ''' <returns>the power reflection coefficient.</returns>
+    Public Function PowerReflectionCoefficient(ByVal zSource As Impedance) _
+        As System.Numerics.Complex
+
+        Dim Gamma As System.Numerics.Complex =
+            Me.VoltageReflectionCoefficient(zSource)
+        Return Gamma * Gamma
+    End Function ' PowerReflectionCoefficient
+
+    ''' <summary>
+    ''' Calculates the power reflection coefficient (COMMON NAME???) when this instance
+    ''' is connected to the specified characteristic impedance.
+    ''' </summary>
+    ''' <param name="z0">Specifies the characteristic impedance, in ohms.</param>
+    ''' <returns>the power reflection coefficient for the current instance based
+    ''' on the specified characteristic impedance.</returns>
+    ''' <exception cref="System.ArgumentOutOfRangeException">When
+    ''' <paramref name="z0"/> is not a positive, non-zero value or is
+    ''' infinite.</exception>
+    Public Function PowerReflectionCoefficient(ByVal z0 As System.Double) _
+        As System.Numerics.Complex
+
+        ' Input checking.
+        If z0 <= 0.0 Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGVMBGTZ)
+        ElseIf Double.IsInfinity(z0) Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHIV)
+        End If
+
+        Dim Gamma As System.Numerics.Complex =
+            Me.VoltageReflectionCoefficient(z0)
+        Return Gamma * Gamma
+
+    End Function ' PowerReflectionCoefficient
+
+#End Region ' "PowerReflectionCoefficient"
+
+    ' ADD MULTIPLE VERSIONS AS DONE WITH VoltageReflectionCoefficient AND PowerReflectionCoefficient?
 
     ''' <summary>
     ''' Calculates the voltage standing wave ratio for this instance based on
@@ -703,11 +846,7 @@ Public Structure Impedance
         If z0 <= 0.0 Then
             'Dim CaughtBy As System.Reflection.MethodBase =
             '    System.Reflection.MethodBase.GetCurrentMethod
-            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHNV)
-        ElseIf z0.Equals(0.0) Then
-            'Dim CaughtBy As System.Reflection.MethodBase =
-            '    System.Reflection.MethodBase.GetCurrentMethod
-            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHZV)
+            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGVMBGTZ)
         ElseIf Double.IsInfinity(z0) Then
             'Dim CaughtBy As System.Reflection.MethodBase =
             '    System.Reflection.MethodBase.GetCurrentMethod
@@ -726,39 +865,6 @@ Public Structure Impedance
         Return (1.0 + AbsGamma) / (1.0 - AbsGamma)
 
     End Function ' VSWR
-
-    ''' <summary>
-    ''' Calculates the power reflection coeffient for this instance based on the
-    ''' specified characteristic impedance.
-    ''' </summary>
-    ''' <param name="z0">Specifies the characteristic impedance, in ohms.</param>
-    ''' <returns>The power reflection coeffient for the current instance at the
-    ''' specified characteristic impedance.</returns>
-    ''' <exception cref="System.ArgumentOutOfRangeException">
-    ''' When <paramref name="z0"/> is not a positive, non-zero value.
-    ''' </exception>
-    Public Function PowerReflectionCoefficient(ByVal z0 As System.Double) _
-        As System.Numerics.Complex
-
-        ' Input checking.
-        If z0 <= 0.0 Then
-            'Dim CaughtBy As System.Reflection.MethodBase =
-            '    System.Reflection.MethodBase.GetCurrentMethod
-            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHNV)
-        ElseIf z0.Equals(0.0) Then
-            'Dim CaughtBy As System.Reflection.MethodBase =
-            '    System.Reflection.MethodBase.GetCurrentMethod
-            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHZV)
-        ElseIf Double.IsInfinity(z0) Then
-            'Dim CaughtBy As System.Reflection.MethodBase =
-            '    System.Reflection.MethodBase.GetCurrentMethod
-            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHIV)
-        End If
-
-        Dim VRC As System.Numerics.Complex = Me.VoltageReflectionCoefficient(z0)
-        Return VRC * VRC
-
-    End Function ' PowerReflectionCoefficient
 
     ''' <summary>
     ''' Adds two <c>Impedance</c>s in series.

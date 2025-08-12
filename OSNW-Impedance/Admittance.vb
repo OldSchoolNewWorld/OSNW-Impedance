@@ -81,6 +81,10 @@ Public Structure Admittance
         Return New Impedance(ComplexRecip.Real, ComplexRecip.Imaginary)
     End Function
 
+#Region "Conversions"
+
+#End Region ' "Conversions"
+
 #Region "System.ValueType Implementations"
 
     ' public override bool Equals([NotNullWhen(true)] object? obj)

@@ -3,9 +3,21 @@ Option Strict On
 Option Compare Binary
 Option Infer Off
 
+
+
+
+' REF: Mathematical Construction and Properties of the Smith Chart
+' https://www.allaboutcircuits.com/technical-articles/mathematical-construction-and-properties-of-the-smith-chart/
+
+' REF: Reflection and Transmission Coefficients Explained
+' https://www.rfwireless-world.com/terminology/reflection-and-transmission-coefficients
+
+
+
+
 ''' <summary>
 ''' Represents a base class to define a generic circle, with a center and
-''' gridRadius, for use on a Cartesian grid. Dimensions are in generic "units".
+''' radius, for use on a Cartesian grid. Dimensions are in generic "units".
 ''' </summary>
 Public Class GenericCircle
 
@@ -68,7 +80,7 @@ Public Class GenericCircle
     ''' </summary>
     Public Property GridDiameter As System.Double
         Get
-            Return Me.m_GridRadius * 2.0
+            Return Me.GridRadius * 2.0
         End Get
         Set(value As System.Double)
 
@@ -81,7 +93,7 @@ Public Class GenericCircle
                     NameOf(value), Impedance.MSGCHNV)
             End If
 
-            Me.m_GridRadius = value / 2.0
+            Me.GridRadius = value / 2.0
 
         End Set
     End Property
@@ -144,9 +156,9 @@ Public Class SmithMainCircle
 
     Private m_Z0 As System.Double
     ''' <summary>
-    ''' xxxxxxxxxx in ohms.
+    ''' Represents the characteristic impedance of the <c>SmithMainCircle</c> in
+    ''' ohms.
     ''' </summary>
-    ''' <returns>xxxxxxxxxx</returns>
     ''' <remarks>This Z0 is a common reference for all associated circles,
     ''' individual impedances, etc.</remarks>
     Public Property Z0 As System.Double
@@ -169,7 +181,8 @@ Public Class SmithMainCircle
     End Property
 
     ''' <summary>
-    ''' xxxxxxxxxx in siemens.
+    ''' Represents the characteristic admittance of the <c>SmithMainCircle</c>
+    ''' in siemens.
     ''' </summary>
     ''' <returns>xxxxxxxxxx</returns>
     ''' <remarks>This Y0 is a common reference for all associated circles,
@@ -181,12 +194,9 @@ Public Class SmithMainCircle
     End Property
 
     ''' <summary>
-    ''' xxxxxxxxxx
+    ''' Returns the Cartesian X-coordinate of the leftmost edge of the current
+    ''' <c>SmithMainCircle</c>. Dimensions are in generic "units".
     ''' </summary>
-    ''' <returns>xxxxxxxxxx</returns>
-    ''' <remarks>
-    ''' Dimensions are in generic "units".
-    ''' </remarks>
     Public ReadOnly Property GridLeftEdgeX As System.Double
         Get
             Return Me.GridCenterX - Me.GridRadius
@@ -194,12 +204,9 @@ Public Class SmithMainCircle
     End Property
 
     ''' <summary>
-    ''' xxxxxxxxxx
+    ''' Returns the Cartesian X-coordinate of the rightmost edge of the current
+    ''' <c>SmithMainCircle</c>. Dimensions are in generic "units".
     ''' </summary>
-    ''' <returns>xxxxxxxxxx</returns>
-    ''' <remarks>
-    ''' Dimensions are in generic "units".
-    ''' </remarks>
     Public ReadOnly Property GridRightEdgeX As System.Double
         Get
             Return Me.GridCenterX + Me.GridRadius
@@ -207,26 +214,29 @@ Public Class SmithMainCircle
     End Property
 
     ''' <summary>
-    ''' xxxxxxxxxx
-    ''' </summary>
-    ''' <param name="gridCenterX">xxxxxxxxxx in generic "units".</param>
-    ''' <param name="gridCenterY">xxxxxxxxxx in generic "units".</param>
-    ''' <param name="gridDiameter">xxxxxxxxxx in generic "units".</param>
-    ''' <param name="z0">xxxxxxxxxx in ohms.</param>
-    ''' <remarks>
+    ''' Creates a new instance of the <c>SmithMainCircle</c> class with the
+    ''' specified center coordinates, diameter, and characteristic impedance.
     ''' Dimensions are in generic "units".
-    ''' </remarks>
+    ''' </summary>
+    ''' <param name="gridCenterX">Specifies the X-coordinate of the center of
+    ''' the circle in generic "units".</param>
+    ''' <param name="gridCenterY">Specifies the Y-coordinate of the center of
+    ''' the circle in generic "units".</param>
+    ''' <param name="gridDiameter">Specifies the diameter of the circle in
+    ''' generic "units".</param>
+    ''' <param name="z0">Specifies the characteristic impedance of the
+    ''' <c>SmithMainCircle</c> in ohms.</param>
     Public Sub New(ByVal gridCenterX As System.Double,
                    ByVal gridCenterY As System.Double,
                    ByVal gridDiameter As System.Double,
                    ByVal z0 As System.Double)
 
         ' Input checking.
-        If gridDiameter < 0.0 Then
+        If gridDiameter <= 0.0 Then
             'Dim CaughtBy As System.Reflection.MethodBase =
             '    System.Reflection.MethodBase.GetCurrentMethod
             Throw New System.ArgumentOutOfRangeException(
-                NameOf(gridDiameter), Impedance.MSGCHNV)
+                NameOf(gridDiameter), Impedance.MSGVMBGTZ)
         End If
         If z0 <= 0.0 Then
             'Dim CaughtBy As System.Reflection.MethodBase =
