@@ -214,6 +214,35 @@ Public Class SmithMainCircle
     End Property
 
     ''' <summary>
+    ''' Calculates the radius of a R- or X-circle associated with the current
+    ''' instance for a <paramref name="resistance"/> specified in ohms.
+    ''' </summary>
+    ''' <param name="resistance">Specifies the resistance in ohms.</param>
+    ''' <returns>The radius of the R- or X-circle in generic "units".</returns>
+    Public Function RadiusRX(ByVal resistance As System.Double) As System.Double
+
+        'Dim NormR As System.Double = resistance / Me.Z0
+        'Dim ScaleDia As System.Double = 1 / (NormR + 1)
+        'Dim AnsRad As System.Double = Me.GridRadius * ScaleDia
+        'Return AnsRad
+
+        Return Me.GridRadius * (1 / ((resistance / Me.Z0) + 1))
+
+    End Function ' RadiusRX
+
+    ''' <summary>
+    ''' Calculates the radius of a G- or B-circle associated with the current
+    ''' instance for a <paramref name="conductance"/> specified in ohms.
+    ''' <paramref name="conductance"/> in ohms.
+    ''' </summary>
+    ''' <param name="conductance">Specifies the conductance in ohms.</param>
+    ''' <returns>The radius of the G- or B-circle in generic "units".</returns>
+    Public Function RadiusGY(ByVal conductance As System.Double) As System.Double
+        ' Derived like RadiusRX.
+        Return Me.GridRadius * (1 / ((conductance / Me.Y0) + 1))
+    End Function ' RadiusGY
+
+    ''' <summary>
     ''' Creates a new instance of the <c>SmithMainCircle</c> class with the
     ''' specified center coordinates, diameter, and characteristic impedance.
     ''' Dimensions are in generic "units".
@@ -327,7 +356,7 @@ Public Class RCircle
 
     ''' <summary>
     ''' Sets the Cartesian coordinates and radius of the <c>RCircle</c> based on
-    ''' its resistance and the values in the associated
+    ''' its conductance and the values in the associated
     ''' <see cref="SmithMainCircle"/>.
     ''' </summary>
     ''' <remarks>
@@ -738,7 +767,7 @@ Public Class VCircle
 
         ' By observation,
         '     The rightmost edge of the VSWR circle is at the leftmost edge of
-        '     the R circle that has the same resistance magnitude as the VSWR
+        '     the R circle that has the same conductance magnitude as the VSWR
         '     magnitude.
 
         With Me
