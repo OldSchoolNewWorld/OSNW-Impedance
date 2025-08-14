@@ -2,7 +2,7 @@
 Option Strict On
 Option Compare Binary
 Option Infer Off
-
+Imports System.Formats.Asn1.AsnWriter
 
 
 
@@ -12,12 +12,9 @@ Option Infer Off
 ' REF: Reflection and Transmission Coefficients Explained
 ' https://www.rfwireless-world.com/terminology/reflection-and-transmission-coefficients
 
-
-
-
 ''' <summary>
-''' Represents a base class to define a generic circle, with a center and
-''' radius, for use on a Cartesian grid. Dimensions are in generic "units".
+''' A base class that represents the geometry of a generic circle, with a center
+''' and radius, for use on a Cartesian grid. Dimensions are in generic "units".
 ''' </summary>
 Public Class GenericCircle
 
@@ -99,10 +96,11 @@ Public Class GenericCircle
     End Property
 
     ''' <summary>
-    ''' xxxxxxxxxx
+    ''' A default constructor that creates a new instance of the
+    ''' <c>GenericCircle</c> class with default center coordinates and radius.
     ''' </summary>
     ''' <remarks>
-    ''' This is required to allow inheritance.
+    ''' A default constructor is required to allow inheritance.
     ''' </remarks>
     Public Sub New()
         With Me
@@ -149,7 +147,9 @@ Public Class GenericCircle
 End Class ' GenericCircle
 
 ''' <summary>
-''' xxxxxxxxxx
+''' A class that represents the geometry of the outer circle of a Smith Chart,
+''' with a center, diameter, and characteristic impedance, for use on a
+''' Cartesian grid. Dimensions are in generic "units".
 ''' </summary>
 Public Class SmithMainCircle
     Inherits GenericCircle
@@ -184,7 +184,8 @@ Public Class SmithMainCircle
     ''' Represents the characteristic admittance of the <c>SmithMainCircle</c>
     ''' in siemens.
     ''' </summary>
-    ''' <returns>xxxxxxxxxx</returns>
+    ''' <returns>The characteristic admittance of the <c>SmithMainCircle</c> in
+    ''' siemens.</returns>
     ''' <remarks>This Y0 is a common reference for all associated circles,
     ''' individual conductances, etc.</remarks>
     Public ReadOnly Property Y0 As System.Double
@@ -233,10 +234,10 @@ Public Class SmithMainCircle
         ' REF: Mathematical Construction and Properties of the Smith Chart
         ' https://www.allaboutcircuits.com/technical-articles/mathematical-construction-and-properties-of-the-smith-chart/
 
-        'Dim NormR As System.Double = valueRX / Me.Z0
-        'Dim ScaleDia As System.Double = 1 / (NormR + 1)
-        'Dim AnsRad As System.Double = Me.GridRadius * ScaleDia
-        'Return AnsRad
+        'Dim NormR As System.Double = resistance / Me.Z0
+        'Dim Scale As System.Double = 1 / (NormR + 1)
+        'Dim AnsRadius As System.Double = Me.GridRadius * Scale
+        'Return AnsRadius
 
         Return Me.GridRadius * (1 / ((resistance / Me.Z0) + 1))
 
@@ -308,8 +309,8 @@ Public Class SmithMainCircle
         End If
 
         ' Derived like RadiusR.
-        Return Math.Abs(
-            Me.GridRadius * (1 / ((System.Math.Abs(susceptance) / Me.Y0) + 1)))
+        Return Me.GridRadius *
+            (1 / ((System.Math.Abs(susceptance) / Me.Y0) + 1))
 
     End Function ' RadiusB
 
@@ -386,7 +387,8 @@ Public Class SmithMainCircle
 End Class ' SmithMainCircle
 
 ''' <summary>
-''' xxxxxxxxxx
+''' A class that represents the geometry of a constant resistance circle on a
+''' Smith Chart. Dimensions are in generic "units".
 ''' </summary>
 Public Class RCircle
     Inherits GenericCircle
@@ -404,9 +406,9 @@ Public Class RCircle
 
     Private ReadOnly m_Resistance As System.Double
     ''' <summary>
-    ''' xxxxxxxxxx in ohms.
+    ''' Returns the resistance of the circle in ohms.
     ''' </summary>
-    ''' <returns>xxxxxxxxxx</returns>
+    ''' <returns>The resistance of the circle in ohms.</returns>
     Public ReadOnly Property Resistance As System.Double
         Get
             Return Me.m_Resistance
@@ -424,35 +426,18 @@ Public Class RCircle
         ByRef gridCenterY As System.Double, ByRef gridRadius As System.Double) _
         As System.Boolean
 
-        ' By observation,
-        '     FracL = NormReal * FracR
-        '     FracL + FracR = 1
-        '         FracL = 1 - FracR
-
-        ' Derivation:
-        ' FracL = NormReal * FracR
-        ' 1 - FracR = NormReal * FracR
-        ' (1/FracR) - (FracR/FracR) = NormReal
-        ' (1/FracR) - (FracR/FracR) = NormReal
-        ' (1/FracR) - 1 = NormReal
-        ' (1/FracR) = NormReal + 1
-        ' FracR = 1/(NormReal + 1)
-
-        ' Calculate values relative to the host outer circle.
-        ' Then populate values relative to the Cartesian grid.
-        With Me
-            '            Dim NormReal As System.Double = .Resistance / .MainCircle.Z0
-            '            Dim FracR As System.Double = 1.0 / (NormReal + 1.0)
-            '            gridRadius = FracR * .MainCircle.GridRadius
-            '            gridRadius = (1.0 / (NormReal + 1.0)) * .MainCircle.GridRadius
-            '            gridRadius = .MainCircle.GridRadius / (NormReal + 1.0)
-            .GridRadius = .MainCircle.GridRadius / ((.Resistance / .MainCircle.Z0) + 1.0)
-            .GridCenterX = .MainCircle.GridRightEdgeX - .GridRadius
-            .GridCenterY = .MainCircle.GridCenterY
-        End With
-
-        Return True
-
+        Try
+            ' Calculate values relative to the host outer circle.
+            ' Then populate values relative to the Cartesian grid.
+            With Me
+                .GridRadius = .MainCircle.RadiusR(.Resistance)
+                .GridCenterX = .MainCircle.GridRightEdgeX - .GridRadius
+                .GridCenterY = .MainCircle.GridCenterY
+            End With
+            Return True
+        Catch ex As Exception
+            Return False
+        End Try
     End Function ' TryGetCircleBasics
 
     ''' <summary>
@@ -486,12 +471,14 @@ Public Class RCircle
     End Sub ' SetCircleBasics
 
     ''' <summary>
-    ''' xxxxxxxxxx
+    ''' Creates a new instance of the <c>RCircle</c> class with the specified
+    ''' <paramref name="resistance"/> in ohms and associated with the specified
+    ''' <paramref name="mainCircle"/>.
     ''' </summary>
     ''' <param name="mainCircle">Specifies the
     ''' <see cref="SmithMainCircle"></see> with which the circle is
     ''' associated.</param>
-    ''' <param name="resistance">xxxxxxxxxx in ohms.</param>
+    ''' <param name="resistance">The resistance in ohms.</param>
     Public Sub New(ByVal mainCircle As SmithMainCircle,
                    ByVal resistance As System.Double)
 
@@ -513,7 +500,8 @@ Public Class RCircle
 End Class ' RCircle
 
 ''' <summary>
-''' xxxxxxxxxx
+''' A class that represents the geometry of a constant reactance circle on a
+''' Smith Chart. Dimensions are in generic "units".
 ''' </summary>
 Public Class XCircle
     Inherits GenericCircle
@@ -531,9 +519,9 @@ Public Class XCircle
 
     Private ReadOnly m_Reactance As System.Double
     ''' <summary>
-    ''' xxxxxxxxxx in ohms.
+    ''' Returns the reactance of the circle in ohms.
     ''' </summary>
-    ''' <returns>xxxxxxxxxx</returns>
+    ''' <returns>The reactance of the circle in ohms.</returns>
     Public ReadOnly Property Reactance As System.Double
         Get
             Return Me.m_Reactance
@@ -551,20 +539,20 @@ Public Class XCircle
         ByRef gridCenterY As System.Double, ByRef gridRadius As System.Double) _
         As System.Boolean
 
-        ' By observation, this is similar to RCircle.TryGetCircleBasics.
-
-        ' Calculate values relative to the host outer circle.
-        ' Then populate values relative to the Cartesian grid.
-        With Me
-            .GridRadius = .MainCircle.GridRadius / ((.Reactance / .MainCircle.Z0) + 1.0)
-            .GridCenterX = .MainCircle.GridRightEdgeX
-            .GridCenterY = If(.Reactance < 0.0,
+        Try
+            ' Calculate values relative to the host outer circle.
+            ' Then populate values relative to the Cartesian grid.
+            With Me
+                .GridRadius = .MainCircle.RadiusX(.Reactance)
+                .GridCenterX = .MainCircle.GridRightEdgeX
+                .GridCenterY = If(.Reactance < 0.0,
                 .MainCircle.GridCenterY - System.Math.Abs(.GridRadius),
                 .MainCircle.GridCenterY + System.Math.Abs(.GridRadius))
-        End With
-
-        Return True
-
+            End With
+            Return True
+        Catch ex As Exception
+            Return False
+        End Try
     End Function ' TryGetCircleBasics
 
     ''' <summary>
@@ -598,15 +586,16 @@ Public Class XCircle
     End Sub ' SetCircleBasics
 
     ''' <summary>
-    ''' xxxxxxxxxx in ohms.
+    ''' Creates a new instance of the <c>XCircle</c> class with the specified
+    ''' <paramref name="reactance"/> in ohms and associated with the specified
+    ''' <paramref name="mainCircle"/>.
     ''' </summary>
     ''' <param name="mainCircle">Specifies the
     ''' <see cref="SmithMainCircle"></see> with which the circle is
     ''' associated.</param>
-    ''' <param name="reactance">xxxxxxxxxx</param>
+    ''' <param name="reactance">The reactance in ohms.</param>
     Public Sub New(ByVal mainCircle As SmithMainCircle,
                    ByVal reactance As System.Double)
-
         MyBase.New()
         Me.m_MainCircle = mainCircle
         Me.m_Reactance = reactance
@@ -615,7 +604,8 @@ Public Class XCircle
 End Class ' XCircle
 
 ''' <summary>
-''' xxxxxxxxxx
+''' A class that represents the geometry of a constant conductance circle on a
+''' Smith Chart. Dimensions are in generic "units".
 ''' </summary>
 Public Class GCircle
     Inherits GenericCircle
@@ -633,9 +623,9 @@ Public Class GCircle
 
     Private ReadOnly m_Conductance As System.Double
     ''' <summary>
-    ''' xxxxxxxxxx in siemens.
+    ''' Returns the conductance of the circle in siemens.
     ''' </summary>
-    ''' <returns>xxxxxxxxxx</returns>
+    ''' <returns>The conductance of the circle in siemens.</returns>
     Public ReadOnly Property Conductance As System.Double
         Get
             Return Me.m_Conductance
@@ -653,18 +643,18 @@ Public Class GCircle
         ByRef gridCenterY As System.Double, ByRef gridRadius As System.Double) _
         As System.Boolean
 
-        ' By observation, this is similar to RCircle.TryGetCircleBasics.
-
-        ' Calculate values relative to the host outer circle.
-        ' Then populate values relative to the Cartesian grid.
-        With Me
-            .GridRadius = .MainCircle.GridRadius / ((.Conductance / .MainCircle.Y0) + 1.0)
-            .GridCenterX = .MainCircle.GridLeftEdgeX
-            .GridCenterY = .MainCircle.GridCenterY
-        End With
-
-        Return True
-
+        Try
+            ' Calculate values relative to the host outer circle.
+            ' Then populate values relative to the Cartesian grid.
+            With Me
+                .GridRadius = .MainCircle.RadiusX(.Conductance)
+                .GridCenterX = .MainCircle.GridLeftEdgeX
+                .GridCenterY = .MainCircle.GridCenterY
+            End With
+            Return True
+        Catch ex As Exception
+            Return False
+        End Try
     End Function ' TryGetCircleBasics
 
     ''' <summary>
@@ -698,12 +688,14 @@ Public Class GCircle
     End Sub ' SetCircleBasics
 
     ''' <summary>
-    ''' xxxxxxxxxx in siemens.
+    ''' Creates a new instance of the <c>GCircle</c> class with the specified
+    ''' <paramref name="conductance"/> in siemens and associated with the
+    ''' specified <paramref name="mainCircle"/>.
     ''' </summary>
     ''' <param name="mainCircle">Specifies the
     ''' <see cref="SmithMainCircle"></see> with which the circle is
     ''' associated.</param>
-    ''' <param name="conductance">xxxxxxxxxx in siemens.</param>
+    ''' <param name="conductance">The conductance in siemens.</param>
     Public Sub New(ByVal mainCircle As SmithMainCircle,
                    ByVal conductance As System.Double)
 
@@ -725,7 +717,8 @@ Public Class GCircle
 End Class ' GCircle
 
 ''' <summary>
-''' xxxxxxxxxx
+''' A class that represents the geometry of a constant susceptance circle on a
+''' Smith Chart. Dimensions are in generic "units".
 ''' </summary>
 Public Class BCircle
     Inherits GenericCircle
@@ -743,9 +736,9 @@ Public Class BCircle
 
     Private ReadOnly m_Susceptance As System.Double
     ''' <summary>
-    ''' xxxxxxxxxx in siemens.
+    ''' Returns the susceptance of the circle in siemens.
     ''' </summary>
-    ''' <returns>xxxxxxxxxx</returns>
+    ''' <returns>The susceptance of the circle in siemens.</returns>
     Public ReadOnly Property Susceptance As System.Double
         Get
             Return Me.m_Susceptance
@@ -763,20 +756,20 @@ Public Class BCircle
         ByRef gridCenterY As System.Double, ByRef gridRadius As System.Double) _
         As System.Boolean
 
-        ' By observation, this is similar to RCircle.TryGetCircleBasics.
-
-        ' Calculate values relative to the host outer circle.
-        ' Then populate values relative to the Cartesian grid.
-        With Me
-            .GridRadius = .MainCircle.GridRadius / ((.Susceptance / .MainCircle.Y0) + 1.0)
-            .GridCenterX = .MainCircle.GridLeftEdgeX
-            .GridCenterY = If(.Susceptance < 0.0,
+        Try
+            ' Calculate values relative to the host outer circle.
+            ' Then populate values relative to the Cartesian grid.
+            With Me
+                .GridRadius = .MainCircle.RadiusX(.Susceptance)
+                .GridCenterX = .MainCircle.GridLeftEdgeX
+                .GridCenterY = If(.Susceptance < 0.0,
                 .MainCircle.GridCenterY + System.Math.Abs(.GridRadius),
                 .MainCircle.GridCenterY - System.Math.Abs(.GridRadius))
-        End With
-
-        Return True
-
+            End With
+            Return True
+        Catch ex As Exception
+            Return False
+        End Try
     End Function ' TryGetCircleBasics
 
     ''' <summary>
@@ -811,15 +804,16 @@ Public Class BCircle
     End Sub ' SetCircleBasics
 
     ''' <summary>
-    ''' xxxxxxxxxx
+    ''' Creates a new instance of the <c>BCircle</c> class with the specified
+    ''' <paramref name="susceptance"/> in siemens and associated with the
+    ''' specified <paramref name="mainCircle"/>.
     ''' </summary>
     ''' <param name="mainCircle">Specifies the
     ''' <see cref="SmithMainCircle"></see> with which the circle is
     ''' associated.</param>
-    ''' <param name="susceptance">xxxxxxxxxx in siemens.</param>
+    ''' <param name="susceptance">The susceptance in siemens.</param>
     Public Sub New(ByVal mainCircle As SmithMainCircle,
                    ByVal susceptance As System.Double)
-
         MyBase.New()
         Me.m_MainCircle = mainCircle
         Me.m_Susceptance = susceptance
@@ -866,27 +860,27 @@ Public Class VCircle
         ByRef gridCenterY As System.Double, ByRef gridRadius As System.Double) _
         As System.Boolean
 
-        ' By observation,
-        '     The rightmost edge of the VSWR-circle is at the leftmost edge of
-        '     the R-circle that has the same conductance magnitude as the VSWR
-        '     magnitude.
+        Try
 
-        With Me
+            ' By observation,
+            '     The rightmost edge of the VSWR-circle is at the leftmost edge of
+            '     the R-circle that has the same conductance magnitude as the VSWR
+            '     magnitude.
 
-            ' First, calculate the radius of the R-circle relative to the host
-            ' outer circle.
-            Dim RCircGridRadius As System.Double =
-                Me.MainCircle.GridRadius / ((Me.VSWR / Me.MainCircle.Z0) + 1.0)
+            With Me
+                ' First, calculate the radius of the R-circle relative to the host
+                ' outer circle.
+                ' Then populate values for the VSWR-circle relative to the Cartesian
+                ' grid.
+                .GridRadius = .MainCircle.RadiusV(Me.VSWR)
+                .GridCenterX = .MainCircle.GridCenterX
+                .GridCenterY = .MainCircle.GridCenterY
+            End With
+            Return True
 
-            ' Then populate values for the VSWR-circle relative to the Cartesian
-            ' grid.
-            .GridRadius = .MainCircle.GridRadius - (RCircGridRadius * 2.0)
-            .GridCenterX = .MainCircle.GridCenterX
-            .GridCenterY = .MainCircle.GridCenterY
-
-        End With
-        Return True
-
+        Catch ex As Exception
+            Return False
+        End Try
     End Function ' TryGetCircleBasics
 
     ''' <summary>
@@ -920,12 +914,14 @@ Public Class VCircle
     End Sub ' SetCircleBasics
 
     ''' <summary>
-    ''' xxxxxxxxxx
+    ''' Creates a new instance of the <c>VCircle</c> class with the specified
+    ''' <paramref name="vswr"/> and associated with the specified
+    ''' <paramref name="mainCircle"/>.
     ''' </summary>
     ''' <param name="mainCircle">Specifies the
     ''' <see cref="SmithMainCircle"></see> with which the circle is
     ''' associated.</param>
-    ''' <param name="vswr">xxxxxxxxxx</param>
+    ''' <param name="vswr">The voltage standing wave ratio.</param>
     Public Sub New(ByVal mainCircle As SmithMainCircle,
                    ByVal vswr As System.Double)
 
