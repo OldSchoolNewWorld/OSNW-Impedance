@@ -214,33 +214,134 @@ Public Class SmithMainCircle
     End Property
 
     ''' <summary>
-    ''' Calculates the radius of a R- or X-circle associated with the current
-    ''' instance for a <paramref name="resistance"/> specified in ohms.
+    ''' Calculates the radius of a R-circle associated with the current instance
+    ''' for a <paramref name="resistance"/> specified in ohms.
     ''' </summary>
     ''' <param name="resistance">Specifies the resistance in ohms.</param>
-    ''' <returns>The radius of the R- or X-circle in generic "units".</returns>
-    Public Function RadiusRX(ByVal resistance As System.Double) As System.Double
+    ''' <returns>The radius of the R-circle in generic "units".</returns>
+    ''' <exception cref="ArgumentOutOfRangeException">when
+    ''' <paramref name="resistance"/> is less than or equal to zero.</exception>
+    Public Function RadiusR(ByVal resistance As System.Double) As System.Double
 
-        'Dim NormR As System.Double = resistance / Me.Z0
+        If resistance <= 0.0 Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(
+                NameOf(resistance), Impedance.MSGVMBGTZ)
+        End If
+
+        ' REF: Mathematical Construction and Properties of the Smith Chart
+        ' https://www.allaboutcircuits.com/technical-articles/mathematical-construction-and-properties-of-the-smith-chart/
+
+        'Dim NormR As System.Double = valueRX / Me.Z0
         'Dim ScaleDia As System.Double = 1 / (NormR + 1)
         'Dim AnsRad As System.Double = Me.GridRadius * ScaleDia
         'Return AnsRad
 
         Return Me.GridRadius * (1 / ((resistance / Me.Z0) + 1))
 
-    End Function ' RadiusRX
+    End Function ' RadiusR
 
     ''' <summary>
-    ''' Calculates the radius of a G- or B-circle associated with the current
-    ''' instance for a <paramref name="conductance"/> specified in ohms.
-    ''' <paramref name="conductance"/> in ohms.
+    ''' Calculates the radius of a X-circle associated with the current instance
+    ''' for a <paramref name="reactance"/> specified in ohms.
     ''' </summary>
-    ''' <param name="conductance">Specifies the conductance in ohms.</param>
-    ''' <returns>The radius of the G- or B-circle in generic "units".</returns>
-    Public Function RadiusGY(ByVal conductance As System.Double) As System.Double
-        ' Derived like RadiusRX.
+    ''' <param name="reactance">Specifies the reactance in ohms.</param>
+    ''' <returns>The radius of the X-circle in generic "units".</returns>
+    ''' <exception cref="ArgumentOutOfRangeException">when
+    ''' <paramref name="reactance"/> is zero.</exception>
+    Public Function RadiusX(ByVal reactance As System.Double) As System.Double
+
+        If reactance.Equals(0.0) Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(
+                NameOf(reactance), Impedance.MSGCHZV)
+        End If
+
+        ' REF: Mathematical Construction and Properties of the Smith Chart
+        ' https://www.allaboutcircuits.com/technical-articles/mathematical-construction-and-properties-of-the-smith-chart/
+
+        ' Derived like RadiusR.
+        Return Me.GridRadius * (1 / ((Math.Abs(reactance) / Me.Z0) + 1))
+
+    End Function ' RadiusX
+
+    ''' <summary>
+    ''' Calculates the radius of a G-circle associated with the current instance
+    ''' for a <paramref name="conductance"/> specified in siemens.
+    ''' </summary>
+    ''' <param name="conductance">Specifies the conductance in siemens.</param>
+    ''' <returns>The radius of the G-circle in generic "units".</returns>
+    ''' <exception cref="ArgumentOutOfRangeException">when
+    ''' <paramref name="conductance"/> is less than or equal to
+    ''' zero.</exception>
+    Public Function RadiusG(ByVal conductance As System.Double) As System.Double
+
+        If conductance <= 0.0 Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(
+                NameOf(conductance), Impedance.MSGVMBGTZ)
+        End If
+
+        ' Derived like RadiusR.
         Return Me.GridRadius * (1 / ((conductance / Me.Y0) + 1))
-    End Function ' RadiusGY
+
+    End Function ' RadiusG
+
+    ''' <summary>
+    ''' Calculates the radius of a B-circle associated with the current instance
+    ''' for a <paramref name="susceptance"/> specified in siemens.
+    ''' </summary>
+    ''' <param name="susceptance">Specifies the susceptance in siemens.</param>
+    ''' <returns>The radius of the B-circle in generic "units".</returns>
+    ''' <exception cref="ArgumentOutOfRangeException">when
+    ''' <paramref name="susceptance"/> is zero.</exception>
+    Public Function RadiusB(ByVal susceptance As System.Double) As System.Double
+
+        If susceptance.Equals(0.0) Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(
+                NameOf(susceptance), Impedance.MSGCHZV)
+        End If
+
+        ' Derived like RadiusR.
+        Return Math.Abs(
+            Me.GridRadius * (1 / ((System.Math.Abs(susceptance) / Me.Y0) + 1)))
+
+    End Function ' RadiusB
+
+    ''' <summary>
+    ''' Calculates the radius of a VSWR-circle associated with the current
+    ''' instance for the specified <paramref name="vswr"/>.
+    ''' </summary>
+    ''' <param name="vswr">Specifies the voltage standing wave ratio.</param>
+    ''' <returns>The radius of a VSWR-circle associated with the current
+    ''' instance for the specified <paramref name="vswr"/>.</returns>
+    ''' <exception cref="ArgumentOutOfRangeException">when
+    ''' <paramref name="vswr"/> is less than or equal to one.</exception>
+    Public Function RadiusV(ByVal vswr As System.Double) As System.Double
+
+        If vswr <= 1.0 Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(
+                NameOf(vswr), Impedance.MSGVMBGTE1)
+        End If
+
+        '' Derived like RadiusRX??????
+        'Return Me.GridRadius * (1 / (vswr + 1)) ??????
+
+        ' or, from what was created previously??????
+        ' By observation,
+        '     The rightmost edge of the VSWR-circle is tangent to the leftmost
+        '     edge of the R-circle whose resistance magnitude matches the VSWR
+        '     magnitude.
+        Return Me.GridRadius - (Me.RadiusR(vswr) * 2.0)
+
+    End Function ' RadiusV
 
     ''' <summary>
     ''' Creates a new instance of the <c>SmithMainCircle</c> class with the
@@ -766,18 +867,18 @@ Public Class VCircle
         As System.Boolean
 
         ' By observation,
-        '     The rightmost edge of the VSWR circle is at the leftmost edge of
-        '     the R circle that has the same conductance magnitude as the VSWR
+        '     The rightmost edge of the VSWR-circle is at the leftmost edge of
+        '     the R-circle that has the same conductance magnitude as the VSWR
         '     magnitude.
 
         With Me
 
-            ' First, calculate the radius of the R circle relative to the host
+            ' First, calculate the radius of the R-circle relative to the host
             ' outer circle.
             Dim RCircGridRadius As System.Double =
                 Me.MainCircle.GridRadius / ((Me.VSWR / Me.MainCircle.Z0) + 1.0)
 
-            ' Then populate values for the VSWR circle relative to the Cartesian
+            ' Then populate values for the VSWR-circle relative to the Cartesian
             ' grid.
             .GridRadius = .MainCircle.GridRadius - (RCircGridRadius * 2.0)
             .GridCenterX = .MainCircle.GridCenterX

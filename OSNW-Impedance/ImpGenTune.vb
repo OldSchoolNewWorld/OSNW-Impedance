@@ -32,17 +32,17 @@ Option Infer Off
 ' http://www.antenna-theory.com/tutorial/smith/chart.php
 
 '              Component impact
-' A series inductor moves CW on a R circle.
-' A shunt inductor moves CCW on a G circle.
-' A series capacitor moves CCW on a R circle.
-' A shunt capacitor moves CW on a G circle.
+' A series inductor moves CW on a R-circle.
+' A shunt inductor moves CCW on a G-circle.
+' A series capacitor moves CCW on a R-circle.
+' A shunt capacitor moves CW on a G-circle.
 
 '             Component selection
 ' To go | On a     | Use a
-' CW    | R circle | series inductor
-' CW    | G circle | shunt capacitor
-' CCW   | R circle | series capacitor
-' CCW   | G circle | shunt inductor
+' CW    | R-circle | series inductor
+' CW    | G-circle | shunt capacitor
+' CCW   | R-circle | series capacitor
+' CCW   | G-circle | shunt inductor
 
 ''' <summary>
 ''' The circuit layout to be used to match a load impedance to a source
@@ -204,7 +204,7 @@ Partial Public Structure Impedance
 
             If NormX > 0.0 Then
                 ' E1: Above the resonance line. Only needs reactance.
-                ' CCW on a R circle needs a series capacitor.
+                ' CCW on a R-circle needs a series capacitor.
                 transformations = {
                     New Transformation With {
                     .Style = TransformationStyles.SeriesCap,
@@ -213,18 +213,18 @@ Partial Public Structure Impedance
                 Return True
 
                 ' Consider alternative approaches.
-                ' CW on a R circle would need a series inductor, increasing
+                ' CW on a R-circle would need a series inductor, increasing
                 ' the inductance of an already inductive load. NO.
                 ' What about tuning the equivalent admittance?
-                ' CCW on a G circle would need a shunt inductor, reducing
+                ' CCW on a G-circle would need a shunt inductor, reducing
                 ' but not canceling the reactance. NO.
-                ' CW on a G circle would need a shunt capacitor. For Z=1+j3,
+                ' CW on a G-circle would need a shunt capacitor. For Z=1+j3,
                 ' Y=0.1-j0.3. Adding a shunt capacitor 0+j0.3 results in a
                 ' total admittance Y=0.1+j0. For Y=0.1+j0, Z=10+j0. NO.
 
             Else
                 ' E2: Below the resonance line. Only needs reactance.
-                ' CW on a R circle needs a series inductor.
+                ' CW on a R-circle needs a series inductor.
                 transformations = {
                     New Transformation With {
                     .Style = TransformationStyles.SeriesInd,
@@ -267,7 +267,7 @@ Partial Public Structure Impedance
 
             If NormB > 0.0 Then
                 ' G1: Above the resonance line. Only needs reactance.
-                ' CW on a G circle needs a shunt capacitor.
+                ' CW on a G-circle needs a shunt capacitor.
                 Dim V1 As System.Double = -NormB
                 Dim EffectiveY As New Admittance(0, V1)
                 Dim EffectiveZ As Impedance = EffectiveY.ToImpedance
@@ -279,7 +279,7 @@ Partial Public Structure Impedance
                 Return True
             Else
                 ' G2: Below the resonance line. Only needs reactance.
-                ' CCW on a G circle needs a shunt inductor.
+                ' CCW on a G-circle needs a shunt inductor.
                 Dim V1 As System.Double = -NormB
                 Dim EffectiveY As New Admittance(0, V1)
                 Dim EffectiveZ As Impedance = EffectiveY.ToImpedance
@@ -295,7 +295,7 @@ Partial Public Structure Impedance
     End Function ' OnGEqualsY0
 
     '''' <summary>
-    '''' F: Inside the R=Z0 circle. Two choices: CW or CCW on the G circle.
+    '''' F: Inside the R=Z0 circle. Two choices: CW or CCW on the G-circle.
     '''' </summary>
     '''' <param name="z0">xxxxxxxxxx</param>
     '''' <param name="transformations">xxxxxxxxxx</param>
@@ -314,26 +314,26 @@ Partial Public Structure Impedance
         ''
         ''
         '' XXXXX WHAT NEXT? XXXXX
-        '' Move CW or CCW on the G circle to reach the R=Z0 circle.
+        '' Move CW or CCW on the G-circle to reach the R=Z0 circle.
         '' Would there ever be a case to prefer the long path?
         '' Maybe to favor high- or low-pass?
         ''
         ''
 
-        '' Whether moving CW or CCW, the R and G circles through Z will intersect at two points that have
+        '' Whether moving CW or CCW, the R and G-circles through Z will intersect at two points that have
         '' the same R and and same G values.
 
 
 
 
 
-        '''' CW on a G circle needs a shunt capacitor.
+        '''' CW on a G-circle needs a shunt capacitor.
         ''Dim Val11 As System.Double = -NormB
         ''Dim EffectiveY1 As New Admittance(0, Val11)
         ''Dim EffectiveZ1 As Impedance = EffectiveY1.ToImpedance
         ''Dim Image1 As Impedance = Impedance.AddShuntImpedance(Me, EffectiveZ1)
 
-        '' CW on a G circle needs a shunt capacitor.
+        '' CW on a G-circle needs a shunt capacitor.
         '' Move to the image impedance point.
 
         'Dim ImageZR As System.Double = z0
@@ -353,7 +353,7 @@ Partial Public Structure Impedance
 
 
 
-        '''' Then CW on a R circle needs a series inductor.
+        '''' Then CW on a R-circle needs a series inductor.
         ''        Dim Val12 As System.Double = -Image1.Reactance
         ''        Dim EffectiveZ2 As New Impedance(0, Val12)
 
@@ -368,7 +368,7 @@ Partial Public Structure Impedance
 
 
 
-        '''' CCW on a G circle needs a shunt inductor.
+        '''' CCW on a G-circle needs a shunt inductor.
         ''Dim V21 As System.Double = -NormB
         ''Dim EffectiveY2 As New Admittance(0, V21)
         ''Dim EffectiveZ2 As Impedance = EffectiveY2.ToImpedance
@@ -397,7 +397,7 @@ Partial Public Structure Impedance
     End Function ' InsideREqualsZ0
 
     '''' <summary>
-    '''' H: Inside the G=Y0 circle. Two choices: CW or CCW on the R circle.
+    '''' H: Inside the G=Y0 circle. Two choices: CW or CCW on the R-circle.
     '''' </summary>
     '''' <param name="z0">xxxxxxxxxx</param>
     '''' <param name="transformations">xxxxxxxxxx</param>
@@ -416,7 +416,7 @@ Partial Public Structure Impedance
         '
         '
         ' XXXXX WHAT NEXT? XXXXX
-        ' Move CW or CCW on the R circle to reach the G=Y0 circle.
+        ' Move CW or CCW on the R-circle to reach the G=Y0 circle.
         ' Would there ever be a case to prefer the long path?
         ' Maybe to favor high- or low-pass?
         '
@@ -460,12 +460,12 @@ Partial Public Structure Impedance
         '     Omit: On the resonance line. Already covered by C or D.
         '     E1: Above the resonance line. Only needs reactance.
         '     E2: Below the resonance line. Only needs reactance.
-        ' F: Inside the R=Z0 circle. Two choices: CW or CCW on the G circle.
+        ' F: Inside the R=Z0 circle. Two choices: CW or CCW on the G-circle.
         ' G: On the G=Y0 circle.
         '     Omit: On the resonance line. Already either B or D.
         '     G1: Above the resonance line. Only needs reactance.
         '     G2: Below the resonance line. Only needs reactance.
-        ' H: Inside the G=Y0 circle. Two choices: CW or CCW on the R circle.
+        ' H: Inside the G=Y0 circle. Two choices: CW or CCW on the R-circle.
         ' I: In the top remainder.
         ' J: In the bottom remainder.
 
@@ -512,7 +512,7 @@ Partial Public Structure Impedance
             '
             ' XXXXX WHAT NEXT? XXXXX
             ' Would this case have been caught above? Yes, it would be in or
-            ' on the R or G circle or at the center.
+            ' on the R or G-circle or at the center.
             '
             '
 
@@ -531,12 +531,12 @@ Partial Public Structure Impedance
             '
             '
             ' XXXXX WHAT NEXT? XXXXX
-            ' Move CW on the G circle to reach the R=Z0 circle. Use a shunt
+            ' Move CW on the G-circle to reach the R=Z0 circle. Use a shunt
             ' capacitor.
             ' Would there ever be a case to prefer the first or second
             ' intersection? Maybe to favor high- or low-pass?
             '          or
-            ' Move CCW on the R circle to reach the G=Y0 circle. Use a
+            ' Move CCW on the R-circle to reach the G=Y0 circle. Use a
             ' series capacitor.
             ' Would there ever be a case to prefer the first or second
             ' intersection? Maybe to favor high- or low-pass?
@@ -550,12 +550,12 @@ Partial Public Structure Impedance
             '
             '
             ' XXXXX WHAT NEXT? XXXXX
-            ' Move CCW on the G circle to reach the R=Z0 circle. Use a shunt
+            ' Move CCW on the G-circle to reach the R=Z0 circle. Use a shunt
             ' inductor.
             ' Would there ever be a case to prefer the first or second
             ' intersection? Maybe to favor high- or low-pass?
             '          or
-            ' Move CW on the R circle to reach the G=Y0 circle. Use a
+            ' Move CW on the R-circle to reach the G=Y0 circle. Use a
             ' series inductor.
             ' Would there ever be a case to prefer the first or second
             ' intersection? Maybe to favor high- or low-pass?
@@ -605,21 +605,21 @@ Partial Public Structure Impedance
     '    '     Omit: On the resonance line. Already covered by C or D.
     '    '     E1: Above the resonance line. Only needs reactance.
     '    '     E2: Below the resonance line. Only needs reactance.
-    '    ' F: Inside the R=Z0 circle. Two choices: CW or CCW on the G circle.
+    '    ' F: Inside the R=Z0 circle. Two choices: CW or CCW on the G-circle.
     '    ' G: On the G=Y0 circle.
     '    '     Omit: On the resonance line. Already either B or D.
     '    '     G1: Above the resonance line. Only needs reactance.
     '    '     G2: Below the resonance line. Only needs reactance.
-    '    ' H: Inside the G=Y0 circle. Two choices: CW or CCW on the R circle.
+    '    ' H: Inside the G=Y0 circle. Two choices: CW or CCW on the R-circle.
     '    ' I: In the top remainder.
     '    ' J: In the bottom remainder.
 
-    '    ' A series inductor moves CW on a R circle.
-    '    ' A series capacitor moves CCW on a R circle.
-    '    ' A shunt inductor moves CCW on a G circle.
-    '    ' A shunt capacitor moves CW on a G circle.
-    '    ' A series resistor moves an impedance along the R circles. 
-    '    ' A shunt resistor moves an impedance along the constant G circles.
+    '    ' A series inductor moves CW on a R-circle.
+    '    ' A series capacitor moves CCW on a R-circle.
+    '    ' A shunt inductor moves CCW on a G-circle.
+    '    ' A shunt capacitor moves CW on a G-circle.
+    '    ' A series resistor moves an impedance along the R-circles. 
+    '    ' A shunt resistor moves an impedance along the constant G-circles.
 
     '    Dim TargetNormR As System.Double = sourceR / z0
     '    Dim TargetNormX As System.Double = sourceX / z0

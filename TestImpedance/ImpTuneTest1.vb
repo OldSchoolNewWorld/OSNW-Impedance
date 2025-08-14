@@ -18,12 +18,12 @@ Imports Xunit
 '      Omit: On the resonance line. Already covered by C or D.
 '      E1: Above the resonance line. Only needs reactance.
 '      E2: Below the resonance line. Only needs reactance.
-' F: Inside the R=Z0 circle. Two choices: CW or CCW on the G circle.
+' F: Inside the R=Z0 circle. Two choices: CW or CCW on the G-circle.
 ' G: On the G=Y0 circle.
 '      Omit: On the resonance line. Already either B or D.
 '      G1: Above the resonance line. Only needs reactance.
 '      G2: Below the resonance line. Only needs reactance.
-' H: Inside the G=Y0 circle. Two choices: CW or CCW on the R circle.
+' H: Inside the G=Y0 circle. Two choices: CW or CCW on the R-circle.
 ' I: In the top remainder.
 ' J: In the bottom remainder.
 
@@ -210,7 +210,7 @@ Namespace TrySelectTuningLayoutTests
 
 
     Public Class TestTrySelectTuningLayoutF
-        ' F: Inside the R=Z0 circle. Two choices: CW or CCW on the G circle.
+        ' F: Inside the R=Z0 circle. Two choices: CW or CCW on the G-circle.
 
         <Fact>
         Public Sub TrySelectTuning_PositionFCW_Succeeds()
@@ -256,8 +256,8 @@ Namespace TrySelectTuningLayoutTests
 
     Public Class TestTrySelectTuningX
         ' Chart location cases:
-        ' F: Inside the R=Z0 circle. Two choices: CW or CCW on the G circle.
-        ' H: Inside the G=Y0 circle. Two choices: CW or CCW on the R circle.
+        ' F: Inside the R=Z0 circle. Two choices: CW or CCW on the G-circle.
+        ' H: Inside the G=Y0 circle. Two choices: CW or CCW on the R-circle.
         ' I: In the top remainder.
         ' J: In the bottom remainder.
 
