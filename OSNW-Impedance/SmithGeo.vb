@@ -4,8 +4,6 @@ Option Compare Binary
 Option Infer Off
 Imports System.Formats.Asn1.AsnWriter
 
-
-
 ' REF: Mathematical Construction and Properties of the Smith Chart
 ' https://www.allaboutcircuits.com/technical-articles/mathematical-construction-and-properties-of-the-smith-chart/
 
@@ -222,7 +220,7 @@ Public Class SmithMainCircle
     ''' <returns>The radius of the R-circle in generic "units".</returns>
     ''' <exception cref="ArgumentOutOfRangeException">when
     ''' <paramref name="resistance"/> is less than or equal to zero.</exception>
-    Public Function RadiusR(ByVal resistance As System.Double) As System.Double
+    Public Function GetRadiusR(ByVal resistance As System.Double) As System.Double
 
         If resistance <= 0.0 Then
             'Dim CaughtBy As System.Reflection.MethodBase =
@@ -241,7 +239,7 @@ Public Class SmithMainCircle
 
         Return Me.GridRadius * (1 / ((resistance / Me.Z0) + 1))
 
-    End Function ' RadiusR
+    End Function ' GetRadiusR
 
     ''' <summary>
     ''' Calculates the radius of a X-circle associated with the current instance
@@ -251,7 +249,7 @@ Public Class SmithMainCircle
     ''' <returns>The radius of the X-circle in generic "units".</returns>
     ''' <exception cref="ArgumentOutOfRangeException">when
     ''' <paramref name="reactance"/> is zero.</exception>
-    Public Function RadiusX(ByVal reactance As System.Double) As System.Double
+    Public Function GetRadiusX(ByVal reactance As System.Double) As System.Double
 
         If reactance.Equals(0.0) Then
             'Dim CaughtBy As System.Reflection.MethodBase =
@@ -264,9 +262,12 @@ Public Class SmithMainCircle
         ' https://www.allaboutcircuits.com/technical-articles/mathematical-construction-and-properties-of-the-smith-chart/
 
         ' Derived like RadiusR.
-        Return Me.GridRadius * (1 / ((Math.Abs(reactance) / Me.Z0) + 1))
-
-    End Function ' RadiusX
+        ' THIS IS WRONG.
+        '        Return Me.GridRadius * (1 / ((Math.Abs(reactance) / Me.Z0) + 1))
+        ' TRY WITH:
+        ' If OK, TRY THE SAME FOR SUSCEPTANCE
+        Return (Me.Z0 / Math.Abs(reactance)) * Me.GridRadius
+    End Function ' GetRadiusX
 
     ''' <summary>
     ''' Calculates the radius of a G-circle associated with the current instance
@@ -277,7 +278,7 @@ Public Class SmithMainCircle
     ''' <exception cref="ArgumentOutOfRangeException">when
     ''' <paramref name="conductance"/> is less than or equal to
     ''' zero.</exception>
-    Public Function RadiusG(ByVal conductance As System.Double) As System.Double
+    Public Function GetRadiusG(ByVal conductance As System.Double) As System.Double
 
         If conductance <= 0.0 Then
             'Dim CaughtBy As System.Reflection.MethodBase =
@@ -289,7 +290,7 @@ Public Class SmithMainCircle
         ' Derived like RadiusR.
         Return Me.GridRadius * (1 / ((conductance / Me.Y0) + 1))
 
-    End Function ' RadiusG
+    End Function ' GetRadiusG
 
     ''' <summary>
     ''' Calculates the radius of a B-circle associated with the current instance
@@ -299,7 +300,7 @@ Public Class SmithMainCircle
     ''' <returns>The radius of the B-circle in generic "units".</returns>
     ''' <exception cref="ArgumentOutOfRangeException">when
     ''' <paramref name="susceptance"/> is zero.</exception>
-    Public Function RadiusB(ByVal susceptance As System.Double) As System.Double
+    Public Function GetRadiusB(ByVal susceptance As System.Double) As System.Double
 
         If susceptance.Equals(0.0) Then
             'Dim CaughtBy As System.Reflection.MethodBase =
@@ -311,8 +312,9 @@ Public Class SmithMainCircle
         ' Derived like RadiusR.
         Return Me.GridRadius *
             (1 / ((System.Math.Abs(susceptance) / Me.Y0) + 1))
+        ' SEE GetRadiusX FOT WHAT IS LIKELY BETTER
 
-    End Function ' RadiusB
+    End Function ' GetRadiusB
 
     ''' <summary>
     ''' Calculates the radius of a VSWR-circle associated with the current
@@ -340,7 +342,7 @@ Public Class SmithMainCircle
         '     The rightmost edge of the VSWR-circle is tangent to the leftmost
         '     edge of the R-circle whose resistance magnitude matches the VSWR
         '     magnitude.
-        Return Me.GridRadius - (Me.RadiusR(vswr) * 2.0)
+        Return Me.GridRadius - (Me.GetRadiusR(vswr) * 2.0)
 
     End Function ' RadiusV
 
@@ -430,7 +432,7 @@ Public Class RCircle
             ' Calculate values relative to the host outer circle.
             ' Then populate values relative to the Cartesian grid.
             With Me
-                .GridRadius = .MainCircle.RadiusR(.Resistance)
+                .GridRadius = .MainCircle.GetRadiusR(.Resistance)
                 .GridCenterX = .MainCircle.GridRightEdgeX - .GridRadius
                 .GridCenterY = .MainCircle.GridCenterY
             End With
@@ -543,7 +545,7 @@ Public Class XCircle
             ' Calculate values relative to the host outer circle.
             ' Then populate values relative to the Cartesian grid.
             With Me
-                .GridRadius = .MainCircle.RadiusX(.Reactance)
+                .GridRadius = .MainCircle.GetRadiusX(.Reactance)
                 .GridCenterX = .MainCircle.GridRightEdgeX
                 .GridCenterY = If(.Reactance < 0.0,
                 .MainCircle.GridCenterY - System.Math.Abs(.GridRadius),
@@ -647,7 +649,7 @@ Public Class GCircle
             ' Calculate values relative to the host outer circle.
             ' Then populate values relative to the Cartesian grid.
             With Me
-                .GridRadius = .MainCircle.RadiusX(.Conductance)
+                .GridRadius = .MainCircle.GetRadiusX(.Conductance)
                 .GridCenterX = .MainCircle.GridLeftEdgeX
                 .GridCenterY = .MainCircle.GridCenterY
             End With
@@ -760,7 +762,7 @@ Public Class BCircle
             ' Calculate values relative to the host outer circle.
             ' Then populate values relative to the Cartesian grid.
             With Me
-                .GridRadius = .MainCircle.RadiusX(.Susceptance)
+                .GridRadius = .MainCircle.GetRadiusX(.Susceptance)
                 .GridCenterX = .MainCircle.GridLeftEdgeX
                 .GridCenterY = If(.Susceptance < 0.0,
                 .MainCircle.GridCenterY + System.Math.Abs(.GridRadius),

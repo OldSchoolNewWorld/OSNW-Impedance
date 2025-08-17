@@ -9,67 +9,96 @@ Imports OsnwImpd = OSNW.Numerics.Impedance
 
 Namespace GeometryTests
 
-    Public Class TestRadiusR
+    Public Class TestGetRadiusR
 
         <Theory>
         <InlineData(4.0, 8.0, 4.0, 1.0, 3.0, 0.5)>
-        <InlineData(4.0, 8.0, 4.0, 1.0, 2.0, 2.0 / 3.0)>
+        <InlineData(4.0, 8.0, 4.0, 50.0, 100.0, 2.0 / 3.0)>
         <InlineData(4.0, 8.0, 4.0, 1.0, 1.0, 1.0)>
-        <InlineData(4.0, 8.0, 4.0, 1.0, 1.0 / 2.0, 4.0 / 3.0)>
-        <InlineData(4.0, 8.0, 4.0, 1.0, 1.0 / 3.0, 1.5)>
-        Sub RadiusR_Succeeds(ByVal gridCenterX As System.Double,
-            ByVal gridCenterY As System.Double,
-            ByVal gridDiameter As System.Double, ByVal z0 As System.Double,
-            testRes As System.Double, expectRad As System.Double)
+        <InlineData(4.0, 8.0, 4.0, 1.0, 0.5, 4.0 / 3.0)>
+        <InlineData(4.0, 8.0, 4.0, 75.0, 25.0, 1.5)>
+        Sub GetRadiusR_GoodInput_Succeeds(gridCenterX As Double, gridCenterY As Double, gridDiameter As Double,
+                                          z0 As Double, testRes As Double, expectRad As Double)
 
             Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridDiameter, z0)
-            Dim RadiusAns As System.Double = SmithCirc.RadiusR(testRes)
+            Dim RadiusAns As Double = SmithCirc.GetRadiusR(testRes)
             Assert.Equal(expectRad, RadiusAns)
         End Sub
 
-    End Class ' TestRadiusR
-
-    Public Class TestRadiusX
-
         <Theory>
-        <InlineData(4.0, 8.0, 4.0, 1.0, 3.0, 0.5)>
+        <InlineData(4.0, 8.0, 4.0, 1.0, 0.0, 0.5)>
         <InlineData(4.0, 8.0, 4.0, 1.0, -2.0, 2.0 / 3.0)>
-        <InlineData(4.0, 8.0, 4.0, 1.0, 1.0, 1.0)>
-        <InlineData(4.0, 8.0, 4.0, 1.0, 1.0 / 2.0, 4.0 / 3.0)>
-        <InlineData(4.0, 8.0, 4.0, 1.0, -1.0 / 3.0, 1.5)>
-        Sub RadiusX_Succeeds(ByVal gridCenterX As System.Double,
-            ByVal gridCenterY As System.Double,
-            ByVal gridDiameter As System.Double, ByVal z0 As System.Double,
-            testRes As System.Double, expectRad As System.Double)
+        Sub GetRadiusR_BadInput_Fails(gridCenterX As Double, gridCenterY As Double, gridDiameter As Double,
+                                      z0 As Double, testRes As Double, expectRad As Double)
 
             Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridDiameter, z0)
-            Dim RadiusAns As System.Double = SmithCirc.RadiusX(testRes)
+            Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
+                Sub()
+                    ' Code that throws the exception
+                    Dim RadiusAns As Double = SmithCirc.GetRadiusR(testRes)
+                End Sub)
+        End Sub
+
+    End Class ' TestGetRadiusR
+
+    Public Class TestGetRadiusX
+
+        <Theory>
+        <InlineData(4.0, 8.0, 4.0, 1.0, 3.0, 2.0 / 3.0)> ' Meas
+        <InlineData(4.0, 8.0, 4.0, 50.0, 100.0, 1.0)> ' Meas
+        <InlineData(4.0, 8.0, 4.0, 1.0, 1.0, 2.0)> ' Meas
+        <InlineData(4.0, 8.0, 4.0, 1.0, 0.5, 4.0)> ' Meas
+        <InlineData(4.0, 8.0, 4.0, 1.0, 1.0 / 3.0, 6.0)> ' Meas
+        <InlineData(4.0, 8.0, 4.0, 1.0, 0.5, 4.0)> ' Est
+        <InlineData(4.0, 8.0, 4.0, 75.0, 25.0, 6.0)>
+        <InlineData(4.0, 8.0, 4.0, 1.0, -0.5, 4.0)> ' Est
+        <InlineData(4.0, 8.0, 4.0, 75.0, -25.0, 6.0)>
+        <InlineData(4.0, 8.0, 4.0, 1.0, -1.0, 2.0)> ' Meas
+        <InlineData(4.0, 8.0, 4.0, 1.0, -1.0, 2.0)> ' Meas
+        <InlineData(4.0, 8.0, 4.0, 50.0, -100.0, 1.0)> ' Meas
+        <InlineData(4.0, 8.0, 4.0, 1.0, -3.0, 2.0 / 3.0)> ' Meas
+        Sub GetRadiusX_GoodInput_Succeeds(gridCenterX As Double, gridCenterY As Double, gridDiameter As Double,
+                                          z0 As Double, testReact As Double, expectRad As Double)
+
+            Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridDiameter, z0)
+            Dim RadiusAns As Double = SmithCirc.GetRadiusX(testReact)
             Assert.Equal(expectRad, RadiusAns)
         End Sub
 
-    End Class ' TestRadiusX
+        <Theory>
+        <InlineData(4.0, 8.0, 4.0, 1.0, 0.0, 0.5)>
+        Sub GetRadiusX_BadInput_Fails(gridCenterX As Double, gridCenterY As Double, gridDiameter As Double,
+                                      z0 As Double, testRes As Double, expectRad As Double)
 
-    Public Class TestRadiusG
+            Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridDiameter, z0)
+            Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
+                Sub()
+                    ' Code that throws the exception
+                    Dim RadiusAns As Double = SmithCirc.GetRadiusX(testRes)
+                End Sub)
+        End Sub
+
+    End Class ' TestGetRadiusX
+
+    Public Class TestGetRadiusG
 
         <Theory>
         <InlineData(4.0, 8.0, 4.0, 1.0, 3.0, 0.5)>
-        <InlineData(4.0, 8.0, 4.0, 1.0, 2.0, 2.0 / 3.0)>
+        <InlineData(4.0, 8.0, 4.0, 50.0, 100.0, 2.0 / 3.0)>
         <InlineData(4.0, 8.0, 4.0, 1.0, 1.0, 1.0)>
-        <InlineData(4.0, 8.0, 4.0, 1.0, 1 / 2.0, 4.0 / 3.0)>
-        <InlineData(4.0, 8.0, 4.0, 1.0, 1 / 3.0, 1.5)>
-        Sub RadiusG_Succeeds(ByVal gridCenterX As System.Double,
-            ByVal gridCenterY As System.Double,
-            ByVal gridDiameter As System.Double, ByVal z0 As System.Double,
-            testCond As System.Double, expectRad As System.Double)
+        <InlineData(4.0, 8.0, 4.0, 1.0, 0.5, 4.0 / 3.0)>
+        <InlineData(4.0, 8.0, 4.0, 75.0, 25.0, 1.5)>
+        Sub GetRadiusG_Succeeds(gridCenterX As Double, gridCenterY As Double, gridDiameter As Double,
+                                z0 As Double, testCond As Double, expectRad As Double)
 
             Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridDiameter, z0)
-            Dim RadiusAns As System.Double = SmithCirc.RadiusG(testCond)
+            Dim RadiusAns As Double = SmithCirc.GetRadiusG(testCond)
             Assert.Equal(expectRad, RadiusAns)
         End Sub
 
-    End Class ' TestRadiusG
+    End Class ' TestGetRadiusG
 
-    Public Class TestRadiusB
+    Public Class TestGetRadiusB
 
         <Theory>
         <InlineData(4.0, 8.0, 4.0, 1.0, 3.0, 0.5)>
@@ -77,17 +106,15 @@ Namespace GeometryTests
         <InlineData(4.0, 8.0, 4.0, 1.0, 1.0, 1.0)>
         <InlineData(4.0, 8.0, 4.0, 1.0, -1 / 2.0, 4.0 / 3.0)>
         <InlineData(4.0, 8.0, 4.0, 1.0, 1 / 3.0, 1.5)>
-        Sub RadiusB_Succeeds(ByVal gridCenterX As System.Double,
-            ByVal gridCenterY As System.Double,
-            ByVal gridDiameter As System.Double, ByVal z0 As System.Double,
-            testCond As System.Double, expectRad As System.Double)
+        Sub GetRadiusB_Succeeds(gridCenterX As Double, gridCenterY As Double, gridDiameter As Double,
+                                z0 As Double, testCond As Double, expectRad As Double)
 
             Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridDiameter, z0)
-            Dim RadiusAns As System.Double = SmithCirc.RadiusB(testCond)
+            Dim RadiusAns As Double = SmithCirc.GetRadiusB(testCond)
             Assert.Equal(expectRad, RadiusAns)
         End Sub
 
-    End Class ' TestRadiusB
+    End Class ' TestGetRadiusB
 
     Public Class TestRadiusV
 
@@ -99,13 +126,11 @@ Namespace GeometryTests
         <Theory>
         <InlineData(4.0, 8.0, 4.0, 1.0, 2.0, 2.0 / 3.0)>
         <InlineData(4.0, 8.0, 4.0, 1.0, 3.0, 1.0)>
-        Sub RadiusV_Succeeds(ByVal gridCenterX As System.Double,
-            ByVal gridCenterY As System.Double,
-            ByVal gridDiameter As System.Double, ByVal z0 As System.Double,
-            testV As System.Double, expectRad As System.Double)
+        Sub RadiusV_Succeeds(gridCenterX As Double, gridCenterY As Double, gridDiameter As Double,
+                             z0 As Double, testV As Double, expectRad As Double)
 
             Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridDiameter, z0)
-            Dim RadiusAns As System.Double = SmithCirc.RadiusV(testV)
+            Dim RadiusAns As Double = SmithCirc.RadiusV(testV)
             Assert.Equal(expectRad, RadiusAns, Precision)
         End Sub
 
