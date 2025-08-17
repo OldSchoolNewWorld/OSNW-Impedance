@@ -261,11 +261,7 @@ Public Class SmithMainCircle
         ' REF: Mathematical Construction and Properties of the Smith Chart
         ' https://www.allaboutcircuits.com/technical-articles/mathematical-construction-and-properties-of-the-smith-chart/
 
-        ' Derived like RadiusR.
-        ' THIS IS WRONG.
-        '        Return Me.GridRadius * (1 / ((Math.Abs(reactance) / Me.Z0) + 1))
-        ' TRY WITH:
-        ' If OK, TRY THE SAME FOR SUSCEPTANCE
+        ' Derived like GetRadiusR.
         Return (Me.Z0 / Math.Abs(reactance)) * Me.GridRadius
     End Function ' GetRadiusX
 
@@ -309,10 +305,8 @@ Public Class SmithMainCircle
                 NameOf(susceptance), Impedance.MSGCHZV)
         End If
 
-        ' Derived like RadiusR.
-        Return Me.GridRadius *
-            (1 / ((System.Math.Abs(susceptance) / Me.Y0) + 1))
-        ' SEE GetRadiusX FOT WHAT IS LIKELY BETTER
+        ' Derived like GetRadiusR.
+        Return (Me.Y0 / Math.Abs(susceptance)) * Me.GridRadius
 
     End Function ' GetRadiusB
 
@@ -325,7 +319,7 @@ Public Class SmithMainCircle
     ''' instance for the specified <paramref name="vswr"/>.</returns>
     ''' <exception cref="ArgumentOutOfRangeException">when
     ''' <paramref name="vswr"/> is less than or equal to one.</exception>
-    Public Function RadiusV(ByVal vswr As System.Double) As System.Double
+    Public Function GetRadiusV(ByVal vswr As System.Double) As System.Double
 
         If vswr <= 1.0 Then
             'Dim CaughtBy As System.Reflection.MethodBase =
@@ -334,17 +328,16 @@ Public Class SmithMainCircle
                 NameOf(vswr), Impedance.MSGVMBGTE1)
         End If
 
-        '' Derived like RadiusRX??????
-        'Return Me.GridRadius * (1 / (vswr + 1)) ??????
-
-        ' or, from what was created previously??????
-        ' By observation,
+        ' By observation, a geometry solution
         '     The rightmost edge of the VSWR-circle is tangent to the leftmost
         '     edge of the R-circle whose resistance magnitude matches the VSWR
         '     magnitude.
-        Return Me.GridRadius - (Me.GetRadiusR(vswr) * 2.0)
+        '        Return Me.GridRadius - (Me.GetRadiusR(vswr) * 2.0)
 
-    End Function ' RadiusV
+        ' Alternate form
+        Return Me.GridRadius * (vswr - 1.0) / (vswr + 1.0) ' Diameter
+
+    End Function ' GetRadiusV
 
     ''' <summary>
     ''' Creates a new instance of the <c>SmithMainCircle</c> class with the
@@ -874,7 +867,7 @@ Public Class VCircle
                 ' outer circle.
                 ' Then populate values for the VSWR-circle relative to the Cartesian
                 ' grid.
-                .GridRadius = .MainCircle.RadiusV(Me.VSWR)
+                .GridRadius = .MainCircle.GetRadiusV(Me.VSWR)
                 .GridCenterX = .MainCircle.GridCenterX
                 .GridCenterY = .MainCircle.GridCenterY
             End With

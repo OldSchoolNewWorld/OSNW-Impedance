@@ -116,24 +116,36 @@ Namespace GeometryTests
 
     End Class ' TestGetRadiusB
 
-    Public Class TestRadiusV
+    Public Class TestGetRadiusV
 
         Const Precision As Double = 0.000001
 
-        '        <InlineData(4.0, 8.0, 4.0, 1.0, 1 / 3.0, 1.5)>
-        '        <InlineData(4.0, 8.0, 4.0, 1.0, 1 / 2.0, 4.0 / 3.0)>
-        '        <InlineData(4.0, 8.0, 4.0, 1.0, 1.0, 1.0)>
         <Theory>
         <InlineData(4.0, 8.0, 4.0, 1.0, 2.0, 2.0 / 3.0)>
         <InlineData(4.0, 8.0, 4.0, 1.0, 3.0, 1.0)>
-        Sub RadiusV_Succeeds(gridCenterX As Double, gridCenterY As Double, gridDiameter As Double,
-                             z0 As Double, testV As Double, expectRad As Double)
+        Sub GetRadiusV_GoodInput_Succeeds(gridCenterX As Double, gridCenterY As Double, gridDiameter As Double,
+                                          z0 As Double, testV As Double, expectRad As Double)
 
             Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridDiameter, z0)
-            Dim RadiusAns As Double = SmithCirc.RadiusV(testV)
+            Dim RadiusAns As Double = SmithCirc.GetRadiusV(testV)
             Assert.Equal(expectRad, RadiusAns, Precision)
         End Sub
 
-    End Class ' TestRadiusV
+        <Theory>
+        <InlineData(4.0, 8.0, 4.0, 1.0, -1.0, 1.5)>
+        <InlineData(4.0, 8.0, 4.0, 1.0, 1 / 2.0, 4.0 / 3.0)>
+        <InlineData(4.0, 8.0, 4.0, 1.0, 1.0, 1.0)>
+        Sub GetRadiusV_BadInput_Fails(gridCenterX As Double, gridCenterY As Double, gridDiameter As Double,
+                                          z0 As Double, testV As Double, expectRad As Double)
+
+            Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridDiameter, z0)
+            Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
+                Sub()
+                    ' Code that throws the exception
+                    Dim RadiusAns As Double = SmithCirc.GetRadiusV(testV)
+                End Sub)
+        End Sub
+
+    End Class ' TestGetRadiusV
 
 End Namespace ' GeometryTests
