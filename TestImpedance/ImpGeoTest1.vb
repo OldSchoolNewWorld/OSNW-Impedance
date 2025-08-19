@@ -111,31 +111,19 @@ Namespace GeometryTests
 
     Public Class TestGetRadiusB
 
-        '<Theory>
-        '<InlineData(4.0, 8.0, 4.0, 1.0, 3.0, 2.0 / 3.0)>
-        '<InlineData(4.0, 8.0, 4.0, 50.0, 2.0 / 50.0, 1.0)>
-        '<InlineData(4.0, 8.0, 4.0, 1.0, 1.0, 2.0)>
-        '<InlineData(4.0, 8.0, 4.0, 1.0, 0.5, 4.0)>
-        '<InlineData(4.0, 8.0, 4.0, 1.0, 1.0 / 3.0, 6.0)>
-        '<InlineData(4.0, 8.0, 4.0, 75.0, -1 / (3.0 * 75.0), 6.0)>
-        '<InlineData(4.0, 8.0, 4.0, 50.0, -1 / (2.0 * 50.0), 4.0)>
-        '<InlineData(4.0, 8.0, 4.0, 1.0, -1.0, 2.0)>
-        '<InlineData(4.0, 8.0, 4.0, 50.0, -2.0 / 50.0, 1.0)>
-        '<InlineData(4.0, 8.0, 4.0, 1.0, -3.0, 2.0 / 3.0)>
-
         <Theory>
         <InlineData(4.0, 8.0, 4.0, 1.0, 3.0, 2.0 / 3.0)>
-        <InlineData(4.0, 8.0, 4.0, 50.0, 100.0, 1.0)>
+        <InlineData(4.0, 8.0, 4.0, 50.0, 2.0 * (1.0 / 50.0), 1.0)>
         <InlineData(4.0, 8.0, 4.0, 1.0, 1.0, 2.0)>
         <InlineData(4.0, 8.0, 4.0, 1.0, 0.5, 4.0)>
         <InlineData(4.0, 8.0, 4.0, 1.0, 1.0 / 3.0, 6.0)>
-        <InlineData(4.0, 8.0, 4.0, 75.0, -25.0, 6.0)>
-        <InlineData(4.0, 8.0, 4.0, 50.0, -25.0, 4.0)>
+        <InlineData(4.0, 8.0, 4.0, 75.0, -((1.0 / 75.0) / 3.0), 6.0)>
+        <InlineData(4.0, 8.0, 4.0, 50.0, -((1.0 / 50.0) / 2.0), 4.0)>
         <InlineData(4.0, 8.0, 4.0, 1.0, -1.0, 2.0)>
-        <InlineData(4.0, 8.0, 4.0, 50.0, -100.0, 1.0)>
+        <InlineData(4.0, 8.0, 4.0, 50.0, -2.0 * (1.0 / 50.0), 1.0)>
         <InlineData(4.0, 8.0, 4.0, 1.0, -3.0, 2.0 / 3.0)>
         Sub GetRadiusB_GoodInput_Succeeds(gridCenterX As Double, gridCenterY As Double, gridDiameter As Double,
-                                z0 As Double, testSusc As Double, expectRad As Double)
+                                          z0 As Double, testSusc As Double, expectRad As Double)
 
             Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridDiameter, z0)
             Dim RadiusAns As Double = SmithCirc.GetRadiusB(testSusc)
