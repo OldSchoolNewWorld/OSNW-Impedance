@@ -2,7 +2,6 @@
 Option Strict On
 Option Compare Binary
 Option Infer Off
-Imports System.Formats.Asn1.AsnWriter
 
 ' REF: Mathematical Construction and Properties of the Smith Chart
 ' https://www.allaboutcircuits.com/technical-articles/mathematical-construction-and-properties-of-the-smith-chart/
@@ -771,7 +770,6 @@ Public Class BCircle
     ''' Sets the Cartesian coordinates and radius of the <c>BCircle</c> based on
     ''' its susceptance and the values in the associated
     ''' <see cref="SmithMainCircle"/>.
-    ''' xxxx
     ''' </summary>
     ''' <remarks>
     ''' This method is intended to be called after the circle has been
@@ -817,7 +815,8 @@ Public Class BCircle
 End Class ' BCircle
 
 ''' <summary>
-''' xxxxxxxxxx
+''' A class that represents the geometry of a constant VSWR circle on a Smith
+''' Chart. Dimensions are in generic "units".
 ''' </summary>
 Public Class VCircle
     Inherits GenericCircle
@@ -835,9 +834,9 @@ Public Class VCircle
 
     Private ReadOnly m_VSWR As System.Double
     ''' <summary>
-    ''' xxxxxxxxxx
+    ''' Returns the voltage standing wave ratio of the circle.
     ''' </summary>
-    ''' <returns>xxxxxxxxxx</returns>
+    ''' <returns>The voltage standing wave ratio of the circle.</returns>
     Public ReadOnly Property VSWR As System.Double
         Get
             Return Me.m_VSWR
