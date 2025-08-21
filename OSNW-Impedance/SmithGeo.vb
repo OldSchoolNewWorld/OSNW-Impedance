@@ -1032,3 +1032,177 @@ Public Class VCircle
     End Sub ' New
 
 End Class ' VCircle
+
+''' <summary>
+''' A class that represents the geometry of an impedance plot on a Smith Chart.
+''' Dimensions are in generic "units".
+''' </summary>
+Public Class ZPlot
+    '    Public Class ZPlot
+    '    Inherits GenericCircle
+
+    Private ReadOnly m_MainCircle As SmithMainCircle
+    ''' <summary>
+    ''' Specifies the <see cref="SmithMainCircle"/> with which this instance is
+    ''' associated.
+    ''' </summary>
+    Public ReadOnly Property MainCircle As SmithMainCircle
+        Get
+            Return Me.m_MainCircle
+        End Get
+    End Property
+
+    Private ReadOnly m_Resistance As System.Double
+    ''' <summary>
+    ''' Returns the resistance of the impedance in ohms.
+    ''' </summary>
+    ''' <returns>The resistance of the impedance in ohms.</returns>
+    Public ReadOnly Property Resistance As System.Double
+        Get
+            Return Me.m_Resistance
+        End Get
+    End Property
+
+    Private ReadOnly m_Reactance As System.Double
+    ''' <summary>
+    ''' Returns the reactance of the impedance in ohms.
+    ''' </summary>
+    ''' <returns>The reactance of the impedance in ohms.</returns>
+    Public ReadOnly Property Reactance As System.Double
+        Get
+            Return Me.m_Reactance
+        End Get
+    End Property
+
+    ''' <summary>
+    ''' Attempts to generate a set of values describing the geometry of the
+    ''' <c>ZPlot</c>, on the associated <see cref="SmithMainCircle"/>.
+    ''' </summary>
+    ''' <returns>Returns <c>True</c> if the process succeeds; otherwise,
+    ''' <c>False</c>. Also returns a set of values describing the
+    ''' grid coordinates.</returns>
+    Public Function TryGetPlotBasics(ByRef gridX As System.Double,
+        ByRef gridY As System.Double) As System.Boolean
+
+        Try
+
+            ' Calculate values relative to the host outer circle.
+            ' Then populate values relative to the Cartesian grid.
+
+            Dim RCenterX As System.Double
+            Dim RCenterY As System.Double
+            Dim RRadius As System.Double
+            Dim XCenterX As System.Double
+            Dim XCenterY As System.Double
+            Dim XRadius As System.Double
+
+            With Me
+
+                ' Create R- and X-circles that pass through the impedance plot.
+                Dim RCirc As New RCircle(.MainCircle, .Resistance)
+                RCirc.TryGetCircleBasics(RCenterX, RCenterY, RRadius)
+                Dim XCirc As New XCircle(.MainCircle, .Reactance)
+                XCirc.TryGetCircleBasics(XCenterX, XCenterY, XRadius)
+
+                ' Find the intercections of the two circles.
+                Dim Intersections As System.Collections.Generic.List(
+                    Of System.Drawing.PointF) =
+                    GenericCircle.GetIntersections(RCirc, XCirc)
+
+                ' Most R- and X-circles will intersect at two distinct points,
+                ' with one above, and one below, the resonance line. When X=0.0,
+                ' expect two duplicate points.
+                If Intersections.Count <> 0 Then
+                    'Dim CaughtBy As System.Reflection.MethodBase =
+                    '    System.Reflection.MethodBase.GetCurrentMethod
+                    Throw New System.ApplicationException(Impedance.MSGNIIC)
+                End If
+
+                ' Assign the values.
+                If Me.Reactance < 0.0 Then
+                    ' Expect an intersection below the resonance line.
+                    If Intersections(0).Y < .MainCircle.GridCenterY Then
+                        gridX = Intersections(0).X
+                        gridY = Intersections(0).Y
+                    Else
+                        gridX = Intersections(1).X
+                        gridY = Intersections(1).Y
+                    End If
+                Else
+                    ' Expect an intersection above, or on, the resonance line.
+                    If Intersections(0).Y >= .MainCircle.GridCenterY Then
+                        gridX = Intersections(0).X
+                        gridY = Intersections(0).Y
+                    Else
+                        gridX = Intersections(1).X
+                        gridY = Intersections(1).Y
+                    End If
+                End If
+
+            End With
+            Return True
+
+        Catch ex As Exception
+            Return False
+        End Try
+    End Function ' TryGetPlotBasics
+
+    ''' <summary>
+    ''' Sets the Cartesian coordinates and radius of the <c>RCircle</c> based on
+    ''' its conductance and the values in the associated
+    ''' <see cref="SmithMainCircle"/>.
+    ''' </summary>
+    ''' <remarks>
+    ''' This method is intended to be called after the circle has been
+    ''' constructed, to set the basic properties.
+    ''' </remarks>
+    Public Sub SetCircleBasics()
+
+        'Dim GridCenterX As System.Double
+        'Dim GridCenterY As System.Double
+        'Dim GridRadius As System.Double
+
+        'If Not Me.TryGetCircleBasics(GridCenterX, GridCenterY, GridRadius) Then
+        '    Dim CaughtBy As System.Reflection.MethodBase =
+        '        System.Reflection.MethodBase.GetCurrentMethod
+        '    Throw New System.InvalidOperationException(
+        '        $"Failed to process {CaughtBy}.")
+        'End If
+
+        'With Me
+        '    .GridCenterX = GridCenterX
+        '    .GridCenterY = GridCenterY
+        '    .GridRadius = GridRadius
+        'End With
+
+    End Sub ' SetCircleBasics
+
+    ''' <summary>
+    ''' Creates a new instance of the <c>RCircle</c> class with the specified
+    ''' <paramref name="resistance"/> in ohms and associated with the specified
+    ''' <paramref name="mainCircle"/>.
+    ''' </summary>
+    ''' <param name="mainCircle">Specifies the
+    ''' <see cref="SmithMainCircle"></see> with which the circle is
+    ''' associated.</param>
+    ''' <param name="resistance">The resistance in ohms.</param>
+    Public Sub New(ByVal mainCircle As SmithMainCircle,
+                   ByVal resistance As System.Double)
+
+        MyBase.New()
+
+        ' Input checking.
+        If resistance <= 0.0 Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(
+                NameOf(resistance), Impedance.MSGVMBGTZ)
+        End If
+
+        Me.m_MainCircle = mainCircle
+        Me.m_Resistance = resistance
+
+    End Sub ' New
+
+End Class ' ZPlot
+
