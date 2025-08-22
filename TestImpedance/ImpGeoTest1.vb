@@ -257,7 +257,7 @@ Namespace GeometryTests
         <InlineData(4.0, 5.0, 4.0, 1, 1, 1, 4.4, 5.8)>
         <InlineData(4.0, 5.0, 4.0, 1, 1, 2, 5.0, 6.0)>
         <InlineData(4.0, 5.0, 4.0, 1, 1, 0, 4.0, 5.0)>
-        <InlineData(4.0, 5.0, 4.0, 1, 3, 0, 5.5, 5.0)>
+        <InlineData(4.0, 5.0, 4.0, 1, 3, 0, 5.0, 5.0)>
         <InlineData(4.0, 5.0, 4.0, 1, 2, -2, 5.0, 4.0)>
         Sub TryGetPlot_GoodInput_Succeeds(
             gridCenterX As Double, gridCenterY As Double, gridDiameter As Double, z0 As Double,

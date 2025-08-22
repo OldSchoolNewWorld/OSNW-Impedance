@@ -455,19 +455,23 @@ Public Class SmithMainCircle
                 Throw New System.ArgumentOutOfRangeException(
                     NameOf(resistance), Impedance.MSGVMBGTZ)
             End If
+
+            ' Create the R-circle that passes through the impedance plot.
+            Dim RCirc As New RCircle(Me, resistance)
+
             If reactance.Equals(0.0) Then
-                'Dim CaughtBy As System.Reflection.MethodBase =
-                '    System.Reflection.MethodBase.GetCurrentMethod
-                Throw New System.ArgumentOutOfRangeException(
-                    NameOf(reactance), Impedance.MSGCHZV)
+                ' The circle intersection approach below will not work due to
+                ' the infinite radius of the X-circle.
+                plotX = Me.GridRightEdgeX - RCirc.GridDiameter
+                plotY = Me.GridCenterY
+                Return True
             End If
 
             ' Calculate values relative to the host outer circle.
             ' Then populate values relative to the Cartesian grid.
 
-            ' Create R- and X-circles that pass through the impedance plot.
+            ' Create the X-circle that passes through the impedance plot.
             ' Then find the intercections of the two circles.
-            Dim RCirc As New RCircle(Me, resistance)
             Dim XCirc As New XCircle(Me, reactance)
             Dim Intersections As System.Collections.Generic.List(
                 Of System.Drawing.PointF) =
