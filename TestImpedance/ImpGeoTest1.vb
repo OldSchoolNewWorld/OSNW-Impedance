@@ -251,4 +251,47 @@ Namespace GeometryTests
 
     End Class ' TestGetIntersections
 
+    Public Class TestGetPlotXY
+
+        <Theory>
+        <InlineData(4.0, 5.0, 4.0, 1, 1, 1, 4.4, 5.8)>
+        <InlineData(4.0, 5.0, 4.0, 1, 1, 2, 5.0, 6.0)>
+        <InlineData(4.0, 5.0, 4.0, 1, 1, 0, 4.0, 5.0)>
+        <InlineData(4.0, 5.0, 4.0, 1, 3, 0, 5.5, 5.0)>
+        <InlineData(4.0, 5.0, 4.0, 1, 2, -2, 5.0, 4.0)>
+        Sub TryGetPlot_GoodInput_Succeeds(
+            gridCenterX As Double, gridCenterY As Double, gridDiameter As Double, z0 As Double,
+            testR As Double, testX As Double, expectPlotX As Double, expectPlotY As Double)
+
+            Const Precision As Double = 0.1
+
+            Dim GridX, GridY As Double
+            Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridDiameter, z0)
+
+            If Not SmithCirc.GetPlotXY(testR, testX, GridX, GridY) Then
+                Assert.True(False)
+            End If
+
+            Assert.Equal(expectPlotX, GridX, Precision)
+            Assert.Equal(expectPlotY, GridY, Precision)
+
+        End Sub
+
+        '        <Theory>
+        '        <InlineData(4.0, 5.0, 4.0, 1.0, 0.0)> ' NormR=0
+        '        <InlineData(4.0, 5.0, 4.0, 1.0, -2.0)> ' NormR<=0
+        '        Sub TryGetPlot_BadInput_Fails(gridCenterX As Double, gridCenterY As Double, gridDiameter As Double,
+        '                                  z0 As Double, testR As Double)
+
+        '            Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridDiameter, z0)
+        '            Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
+        '            Sub()
+        '                ' Code that throws the exception
+        '                Dim RadiusAns As Double = SmithCirc.GetRadiusR(testR)
+        '            End Sub)
+        '        End Sub
+
+    End Class ' TestGetPlotXY
+
+
 End Namespace ' GeometryTests

@@ -80,7 +80,7 @@ Public Structure Impedance
     Const MSGVMBGTZ As System.String = "Must be a positive, non-zero value."
     Const MSGVMBGTE1 As System.String = "Must be greater than or equal to 1."
     Const MSGNOSTR As System.String = "Cannot be Null/Nothing."
-    Const MSGNIIC As System.String = "Invalid intersection count."
+    Const MSGIIC As System.String = "Invalid intersection count."
 
 #Region "Fields and Properties"
 
