@@ -258,11 +258,12 @@ Namespace GeometryTests
         <InlineData(4.0, 5.0, 4.0, 1, 1, 2, 5.0, 6.0)>
         <InlineData(4.0, 5.0, 4.0, 1, 1, 0, 4.0, 5.0)>
         <InlineData(4.0, 5.0, 4.0, 1, 3, 0, 5.0, 5.0)>
-        <InlineData(4.0, 5.0, 4.0, 1, 2, -2, 5.0, 4.0)>
+        <InlineData(4.0, 5.0, 4.0, 1, 2, -2, 5.075, 4.385)>
         Sub TryGetPlot_GoodInput_Succeeds(
             gridCenterX As Double, gridCenterY As Double, gridDiameter As Double, z0 As Double,
             testR As Double, testX As Double, expectPlotX As Double, expectPlotY As Double)
 
+            ' This loose precision may be needed due to the use of PointF in GetPlotXY.
             Const Precision As Double = 0.1
 
             Dim GridX, GridY As Double
@@ -277,19 +278,19 @@ Namespace GeometryTests
 
         End Sub
 
-        '        <Theory>
-        '        <InlineData(4.0, 5.0, 4.0, 1.0, 0.0)> ' NormR=0
-        '        <InlineData(4.0, 5.0, 4.0, 1.0, -2.0)> ' NormR<=0
-        '        Sub TryGetPlot_BadInput_Fails(gridCenterX As Double, gridCenterY As Double, gridDiameter As Double,
-        '                                  z0 As Double, testR As Double)
+        <Theory>
+        <InlineData(4.0, 5.0, 4.0, 1.0, 0.0)> ' NormR=0
+        <InlineData(4.0, 5.0, 4.0, 1.0, -2.0)> ' NormR<=0
+        Public Sub TryGetPlot_BadInput_Fails(gridCenterX As Double, gridCenterY As Double, gridDiameter As Double,
+                                             z0 As Double, testR As Double)
 
-        '            Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridDiameter, z0)
-        '            Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
-        '            Sub()
-        '                ' Code that throws the exception
-        '                Dim RadiusAns As Double = SmithCirc.GetRadiusR(testR)
-        '            End Sub)
-        '        End Sub
+            Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridDiameter, z0)
+            Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
+            Sub()
+                ' Code that throws the exception
+                Dim RadiusAns As Double = SmithCirc.GetRadiusR(testR)
+            End Sub)
+        End Sub
 
     End Class ' TestGetPlotXY
 

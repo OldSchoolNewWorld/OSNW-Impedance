@@ -456,19 +456,19 @@ Public Class SmithMainCircle
                     NameOf(resistance), Impedance.MSGVMBGTZ)
             End If
 
+            ' Calculate values relative to the host outer circle.
+            ' Then populate values relative to the Cartesian grid.
+
             ' Create the R-circle that passes through the impedance plot.
             Dim RCirc As New RCircle(Me, resistance)
 
             If reactance.Equals(0.0) Then
-                ' The circle intersection approach below will not work due to
-                ' the infinite radius of the X-circle.
+                ' The circle intersection approach further below will not work
+                ' due to the infinite radius of the X-circle.
                 plotX = Me.GridRightEdgeX - RCirc.GridDiameter
                 plotY = Me.GridCenterY
                 Return True
             End If
-
-            ' Calculate values relative to the host outer circle.
-            ' Then populate values relative to the Cartesian grid.
 
             ' Create the X-circle that passes through the impedance plot.
             ' Then find the intercections of the two circles.
@@ -477,46 +477,22 @@ Public Class SmithMainCircle
                 Of System.Drawing.PointF) =
                 GenericCircle.GetIntersections(RCirc, XCirc)
 
-            ' Most R- and X-circles will intersect at two distinct points,
-            ' with one above, and one below, the resonance line. When X=0.0,
-            ' expect two duplicate points.
+            ' The R- and X-circles will intersect at two distinct points, with
+            ' one above, and one below, the resonance line.
             If Intersections.Count <> 2 Then
                 'Dim CaughtBy As System.Reflection.MethodBase =
                 '    System.Reflection.MethodBase.GetCurrentMethod
                 Throw New System.ApplicationException(Impedance.MSGIIC)
             End If
 
-            '' Assign the values.
-            'If reactance < 0.0 Then
-            '    ' Expect an intersection below the resonance line.
-            '    If Intersections(0).Y < Me.GridCenterY Then
-            '        plotX = Intersections(0).X
-            '        plotY = Intersections(0).Y
-            '    Else
-            '        plotX = Intersections(1).X
-            '        plotY = Intersections(1).Y
-            '    End If
-            'Else
-            '    ' Expect an intersection above, or on, the resonance line.
-            '    If Intersections(0).Y >= Me.GridCenterY Then
-            '        plotX = Intersections(0).X
-            '        plotY = Intersections(0).Y
-            '    Else
-            '        plotX = Intersections(1).X
-            '        plotY = Intersections(1).Y
-            '    End If
-            'End If
-
-
-
             ' Assign the values.
             ' One intersection will be at the open circuit point; the other will
-            ' be the solution. Due to the use of doubles, and maybe not finding
-            ' a Y value exactly on the resonance line, assume the closest Y to
-            ' be the one on the resonance line.
-            Dim Diff0 As System.Double = System.Math.Abs(Intersections(0).Y - Me.GridCenterY)
-            Dim Diff1 As System.Double = System.Math.Abs(Intersections(1).Y - Me.GridCenterY)
-            If Diff0 < Diff1 Then
+            ' be the solution. Due to the use of floating point values, and
+            ' maybe not finding a Y value exactly on the resonance line, assume
+            ' the closest Y to be the one on the resonance line.
+            If System.Math.Abs(Intersections(0).Y - Me.GridCenterY) <
+                System.Math.Abs(Intersections(1).Y - Me.GridCenterY) Then
+
                 plotX = Intersections(1).X
                 plotY = Intersections(1).Y
             Else
