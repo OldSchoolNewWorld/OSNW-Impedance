@@ -259,7 +259,7 @@ Namespace GeometryTests
         <InlineData(4.0, 5.0, 4.0, 1, 1, 0, 4.0, 5.0)>
         <InlineData(4.0, 5.0, 4.0, 1, 3, 0, 5.0, 5.0)>
         <InlineData(4.0, 5.0, 4.0, 1, 2, -2, 5.075, 4.385)>
-        Sub TryGetPlot_GoodInput_Succeeds(
+        Sub TryGetXYPlot_GoodInput_Succeeds(
             gridCenterX As Double, gridCenterY As Double, gridDiameter As Double, z0 As Double,
             testR As Double, testX As Double, expectPlotX As Double, expectPlotY As Double)
 
@@ -281,8 +281,8 @@ Namespace GeometryTests
         <Theory>
         <InlineData(4.0, 5.0, 4.0, 1.0, 0.0)> ' NormR=0
         <InlineData(4.0, 5.0, 4.0, 1.0, -2.0)> ' NormR<=0
-        Public Sub TryGetPlot_BadInput_Fails(gridCenterX As Double, gridCenterY As Double, gridDiameter As Double,
-                                             z0 As Double, testR As Double)
+        Public Sub TryGetPlotXY_BadInput_Fails(gridCenterX As Double, gridCenterY As Double, gridDiameter As Double,
+                                               z0 As Double, testR As Double)
 
             Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridDiameter, z0)
             Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
@@ -293,6 +293,5 @@ Namespace GeometryTests
         End Sub
 
     End Class ' TestGetPlotXY
-
 
 End Namespace ' GeometryTests
