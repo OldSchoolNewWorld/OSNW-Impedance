@@ -591,11 +591,9 @@ Public Class RCircle
         Try
             ' Calculate values relative to the host outer circle.
             ' Then populate values relative to the Cartesian grid.
-            With Me
-                gridRadius = .MainCircle.GetRadiusR(.Resistance)
-                gridCenterX = .MainCircle.GridRightEdgeX - .GridRadius
-                gridCenterY = .MainCircle.GridCenterY
-            End With
+            gridRadius = Me.MainCircle.GetRadiusR(Me.Resistance)
+            gridCenterX = Me.MainCircle.GridRightEdgeX - gridRadius
+            gridCenterY = Me.MainCircle.GridCenterY
             Return True
         Catch ex As Exception
             Return False
@@ -790,11 +788,9 @@ Public Class GCircle
         Try
             ' Calculate values relative to the host outer circle.
             ' Then populate values relative to the Cartesian grid.
-            With Me
-                .GridRadius = .MainCircle.GetRadiusX(.Conductance)
-                .GridCenterX = .MainCircle.GridLeftEdgeX
-                .GridCenterY = .MainCircle.GridCenterY
-            End With
+            gridRadius = Me.MainCircle.GetRadiusG(Me.Conductance)
+            gridCenterX = Me.MainCircle.GridLeftEdgeX + gridRadius
+            gridCenterY = Me.MainCircle.GridCenterY
             Return True
         Catch ex As Exception
             Return False
@@ -811,24 +807,13 @@ Public Class GCircle
     ''' constructed, to set the basic properties.
     ''' </remarks>
     Public Sub SetCircleBasics()
-
-        Dim GridCenterX As System.Double
-        Dim GridCenterY As System.Double
-        Dim GridRadius As System.Double
-
-        If Not Me.TryGetCircleBasics(GridCenterX, GridCenterY, GridRadius) Then
+        If Not Me.TryGetCircleBasics(
+            Me.GridCenterX, Me.GridCenterY, Me.GridRadius) Then
             Dim CaughtBy As System.Reflection.MethodBase =
                 System.Reflection.MethodBase.GetCurrentMethod
             Throw New System.InvalidOperationException(
                 $"Failed to process {CaughtBy}.")
         End If
-
-        With Me
-            .GridCenterX = GridCenterX
-            .GridCenterY = GridCenterY
-            .GridRadius = GridRadius
-        End With
-
     End Sub ' SetCircleBasics
 
     ''' <summary>
@@ -855,6 +840,7 @@ Public Class GCircle
 
         Me.m_MainCircle = mainCircle
         Me.m_Conductance = conductance
+        Me.SetCircleBasics()
 
     End Sub ' New
 

@@ -179,32 +179,6 @@ Namespace GeometryTests
     Public Class TestGetIntersections
 
         <Theory>
-        <InlineData(2.0, 8.0, 1.5, 2.5, 8.5, 0.5)>
-        Sub GetIntersections_Inside_NoIntersections(
-            c1X As Double, c1Y As Double, c1R As Double,
-            c2X As Double, c2Y As Double, c2R As Double)
-
-            ' Testing via GetIntersections(otherCircle As GenericCircle) exercises all three overloads.
-            Dim C1 As New GenericCircle(c1X, c1Y, c1R)
-            Dim C2 As New GenericCircle(c2X, c2Y, c2R)
-            Dim Intersections As System.Collections.Generic.List(Of System.Drawing.PointF) = C1.GetIntersections(C2)
-            Assert.Equal(0, Intersections.Count)
-        End Sub
-
-        <Theory>
-        <InlineData(2.0, 8.0, 1.5, 4.0, 8.5, 0.5)>
-        Sub GetIntersections_Outside_NoIntersections(
-            c1X As Double, c1Y As Double, c1R As Double,
-            c2X As Double, c2Y As Double, c2R As Double)
-
-            ' Testing via GetIntersections(otherCircle As GenericCircle) exercises all three overloads.
-            Dim C1 As New GenericCircle(c1X, c1Y, c1R)
-            Dim C2 As New GenericCircle(c2X, c2Y, c2R)
-            Dim Intersections As System.Collections.Generic.List(Of System.Drawing.PointF) = C1.GetIntersections(C2)
-            Assert.Equal(0, Intersections.Count)
-        End Sub
-
-        <Theory>
         <InlineData(2.0, 8.0, 1.5, 3.5, 9.0, 1, 3.5, 8, 2.5769, 9.3846)>
         <InlineData(3.5, 9.0, 1, 2.0, 8.0, 1.5, 2.5769, 9.3846, 3.5, 8)>
         Sub GetIntersections_TwoIntersections_Succeeds(
@@ -249,16 +223,42 @@ Namespace GeometryTests
             Assert.Equal(expect2y, Intersections(1).Y, 0.01)
         End Sub
 
+        <Theory>
+        <InlineData(2.0, 8.0, 1.5, 2.5, 8.5, 0.5)>
+        Sub GetIntersections_Inside_NoIntersections(
+            c1X As Double, c1Y As Double, c1R As Double,
+            c2X As Double, c2Y As Double, c2R As Double)
+
+            ' Testing via GetIntersections(otherCircle As GenericCircle) exercises all three overloads.
+            Dim C1 As New GenericCircle(c1X, c1Y, c1R)
+            Dim C2 As New GenericCircle(c2X, c2Y, c2R)
+            Dim Intersections As System.Collections.Generic.List(Of System.Drawing.PointF) = C1.GetIntersections(C2)
+            Assert.Equal(0, Intersections.Count)
+        End Sub
+
+        <Theory>
+        <InlineData(2.0, 8.0, 1.5, 4.0, 8.5, 0.5)>
+        Sub GetIntersections_Outside_NoIntersections(
+            c1X As Double, c1Y As Double, c1R As Double,
+            c2X As Double, c2Y As Double, c2R As Double)
+
+            ' Testing via GetIntersections(otherCircle As GenericCircle) exercises all three overloads.
+            Dim C1 As New GenericCircle(c1X, c1Y, c1R)
+            Dim C2 As New GenericCircle(c2X, c2Y, c2R)
+            Dim Intersections As System.Collections.Generic.List(Of System.Drawing.PointF) = C1.GetIntersections(C2)
+            Assert.Equal(0, Intersections.Count)
+        End Sub
+
     End Class ' TestGetIntersections
 
     Public Class TestGetPlotXY
 
         <Theory>
-        <InlineData(4.0, 5.0, 4.0, 1, 1, 1, 4.4, 5.8)>
-        <InlineData(4.0, 5.0, 4.0, 1, 1, 2, 5.0, 6.0)>
-        <InlineData(4.0, 5.0, 4.0, 1, 1, 0, 4.0, 5.0)>
-        <InlineData(4.0, 5.0, 4.0, 1, 3, 0, 5.0, 5.0)>
-        <InlineData(4.0, 5.0, 4.0, 1, 2, -2, 5.075, 4.385)>
+        <InlineData(4.0, 5.0, 4.0, 1, 1, 1, 4.4, 5.8)> ' NormR above resonance line.
+        <InlineData(4.0, 5.0, 4.0, 1, 1, 2, 5.0, 6.0)> ' NormR above resonance line.
+        <InlineData(4.0, 5.0, 4.0, 1, 1, 0, 4.0, 5.0)> ' NormR at center point.
+        <InlineData(4.0, 5.0, 4.0, 1, 3, 0, 5.0, 5.0)> ' NormR on resonance line.
+        <InlineData(4.0, 5.0, 4.0, 1, 2, -2, 5.075, 4.385)> ' NormRBelow resonance line.
         Sub TryGetXYPlot_GoodInput_Succeeds(
             gridCenterX As Double, gridCenterY As Double, gridDiameter As Double, z0 As Double,
             testR As Double, testX As Double, expectPlotX As Double, expectPlotY As Double)

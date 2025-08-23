@@ -304,12 +304,38 @@ Partial Public Structure Impedance
         ByRef transformations As Transformation()) _
         As System.Boolean
 
-        ''Dim NormR As System.Double = Me.Resistance / z0
-        ''Dim NormX As System.Double = Me.Reactance / z0
-        ''Dim Y0 As System.Double = 1.0 / z0
-        ''Dim Y As Admittance = Me.ToAdmittance()
-        'Dim NormG As System.Double = Y.Conductance / Y0
-        ''Dim NormB As System.Double = Y.Susceptance / Y0
+        Dim NormR As System.Double = Me.Resistance / z0
+        'Dim NormX As System.Double = Me.Reactance / z0
+        Dim Y0 As System.Double = 1.0 / z0
+        Dim Y As Admittance = Me.ToAdmittance()
+        Dim NormG As System.Double = Y.Conductance / Y0
+        'Dim NormB As System.Double = Y.Susceptance / Y0
+
+        ' The first move will be to the intersection of the R- and X-circles
+        ' that contain the load impedance.
+
+        Dim MainCirc As New SmithMainCircle(1.0, 1.0, 1.0, 1.0) ' Arbitrary.
+        Dim CircR As New RCircle(MainCirc, NormR)
+        Dim CircG As New GCircle(MainCirc, NormG)
+        Dim Intersections _
+            As System.Collections.Generic.List(Of System.Drawing.PointF) =
+            GenericCircle.GetIntersections(CircR, CircG)
+
+        ' The R- and G-circles will intersect at two distinct points, with
+        ' one above, and one below, the resonance line.
+        If Intersections.Count <> 2 Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ApplicationException(Impedance.MSGIIC)
+        End If
+
+
+
+
+
+
+
+
 
         ''
         ''

@@ -227,7 +227,7 @@ Namespace TrySelectTuningLayoutTests
             'xxxx
 
 
-
+            ' Assert.True(False)
         End Sub
 
         '<Fact>
@@ -245,6 +245,7 @@ Namespace TrySelectTuningLayoutTests
 
 
 
+        ' Assert.True(False)
         'End Sub
 
     End Class ' TestTrySelectTuningLayoutF
