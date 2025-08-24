@@ -508,6 +508,38 @@ Public Class SmithMainCircle
 
     Public Function GetZFromPlot(PlotX As System.Double, PlotY As System.Double) As Impedance
 
+        Dim Resistance As System.Double
+        Dim RadiusR As System.Double
+
+        If PlotY.Equals(Me.GridCenterY) Then
+            ' On the resonance line.
+            '            Resistance = Me.Z0 * ((Me.GridRadius / (Me.GridRightEdgeX - PlotX)) - 1)
+
+
+            RadiusR = (Me.GridRightEdgeX - PlotX) / 2.0
+
+            ' From GetRadiusR
+            '     RadiusR = Me.GridRadius / ((resistance / Me.Z0) + 1)
+            '     RadiusR * ((resistance / Me.Z0) + 1) = Me.GridRadius
+            '     (resistance / Me.Z0) + 1 = Me.GridRadius / RadiusR
+            '     resistance / Me.Z0 = (Me.GridRadius / RadiusR) - 1
+            Resistance = Me.Z0 * ((Me.GridRadius / RadiusR) - 1)
+
+
+
+
+
+            Return New Impedance(Resistance, 0.0)
+
+
+
+
+
+        End If
+
+
+
+
         '' A line passing through both the plot and the open-circuit point
         '' creates a chord of both the R- and X-circles. Bisect that chord.
         'Dim MidX As System.Double = (PlotX + Me.GridRightEdgeX) / 2.0
@@ -559,27 +591,27 @@ Public Class SmithMainCircle
 
 
 
+        ' Use the intercepts to find the radii of the circles?
+        RadiusR = Me.GridRightEdgeX - RCircCrossX
+        Dim RadiusX As System.Double = System.Math.Abs(XCircCtrY - Me.GridCenterY)
+
+        ' Use the radii to find the resistance and reactance.
+        ' From GetRadiusX
+        '     RadiusX = Me.Z0 * Me.GridRadius / Math.Abs(reactance)
+        '     RadiusX * Math.Abs(reactance) = Me.Z0 * Me.GridRadius
+        '     Math.Abs(reactance) = (Me.Z0 * Me.GridRadius) / RadiusX
+        Dim Reactance As System.Double =
+            (Me.Z0 * Me.GridRadius) / RadiusX
+        ' Determine the sign of the reactance.
+        If PlotY < Me.GridCenterY Then
+            Reactance = -Reactance
+        End If
+
+        Return New Impedance(Resistance, Reactance)
 
 
 
 
-
-        ''
-        ''
-        '' XXXXX WHAT NEXT? XXXXX
-        '' Use the intercepts to find the radii of the circles?
-        '' Then use the radii to find the resistance and reactance?
-        ''
-        ''
-
-
-        '
-        '
-        '
-        '
-        '
-
-        Throw New NotImplementedException()
     End Function ' GetZFromPlot
 
     ''' <summary>
