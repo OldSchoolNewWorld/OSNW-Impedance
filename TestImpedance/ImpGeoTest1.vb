@@ -294,4 +294,34 @@ Namespace GeometryTests
 
     End Class ' TestGetPlotXY
 
+    Public Class TestGetZFromPlot
+
+        <Theory>
+        <InlineData(4.0, 5.0, 4.0, 1, 4.4, 5.8, 1, 1)> ' NormR above resonance line.
+        <InlineData(4.0, 5.0, 4.0, 1, 4.703, 5.218, 1, 2)> ' NormR above resonance line.
+        <InlineData(4.0, 5.0, 4.0, 1, 4.0, 5.0, 1, 0)> ' NormR at center point.
+        <InlineData(4.0, 5.0, 4.0, 1, 5.0, 5.0, 3, 0)> ' NormR on resonance line.
+        <InlineData(4.0, 5.0, 4.0, 1, 5.075, 4.385, 2, -2)> ' NormRBelow resonance line.
+        Public Sub GetZFromPlot_GoodInput_Succeeds(
+            gridCenterX As Double, gridCenterY As Double, gridDiameter As Double, z0 As Double,
+            plotX As Double, plotY As Double,
+            expectR As Double, expectX As Double)
+            Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridDiameter, z0)
+            Dim ZAns As Impedance = SmithCirc.GetZFromPlot(plotX, plotY)
+            Assert.Equal(expectR, ZAns.Resistance)
+            Assert.Equal(expectX, ZAns.Reactance)
+        End Sub
+
+        <Fact>
+        Public Sub GetZFromPlot_BadInput_Fails()
+            '
+            ' TRY GetZFromPlot WITH POINT OUTSIDE CIRCLE
+            '
+            '
+            '
+            Assert.True(False)
+        End Sub
+
+    End Class ' TestGetZFromPlot
+
 End Namespace ' GeometryTests

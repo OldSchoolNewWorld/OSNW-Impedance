@@ -506,6 +506,52 @@ Public Class SmithMainCircle
         End Try
     End Function ' GetPlotXY
 
+    Public Function GetZFromPlot(PlotX As System.Double, PlotY As System.Double) As Impedance
+
+        ' A line passing through both the plot and the open-circuit point
+        ' creates a chord of both the R- and X-circles. Bisect that chord.
+        Dim MidX As System.Double = (PlotX + Me.GridRightEdgeX) / 2.0
+        Dim MidY As System.Double = (PlotY + Me.GridCenterY) / 2.0
+
+        ' Determine the slope of the chord.
+        Dim DeltaX As System.Double = Me.GridRightEdgeX - PlotX
+        Dim DeltaY As System.Double = Me.GridCenterY - PlotY
+        Dim ChordSlope As System.Double = DeltaY / DeltaX
+
+        ' Determine the slope of a perpendicular bisector.
+        Dim PerpSlope As System.Double = -DeltaX / DeltaY
+
+        ' Use the standard y-y1=m(x-x1) equation to determine the Y-intercept of
+        ' the perpendicular bisector. The midpoint is on that line. Substitute
+        ' MidY for y1, PerpSlope for m, and MidX for x1. Solve for X at the
+        ' right edge.
+        '     y - y1 = m(x - x1)
+        '     y = (m * (x - x1)) + y1
+        '     y = (PerpSlope * (Me.GridRightEdgeX - MidX)) + MidY
+        Dim YIntercept As System.Double =
+            (PerpSlope * (Me.GridRightEdgeX - MidX)) + MidY
+
+        ' Use the standard y-y1=m(x-x1) equation to determine the X-intercept of
+        ' the perpendicular bisector. The midpoint is on that line. Substitute
+        ' MidY for y1, PerpSlope for m, and MidX for x1. Solve for Y at the
+        ' resonance line.
+        '     y - y1 = m(x - x1)
+        '     (y - y1) / m = x - x1
+        '     ((y - y1) / m) + x1 = x
+        Dim XIntercept As System.Double = ((Me.GridCenterY - MidY) / PerpSlope) + MidX
+
+
+
+
+        '
+        '
+        '
+        '
+        '
+
+        Throw New NotImplementedException()
+    End Function ' GetZFromPlot
+
     ''' <summary>
     ''' Creates a new instance of the <c>SmithMainCircle</c> class with the
     ''' specified center coordinates, diameter, and characteristic impedance.

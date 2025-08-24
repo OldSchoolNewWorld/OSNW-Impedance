@@ -15,7 +15,7 @@ Imports OSNW.Numerics.ComplexExtensions
 '''   Y is the admittance (siemens);
 '''   G is the conductance (siemens);
 '''   B is the susceptance (siemens); and
-'''   j^2 = −1, the imaginary unit.
+'''   j^2 = -1, the imaginary unit.
 ''' </summary>
 Public Structure Admittance
     Implements IEquatable(Of Admittance), IFormattable

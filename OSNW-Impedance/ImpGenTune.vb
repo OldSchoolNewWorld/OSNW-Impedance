@@ -2,6 +2,9 @@
 Option Strict On
 Option Compare Binary
 Option Infer Off
+Imports System.Runtime.InteropServices
+
+
 
 ' The generic tuning process is intended to be able to select a method to obtain
 ' a conjugate match for a load impedance to a source characteristic impedance.
@@ -321,16 +324,37 @@ Partial Public Structure Impedance
             As System.Collections.Generic.List(Of System.Drawing.PointF) =
             GenericCircle.GetIntersections(CircR, CircG)
 
-        ' The R- and G-circles will intersect at two distinct points, with
-        ' one above, and one below, the resonance line.
+        ' THESE CHECKS CAN BE DELETED AFTER THE GetIntersections RESULTS ARE KNOWN TO BE CORRECT.
+        ' There should now be two intersection points, with one above, and one
+        ' below, the resonance line.
+        ' The X values should match.
+        ' The Y values should be the same distance above and below the resonance line.
         If Intersections.Count <> 2 Then
             'Dim CaughtBy As System.Reflection.MethodBase =
             '    System.Reflection.MethodBase.GetCurrentMethod
             Throw New System.ApplicationException(Impedance.MSGIIC)
         End If
 
+        If Not (System.Math.Abs(Intersections(1).Y - MainCirc.GridCenterY)).Equals(
+            System.Math.Abs(Intersections(0).Y - MainCirc.GridCenterY)) Then
+
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ApplicationException("Y offsets do not match.")
+        End If
+
+        ' There are now two intersection points, with one each above and below
+        ' the resonance line. The X values match. The Y values are the same
+        ' distance above and below the resonance line.
 
 
+
+        ''
+        ''
+        '' XXXXX WHAT NEXT? XXXXX
+
+        ' Determine Z at either intersection.
+        Dim Z1 As Impedance = MainCirc.GetZFromPlot(Intersections(0).X, Intersections(0).Y)
 
 
 

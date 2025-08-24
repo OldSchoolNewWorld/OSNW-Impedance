@@ -52,7 +52,7 @@ Imports System.Text.Json.Serialization
 '''   Z is the impedance (ohms);
 '''   R is the resistance (ohms);
 '''   X is the reactance (ohms); and
-'''   j^2 = −1, the imaginary unit.
+'''   j^2 = -1, the imaginary unit.
 ''' </summary>
 Public Structure Impedance
     Implements IEquatable(Of Impedance), IFormattable
