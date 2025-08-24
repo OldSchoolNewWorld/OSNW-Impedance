@@ -528,56 +528,53 @@ Public Class SmithMainCircle
 
         End If
 
-        ' A line passing through both the plot and the open-circuit point
-        ' creates a chord of both the R- and X-circles. Bisect that chord.
-        Dim MidX As System.Double = (PlotX + Me.GridRightEdgeX) / 2.0
-        Dim MidY As System.Double = (PlotY + Me.GridCenterY) / 2.0
+        '' A line passing through both the plot and the open-circuit point
+        '' creates a chord of both the R- and X-circles. Bisect that chord.
+        'Dim MidX As System.Double = (PlotX + Me.GridRightEdgeX) / 2.0
+        'Dim MidY As System.Double = (PlotY + Me.GridCenterY) / 2.0
 
-        ' Determine the slope of the chord.
-        Dim DeltaX As System.Double = Me.GridRightEdgeX - PlotX
-        Dim DeltaY As System.Double = Me.GridCenterY - PlotY
-        '        Dim ChordSlope As System.Double = DeltaY / DeltaX
-        ' Determine the slope of a perpendicular bisector.
-        Dim PerpSlope As System.Double = -DeltaX / DeltaY
+        '' Determine the slope of the chord.
+        'Dim DeltaX As System.Double = Me.GridRightEdgeX - PlotX
+        'Dim DeltaY As System.Double = Me.GridCenterY - PlotY
+        ''        Dim ChordSlope As System.Double = DeltaY / DeltaX
+        '' Determine the slope of a perpendicular bisector.
+        'Dim PerpSlope As System.Double = -DeltaX / DeltaY
 
-        ' Determine where the perpendicular bisector crosses the right edge. Use
-        ' the standard y=mx+b equation to determine the Y-intercept (with the
-        ' main grid) of the perpendicular bisector. The midpoint of the bisector
-        ' is on that line.
-        '    y = mx + b
-        '    y - mx = b
-        Dim YIntercept As System.Double = MidY - (PerpSlope * MidX)
+        '' Determine where the perpendicular bisector crosses the right edge. Use
+        '' the standard y=mx+b equation to determine the Y-intercept (with the
+        '' main grid) of the perpendicular bisector. The midpoint of the bisector
+        '' is on that line.
+        ''    y = mx + b
+        ''    y - mx = b
+        'Dim YIntercept As System.Double = MidY - (PerpSlope * MidX)
 
-        ' The perpendicular bisector line is now defined by:
-        '    y = mx + b
-        '    y = (PerpSlope * x) + YIntercept
-        ' Solve for when x is at the right edge to find the point that is the
-        ' center of the X-circle..
-        Dim XCircCtrY As System.Double =
-            (PerpSlope * Me.GridRightEdgeX) + YIntercept
-
-        ' Solve the same equation for when y is on the resonance line, to find
-        ' the point where the perpendicular bisector intersects the resonance
-        ' line.
-        '    y = (PerpSlope * x) + YIntercept
-        '    Me.GridCenterY = (PerpSlope * x) + YIntercept
-        '    Me.GridCenterY - YIntercept = PerpSlope * x
-        '    (Me.GridCenterY - YIntercept) / PerpSlope = x
-        Dim PerpCrossRes As System.Double = (Me.GridCenterY - YIntercept) / PerpSlope
-
-        '' Consolidated version of the above.
-        'Dim PerpSlope As System.Double =
-        '    (PlotX - Me.GridRightEdgeX) / (Me.GridCenterY - PlotY)
-        'Dim YIntercept As System.Double =
-        '    ((PlotY + Me.GridCenterY) / 2.0) -
-        '    (PerpSlope * ((PlotX + Me.GridRightEdgeX) / 2.0))
+        '' The perpendicular bisector line is now defined by:
+        ''    y = mx + b
+        ''    y = (PerpSlope * x) + YIntercept
+        '' Solve for when x is at the right edge to find the point that is the
+        '' center of the X-circle..
         'Dim XCircCtrY As System.Double =
         '    (PerpSlope * Me.GridRightEdgeX) + YIntercept
-        'Dim RCircCrossX As System.Double =
-        '    (Me.GridCenterY - YIntercept) / PerpSlope
 
+        '' Solve the same equation for when y is on the resonance line, to find
+        '' the point where the perpendicular bisector intersects the resonance
+        '' line.
+        ''    y = (PerpSlope * x) + YIntercept
+        ''    Me.GridCenterY = (PerpSlope * x) + YIntercept
+        ''    Me.GridCenterY - YIntercept = PerpSlope * x
+        ''    (Me.GridCenterY - YIntercept) / PerpSlope = x
+        'Dim PerpCrossRes As System.Double = (Me.GridCenterY - YIntercept) / PerpSlope
 
-
+        ' Consolidated version of the above.
+        Dim PerpSlope As System.Double =
+            -(Me.GridRightEdgeX - PlotX) / (Me.GridCenterY - PlotY)
+        Dim YIntercept As System.Double =
+            ((PlotY + Me.GridCenterY) / 2.0) -
+            (PerpSlope * ((PlotX + Me.GridRightEdgeX) / 2.0))
+        Dim XCircCtrY As System.Double =
+            (PerpSlope * Me.GridRightEdgeX) + YIntercept
+        Dim PerpCrossRes As System.Double =
+            (Me.GridCenterY - YIntercept) / PerpSlope
 
         ' Use the intercepts to find the radii of the circles?
         RadiusR = Me.GridRightEdgeX - PerpCrossRes
