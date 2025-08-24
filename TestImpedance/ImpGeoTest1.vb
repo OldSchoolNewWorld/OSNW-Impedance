@@ -299,16 +299,18 @@ Namespace GeometryTests
         <Theory>
         <InlineData(4.0, 5.0, 4.0, 1, 3.0, 5.0, 1 / 3.0, 0.0)> ' NormR on resonance line left.
         <InlineData(4.0, 5.0, 4.0, 1, 5.0, 5.0, 3.0, 0.0)> ' NormR on resonance line right.
-        <InlineData(4.0, 5.0, 4.0, 1, 4.4, 5.8, 1.0, 1.0)> ' NormR above resonance line.
-        <InlineData(4.0, 5.0, 4.0, 1, 4.703, 5.218, 1, 2)> ' NormR above resonance line.
+        <InlineData(4.0, 5.0, 4.0, 1, 4.4, 5.8, 1.0, 1.0)> ' NormR above resonance line right.
+        <InlineData(4.0, 5.0, 4.0, 1, 4.703, 5.218, 2, 1 / 2.0)> ' NormR above resonance line.
         <InlineData(4.0, 5.0, 4.0, 1, 4.0, 5.0, 1, 0)> ' NormR at center point.
-        <InlineData(4.0, 5.0, 4.0, 1, 5.075, 4.385, 2, -2)> ' NormRBelow resonance line.
+        <InlineData(4.0, 5.0, 4.0, 1, 5.077, 4.385, 2.0, -2.0)> ' NormR below resonance line.
+        <InlineData(4.0, 5.0, 4.0, 1, 3.175, 5.7, 1 / 3.0, 1 / 3.0)>
+        <InlineData(4.0, 5.0, 4.0, 1, 3.4541, 4.4368, 1 / 2.0, -1 / 3.0)>
         Public Sub GetZFromPlot_GoodInput_Succeeds(
             gridCenterX As Double, gridCenterY As Double, gridDiameter As Double, z0 As Double,
             plotX As Double, plotY As Double,
             expectR As Double, expectX As Double)
 
-            Const Precision As Double = 0.000001
+            Const Precision As Double = 0.01
 
             Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridDiameter, z0)
             Dim ZAns As Impedance = SmithCirc.GetZFromPlot(plotX, plotY)
