@@ -304,6 +304,35 @@ Public Class SmithMainCircle
     End Property
 
     ''' <summary>
+    ''' Returns whether point (plotX, plotY) falls inside the outer circle.
+    ''' </summary>
+    ''' <param name="plotX">Specifies the X-coordinate of the point on the
+    ''' Smith Chart in generic "units".</param>
+    ''' <param name="plotY">Specifies the Y-coordinate of the point on the
+    ''' Smith Chart in generic "units".</param>
+    ''' <returns>Returns <c>True</c> if point (<paramref name="plotX"/>,
+    ''' <paramref name="plotY"/>) falls inside the outer circle; otherwise,
+    ''' <c>False</c>.</returns>
+    ''' <remarks>Points ON the outer circle are NOT considered to be INSIDE the
+    ''' circle.</remarks>
+    Public Function PlotXYIsInside(ByVal plotX As System.Double,
+        ByVal plotY As System.Double) As System.Boolean
+
+        'Dim FromCenter As System.Double =
+        '    System.Math.Sqrt((plotX - Me.GridCenterX) ^ 2 +
+        '        (plotY - Me.GridCenterY) ^ 2)
+        'If FromCenter >= Me.GridRadius Then
+        '    Return False
+        'End If
+        'Return True
+
+        Return System.Math.Sqrt((plotX - Me.GridCenterX) ^ 2 +
+                                (plotY - Me.GridCenterY) ^ 2) <
+            Me.GridRadius
+
+    End Function ' PlotIsInside
+
+    ''' <summary>
     ''' Calculates the radius of a R-circle associated with the current instance
     ''' for a <paramref name="resistance"/> specified in ohms.
     ''' </summary>
@@ -506,49 +535,57 @@ Public Class SmithMainCircle
         End Try
     End Function ' GetPlotXY
 
-    Public Function GetZFromPlot(PlotX As System.Double, PlotY As System.Double) As Impedance
+    ''' <summary>
+    ''' Calculates the impedance represented by a point on the Smith Chart
+    ''' defined by its Cartesian coordinates.
+    ''' </summary>
+    ''' <param name="plotX">Specifies the X-coordinate of the point on the
+    ''' Smith Chart in generic "units".</param>
+    ''' <param name="plotY">Specifies the Y-coordinate of the point on the
+    ''' Smith Chart in generic "units".</param>
+    ''' <returns>
+    ''' The impedance represented by the point on the Smith Chart.
+    ''' </returns>
+    ''' <exception cref="ArgumentOutOfRangeException">when the point defined by
+    ''' <paramref name="plotX"/> and <paramref name="plotY"/> is outside the
+    ''' main circle of the Smith Chart.</exception>
+    Public Function GetZFromPlot(
+        plotX As System.Double, plotY As System.Double) As Impedance
 
         ' Input checking.
 
-        Dim FromCenter As System.Double =
-            System.Math.Sqrt((PlotX - Me.GridCenterX) ^ 2 +
-                (PlotY - Me.GridCenterY) ^ 2)
-        If FromCenter >= Me.GridRadius Then
-            'Dim CaughtBy As System.Reflection.MethodBase =
-            '    System.Reflection.MethodBase.GetCurrentMethod
-            Dim Tail As System.String = "must be inside the Smith Chart main circle."
+        If Not Me.PlotXYIsInside(plotX, plotY) Then
+            Dim CaughtBy As System.Reflection.MethodBase =
+                System.Reflection.MethodBase.GetCurrentMethod
+            Const ErrTail As System.String =
+            "must be inside the Smith Chart main circle."
             Throw New System.ArgumentOutOfRangeException(
-                $"The point ({PlotX}, {PlotY} {Tail})")
+                $"The point ({plotX}, {plotY} {ErrTail})")
         End If
 
         Dim Resistance As System.Double
         Dim RadiusR As System.Double
 
-        ' Check special case.
-        If PlotY.Equals(Me.GridCenterY) Then
-            ' On the resonance line.
-
-            RadiusR = (Me.GridRightEdgeX - PlotX) / 2.0
-
-            ' From GetRadiusR
+        ' Check for the special case with the plot ON the resonance line.
+        If plotY.Equals(Me.GridCenterY) Then
+            ' From GetRadiusR:
             '     RadiusR = Me.GridRadius / ((resistance / Me.Z0) + 1)
             '     RadiusR * ((resistance / Me.Z0) + 1) = Me.GridRadius
             '     (resistance / Me.Z0) + 1 = Me.GridRadius / RadiusR
             '     resistance / Me.Z0 = (Me.GridRadius / RadiusR) - 1
+            RadiusR = (Me.GridRightEdgeX - plotX) / 2.0
             Resistance = Me.Z0 * ((Me.GridRadius / RadiusR) - 1)
-
             Return New Impedance(Resistance, 0.0)
-
         End If
 
         '' A line passing through both the plot and the open-circuit point
         '' creates a chord of both the R- and X-circles. Bisect that chord.
-        'Dim MidX As System.Double = (PlotX + Me.GridRightEdgeX) / 2.0
-        'Dim MidY As System.Double = (PlotY + Me.GridCenterY) / 2.0
+        'Dim MidX As System.Double = (plotX + Me.GridRightEdgeX) / 2.0
+        'Dim MidY As System.Double = (plotY + Me.GridCenterY) / 2.0
 
         '' Determine the slope of the chord.
-        'Dim DeltaX As System.Double = Me.GridRightEdgeX - PlotX
-        'Dim DeltaY As System.Double = Me.GridCenterY - PlotY
+        'Dim DeltaX As System.Double = Me.GridRightEdgeX - plotX
+        'Dim DeltaY As System.Double = Me.GridCenterY - plotY
         ''        Dim ChordSlope As System.Double = DeltaY / DeltaX
         '' Determine the slope of a perpendicular bisector.
         'Dim PerpSlope As System.Double = -DeltaX / DeltaY
@@ -576,14 +613,15 @@ Public Class SmithMainCircle
         ''    Me.GridCenterY = (PerpSlope * x) + YIntercept
         ''    Me.GridCenterY - YIntercept = PerpSlope * x
         ''    (Me.GridCenterY - YIntercept) / PerpSlope = x
-        'Dim PerpCrossRes As System.Double = (Me.GridCenterY - YIntercept) / PerpSlope
+        'Dim PerpCrossRes As System.Double =
+        '    (Me.GridCenterY - YIntercept) / PerpSlope
 
         ' Consolidated version of the above.
         Dim PerpSlope As System.Double =
-            -(Me.GridRightEdgeX - PlotX) / (Me.GridCenterY - PlotY)
+            -(Me.GridRightEdgeX - plotX) / (Me.GridCenterY - plotY)
         Dim YIntercept As System.Double =
-            ((PlotY + Me.GridCenterY) / 2.0) -
-            (PerpSlope * ((PlotX + Me.GridRightEdgeX) / 2.0))
+            ((plotY + Me.GridCenterY) / 2.0) -
+            (PerpSlope * ((plotX + Me.GridRightEdgeX) / 2.0))
         Dim XCircCtrY As System.Double =
             (PerpSlope * Me.GridRightEdgeX) + YIntercept
         Dim PerpCrossRes As System.Double =
@@ -591,39 +629,39 @@ Public Class SmithMainCircle
 
         ' Use the intercepts to find the radii of the circles?
         RadiusR = Me.GridRightEdgeX - PerpCrossRes
-        Dim RadiusX As System.Double = System.Math.Abs(XCircCtrY - Me.GridCenterY)
+        Dim RadiusX As System.Double =
+            System.Math.Abs(XCircCtrY - Me.GridCenterY)
 
         ' Use the radii to find the resistance and reactance.
 
-        ' From GetRadiusX
+        ' From GetRadiusX:
         '     RadiusX = Me.Z0 * Me.GridRadius / Math.Abs(reactance)
         '     RadiusX * Math.Abs(reactance) = Me.Z0 * Me.GridRadius
         '     Math.Abs(reactance) = (Me.Z0 * Me.GridRadius) / RadiusX
         Dim Reactance As System.Double =
             (Me.Z0 * Me.GridRadius) / RadiusX
         ' Determine the sign of the reactance.
-        If PlotY < Me.GridCenterY Then
+        If plotY < Me.GridCenterY Then
             Reactance = -Reactance
         End If
 
-        ' From GetRadiusR
+        ' From GetRadiusR:
         '     RadiusR = Me.GridRadius / ((resistance / Me.Z0) + 1)
         '     RadiusR * ((resistance / Me.Z0) + 1) = Me.GridRadius
         '     (resistance / Me.Z0) + 1 = Me.GridRadius / RadiusR
         '     resistance / Me.Z0 = (Me.GridRadius / RadiusR) - 1
         Resistance = Me.Z0 * ((Me.GridRadius / RadiusR) - 1)
 
-
-
-
-
-
         Return New Impedance(Resistance, Reactance)
 
-
-
-
     End Function ' GetZFromPlot
+
+    Public Function GetYFromPlot(
+        PlotX As System.Double, PlotY As System.Double) As Admittance
+
+        Dim Z As Impedance = Me.GetZFromPlot(PlotX, PlotY)
+        Return Z.ToAdmittance
+    End Function ' GetYFromPlot
 
     ''' <summary>
     ''' Creates a new instance of the <c>SmithMainCircle</c> class with the
