@@ -300,8 +300,8 @@ Namespace GeometryTests
         <InlineData(4.0, 5.0, 4.0, 1, 3.0, 5.0, 1 / 3.0, 0.0)> ' NormR on resonance line left.
         <InlineData(4.0, 5.0, 4.0, 1, 5.0, 5.0, 3.0, 0.0)> ' NormR on resonance line right.
         <InlineData(4.0, 5.0, 4.0, 1, 4.4, 5.8, 1.0, 1.0)> ' NormR above resonance line right.
-        <InlineData(4.0, 5.0, 4.0, 1, 4.703, 5.218, 2, 1 / 2.0)> ' NormR above resonance line.
-        <InlineData(4.0, 5.0, 4.0, 1, 4.0, 5.0, 1, 0)> ' NormR at center point.
+        <InlineData(4.0, 5.0, 4.0, 1, 4.703, 5.218, 2.0, 1 / 2.0)> ' NormR above resonance line.
+        <InlineData(4.0, 5.0, 4.0, 1, 4.0, 5.0, 1.0, 0.0)> ' NormR at center point.
         <InlineData(4.0, 5.0, 4.0, 1, 5.077, 4.385, 2.0, -2.0)> ' NormR below resonance line.
         <InlineData(4.0, 5.0, 4.0, 1, 3.175, 5.7, 1 / 3.0, 1 / 3.0)>
         <InlineData(4.0, 5.0, 4.0, 1, 3.4541, 4.4368, 1 / 2.0, -1 / 3.0)>
@@ -335,14 +335,10 @@ Namespace GeometryTests
     Public Class TestGetYFromPlot
 
         <Theory>
-        <InlineData(4.0, 5.0, 4.0, 1, 3.0, 5.0, 1 / 3.0, 0.0)> ' NormR on resonance line left.
-        <InlineData(4.0, 5.0, 4.0, 1, 5.0, 5.0, 3.0, 0.0)> ' NormR on resonance line right.
-        <InlineData(4.0, 5.0, 4.0, 1, 4.4, 5.8, 1.0, 1.0)> ' NormR above resonance line right.
-        <InlineData(4.0, 5.0, 4.0, 1, 4.703, 5.218, 2, 1 / 2.0)> ' NormR above resonance line.
-        <InlineData(4.0, 5.0, 4.0, 1, 4.0, 5.0, 1, 0)> ' NormR at center point.
-        <InlineData(4.0, 5.0, 4.0, 1, 5.077, 4.385, 2.0, -2.0)> ' NormR below resonance line.
-        <InlineData(4.0, 5.0, 4.0, 1, 3.175, 5.7, 1 / 3.0, 1 / 3.0)>
-        <InlineData(4.0, 5.0, 4.0, 1, 3.4541, 4.4368, 1 / 2.0, -1 / 3.0)>
+        <InlineData(4.0, 5.0, 4.0, 1, 4.0, 5.0, 1.0, 0.0)> ' NormR at center point.
+        <InlineData(4.0, 5.0, 4.0, 1, 4.4, 5.8, 0.5, -0.5)> ' NormR above resonance line right.
+        <InlineData(4.0, 5.0, 4.0, 1, 5.3841, 5.9233, 0.1, -0.3)> ' Z=1+j3.
+        <InlineData(4.0, 5.0, 4.0, 1, 5.0, 4.0, 0.2, 0.4)> ' Z=1-j2.
         Public Sub GetYFromPlot_GoodInput_Succeeds(
             gridCenterX As Double, gridCenterY As Double, gridDiameter As Double, z0 As Double,
             plotX As Double, plotY As Double,
@@ -351,22 +347,22 @@ Namespace GeometryTests
             Const Precision As Double = 0.01
 
             Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridDiameter, z0)
-            Dim ZAns As Admittance = SmithCirc.GetYFromPlot(plotX, plotY)
-            Assert.Equal(expectR, ZAns.Conductance, Precision)
-            Assert.Equal(expectX, ZAns.Susceptance, Precision)
+            Dim YAns As Admittance = SmithCirc.GetYFromPlot(plotX, plotY)
+            Assert.Equal(expectR, YAns.Conductance, Precision)
+            Assert.Equal(expectX, YAns.Susceptance, Precision)
 
         End Sub
 
         <Fact>
         Public Sub GetYFromPlot_BadInput_Fails()
-            ' Try GetYFromPlot with point outside circle.
-            Dim SmithCirc As New SmithMainCircle(4, 5, 4, 1)
-            Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
-                Sub()
-                    ' Code that throws the exception
-                    Dim ZAns As Admittance = SmithCirc.GetYFromPlot(2.5, 6.5)
-                End Sub)
-        End Sub
+        ' Try GetYFromPlot with point outside circle.
+        Dim SmithCirc As New SmithMainCircle(4, 5, 4, 1)
+        Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
+            Sub()
+                ' Code that throws the exception
+                Dim ZAns As Admittance = SmithCirc.GetYFromPlot(2.5, 6.5)
+            End Sub)
+    End Sub
 
     End Class ' TestGetYFromPlot
 
