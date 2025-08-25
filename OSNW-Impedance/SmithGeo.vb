@@ -516,9 +516,9 @@ Public Class SmithMainCircle
         If FromCenter >= Me.GridRadius Then
             'Dim CaughtBy As System.Reflection.MethodBase =
             '    System.Reflection.MethodBase.GetCurrentMethod
+            Dim Tail As System.String = "must be inside the Smith Chart main circle."
             Throw New System.ArgumentOutOfRangeException(
-                $"The point ({PlotX}, {PlotY})" &
-                " must be intside the Smith Chart main circle.")
+                $"The point ({PlotX}, {PlotY} {Tail})")
         End If
 
         Dim Resistance As System.Double
