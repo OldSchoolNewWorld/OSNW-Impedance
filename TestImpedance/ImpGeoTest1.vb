@@ -321,12 +321,13 @@ Namespace GeometryTests
 
         <Fact>
         Public Sub GetZFromPlot_BadInput_Fails()
-            '
-            ' TRY GetZFromPlot WITH POINT OUTSIDE CIRCLE
-            '
-            '
-            '
-            Assert.True(False)
+            ' Try GetZFromPlot with point outside circle.
+            Dim SmithCirc As New SmithMainCircle(4, 5, 4, 1)
+            Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
+                Sub()
+                    ' Code that throws the exception
+                    Dim ZAns As Impedance = SmithCirc.GetZFromPlot(2.5, 6.5)
+                End Sub)
         End Sub
 
     End Class ' TestGetZFromPlot

@@ -31,14 +31,12 @@ Namespace DevelopmentTests
 
         <Fact>
         Public Sub ToString_NegativeConductance_Fails()
-
             Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
                 Sub()
                     ' Code that throws the exception
                     Dim Y As New OSNW.Numerics.Admittance(-1.125, 5.675)
                     Dim AdmtStr As String = Y.ToString()
                 End Sub)
-
         End Sub
 
     End Class ' TestUnitTestExceptions

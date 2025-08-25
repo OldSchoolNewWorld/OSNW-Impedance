@@ -446,15 +446,15 @@ Public Class SmithMainCircle
         ByVal reactance As System.Double, ByRef plotX As System.Double,
         ByRef plotY As System.Double) As System.Boolean
 
-        Try
-
-            ' Input checking.
-            If resistance <= 0.0 Then
-                'Dim CaughtBy As System.Reflection.MethodBase =
-                '    System.Reflection.MethodBase.GetCurrentMethod
-                Throw New System.ArgumentOutOfRangeException(
+        ' Input checking.
+        If resistance <= 0.0 Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(
                     NameOf(resistance), Impedance.MSGVMBGTZ)
-            End If
+        End If
+
+        Try
 
             ' Calculate values relative to the host outer circle.
             ' Then populate values relative to the Cartesian grid.
@@ -507,6 +507,19 @@ Public Class SmithMainCircle
     End Function ' GetPlotXY
 
     Public Function GetZFromPlot(PlotX As System.Double, PlotY As System.Double) As Impedance
+
+        ' Input checking.
+
+        Dim FromCenter As System.Double =
+            System.Math.Sqrt((PlotX - Me.GridCenterX) ^ 2 +
+                (PlotY - Me.GridCenterY) ^ 2)
+        If FromCenter >= Me.GridRadius Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(
+                $"The point ({PlotX}, {PlotY})" &
+                " must be intside the Smith Chart main circle.")
+        End If
 
         Dim Resistance As System.Double
         Dim RadiusR As System.Double
@@ -581,6 +594,7 @@ Public Class SmithMainCircle
         Dim RadiusX As System.Double = System.Math.Abs(XCircCtrY - Me.GridCenterY)
 
         ' Use the radii to find the resistance and reactance.
+
         ' From GetRadiusX
         '     RadiusX = Me.Z0 * Me.GridRadius / Math.Abs(reactance)
         '     RadiusX * Math.Abs(reactance) = Me.Z0 * Me.GridRadius
@@ -591,9 +605,6 @@ Public Class SmithMainCircle
         If PlotY < Me.GridCenterY Then
             Reactance = -Reactance
         End If
-
-
-
 
         ' From GetRadiusR
         '     RadiusR = Me.GridRadius / ((resistance / Me.Z0) + 1)
