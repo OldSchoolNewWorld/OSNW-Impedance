@@ -10,16 +10,23 @@ Namespace GeometryTests
 
     Public Class TestGetRadiusR
 
+        '<InlineData(GridX, GridY, Radius, Z0, R, RadiusR)>
         <Theory>
-        <InlineData(4.0, 8.0, 4.0, 1.0, 3.0, 0.5)> ' NormR=3
-        <InlineData(4.0, 8.0, 4.0, 50.0, 100.0, 2.0 / 3.0)> ' NormR=2
-        <InlineData(4.0, 8.0, 4.0, 1.0, 1.0, 1.0)> ' NormR=1
-        <InlineData(4.0, 8.0, 4.0, 1.0, 0.5, 4.0 / 3.0)> ' NormR=1/2
-        <InlineData(4.0, 8.0, 4.0, 75.0, 25.0, 1.5)> ' NormR=1/3
-        Sub GetRadiusR_GoodInput_Succeeds(gridCenterX As Double, gridCenterY As Double, gridDiameter As Double,
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 3.0, 1.5)>
+        <InlineData(4.0, 5.0, 2.0, 75.0, 25.0, 1.5)> ' NormZ 1/3 + j1/3
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 1.0)> ' On R=Z0 circle
+        <InlineData(4.0, 5.0, 2.0, 1.0, 2.0, 2 / 3.0)>
+        <InlineData(4.0, 5.0, 2.0, 50.0, 100.0, 2 / 3.0)> ' NormZ 2 + j1/2
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 3.0, 1.5)>
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 1.0)> ' Center point
+        <InlineData(4.0, 5.0, 2.0, 1.0, 3.0, 0.5)>
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, 4 / 3.0)>
+        <InlineData(4.0, 5.0, 2.0, 1.0, 2.0, 2 / 3.0)>
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, 4 / 3.0)> ' On G=Y0 circle
+        Sub GetRadiusR_GoodInput_Succeeds(gridCenterX As Double, gridCenterY As Double, gridRadius As Double,
                                           z0 As Double, testR As Double, expectRad As Double)
 
-            Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridDiameter, z0)
+            Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridRadius * 2.0, z0)
             Dim RadiusAns As Double = SmithCirc.GetRadiusR(testR)
             Assert.Equal(expectRad, RadiusAns)
         End Sub
@@ -42,21 +49,20 @@ Namespace GeometryTests
 
     Public Class TestGetRadiusX
 
+        '<InlineData(GridX, GridY, Radius,   Z0,      X, RadiusX)>
         <Theory>
-        <InlineData(4.0, 8.0, 4.0, 1.0, 3.0, 2.0 / 3.0)> ' NormX=3
-        <InlineData(4.0, 8.0, 4.0, 50.0, 100.0, 1.0)> ' NormX=2
-        <InlineData(4.0, 8.0, 4.0, 1.0, 1.0, 2.0)> ' NormX=1
-        <InlineData(4.0, 8.0, 4.0, 1.0, 0.5, 4.0)> ' NormX=1/2
-        <InlineData(4.0, 8.0, 4.0, 1.0, 1.0 / 3.0, 6.0)> ' NormX=1/3
-        <InlineData(4.0, 8.0, 4.0, 75.0, -25.0, 6.0)> ' NormX=-1/3
-        <InlineData(4.0, 8.0, 4.0, 50.0, -25.0, 4.0)> ' NormX=-1/2
-        <InlineData(4.0, 8.0, 4.0, 1.0, -1.0, 2.0)> ' NormX=-1
-        <InlineData(4.0, 8.0, 4.0, 50.0, -100.0, 1.0)> ' NormX=-1/2
-        <InlineData(4.0, 8.0, 4.0, 1.0, -3.0, 2.0 / 3.0)> ' NormX=-1/3
-        Sub GetRadiusX_GoodInput_Succeeds(gridCenterX As Double, gridCenterY As Double, gridDiameter As Double,
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 3.0, 6.0)>
+        <InlineData(4.0, 5.0, 2.0, 75.0, 25.0, 6.0)> ' NormZ 1/3 + j1/3
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 2.0)> ' On R=Z0 circle
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, 4.0)>
+        <InlineData(4.0, 5.0, 2.0, 50.0, 25.0, 4.0)> ' NormZ 2 + j1/2
+        <InlineData(4.0, 5.0, 2.0, 1.0, -1 / 3.0, 6.0)>
+        <InlineData(4.0, 5.0, 2.0, 1.0, -2.0, 1.0)>
+        <InlineData(4.0, 5.0, 2.0, 1.0, -1 / 2.0, 4.0)> ' On G=Y0 circle
+        Sub GetRadiusX_GoodInput_Succeeds(gridCenterX As Double, gridCenterY As Double, gridRadius As Double,
                                           z0 As Double, testX As Double, expectRad As Double)
 
-            Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridDiameter, z0)
+            Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridRadius * 2.0, z0)
             Dim RadiusAns As Double = SmithCirc.GetRadiusX(testX)
             Assert.Equal(expectRad, RadiusAns)
         End Sub
@@ -253,21 +259,29 @@ Namespace GeometryTests
 
     Public Class TestGetPlotXY
 
+        '<InlineData(GridX, GridY, Radius,   Z0,     R,      X,      GridX,  GridY)>
+        '<InlineData(  4.0,   5.0,    2.0,  1.0,     R,      X,      GridX,  GridY)>
         <Theory>
-        <InlineData(4.0, 5.0, 4.0, 1, 1, 1, 4.4, 5.8)> ' NormR above resonance line.
-        <InlineData(4.0, 5.0, 4.0, 1, 1, 2, 5.0, 6.0)> ' NormR above resonance line.
-        <InlineData(4.0, 5.0, 4.0, 1, 1, 0, 4.0, 5.0)> ' NormR at center point.
-        <InlineData(4.0, 5.0, 4.0, 1, 3, 0, 5.0, 5.0)> ' NormR on resonance line.
-        <InlineData(4.0, 5.0, 4.0, 1, 2, -2, 5.075, 4.385)> ' NormRBelow resonance line.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 3.0, 1 / 3.0, 3.1765, 5.7059)>
+        <InlineData(4.0, 5.0, 2.0, 75.0, 25.0, 25.0, 3.1765, 5.7059)> ' NormZ 1/3 + j1/3
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 1.0, 4.4, 5.8)> ' On R=Z0 circle
+        <InlineData(4.0, 5.0, 2.0, 1.0, 2.0, 1 / 2.0, 4.703, 5.2162)>
+        <InlineData(4.0, 5.0, 2.0, 50.0, 100.0, 25.0, 4.703, 5.2162)> ' NormZ 2 + j1/2
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 3.0, 0.0, 3.0, 5.0)>
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 0.0, 4.0, 5.0)> ' Center point
+        <InlineData(4.0, 5.0, 2.0, 1.0, 3.0, 0.0, 5.0, 5.0)>
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, -1 / 3.0, 3.4588, 4.4353)>
+        <InlineData(4.0, 5.0, 2.0, 1.0, 2.0, -2.0, 5.077, 4.385)>
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, -1 / 2.0, 3.6, 4.2)> ' On G=Y0 circle
         Sub TryGetXYPlot_GoodInput_Succeeds(
-            gridCenterX As Double, gridCenterY As Double, gridDiameter As Double, z0 As Double,
+            gridCenterX As Double, gridCenterY As Double, gridRadius As Double, z0 As Double,
             testR As Double, testX As Double, expectPlotX As Double, expectPlotY As Double)
 
             ' This loose precision may be needed due to the use of PointF in GetPlotXY.
-            Const Precision As Double = 0.1
+            Const Precision As Double = 0.001
 
             Dim GridX, GridY As Double
-            Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridDiameter, z0)
+            Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridRadius * 2.0, z0)
 
             If Not SmithCirc.GetPlotXY(testR, testX, GridX, GridY) Then
                 Assert.True(False)
@@ -334,35 +348,66 @@ Namespace GeometryTests
 
     Public Class TestGetYFromPlot
 
+        '<Theory>
+        '<InlineData(4.0, 5.0, 4.0, 1, 4.0, 5.0, 1.0, 0.0)> ' NormR at center point.
+        '<InlineData(4.0, 5.0, 4.0, 1, 4.4, 5.8, 0.5, -0.5)> ' NormR above resonance line right.
+        '<InlineData(4.0, 5.0, 4.0, 1, 5.3841, 5.9233, 0.1, -0.3)> ' Z=1+j3.
+        '<InlineData(4.0, 5.0, 4.0, 1, 5.0, 4.0, 0.2, 0.4)> ' Z=1-j2.
+
+
+        ' <Theory>
+        '<InlineData(GridX, GridY, Radius,   Z0,     R,      X,   888,    B,  GridX,  GridY, RadiusR, RadiusX)> ' Model
+        '<InlineData(  4.0,   5.0,    2.0,  1.0,     R,      X,   888,    B,  GridX,  GridY, RadiusR, RadiusX)> ' Model
+        '<InlineData(  4.0,   5.0,    2.0,  1.0, 1/3.0,  1/3.0,   888,    B, 3.1765, 5.7059,     1.5,     6.0)>
+        '<InlineData(  4.0,   5.0,    2.0, 75.0,  25.0,   25.0,   888,    B, 3.1765, 5.7059,     1.5,     6.0)> ' NormZ 1/3 + j1/3
+        '<InlineData(  4.0,   5.0,    2.0,  1.0,   1.0,    1.0, 0.5,  0.5,    4.4,    2.0,     1.0,     2.0)> ' On R=Z0 circle
+        '<InlineData(  4.0,   5.0,    2.0,  1.0,   2.0,  1/2.0,   888,    B,  4.703, 5.2162,   2/3.0,     4.0)>
+        '<InlineData(  4.0,   5.0,    2.0, 50.0, 100.0,   25.0,   888,    B,  4.703, 5.2162,   2/3.0,     4.0)> ' NormZ 2 + j1/2
+        '<InlineData(  4.0,   5.0,    2.0,  1.0, 1/3.0,    0.0,   888,    B,    3.0,    5.0,     1.5,     999)>
+        '<InlineData(  4.0,   5.0,    2.0,  1.0,   1.0,    0.0, 1.0,  1.0,    4.0,    5.0,     1.0,     999)> ' Center point
+        '<InlineData(  4.0,   5.0,    2.0,  1.0,   3.0,    0.0,   888,    B,    5.0,    5.0,     0.5,     999)>
+        '<InlineData(  4.0,   5.0,    2.0,  1.0, 1/2.0, -1/3.0,   888,    B, 3.4588, 4.4353, 4 / 3.0,     6.0)>
+        '<InlineData(  4.0,   5.0,    2.0,  1.0,   2.0,   -2.0,   888,    B,  5.077,  4.385,   2/3.0,     1.0)>
+        '<InlineData(  4.0,   5.0,    2.0,  1.0, 1/2.0, -1/2.0, 1.0, -1.0,    3.6,    4.2, 4 / 3.0,     4.0)> ' On G=Y0 circle
+
+        '<InlineData(GridX, GridY, Radius,   Z0,   888,    999,  GridX,  GridY)> ' Model
+        '<InlineData(  4.0,   5.0,    2.0,  1.0,   888,    999,  GridX,  GridY)> ' Model
         <Theory>
-        <InlineData(4.0, 5.0, 4.0, 1, 4.0, 5.0, 1.0, 0.0)> ' NormR at center point.
-        <InlineData(4.0, 5.0, 4.0, 1, 4.4, 5.8, 0.5, -0.5)> ' NormR above resonance line right.
-        <InlineData(4.0, 5.0, 4.0, 1, 5.3841, 5.9233, 0.1, -0.3)> ' Z=1+j3.
-        <InlineData(4.0, 5.0, 4.0, 1, 5.0, 4.0, 0.2, 0.4)> ' Z=1-j2.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1.4, 1.4, 3.1765, 5.7059)>''''''''''''''''''''''
+        <InlineData(4.0, 5.0, 2.0, 75.0, 4444, 5555, 3.1765, 5.7059)> ' NormZ 1/3 + j1/3
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.5, 0.5, 4.4, 2.0)> ' On R=Z0 circle
+        <InlineData(4.0, 5.0, 2.0, 1.0, 888, 999, 4.703, 5.2162)>
+        <InlineData(4.0, 5.0, 2.0, 50.0, 888, 999, 4.703, 5.2162)> ' NormZ 2 + j1/2
+        <InlineData(4.0, 5.0, 2.0, 1.0, 888, 999, 3.0, 5.0)>
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 1.0, 4.0, 5.0)> ' Center point
+        <InlineData(4.0, 5.0, 2.0, 1.0, 888, 999, 5.0, 5.0)>
+        <InlineData(4.0, 5.0, 2.0, 1.0, 888, 999, 3.4588, 4.4353)>
+        <InlineData(4.0, 5.0, 2.0, 1.0, 888, 999, 5.077, 4.385)>
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, -1.0, 3.6, 4.2)> ' On G=Y0 circle
         Public Sub GetYFromPlot_GoodInput_Succeeds(
-            gridCenterX As Double, gridCenterY As Double, gridDiameter As Double, z0 As Double,
-            plotX As Double, plotY As Double,
-            expectR As Double, expectX As Double)
+            gridCenterX As Double, gridCenterY As Double, gridRadius As Double, z0 As Double,
+            expectG As Double, expectB As Double,
+            plotX As Double, plotY As Double)
 
             Const Precision As Double = 0.01
 
-            Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridDiameter, z0)
+            Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridRadius * 2.0, z0)
             Dim YAns As Admittance = SmithCirc.GetYFromPlot(plotX, plotY)
-            Assert.Equal(expectR, YAns.Conductance, Precision)
-            Assert.Equal(expectX, YAns.Susceptance, Precision)
+            Assert.Equal(expectG, YAns.Conductance, Precision)
+            Assert.Equal(expectB, YAns.Susceptance, Precision)
 
         End Sub
 
         <Fact>
         Public Sub GetYFromPlot_BadInput_Fails()
-        ' Try GetYFromPlot with point outside circle.
-        Dim SmithCirc As New SmithMainCircle(4, 5, 4, 1)
-        Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
+            ' Try GetYFromPlot with point outside circle.
+            Dim SmithCirc As New SmithMainCircle(4, 5, 4, 1)
+            Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
             Sub()
                 ' Code that throws the exception
                 Dim ZAns As Admittance = SmithCirc.GetYFromPlot(2.5, 6.5)
             End Sub)
-    End Sub
+        End Sub
 
     End Class ' TestGetYFromPlot
 
