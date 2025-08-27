@@ -15,21 +15,24 @@ Imports OsnwNumSS = OSNW.Numerics.StandardizationStyles
 ' are stripped, some remaining tests may be redundant. Move any rows that cause EXPECTED errors to tests of bad data.
 
 ' <Theory>
-'<InlineData(GridX, GridY, Radius,   Z0,     R,      X,      G,       B,  GridX,  GridY, RadiusR, RadiusX)> ' Model
-'<InlineData(  4.0,   5.0,    2.0,  1.0,     R,      X,      G,       B,  GridX,  GridY, RadiusR, RadiusX)> ' Model
-'<InlineData(  4.0,   5.0,    2.0,  1.0, 1/3.0,  1/3.0,    1.5,    -1.5, 3.1765, 5.7059,     1.5,     6.0)>
-'<InlineData(  4.0,   5.0,    2.0, 75.0,  25.0,   25.0, 0.0133, -0.0133, 3.1765, 5.7059,     1.5,     6.0)> ' NormZ 1/3 + j1/3
-'<InlineData(  4.0,   5.0,    2.0,  1.0,   1.0,    1.0,    0.5,    -0.5,    4.4,    5.8,     1.0,     2.0)> ' On R=Z0 circle
-'<InlineData(  4.0,   5.0,    2.0,  1.0,   2.0,  1/2.0,    0.48,  -0.15,  4.703, 5.2162,   2/3.0,     4.0)>
-'<InlineData(  4.0,   5.0,    2.0, 50.0, 100.0,   25.0,  0.016,  -0.008,  4.703, 5.2162,   2/3.0,   4.0)> ' NormZ 2 + j1/2
-'<InlineData(  4.0,   5.0,    2.0,  1.0, 1/3.0,    0.0,    3.0,     0.0,    3.0,    5.0,     1.5,     999)>
-'<InlineData(  4.0,   5.0,    2.0,  1.0,   1.0,    0.0,    1.0,     0.0,    4.0,    5.0,     1.0,     999)> ' Center point
-'<InlineData(  4.0,   5.0,    2.0,  1.0,   3.0,    0.0,   0.35,     0.0,    5.0,    5.0, RadiusR, RadiusX)>
-'<InlineData(  4.0,   5.0,    2.0,  1.0, 1/2.0, -1/3.0,    1.4,     0.9, 3.4588, 4.4353, 4 / 3.0,     6.0)>
-'<InlineData(  4.0,   5.0,    2.0,  1.0,   2.0,   -2.0,   0.25,    0.25,  5.077,  4.385,   2/3.0,     1.0)>
-'<InlineData(  4.0,   5.0,    2.0,  1.0, 1/2.0, -1/2.0,    1.0,     1.0,    3.6,    4.2, 4 / 3.0,     4.0)> ' On G=Y0 circle
+'<InlineData(GridX, GridY, Radius,   Z0,        R,      X,        G,       B,  GridX,  GridY, RadiusR, RadiusX)> ' Model
+'<InlineData(  4.0,   5.0,    2.0,  1.0,        R,      X,        G,       B,  GridX,  GridY, RadiusR, RadiusX)> ' Base circle
+'<InlineData(  4.0,   5.0,    2.0,  1.0,      0.0,    0.0,        G,       B,    2.0,    5.0, RadiusR, RadiusX)> ' A: Short circuit
+'<InlineData(  4.0,   5.0,    2.0,  1.0, infinity,    0.0, infinity,     0.0,    6.0,    5.0, RadiusR, RadiusX)> ' B: Open circuit
+'<InlineData(  4.0,   5.0,    2.0,  1.0,      0.0,  1/2.0,        G,       B,    2.8,    6.6, RadiusR, RadiusX)> ' C: Perimeter
+'<InlineData(  4.0,   5.0,    2.0,  1.0,    1/3.0,  1/3.0,      1.5,    -1.5, 3.1765, 5.7059,     1.5,     6.0)> ' D:
+'<InlineData(  4.0,   5.0,    2.0, 75.0,     25.0,   25.0,   0.0133, -0.0133, 3.1765, 5.7059,     1.5,     6.0)> ' E: NormZ 1/3 + j1/3
+'<InlineData(  4.0,   5.0,    2.0,  1.0,      1.0,    1.0,      0.5,    -0.5,    4.4,    5.8,     1.0,     2.0)> ' F: On R=Z0 circle
+'<InlineData(  4.0,   5.0,    2.0,  1.0,      2.0,  1/2.0,     0.48,   -0.15,  4.703, 5.2162,   2/3.0,     4.0)> ' G:
+'<InlineData(  4.0,   5.0,    2.0, 50.0,    100.0,   25.0,    0.016,  -0.008,  4.703, 5.2162,   2/3.0,     4.0)> ' H: NormZ 2 + j1/2
+'<InlineData(  4.0,   5.0,    2.0,  1.0,    1/3.0,    0.0,      3.0,     0.0,    3.0,    5.0,     1.5,     999)> ' I:
+'<InlineData(  4.0,   5.0,    2.0,  1.0,      1.0,    0.0,      1.0,     0.0,    4.0,    5.0,     1.0,     999)> ' J: Center point
+'<InlineData(  4.0,   5.0,    2.0,  1.0,      3.0,    0.0,     0.35,     0.0,    5.0,    5.0,     0.5, RadiusX)> ' K:
+'<InlineData(  4.0,   5.0,    2.0,  1.0,    1/2.0, -1/3.0,      1.4,     0.9, 3.4588, 4.4353, 4 / 3.0,     6.0)> ' L:
+'<InlineData(  4.0,   5.0,    2.0,  1.0,      2.0,   -2.0,     0.25,    0.25,  5.077,  4.385,   2/3.0,     1.0)> ' M:
+'<InlineData(  4.0,   5.0,    2.0,  1.0,    1/2.0, -1/2.0,      1.0,     1.0,    3.6,    4.2, 4 / 3.0,     4.0)> ' N: On G=Y0 circle
 
-Public Class TestVals
+Public Class CultureTestVals
     ' A common set of test values for parsing routines.
     Public Const SAMERESISTANCE As Double = 111_111.125 ' 1/8 is good for binary fractions.
     Public Const SAMEREACTANCE As Double = 555_555.687_5 ' 11/16 is good for binary fractions.
@@ -94,10 +97,10 @@ Namespace ToStringTests
     Public Class TestToStringDefault
 
         <Theory>
-        <InlineData(TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE, "<111111.125; 555555.6875>")>
-        <InlineData(TestVals.SAMERESISTANCE, -TestVals.SAMEREACTANCE, "<111111.125; -555555.6875>")>
-        <InlineData(TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE, "<111111.125; 555555.6875>")>
-        <InlineData(TestVals.SAMERESISTANCE, -TestVals.SAMEREACTANCE, "<111111.125; -555555.6875>")>
+        <InlineData(CultureTestVals.SAMERESISTANCE, CultureTestVals.SAMEREACTANCE, "<111111.125; 555555.6875>")>
+        <InlineData(CultureTestVals.SAMERESISTANCE, -CultureTestVals.SAMEREACTANCE, "<111111.125; -555555.6875>")>
+        <InlineData(CultureTestVals.SAMERESISTANCE, CultureTestVals.SAMEREACTANCE, "<111111.125; 555555.6875>")>
+        <InlineData(CultureTestVals.SAMERESISTANCE, -CultureTestVals.SAMEREACTANCE, "<111111.125; -555555.6875>")>
         Sub ToString_Default_Succeeds(r As Double, x As Double, expect As String)
             Dim Z As New OSNW.Numerics.Impedance(r, x)
             Dim ImpdStr As String = Z.ToString()
@@ -113,8 +116,8 @@ Namespace ToStandardStringTests
     Public Class TestToStandardStringDefault
 
         <Theory>
-        <InlineData(TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE, "111111.125+555555.6875j")>
-        <InlineData(TestVals.SAMERESISTANCE, -TestVals.SAMEREACTANCE, "111111.125-555555.6875j")> ' -X
+        <InlineData(CultureTestVals.SAMERESISTANCE, CultureTestVals.SAMEREACTANCE, "111111.125+555555.6875j")>
+        <InlineData(CultureTestVals.SAMERESISTANCE, -CultureTestVals.SAMEREACTANCE, "111111.125-555555.6875j")> ' -X
         Sub ToStandardString_Default_Succeeds(resistance As Double, reactance As Double, expected As String)
             Dim Z As New OSNW.Numerics.Impedance(resistance, reactance)
             Dim ImpdStr As String = Z.ToStandardString()
@@ -126,10 +129,10 @@ Namespace ToStandardStringTests
     Public Class TestToStandardStringStandardization
 
         <Theory>
-        <InlineData(TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE, Nothing, "111111.125+555555.6875j")>
-        <InlineData(TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE, OsnwNumSS.Open, "111111.125 + 555555.6875j")>
-        <InlineData(TestVals.SAMERESISTANCE, -TestVals.SAMEREACTANCE, OsnwNumSS.AiB, "111111.125-j555555.6875")>
-        <InlineData(TestVals.SAMERESISTANCE, -TestVals.SAMEREACTANCE, OsnwNumSS.OpenAiB, "111111.125 - j555555.6875")>
+        <InlineData(CultureTestVals.SAMERESISTANCE, CultureTestVals.SAMEREACTANCE, Nothing, "111111.125+555555.6875j")>
+        <InlineData(CultureTestVals.SAMERESISTANCE, CultureTestVals.SAMEREACTANCE, OsnwNumSS.Open, "111111.125 + 555555.6875j")>
+        <InlineData(CultureTestVals.SAMERESISTANCE, -CultureTestVals.SAMEREACTANCE, OsnwNumSS.AiB, "111111.125-j555555.6875")>
+        <InlineData(CultureTestVals.SAMERESISTANCE, -CultureTestVals.SAMEREACTANCE, OsnwNumSS.OpenAiB, "111111.125 - j555555.6875")>
         Sub ToStandardString_Standardization_Succeeds(resistance As Double, reactance As Double,
                                                       stdStyle As OsnwNumSS, expected As String)
             Dim Z As New OSNW.Numerics.Impedance(resistance, reactance)
@@ -142,10 +145,10 @@ Namespace ToStandardStringTests
     Public Class TestToStandardStringFormat
 
         <Theory>
-        <InlineData(TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE, "G", "111111.125+555555.6875j")>
+        <InlineData(CultureTestVals.SAMERESISTANCE, CultureTestVals.SAMEREACTANCE, "G", "111111.125+555555.6875j")>
         <InlineData(111_111.122, 111_111.127, "F2", "111111.12+111111.13j")> ' One round down, one up.
         <InlineData(111_111.127, -111_111.122, "N2", "111,111.13-111,111.12j")> ' One round up, one down.
-        <InlineData(TestVals.SAMERESISTANCE, -TestVals.SAMEREACTANCE, "G5", "1.1111E+05-5.5556E+05j")>
+        <InlineData(CultureTestVals.SAMERESISTANCE, -CultureTestVals.SAMEREACTANCE, "G5", "1.1111E+05-5.5556E+05j")>
         <InlineData(Math.PI, Math.E, "G", "3.141592653589793+2.718281828459045j")>
         Sub ToStandardString_Format_Succeeds(resistance As Double, reactance As Double, format As String, expected As String)
             Dim Z As New OSNW.Numerics.Impedance(resistance, reactance)
@@ -158,13 +161,13 @@ Namespace ToStandardStringTests
     Public Class TestToStandardStringCulture
 
         <Theory>
-        <InlineData(TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE, 0, "111111.125+555555.6875j")>
-        <InlineData(TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE, 1, "111111.125+555555.6875j")>
-        <InlineData(TestVals.SAMERESISTANCE, -TestVals.SAMEREACTANCE, 2, "111111.125-555555.6875j")>
-        <InlineData(TestVals.SAMERESISTANCE, -TestVals.SAMEREACTANCE, 3, "111111.125-555555.6875j")>
-        <InlineData(TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE, 4, "111111,125+555555,6875j")> ' Comma decimal.
-        <InlineData(TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE, 5, "111111,125+555555,6875j")> ' Comma decimal.
-        <InlineData(TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE, 6,
+        <InlineData(CultureTestVals.SAMERESISTANCE, CultureTestVals.SAMEREACTANCE, 0, "111111.125+555555.6875j")>
+        <InlineData(CultureTestVals.SAMERESISTANCE, CultureTestVals.SAMEREACTANCE, 1, "111111.125+555555.6875j")>
+        <InlineData(CultureTestVals.SAMERESISTANCE, -CultureTestVals.SAMEREACTANCE, 2, "111111.125-555555.6875j")>
+        <InlineData(CultureTestVals.SAMERESISTANCE, -CultureTestVals.SAMEREACTANCE, 3, "111111.125-555555.6875j")>
+        <InlineData(CultureTestVals.SAMERESISTANCE, CultureTestVals.SAMEREACTANCE, 4, "111111,125+555555,6875j")> ' Comma decimal.
+        <InlineData(CultureTestVals.SAMERESISTANCE, CultureTestVals.SAMEREACTANCE, 5, "111111,125+555555,6875j")> ' Comma decimal.
+        <InlineData(CultureTestVals.SAMERESISTANCE, CultureTestVals.SAMEREACTANCE, 6,
                     "111111" & CHARARABCOMMA66B & "125+555555" & CHARARABCOMMA66B &
                     "6875j")> ' Arabic comma CHARARABCOMMA66B.
         Sub ToStandardString_Culture_Succeeds(
@@ -198,12 +201,12 @@ Namespace TryParseStandardTests
     Public Class TestTryParseStandardDefault
 
         <Theory>
-        <InlineData("111111.125+555555.6875j", TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE)>
-        <InlineData("111111.125+j555555.6875", TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE)> ' A+iB, j in middle.
-        <InlineData("111111.125 - 555555.6875j", TestVals.SAMERESISTANCE, -TestVals.SAMEREACTANCE)> ' Open.
-        <InlineData("111111.125-555555.6875j", TestVals.SAMERESISTANCE, -TestVals.SAMEREACTANCE)>
-        <InlineData("1.11111125E5+.5555556875e6j", TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE)> ' Mixed E/e.
-        <InlineData("11111112.5e-2+555555687.5E-3j", TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE)> ' Mixed e/E.
+        <InlineData("111111.125+555555.6875j", CultureTestVals.SAMERESISTANCE, CultureTestVals.SAMEREACTANCE)>
+        <InlineData("111111.125+j555555.6875", CultureTestVals.SAMERESISTANCE, CultureTestVals.SAMEREACTANCE)> ' A+iB, j in middle.
+        <InlineData("111111.125 - 555555.6875j", CultureTestVals.SAMERESISTANCE, -CultureTestVals.SAMEREACTANCE)> ' Open.
+        <InlineData("111111.125-555555.6875j", CultureTestVals.SAMERESISTANCE, -CultureTestVals.SAMEREACTANCE)>
+        <InlineData("1.11111125E5+.5555556875e6j", CultureTestVals.SAMERESISTANCE, CultureTestVals.SAMEREACTANCE)> ' Mixed E/e.
+        <InlineData("11111112.5e-2+555555687.5E-3j", CultureTestVals.SAMERESISTANCE, CultureTestVals.SAMEREACTANCE)> ' Mixed e/E.
         Sub TryParseStandardDefault_GoodInput_Succeeds(standardStr As String, resistance As Double, reactance As Double)
             Dim Impd As New OSNW.Numerics.Impedance
             If Not OSNW.Numerics.Impedance.TryParseStandard(standardStr, Nothing, Nothing, Impd) Then
@@ -221,20 +224,20 @@ Namespace TryParseStandardTests
                     If OSNW.Numerics.Impedance.TryParseStandard("-111111.125+555555.6875j", Nothing, Nothing, Impd) Then
                         Assert.Fail("Parsed despite bad entry.")
                     End If
-                    Assert.False(Impd.Resistance.Equals(-TestVals.SAMERESISTANCE) AndAlso
-                                 Impd.Reactance.Equals(TestVals.SAMEREACTANCE))
+                    Assert.False(Impd.Resistance.Equals(-CultureTestVals.SAMERESISTANCE) AndAlso
+                                 Impd.Reactance.Equals(CultureTestVals.SAMEREACTANCE))
                 End Sub)
         End Sub
 
         <Theory>
-        <InlineData("", TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE)> ' Empty.
-        <InlineData("123", TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE)> ' Too short.
-        <InlineData("111111.125+555555.6875Q", TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE)> ' Bad char Q.
-        <InlineData("111111.125+Q5.6875", TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE)> ' Bad char Q.
-        <InlineData("111111.125+555555.6875i", TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE)> ' i, not j
-        <InlineData("111111.125+j555555.6875j", TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE)> ' Excess j.
-        <InlineData(".1125e1+j.56875F1", TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE)> ' F, not E.
-        <InlineData("112.5E-2.2+i5687.5e-3", TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE)> ' Non-integer exponent.
+        <InlineData("", CultureTestVals.SAMERESISTANCE, CultureTestVals.SAMEREACTANCE)> ' Empty.
+        <InlineData("123", CultureTestVals.SAMERESISTANCE, CultureTestVals.SAMEREACTANCE)> ' Too short.
+        <InlineData("111111.125+555555.6875Q", CultureTestVals.SAMERESISTANCE, CultureTestVals.SAMEREACTANCE)> ' Bad char Q.
+        <InlineData("111111.125+Q5.6875", CultureTestVals.SAMERESISTANCE, CultureTestVals.SAMEREACTANCE)> ' Bad char Q.
+        <InlineData("111111.125+555555.6875i", CultureTestVals.SAMERESISTANCE, CultureTestVals.SAMEREACTANCE)> ' i, not j
+        <InlineData("111111.125+j555555.6875j", CultureTestVals.SAMERESISTANCE, CultureTestVals.SAMEREACTANCE)> ' Excess j.
+        <InlineData(".1125e1+j.56875F1", CultureTestVals.SAMERESISTANCE, CultureTestVals.SAMEREACTANCE)> ' F, not E.
+        <InlineData("112.5E-2.2+i5687.5e-3", CultureTestVals.SAMERESISTANCE, CultureTestVals.SAMEREACTANCE)> ' Non-integer exponent.
         Sub TryParseStandardDefault_BadInput_Fails(standardStr As String, resistance As Double, reactance As Double)
             Dim Impd As New OSNW.Numerics.Impedance
             If OSNW.Numerics.Impedance.TryParseStandard(standardStr, Nothing, Nothing, Impd) Then
@@ -248,13 +251,13 @@ Namespace TryParseStandardTests
     Public Class TestTryParseStandardDefaultMixed
 
         <Theory>
-        <InlineData("111111.125+j555555.6875", TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE)> ' A+Bi.
-        <InlineData("111111.125+555555.6875j", TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE)> ' A+Bi.
-        <InlineData("+111111.125 - j555555.6875", TestVals.SAMERESISTANCE, -TestVals.SAMEREACTANCE)> ' Open, one space.
-        <InlineData(" 111111.125  -   555555.6875j  ", TestVals.SAMERESISTANCE, -TestVals.SAMEREACTANCE)> ' Open, asymmetric spaces.
-        <InlineData("111111.125+ j555555.6875", TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE)> ' Open, space one side.
-        <InlineData("111111.125 +j555555.6875", TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE)> ' Open, space one side.
-        <InlineData("111111125e-3+j.5555556875E6", TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE)> ' Exponential notation, upper and lower E.
+        <InlineData("111111.125+j555555.6875", CultureTestVals.SAMERESISTANCE, CultureTestVals.SAMEREACTANCE)> ' A+Bi.
+        <InlineData("111111.125+555555.6875j", CultureTestVals.SAMERESISTANCE, CultureTestVals.SAMEREACTANCE)> ' A+Bi.
+        <InlineData("+111111.125 - j555555.6875", CultureTestVals.SAMERESISTANCE, -CultureTestVals.SAMEREACTANCE)> ' Open, one space.
+        <InlineData(" 111111.125  -   555555.6875j  ", CultureTestVals.SAMERESISTANCE, -CultureTestVals.SAMEREACTANCE)> ' Open, asymmetric spaces.
+        <InlineData("111111.125+ j555555.6875", CultureTestVals.SAMERESISTANCE, CultureTestVals.SAMEREACTANCE)> ' Open, space one side.
+        <InlineData("111111.125 +j555555.6875", CultureTestVals.SAMERESISTANCE, CultureTestVals.SAMEREACTANCE)> ' Open, space one side.
+        <InlineData("111111125e-3+j.5555556875E6", CultureTestVals.SAMERESISTANCE, CultureTestVals.SAMEREACTANCE)> ' Exponential notation, upper and lower E.
         Sub TryParse_Default_Succeeds(standardStr As String, resistance As Double, reactance As Double)
             Dim Impd As New OSNW.Numerics.Impedance
             If Not OSNW.Numerics.Impedance.TryParseStandard(standardStr, Nothing, Nothing, Impd) Then
@@ -271,10 +274,10 @@ Namespace TryParseStandardTests
             OsnwNumSS.EnforceSequence Or OsnwNumSS.EnforceSpacing
 
         <Theory>
-        <InlineData("111111.125+j555555.6875", TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE, OsnwNumSS.ClosedABi)>
-        <InlineData("111111.125+555555.6875j", TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE, OsnwNumSS.ClosedAiB)>
-        <InlineData("111111.125 - j555555.6875", TestVals.SAMERESISTANCE, -TestVals.SAMEREACTANCE, OsnwNumSS.OpenABi)>
-        <InlineData("111111.125 - 555555.6875j", TestVals.SAMERESISTANCE, -TestVals.SAMEREACTANCE, OsnwNumSS.OpenAiB)>
+        <InlineData("111111.125+j555555.6875", CultureTestVals.SAMERESISTANCE, CultureTestVals.SAMEREACTANCE, OsnwNumSS.ClosedABi)>
+        <InlineData("111111.125+555555.6875j", CultureTestVals.SAMERESISTANCE, CultureTestVals.SAMEREACTANCE, OsnwNumSS.ClosedAiB)>
+        <InlineData("111111.125 - j555555.6875", CultureTestVals.SAMERESISTANCE, -CultureTestVals.SAMEREACTANCE, OsnwNumSS.OpenABi)>
+        <InlineData("111111.125 - 555555.6875j", CultureTestVals.SAMERESISTANCE, -CultureTestVals.SAMEREACTANCE, OsnwNumSS.OpenAiB)>
         Sub TryParseStandard_ValidStandardization_Succeeds(
             standardStr As String, resistance As Double, reactance As Double,
             stdStyle As OsnwNumSS)
@@ -303,15 +306,15 @@ Namespace TryParseStandardTests
     Public Class TestTryParseStandardCulture
 
         <Theory>
-        <InlineData("111111.125+j555555.6875", TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE, 0)>
-        <InlineData("111111.125+j555555.6875", TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE, 1)> ' When current is "en-US".
-        <InlineData("111111.125-555555.6875j", TestVals.SAMERESISTANCE, -TestVals.SAMEREACTANCE, 2)> ' A+Bi, i at end.
-        <InlineData("111111.125 - j555555.6875", TestVals.SAMERESISTANCE, -TestVals.SAMEREACTANCE, 3)> ' Open, one space.
-        <InlineData("111111,125+j555555,6875", TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE, 4)> ' Comma decimal.
+        <InlineData("111111.125+j555555.6875", CultureTestVals.SAMERESISTANCE, CultureTestVals.SAMEREACTANCE, 0)>
+        <InlineData("111111.125+j555555.6875", CultureTestVals.SAMERESISTANCE, CultureTestVals.SAMEREACTANCE, 1)> ' When current is "en-US".
+        <InlineData("111111.125-555555.6875j", CultureTestVals.SAMERESISTANCE, -CultureTestVals.SAMEREACTANCE, 2)> ' A+Bi, i at end.
+        <InlineData("111111.125 - j555555.6875", CultureTestVals.SAMERESISTANCE, -CultureTestVals.SAMEREACTANCE, 3)> ' Open, one space.
+        <InlineData("111111,125+j555555,6875", CultureTestVals.SAMERESISTANCE, CultureTestVals.SAMEREACTANCE, 4)> ' Comma decimal.
         <InlineData("111" & CHARNNBSP & "111,125+j555" & CHARNNBSP & "555,6875",
-                    TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE, 5)> ' Comma decimal, Non-breaking space.
+                    CultureTestVals.SAMERESISTANCE, CultureTestVals.SAMEREACTANCE, 5)> ' Comma decimal, Non-breaking space.
         <InlineData("111111" & CHARARABCOMMA66B & "125+555555" & CHARARABCOMMA66B & "6875j",
-                    TestVals.SAMERESISTANCE, TestVals.SAMEREACTANCE, 6)> ' Arabic comma CHARARABCOMMA66B.
+                    CultureTestVals.SAMERESISTANCE, CultureTestVals.SAMEREACTANCE, 6)> ' Arabic comma CHARARABCOMMA66B.
         Sub TryParseStandard_Culture_Succeeds(standardStr As String, resistance As Double, reactance As Double,
                                               index As Integer)
 

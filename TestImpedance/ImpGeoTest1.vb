@@ -10,7 +10,8 @@ Namespace GeometryTests
 
     Public Class TestGetRadiusR
 
-        '<InlineData(GridX, GridY, Radius, Z0, R, RadiusR)>
+        '<InlineData(GridX, GridY, Radius,   Z0,     R, RadiusR)> ' Model
+        '<InlineData(  4.0,   5.0,    2.0,  1.0,     R, RadiusR)> ' Model
         <Theory>
         <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 3.0, 1.5)>
         <InlineData(4.0, 5.0, 2.0, 75.0, 25.0, 1.5)> ' NormZ 1/3 + j1/3
@@ -49,13 +50,30 @@ Namespace GeometryTests
 
     Public Class TestGetRadiusX
 
-        '<InlineData(GridX, GridY, Radius,   Z0,      X, RadiusX)>
+        ''<InlineData(GridX, GridY, Radius,   Z0,      X, RadiusX)>
+        '<Theory>
+        '<InlineData(4.0, 5.0, 2.0, 1.0, 1 / 3.0, 6.0)>
+        '<InlineData(4.0, 5.0, 2.0, 75.0, 25.0, 6.0)> ' NormZ 1/3 + j1/3
+        '<InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 2.0)> ' On R=Z0 circle
+        '<InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, 4.0)>
+        '<InlineData(4.0, 5.0, 2.0, 50.0, 25.0, 4.0)> ' NormZ 2 + j1/2
+        '<InlineData(4.0, 5.0, 2.0, 1.0, -1 / 3.0, 6.0)>
+        '<InlineData(4.0, 5.0, 2.0, 1.0, -2.0, 1.0)>
+        '<InlineData(4.0, 5.0, 2.0, 1.0, -1 / 2.0, 4.0)> ' On G=Y0 circle
+
+
+
+        '<InlineData(GridX, GridY, Radius,   Z0,      X, RadiusX)> ' Model
+        '<InlineData(  4.0,   5.0,    2.0,  1.0,      X, RadiusX)> ' Model
         <Theory>
         <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 3.0, 6.0)>
         <InlineData(4.0, 5.0, 2.0, 75.0, 25.0, 6.0)> ' NormZ 1/3 + j1/3
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 2.0)> ' On R=Z0 circle
         <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, 4.0)>
         <InlineData(4.0, 5.0, 2.0, 50.0, 25.0, 4.0)> ' NormZ 2 + j1/2
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0, 999)>
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0, 999)> ' Center point
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0, 999)>
         <InlineData(4.0, 5.0, 2.0, 1.0, -1 / 3.0, 6.0)>
         <InlineData(4.0, 5.0, 2.0, 1.0, -2.0, 1.0)>
         <InlineData(4.0, 5.0, 2.0, 1.0, -1 / 2.0, 4.0)> ' On G=Y0 circle
