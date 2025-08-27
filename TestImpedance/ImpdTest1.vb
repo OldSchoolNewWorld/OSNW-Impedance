@@ -19,15 +19,15 @@ Imports OsnwNumSS = OSNW.Numerics.StandardizationStyles
 '<InlineData(  4.0,   5.0,    2.0,  1.0,     R,      X,   G,    B,  GridX,  GridY, RadiusR, RadiusX)> ' Model
 '<InlineData(  4.0,   5.0,    2.0,  1.0, 1/3.0,  1/3.0,   G,    B, 3.1765, 5.7059,     1.5,     6.0)>
 '<InlineData(  4.0,   5.0,    2.0, 75.0,  25.0,   25.0,   G,    B, 3.1765, 5.7059,     1.5,     6.0)> ' NormZ 1/3 + j1/3
-'<InlineData(  4.0,   5.0,    2.0,  1.0,   1.0,    1.0, 0.5,  0.5,    4.4,    2.0,     1.0,     2.0)> ' On R=Z0 circle
+'<InlineData(  4.0,   5.0,    2.0,  1.0,   1.0,    1.0, 0.5, -0.5,    4.4,    5.8,     1.0,     2.0)> ' On R=Z0 circle
 '<InlineData(  4.0,   5.0,    2.0,  1.0,   2.0,  1/2.0,   G,    B,  4.703, 5.2162,   2/3.0,     4.0)>
 '<InlineData(  4.0,   5.0,    2.0, 50.0, 100.0,   25.0,   G,    B,  4.703, 5.2162,   2/3.0,     4.0)> ' NormZ 2 + j1/2
 '<InlineData(  4.0,   5.0,    2.0,  1.0, 1/3.0,    0.0,   G,    B,    3.0,    5.0,     1.5,     999)>
-'<InlineData(  4.0,   5.0,    2.0,  1.0,   1.0,    0.0, 1.0,  1.0,    4.0,    5.0,     1.0,     999)> ' Center point
+'<InlineData(  4.0,   5.0,    2.0,  1.0,   1.0,    0.0, 1.0,  0.0,    4.0,    5.0,     1.0,     999)> ' Center point
 '<InlineData(  4.0,   5.0,    2.0,  1.0,   3.0,    0.0,   G,    B,    5.0,    5.0,     0.5,     999)>
 '<InlineData(  4.0,   5.0,    2.0,  1.0, 1/2.0, -1/3.0,   G,    B, 3.4588, 4.4353, 4 / 3.0,     6.0)>
 '<InlineData(  4.0,   5.0,    2.0,  1.0,   2.0,   -2.0,   G,    B,  5.077,  4.385,   2/3.0,     1.0)>
-'<InlineData(  4.0,   5.0,    2.0,  1.0, 1/2.0, -1/2.0, 1.0, -1.0,    3.6,    4.2, 4 / 3.0,     4.0)> ' On G=Y0 circle
+'<InlineData(  4.0,   5.0,    2.0,  1.0, 1/2.0, -1/2.0, 1.0,  1.0,    3.6,    4.2, 4 / 3.0,     4.0)> ' On G=Y0 circle
 
 Public Class TestVals
     ' A common set of test values for parsing routines.
