@@ -10,31 +10,36 @@ Namespace GeometryTests
 
     Public Class TestGetRadiusR
 
+        Const INF As Double = Double.PositiveInfinity
+
         '<InlineData(GridX, GridY, Radius,   Z0,     R, RadiusR)> ' Model
-        '<InlineData(  4.0,   5.0,    2.0,  1.0,     R, RadiusR)> ' Model
+        '<InlineData(  4.0,   5.0,    2.0,  1.0,     R, RadiusR)> ' Base circle
+        '
         <Theory>
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 3.0, 1.5)>
-        <InlineData(4.0, 5.0, 2.0, 75.0, 25.0, 1.5)> ' NormZ 1/3 + j1/3
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 1.0)> ' On R=Z0 circle
-        <InlineData(4.0, 5.0, 2.0, 1.0, 2.0, 2 / 3.0)>
-        <InlineData(4.0, 5.0, 2.0, 50.0, 100.0, 2 / 3.0)> ' NormZ 2 + j1/2
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 3.0, 1.5)>
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 1.0)> ' Center point
-        <InlineData(4.0, 5.0, 2.0, 1.0, 3.0, 0.5)>
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, 4 / 3.0)>
-        <InlineData(4.0, 5.0, 2.0, 1.0, 2.0, 2 / 3.0)>
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, 4 / 3.0)> ' On G=Y0 circle
+        <InlineData(4.0, 5.0, 2.0, 1.0, INF, 0.0)> ' B: Open circuit
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 3.0, 1.5)> ' D:
+        <InlineData(4.0, 5.0, 2.0, 75.0, 25.0, 1.5)> ' E: NormZ 1/3 + j1/3
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 1.0)> ' F: On R=Z0 circle
+        <InlineData(4.0, 5.0, 2.0, 1.0, 2.0, 2 / 3.0)> ' G:
+        <InlineData(4.0, 5.0, 2.0, 50.0, 100.0, 2 / 3.0)> ' H: NormZ 2 + j1/2
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 3.0, 1.5)> ' I:
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 1.0)> ' J: Center point
+        <InlineData(4.0, 5.0, 2.0, 1.0, 3.0, 0.5)> ' K:
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, 4 / 3.0)> ' L:
+        <InlineData(4.0, 5.0, 2.0, 1.0, 2.0, 2 / 3.0)> ' M:
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, 4 / 3.0)> ' N: On G=Y0 circle
         Sub GetRadiusR_GoodInput_Succeeds(gridCenterX As Double, gridCenterY As Double, gridRadius As Double,
-                                          z0 As Double, testR As Double, expectRad As Double)
+                                          z0 As Double, testR As Double, expectRadR As Double)
 
             Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridRadius * 2.0, z0)
             Dim RadiusAns As Double = SmithCirc.GetRadiusR(testR)
-            Assert.Equal(expectRad, RadiusAns)
+            Assert.Equal(expectRadR, RadiusAns)
         End Sub
 
         <Theory>
-        <InlineData(4.0, 8.0, 4.0, 1.0, 0.0)> ' NormR=0
-        <InlineData(4.0, 8.0, 4.0, 1.0, -2.0)> ' NormR<=0
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0)> ' A: Short circuit
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0)> ' C: Perimeter
+        <InlineData(4.0, 5.0, 2.0, 1.0, -2.0)> ' NormR<=0
         Sub GetRadiusR_BadInput_Fails(gridCenterX As Double, gridCenterY As Double, gridDiameter As Double,
                                       z0 As Double, testR As Double)
 
@@ -70,10 +75,7 @@ Namespace GeometryTests
         <InlineData(4.0, 5.0, 2.0, 75.0, 25.0, 6.0)> ' NormZ 1/3 + j1/3
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 2.0)> ' On R=Z0 circle
         <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, 4.0)>
-        <InlineData(4.0, 5.0, 2.0, 50.0, 25.0, 4.0)> ' NormZ 2 + j1/2
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0, 999)>
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0, 999)> ' Center point
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0, 999)>
+        <InlineData(4.0, 5.0, 2.0, 50.0, 25.0, 4.0)> ' NormZ 2 + j1/2a
         <InlineData(4.0, 5.0, 2.0, 1.0, -1 / 3.0, 6.0)>
         <InlineData(4.0, 5.0, 2.0, 1.0, -2.0, 1.0)>
         <InlineData(4.0, 5.0, 2.0, 1.0, -1 / 2.0, 4.0)> ' On G=Y0 circle

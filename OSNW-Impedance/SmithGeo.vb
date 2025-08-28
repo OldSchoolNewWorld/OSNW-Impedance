@@ -340,6 +340,13 @@ Public Class SmithMainCircle
     ''' <returns>The radius of the R-circle in generic "units".</returns>
     ''' <exception cref="ArgumentOutOfRangeException">when
     ''' <paramref name="resistance"/> is less than or equal to zero.</exception>
+    ''' <tests>
+    ''' GetRadiusR_GoodInput_Succeeds, GetRadiusR_BadInput_Fails
+    ''' </tests>
+    ''' <remarks>
+    ''' The radius is measured from the center of the R-circle to any point on
+    ''' its circumference.
+    ''' </remarks>
     Public Function GetRadiusR(ByVal resistance As System.Double) As System.Double
 
         If resistance <= 0.0 Then
