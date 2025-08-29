@@ -33,8 +33,8 @@ Imports OsnwNumSS = OSNW.Numerics.StandardizationStyles
 '<InlineData(  4.0,   5.0,    2.0,  1.0, 1/2.0,  1/2.0,    1.0,    -1.0,    3.6,    5.8, 4 / 3.0, RadiusX,  2.6180)> ' G=Y0 circle above line
 '<InlineData(  4.0,   5.0,    2.0,  1.0, 1/2.0, -1/2.0,    1.0,     1.0,    3.6,    4.2, 4 / 3.0,     4.0,  2.6180)> ' G=Y0 circle below line
 '<InlineData(  4.0,   5.0,    2.0,  1.0, 1/3.0,    0.0,    3.0,     0.0,    3.0,    5.0,     1.5,     INF,     3.0)> ' Inside G=Y0 circle
-'<InlineData(  4.0,   5.0,    2.0,  1.0,   0.2,    1.4,    0.1,     0.7,  GridX,  GridY, RadiusR, RadiusX, 14.9330)> ' Top remainder
-'<InlineData(  4.0,   5.0,    2.0,  1.0,   0.4,   -0.8,    0.5,     1.0,  GridX,  GridY, RadiusR,     2.0,  4.2656)> ' Bottom remainder
+'<InlineData(  4.0,   5.0,    2.0,  1.0,   0.2,    1.4,    0.1,     0.7  4.5882, 6.6471, RadiusR, RadiusX, 14.9330)> ' Top remainder
+'<InlineData(  4.0,   5.0,    2.0,  1.0,   0.4,   -0.8,    0.5,     1.0, 3.8462, 3.7692, RadiusR,     2.0,  4.2656)> ' Bottom remainder******
 '<InlineData(  4.0,   5.0,    2.0,  1.0, 1/3.0,  1/3.0,    1.5,    -1.5, 3.1765, 5.7059,     1.5,     6.0,  3.3699)> ' D:
 '<InlineData(  4.0,   5.0,    2.0, 75.0,  25.0,   25.0, 0.0133, -0.0133, 3.1765, 5.7059,     1.5,     6.0,  3.3699)> ' E: NormZ 1/3 + j1/3
 '<InlineData(  4.0,   5.0,    2.0,  1.0, 1/2.0, -1/3.0,    1.4,     0.9, 3.4588, 4.4353, 4 / 3.0,     6.0,  2.2845)> ' L:
