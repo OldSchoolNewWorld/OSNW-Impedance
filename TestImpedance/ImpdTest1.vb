@@ -31,20 +31,20 @@ Imports OsnwNumSS = OSNW.Numerics.StandardizationStyles
 '<InlineData(   4.0,    5.0,      2.0,  1.0,   INF,    0.0,    0.0,     0.0,    6.0,    5.0,     0.0,     INF,     2.0,     INF,     INF)> ' B: Open circuit
 '<InlineData(   4.0,    5.0,      2.0,  1.0,   1.0,    0.0,    1.0,     0.0,    4.0,    5.0,     1.0,     INF,     999,     999,     1.0)> ' J: Center point
 '<InlineData(   4.0,    5.0,      2.0,  1.0,   1.0,    1.0,    0.5,    -0.5,    4.4,    5.8,     1.0,     2.0,     999,     999,  2.6180)> ' R=Z0 circle above line
-'<InlineData(   4.0,    5.0,      2.0,  1.0,   1.0,   -2.0,      G,       B,    5.0,    4.0, RadiusR, RadiusX,     999,     999,  5.8284)> ' R=Z0 circle below line
+'<InlineData(   4.0,    5.0,      2.0,  1.0,   1.0,   -2.0,      G,       B,    5.0,    4.0,     1.0,     1.0,     999,     999,  5.8284)> ' R=Z0 circle below line
 '<InlineData(   4.0,    5.0,      2.0,  1.0,   2.0,  1/2.0,   0.48,   -0.15,  4.703, 5.2162,   2/3.0,     4.0,     999,     999,  2.1626)> ' Inside R=Z0 circle above line
 '<InlineData(   4.0,    5.0,      2.0, 50.0, 100.0,   25.0,  0.016,  -0.008,  4.703, 5.2162,   2/3.0,     4.0,     999,     999,  2.1626)> ' Inside R=Z0 circle above line
 '<InlineData(   4.0,    5.0,      2.0,  1.0,   3.0,    0.0,   0.35,     0.0,    5.0,    5.0,     0.5,     INF,     999,     999,     3.0)> ' Inside R=Z0 circle on line
 '<InlineData(   4.0,    5.0,      2.0,  1.0,   2.0,   -2.0,   0.25,    0.25,  5.077,  4.385,   2/3.0,     1.0,     999,     999,  4.2656)> ' M: Inside R=Z0 circle below line
-'<InlineData(   4.0,    5.0,      2.0,  1.0, 1/2.0,  1/2.0,    1.0,    -1.0,    3.6,    5.8, 4 / 3.0, RadiusX,     999,     999,  2.6180)> ' G=Y0 circle above line
-'<InlineData(   4.0,    5.0,      2.0,  1.0, 1/2.0, -1/2.0,    1.0,     1.0,    3.6,    4.2, 4 / 3.0,     4.0,     999,     999,  2.6180)> ' G=Y0 circle below line
+'<InlineData(   4.0,    5.0,      2.0,  1.0, 1/2.0,  1/2.0,    1.0,    -1.0,    3.6,    5.8,   4/3.0,     4.0,     999,     999,  2.6180)> ' G=Y0 circle above line
+'<InlineData(   4.0,    5.0,      2.0,  1.0, 1/2.0, -1/2.0,    1.0,     1.0,    3.6,    4.2,   4/3.0,     4.0,     999,     999,  2.6180)> ' G=Y0 circle below line
 '<InlineData(   4.0,    5.0,      2.0,  1.0, 1/3.0,    0.0,    3.0,     0.0,    3.0,    5.0,     1.5,     INF,     999,     999,     3.0)> ' Inside G=Y0 circle
 '<InlineData(   4.0,    5.0,      2.0,  1.0, 1/3.0,  1/3.0,    1.5,    -1.5,  3.175,    5.7,     1.5,     6.0,     999,     999,  3.3699)> ' D: Inside G=Y0 above line
 '<InlineData(   4.0,    5.0,      2.0, 75.0,  25.0,   25.0, 0.0133, -0.0133,  3.175,    5.7,     1.5,     6.0,     999,     999,  3.3699)> ' E: NormZ 1/3 + j1/3
-'<InlineData(   4.0,    5.0,      2.0,  1.0, 1/2.0, -1/3.0,    1.4,     0.9,   3.45,   4.45, 4 / 3.0,     6.0,     999,     999,  2.2845)> ' L: Inside G=Y0 below line
-'<InlineData(   4.0,    5.0,      2.0,  1.0, 1/2.0, -1/3.0,    1.4,     0.9, 3.4588, 4.4353, 4 / 3.0,     6.0,     999,     999,  2.2845)> ' L: Inside G=Y0 below line
-'<InlineData(   4.0,    5.0,      2.0,  1.0,   0.2,    1.4,    0.1,     0.7  4.5882, 6.6471, RadiusR, RadiusX,     999,     999, 14.9330)> ' Top remainder
-'<InlineData(   4.0,    5.0,      2.0,  1.0,   0.4,   -0.8,    0.5,     1.0,  3.845,   3.75, RadiusR,     2.0,     999,     999,  4.2656)> ' Bottom remainder
+'<InlineData(   4.0,    5.0,      2.0,  1.0, 1/2.0, -1/3.0,    1.4,     0.9,   3.45,   4.45,   4/3.0,     6.0,     999,     999,  2.2845)> ' L: Inside G=Y0 below line
+'<InlineData(   4.0,    5.0,      2.0,  1.0, 1/2.0, -1/3.0,    1.4,     0.9, 3.4588, 4.4353,   4/3.0,     6.0,     999,     999,  2.2845)> ' L: Inside G=Y0 below line
+'<InlineData(   4.0,    5.0,      2.0,  1.0,   0.2,    1.4,    0.1,     0.7  4.5882, 6.6471,   5/3.0,     1.5,     999,     999, 14.9330)> ' Top remainder
+'<InlineData(   4.0,    5.0,      2.0,  1.0,   0.4,   -0.8,    0.5,     1.0,  3.845,   3.75,  1.4286,     2.5,     999,     999,  4.2656)> ' Bottom remainder
 
 
 Public Class CultureTestVals
