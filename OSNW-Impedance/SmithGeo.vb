@@ -413,8 +413,7 @@ Public Class SmithMainCircle
                 NameOf(conductance), Impedance.MSGVMBGTZ)
         End If
 
-        ' Derived like RadiusR.
-        'Return Me.GridRadius * (1 / ((conductance / Me.Y0) + 1))
+        ' Derived like GetRadiusR.
         Return Me.GridRadius / ((conductance / Me.Y0) + 1)
 
     End Function ' GetRadiusG
