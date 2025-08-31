@@ -182,29 +182,31 @@ Namespace GeometryTests
         '<InlineData(   4.0,    5.0,      2.0,  1.0,   0.4,   -0.8,    0.5,     1.0,  3.845,   3.75,  1.4286,     2.5, 4.0 / 3,     999,  4.2656)> ' Bottom remainder
 
 
-        '<InlineData(ChartX, ChartY, ChartRad,   Z0,      G, RadiusG)> ' Model
-        '<InlineData(   4.0,    5.0,      2.0,  1.0,      G, RadiusG)> ' Base circle
+        ''<InlineData(ChartX, ChartY, ChartRad,   Z0,      G, RadiusG)> ' Model
+        ''<InlineData(   4.0,    5.0,      2.0,  1.0,      G, RadiusG)> ' Base circle
         <Theory>
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 1.0)> ' J: Center point
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.5, 4.0 / 3)> ' On R=Z0 circle, above line
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.2, 5.0 / 3)> ' On R=Z0 circle, below line
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.48, 1.351)> ' Inside R=Z0 circle, above line
-        <InlineData(4.0, 5.0, 2.0, 50.0, 0.016, 1.351)> ' Inside R=Z0 circle, above line
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.35, 3.0 / 2)> ' Inside R=Z0 circle, on line
+        <InlineData(4.0, 5.0, 2.0, 50.0, 0.0094, 1.3605)> ' Inside R=Z0 circle, above line
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.35, 1.4815)> ' Inside R=Z0 circle, on line
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.25, 1.6)> ' M: Inside R=Z0 circle, below line
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 1.0)> ' G=Y0 circle, above line
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 1.0)> ' G=Y0 circle, below line
         <InlineData(4.0, 5.0, 2.0, 1.0, 3.0, 0.5)> ' Inside G=Y0 circle, on line
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.5, 0.8)> ' D: Inside G=Y0, above line
-        <InlineData(4.0, 5.0, 2.0, 75.0, 0.0133, 0.8)> ' E: NormZ 1/3 + j1/3
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1.4, 1.75 / 2)> ' L: Inside G=Y0, below line
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.1, 1.8)> ' Top remainder
+        <InlineData(4.0, 5.0, 2.0, 75.0, 0.02, 0.8)> ' E: NormZ 1/3 + j1/3
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1.4, 0.833333)> ' L: Inside G=Y0, below line
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.1, 1.8182)> ' Top remainder
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.5, 4.0 / 3)> ' Bottom remainder
         Sub GetRadiusG_GoodInput_Succeeds(gridCenterX As Double, gridCenterY As Double, gridRadius As Double,
                                           z0 As Double, testG As Double, expectRad As Double)
 
-            '            Const Precision As Double = 0.0005
-            Const Precision As Double = 0.1
+
+
+            Const Precision As Double = 0.0005
+            '            Const Precision As Double = 0.1
 
             Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridRadius * 2.0, z0)
             Dim RadiusAns As Double = SmithCirc.GetRadiusG(testG)
