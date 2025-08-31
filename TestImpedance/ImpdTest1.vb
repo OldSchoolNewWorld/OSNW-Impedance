@@ -10,41 +10,42 @@ Imports OsnwImpd = OSNW.Numerics.Impedance
 Imports OsnwNumSS = OSNW.Numerics.StandardizationStyles
 
 ' Test Data
-' These are common test data points for Impedance and Smith Chart tests. Include
-' special cases and a mix of +/-, left/right, above/below/on, etc. ChartX,
-' ChartY, ChartRad, PlotX, PlotY, RadiusR, RadiusX, RadiusG, and RadiusB are in
-' generic "units" relative to the Cartesian plane on which a Smith Chart is
-' drawn. Copy the entire list, then delete unused columns as needed to match the
+' These are common test data points for Impedance and Smith Chart tests. They
+' include special cases and a mix of +/-, left/right, above/below/on, etc.
+' ChartX, ChartY, ChartRad, PlotX, PlotY, RadiusR, RadiusX, RadiusG, and RadiusB
+' are in generic "units" relative to the Cartesian plane on which a Smith Chart
+' can be drawn.
+' Copy the entire list, then delete unused columns as needed to match the
 ' process under test. After unused columns are stripped, some remaining tests
 ' may be redundant. Any rows that cause EXPECTED errors can be used as tests of
 ' bad data.
 
 ' Const INF As Double = Double.PositiveInfinity
 
-'<InlineData(ChartX, ChartY, ChartRad,   Z0,     R,      X,      G,       B,  PlotX,  PlotY, RadiusR, RadiusX, RadiusG, RadiusB,    VSWR)> ' Model
-'<InlineData(   4.0,    5.0,      2.0,  1.0,     R,      X,      G,       B,  PlotX,  PlotY, RadiusR, RadiusX, RadiusG, RadiusB,    VSWR)> ' Base circle
+' NOTE: SOME OF THE VALUES BELOW MAY HAVE BEEN TAKEN AS ESTIMATES AND MAY NEED TO BE UPDATED AS MORE TESTS CHECK FOR INCREASED PRECISION.
+'<InlineData(ChartX, ChartY, ChartRad,      Z0,        R,       X,      G,       B,  PlotX,  PlotY, RadiusR, RadiusX, RadiusG, RadiusB,    VSWR)> ' Model
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,        R,       X,      G,       B,  PlotX,  PlotY, RadiusR, RadiusX, RadiusG, RadiusB,    VSWR)> ' Base circle
 ' <Theory>
-'<InlineData(   4.0,    5.0,      2.0,  1.0,     R,      X,      G,       B,    2.5,    6.5, RadiusR, RadiusX, RadiusG, RadiusB,    VSWR)> ' Outside of circle
-'<InlineData(   4.0,    5.0,      2.0,  1.0,  -2.0,      X,      G,       B,  GridX,  GridY, RadiusR, RadiusX, RadiusG, RadiusB,    VSWR)> ' NormR<=0
-'<InlineData(   4.0,    5.0,      2.0,  1.0,   0.0,    0.0,    INF,     0.0,    2.0,    5.0,     2.0,     INF,     0.0,     INF,     INF)> ' A: Short circuit
-'<InlineData(   4.0,    5.0,      2.0,  1.0,   0.0,  1/2.0,    INF,     2.0,    2.8,    6.6,     2.0,     4.0,     INF,     999,     INF)> ' C: Perimeter
-'<InlineData(   4.0,    5.0,      2.0,  1.0,   INF,    0.0,    0.0,     0.0,    6.0,    5.0,     0.0,     INF,     2.0,     INF,     INF)> ' B: Open circuit
-'<InlineData(   4.0,    5.0,      2.0,  1.0,   1.0,    0.0,    1.0,     0.0,    4.0,    5.0,     1.0,     INF,     999,     999,     1.0)> ' J: Center point
-'<InlineData(   4.0,    5.0,      2.0,  1.0,   1.0,    1.0,    0.5,    -0.5,    4.4,    5.8,     1.0,     2.0,     999,     999,  2.6180)> ' R=Z0 circle above line
-'<InlineData(   4.0,    5.0,      2.0,  1.0,   1.0,   -2.0,    0.2,     0.4,    5.0,    4.0,     1.0,     1.0,     999,     999,  5.8284)> ' R=Z0 circle below line
-'<InlineData(   4.0,    5.0,      2.0,  1.0,   2.0,  1/2.0,   0.48,   -0.15,  4.703, 5.2162,   2/3.0,     4.0,     999,     999,  2.1626)> ' Inside R=Z0 circle above line
-'<InlineData(   4.0,    5.0,      2.0, 50.0, 100.0,   25.0,  0.016,  -0.008,  4.703, 5.2162,   2/3.0,     4.0,     999,     999,  2.1626)> ' Inside R=Z0 circle above line
-'<InlineData(   4.0,    5.0,      2.0,  1.0,   3.0,    0.0,   0.35,     0.0,    5.0,    5.0,     0.5,     INF,     999,     999,     3.0)> ' Inside R=Z0 circle on line
-'<InlineData(   4.0,    5.0,      2.0,  1.0,   2.0,   -2.0,   0.25,    0.25,  5.077,  4.385,   2/3.0,     1.0,     999,     999,  4.2656)> ' M: Inside R=Z0 circle below line
-'<InlineData(   4.0,    5.0,      2.0,  1.0, 1/2.0,  1/2.0,    1.0,    -1.0,    3.6,    5.8,   4/3.0,     4.0,     999,     999,  2.6180)> ' G=Y0 circle above line
-'<InlineData(   4.0,    5.0,      2.0,  1.0, 1/2.0, -1/2.0,    1.0,     1.0,    3.6,    4.2,   4/3.0,     4.0,     999,     999,  2.6180)> ' G=Y0 circle below line
-'<InlineData(   4.0,    5.0,      2.0,  1.0, 1/3.0,    0.0,    3.0,     0.0,    3.0,    5.0,     1.5,     INF,     999,     999,     3.0)> ' Inside G=Y0 circle
-'<InlineData(   4.0,    5.0,      2.0,  1.0, 1/3.0,  1/3.0,    1.5,    -1.5,  3.175,    5.7,     1.5,     6.0,     999,     999,  3.3699)> ' D: Inside G=Y0 above line
-'<InlineData(   4.0,    5.0,      2.0, 75.0,  25.0,   25.0, 0.0133, -0.0133,  3.175,    5.7,     1.5,     6.0,     999,     999,  3.3699)> ' E: NormZ 1/3 + j1/3
-'<InlineData(   4.0,    5.0,      2.0,  1.0, 1/2.0, -1/3.0,    1.4,     0.9, 3.4588, 4.4353,   4/3.0,     6.0,     999,     999,  2.2845)> ' L: Inside G=Y0 below line
-'<InlineData(   4.0,    5.0,      2.0,  1.0,   0.2,    1.4,    0.1,     0.7  4.5882, 6.6471,   5/3.0,  1.4286,     999,     999, 14.9330)> ' Top remainder
-'<InlineData(   4.0,    5.0,      2.0,  1.0,   0.4,   -0.8,    0.5,     1.0,  3.845,   3.75,  1.4286,     2.5,     999,     999,  4.2656)> ' Bottom remainder
-
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,      999,     999,    999,     999,    2.5,    6.5, RadiusR, RadiusX, RadiusG, RadiusB,    VSWR)> ' Outside of circle
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,  -2.0000,     999,    999,     999,  GridX,  GridY, RadiusR, RadiusX, RadiusG, RadiusB,    VSWR)> ' NormR<=0
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.0000,  0.0000,    INF,  0.0000, 2.0000, 5.0000,  2.0000,     INF,  0.0000,     INF,     INF)> ' A: Short circuit
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.0000,   1/2.0,    INF,  2.0000,    2.8,    6.6,  2.0000,  4.0000,     INF,     999,     INF)> ' C: Perimeter
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,      INF,  0.0000, 0.0000,  0.0000,    6.0, 5.0000,  0.0000,     INF,  2.0000,     INF,     INF)> ' B: Open circuit
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   1.0000,  0.0000, 1.0000,  0.0000, 4.0000, 5.0000,  1.0000,     INF,  1.0000,     999,     1.0)> ' J: Center point
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   1.0000,  1.0000,    0.5,    -0.5,    4.4,    5.8,  1.0000,  2.0000,   4.0/3,     999,  2.6180)> ' On R=Z0 circle, above line
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   1.0000, -2.0000,    0.2,     0.4, 5.0000, 4.0000,  1.0000,  1.0000,   5.0/3,     999,  5.8284)> ' On R=Z0 circle, below line
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   2.0000,   1/2.0,   0.48,   -0.15,  4.703, 5.2162,   2/3.0,  4.0000,   1.351,     999,  2.1626)> ' Inside R=Z0 circle, above line
+'<InlineData(4.0000, 5.0000,   2.0000, 50.0000, 100.0000, 25.0000, 0.0094,  -0.008,  4.703, 5.2162,   2/3.0,  4.0000,  1.3605,     999,  2.1626)> ' Inside R=Z0 circle, above line
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   3.0000,  0.0000,   0.35,  0.0000, 5.0000, 5.0000,     0.5,     INF,  1.4815,     999,     3.0)> ' Inside R=Z0 circle, on line
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   2.0000, -2.0000,   0.25,    0.25,  5.077,  4.385,   2.0/3,  1.0000,   1.600,     999,  4.2656)> ' M: Inside R=Z0 circle, below line
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/2.0,   1/2.0, 1.0000,    -1.0,    3.6,    5.8,   4/3.0,  4.0000,  1.0000,     999,  2.6180)> ' G=Y0 circle, above line
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/2.0,  -1/2.0, 1.0000,  1.0000,    3.6,    4.2,   4/3.0,  4.0000,  1.0000,     999,  2.6180)> ' G=Y0 circle, below line
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/3.0,  0.0000,    3.0,  0.0000,    3.0, 5.0000,     1.5,     INF,     0.5,     999,     3.0)> ' Inside G=Y0 circle, on line
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/3.0,   1/3.0,    1.5,    -1.5,  3.175,    5.7,     1.5,     6.0,     0.8,     999,  3.3699)> ' D: Inside G=Y0, above line
+'<InlineData(4.0000, 5.0000,   2.0000, 75.0000,  25.0000, 25.0000, 0.0133, -0.0133,  3.175,    5.7,     1.5,     6.0,  1.0013,     999,  3.3699)> ' E: NormZ 1/3 + j1/3
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/2.0,  -1/3.0,    1.4,     0.9, 3.4588, 4.4353,   4/3.0,   0.833,   6.000,     999,  2.2845)> ' L: Inside G=Y0, below line
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.2000,  1.4000,    0.1,     0.7  4.5882, 6.6471,   5/3.0,  1.4286,  1.8182,     999, 14.9330)> ' Top remainder
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.4000, -0.8000,    0.5,  1.0000,  3.845,   3.75,  1.4286,     2.5,   4.0/3,     999,  4.2656)> ' Bottom remainder
 
 Public Class CultureTestVals
     ' A common set of test values for parsing routines.
@@ -103,58 +104,6 @@ Namespace DevelopmentTests
         '    End Sub
 
     End Class ' TestCultureStuff
-
-    Public Class TestVSWR
-
-
-
-        Const INF As Double = Double.PositiveInfinity
-
-        <Theory>
-        <InlineData(1.0, 1.0, 0.0, 1.0)> ' J: Center point
-        <InlineData(1.0, 1.0, 1.0, 2.618)> ' R=Z0 circle above line
-        <InlineData(1.0, 1.0, -2.0, 5.8284)> ' R=Z0 circle below line
-        <InlineData(1.0, 2.0, 1 / 2.0, 2.1626)> ' Inside R=Z0 circle below line
-        <InlineData(1.0, 3.0, 0.0, 3.0)> ' Inside R=Z0 circle on line
-        <InlineData(50.0, 100.0, 25.0, 2.1626)> ' Inside R=Z0 circle below line
-        <InlineData(1.0, 1 / 2.0, 1 / 2.0, 2.618)> ' G=Y0 circle above line
-        <InlineData(1.0, 1 / 2.0, -1 / 2.0, 2.618)> ' G=Y0 circle below line
-        <InlineData(1.0, 1 / 3.0, 0.0, 3.0)> ' Inside G=Y0 circle
-        <InlineData(1.0, 0.2, 1.4, 14.933)> ' Top remainder
-        <InlineData(1.0, 0.4, -0.8, 4.2655644)> ' Bottom remainder
-        <InlineData(1.0, 1 / 3.0, 1 / 3.0, 3.3699)> ' D:
-        <InlineData(75.0, 25.0, 25.0, 3.3699)> ' E: NormZ 1/3 + j1/3
-        <InlineData(1.0, 1 / 2.0, -1 / 3.0, 2.2845)> ' L:
-        <InlineData(1.0, 2.0, -2.0, 4.2656)> ' M:
-        Public Sub VSWR_GoodInput_Succeeds(z0 As Double, r As Double, x As Double, expectVSWR As Double)
-
-            Const Precision As Double = 0.001
-
-            Dim Imp As New Impedance(r, x)
-            Dim AnsVWSR As Double = Imp.VSWR(z0)
-            Assert.Equal(expectVSWR, AnsVWSR, Precision)
-
-        End Sub
-
-        '<Theory>
-        '<InlineData(1.0, R, X    VSWR)> ' Outside of circle
-        '<InlineData(1.0, -2.0, X    VSWR)> ' NormR<=0
-        '<InlineData(1.0, 0.0, 0.0     INF)> ' A: Short circuit
-        '<InlineData(1.0, INF, 0.0     INF)> ' B: Open circuit
-        '<InlineData(1.0, 0.0, 1 / 2.0     INF)> ' C: Perimeter
-        Public Sub VSWR_BadInput_Fails(r As Double, x As Double, z0 As Double, expectVSWR As Double)
-
-            Const Precision As Double = 0.001
-
-            Dim Imp As New Impedance(r, x)
-            Dim AnsVWSR As Double = Imp.VSWR(z0)
-            Assert.Equal(expectVSWR, AnsVWSR, Precision)
-
-        End Sub
-
-    End Class ' TestVSWR
-
-
 
 End Namespace ' DevTests
 
@@ -567,17 +516,131 @@ Namespace SerializationTests
 
     End Class ' TestSerialization
 
-    Namespace TestImpedanceMath
-
-        '
-        '
-        ' Look for some solved cases to test the math.
-        '
-        ' Some formulas and schematics are at:
-        ' https://www.mathforengineers.com/AC-circuits/formulas-of-impedances-in-ac-circuits.html
-        '
-        '
-
-    End Namespace ' TestImpedanceMath
-
 End Namespace ' SerializationTests
+
+Namespace TestImpedanceMath
+
+    '
+    '
+    ' Look for some solved cases to test the math.
+    '
+    ' Some formulas and schematics are at:
+    ' https://www.mathforengineers.com/AC-circuits/formulas-of-impedances-in-ac-circuits.html
+    '
+    '
+
+    Public Class TestVSWR
+
+        Const INF As Double = Double.PositiveInfinity
+
+        ' NOTE: SOME OF THE VALUES BELOW MAY HAVE BEEN TAKEN AS ESTIMATES AND MAY NEED TO BE UPDATED AS MORE TESTS CHECK FOR INCREASED PRECISION.
+        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,        R,       X,      G,       B,  PlotX,  PlotY, RadiusR, RadiusX, RadiusG, RadiusB,    VSWR)> ' Base circle
+        ' <Theory>
+        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,      999,     999,    999,     999,    2.5,    6.5, RadiusR, RadiusX, RadiusG, RadiusB,    VSWR)> ' Outside of circle
+        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,  -2.0000,     999,    999,     999,  GridX,  GridY, RadiusR, RadiusX, RadiusG, RadiusB,    VSWR)> ' NormR<=0
+        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.0000,  0.0000,    INF,  0.0000, 2.0000, 5.0000,  2.0000,     INF,  0.0000,     INF,     INF)> ' A: Short circuit
+        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.0000,   1/2.0,    INF,  2.0000,    2.8,    6.6,  2.0000,  4.0000,     INF,     999,     INF)> ' C: Perimeter
+        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,      INF,  0.0000, 0.0000,  0.0000,    6.0, 5.0000,  0.0000,     INF,  2.0000,     INF,     INF)> ' B: Open circuit
+        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   1.0000,  0.0000, 1.0000,  0.0000, 4.0000, 5.0000,  1.0000,     INF,  1.0000,     999,     1.0)> ' J: Center point
+        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   1.0000,  1.0000,    0.5,    -0.5,    4.4,    5.8,  1.0000,  2.0000,   4.0/3,     999,  2.6180)> ' On R=Z0 circle, above line
+        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   1.0000, -2.0000,    0.2,     0.4, 5.0000, 4.0000,  1.0000,  1.0000,   5.0/3,     999,  5.8284)> ' On R=Z0 circle, below line
+        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   2.0000,   1/2.0,   0.48,   -0.15,  4.703, 5.2162,   2/3.0,  4.0000,   1.351,     999,  2.1626)> ' Inside R=Z0 circle, above line
+        '<InlineData(4.0000, 5.0000,   2.0000, 50.0000, 100.0000, 25.0000, 0.0094,  -0.008,  4.703, 5.2162,   2/3.0,  4.0000,  1.3605,     999,  2.1626)> ' Inside R=Z0 circle, above line
+        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   3.0000,  0.0000,   0.35,  0.0000, 5.0000, 5.0000,     0.5,     INF,  1.4815,     999,     3.0)> ' Inside R=Z0 circle, on line
+        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   2.0000, -2.0000,   0.25,    0.25,  5.077,  4.385,   2.0/3,  1.0000,   1.600,     999,  4.2656)> ' M: Inside R=Z0 circle, below line
+        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/2.0,   1/2.0, 1.0000,    -1.0,    3.6,    5.8,   4/3.0,  4.0000,  1.0000,     999,  2.6180)> ' G=Y0 circle, above line
+        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/2.0,  -1/2.0, 1.0000,  1.0000,    3.6,    4.2,   4/3.0,  4.0000,  1.0000,     999,  2.6180)> ' G=Y0 circle, below line
+        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/3.0,  0.0000,    3.0,  0.0000,    3.0, 5.0000,     1.5,     INF,     0.5,     999,     3.0)> ' Inside G=Y0 circle, on line
+        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/3.0,   1/3.0,    1.5,    -1.5,  3.175,    5.7,     1.5,     6.0,     0.8,     999,  3.3699)> ' D: Inside G=Y0, above line
+        '<InlineData(4.0000, 5.0000,   2.0000, 75.0000,  25.0000, 25.0000, 0.0133, -0.0133,  3.175,    5.7,     1.5,     6.0,  1.0013,     999,  3.3699)> ' E: NormZ 1/3 + j1/3
+        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/2.0,  -1/3.0,    1.4,     0.9, 3.4588, 4.4353,   4/3.0,   0.833,   6.000,     999,  2.2845)> ' L: Inside G=Y0, below line
+        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.2000,  1.4000,    0.1,     0.7  4.5882, 6.6471,   5/3.0,  1.4286,  1.8182,     999, 14.9330)> ' Top remainder
+        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.4000, -0.8000,    0.5,  1.0000,  3.845,   3.75,  1.4286,     2.5,   4.0/3,     999,  4.2656)> ' Bottom remainder
+
+
+        ' NOTE: SOME OF THE VALUES BELOW MAY HAVE BEEN TAKEN AS ESTIMATES AND MAY NEED TO BE UPDATED AS MORE TESTS CHECK FOR INCREASED PRECISION.
+        '<InlineData( 1.0000,        R,       X,    VSWR)> ' Base circle
+        ' <Theory>
+        '<InlineData( 1.0000,      999,     999,    VSWR)> ' Outside of circle
+        '<InlineData( 1.0000,  -2.0000,     999,    VSWR)> ' NormR<=0
+        '<InlineData( 1.0000,   0.0000,  0.0000,     INF)> ' A: Short circuit
+        '<InlineData( 1.0000,   0.0000,   1/2.0,     INF)> ' C: Perimeter
+        '<InlineData( 1.0000,      INF,  0.0000,     INF)> ' B: Open circuit
+        '<InlineData( 1.0000,   1.0000,  0.0000,     1.0)> ' J: Center point
+        '<InlineData( 1.0000,   1.0000,  1.0000,  2.6180)> ' On R=Z0 circle, above line
+        '<InlineData( 1.0000,   1.0000, -2.0000,  5.8284)> ' On R=Z0 circle, below line
+        '<InlineData( 1.0000,   2.0000,   1/2.0,  2.1626)> ' Inside R=Z0 circle, above line
+        '<InlineData(50.0000, 100.0000, 25.0000,  2.1626)> ' Inside R=Z0 circle, above line
+        '<InlineData( 1.0000,   3.0000,  0.0000,     3.0)> ' Inside R=Z0 circle, on line
+        '<InlineData( 1.0000,   2.0000, -2.0000,  4.2656)> ' M: Inside R=Z0 circle, below line
+        '<InlineData( 1.0000,    1/2.0,   1/2.0,  2.6180)> ' G=Y0 circle, above line
+        '<InlineData( 1.0000,    1/2.0,  -1/2.0,  2.6180)> ' G=Y0 circle, below line
+        '<InlineData( 1.0000,    1/3.0,  0.0000,     3.0)> ' Inside G=Y0 circle, on line
+        '<InlineData( 1.0000,    1/3.0,   1/3.0,  3.3699)> ' D: Inside G=Y0, above line
+        '<InlineData(75.0000,  25.0000, 25.0000,  3.3699)> ' E: NormZ 1/3 + j1/3
+        '<InlineData( 1.0000,    1/2.0,  -1/3.0,  2.2845)> ' L: Inside G=Y0, below line
+        '<InlineData( 1.0000,   0.2000,  1.4000, 14.9330)> ' Top remainder
+        '<InlineData( 1.0000,   0.4000, -0.8000,  4.2656)> ' Bottom remainder
+
+
+
+
+
+
+        ' NOTE: SOME OF THE VALUES BELOW MAY HAVE BEEN TAKEN AS ESTIMATES AND MAY NEED TO BE UPDATED AS MORE TESTS CHECK FOR INCREASED PRECISION.
+        '<InlineData( 1.0000,        R,       X,    VSWR)> ' Base circle
+        <Theory>
+        <InlineData(1.0, 0.0000, 0.0000, INF)> ' A: Short circuit
+        <InlineData(1.0, 0.0000, 1 / 2.0, INF)> ' C: Perimeter
+        <InlineData(1.0, 1.0, 0.0000, 1.0)> ' J: Center point
+        <InlineData(1.0, 1.0, 1.0, 2.618)> ' On R=Z0 circle, above line
+        <InlineData(1.0, 1.0, -2.0, 5.8284)> ' On R=Z0 circle, below line
+        <InlineData(1.0, 2.0, 1 / 2.0, 2.1626)> ' Inside R=Z0 circle, above line
+        <InlineData(50.0, 100.0, 25.0, 2.1626)> ' Inside R=Z0 circle, above line
+        <InlineData(1.0, 3.0, 0.0000, 3.0)> ' Inside R=Z0 circle, on line
+        <InlineData(1.0, 2.0, -2.0, 4.2656)> ' M: Inside R=Z0 circle, below line
+        <InlineData(1.0, 1 / 2.0, 1 / 2.0, 2.618)> ' G=Y0 circle, above line
+        <InlineData(1.0, 1 / 2.0, -1 / 2.0, 2.618)> ' G=Y0 circle, below line
+        <InlineData(1.0, 1 / 3.0, 0.0000, 3.0)> ' Inside G=Y0 circle, on line
+        <InlineData(1.0, 1 / 3.0, 1 / 3.0, 3.3699)> ' D: Inside G=Y0, above line
+        <InlineData(75.0, 25.0, 25.0, 3.3699)> ' E: NormZ 1/3 + j1/3
+        <InlineData(1.0, 1 / 2.0, -1 / 3.0, 2.2845)> ' L: Inside G=Y0, below line
+        <InlineData(1.0, 0.2, 1.4, 14.933)> ' Top remainder
+        <InlineData(1.0, 0.4, -0.8, 4.2656)> ' Bottom remainder
+        Public Sub VSWR_GoodInput_Succeeds(z0 As Double, r As Double, x As Double, expectVSWR As Double)
+
+            Const Precision As Double = 0.001
+
+            Dim Imp As New Impedance(r, x)
+            Dim AnsVWSR As Double = Imp.VSWR(z0)
+            Assert.Equal(expectVSWR, AnsVWSR, Precision)
+
+        End Sub
+
+
+
+
+
+
+        '<InlineData(1.0, 999, 999, VSWR)> ' Outside of circle
+        '<InlineData(1.0, -2.0, 999, VSWR)> ' NormR<=0
+        '<InlineData(1.0, INF, 0.0000, INF)> ' B: Open circuit
+
+
+
+        '<Theory>
+        Sub VSWR_BadInput_Fails(z0 As Double, r As Double, x As Double)
+            Dim Imp As New Impedance(r, x)
+            Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
+                Sub()
+                    ' Code that throws the exception
+                    Dim AnsVWSR As Double = Imp.VSWR(z0)
+                End Sub)
+        End Sub
+
+
+
+    End Class ' TestVSWR
+
+End Namespace ' TestImpedanceMath
+

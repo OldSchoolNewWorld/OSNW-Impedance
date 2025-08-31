@@ -690,14 +690,42 @@ Public Structure Impedance
 
 #Region "Other Shared Methods"
 
-    ''' <summary>
-    ''' Calculates the voltage reflection coefficient (Gamma) when the specified
-    ''' <paramref name="zLoad"/> <c>Impedance</c> is connected to the specified
-    ''' <paramref name="zSource"/> <c>Impedance</c>.
-    ''' </summary>
-    ''' <param name="zSource">Specifies the impedance of the source.</param>
-    ''' <param name="zLoad">Specifies the impedance of the load.</param>
-    ''' <returns>The voltage reflection coefficient.</returns>
+    '''' <summary>
+    '''' Calculates the voltage reflection coefficient (Gamma) when the specified
+    '''' <paramref name="zLoad"/> <c>Impedance</c> is connected to the specified
+    '''' <paramref name="zSource"/> <c>Impedance</c>.
+    '''' </summary>
+    '''' <param name="zSource">Specifies the impedance of the source.</param>
+    '''' <param name="zLoad">Specifies the impedance of the load.</param>
+    '''' <returns>The voltage reflection coefficient.</returns>
+    'Public Shared Function VoltageReflectionCoefficient(
+    '    ByVal zSource As Impedance, ByVal zLoad As Impedance) _
+    '    As System.Numerics.Complex
+
+    '    ' REF: Reflection and Transmission Coefficients Explained
+    '    ' https://www.rfwireless-world.com/terminology/reflection-and-transmission-coefficients
+    '    ' has the numerator shown as "Zload - Zsource".
+
+    '    ' REF: Mathematical Construction and Properties of the Smith Chart
+    '    ' https://www.allaboutcircuits.com/technical-articles/mathematical-construction-and-properties-of-the-smith-chart/
+    '    ' has mostly the same but with the numerator shown as "Zsource - Zload".
+
+    '    ' This version caused an exception with test case:
+    '    ' <InlineData(1.0, 3.0, 0.0, 3.0)> ' Inside R=Z0 circle on line
+    '    '        Return ((zLoad - zSource) / (zLoad + zSource)).ToComplex
+
+    '    ' This version caused an exception with test case:
+    '    ' <InlineData(1.0, 1.0, 1.0, 999)> ' R=Z0 circle above line
+    '    '        Return ((zSource - zLoad) / (zLoad + zSource)).ToComplex
+
+    '    ' TRY DOING THAT WITH ABS TO COMBINE BOTH APPROACHES.
+    '    Dim MinusComp As System.Numerics.Complex =
+    '        System.Numerics.Complex.Abs(zLoad.ToComplex - zSource.ToComplex)
+    '    Dim MinusImp As Impedance = New Impedance(MinusComp.Real, MinusComp.Imaginary)
+    '    Dim Plus As Impedance = zLoad + zSource
+    '    Return (MinusImp / Plus).ToComplex
+
+    'End Function ' VoltageReflectionCoefficient
     Public Shared Function VoltageReflectionCoefficient(
         ByVal zSource As Impedance, ByVal zLoad As Impedance) _
         As System.Numerics.Complex
@@ -710,20 +738,9 @@ Public Structure Impedance
         ' https://www.allaboutcircuits.com/technical-articles/mathematical-construction-and-properties-of-the-smith-chart/
         ' has mostly the same but with the numerator shown as "Zsource - Zload".
 
-        ' This version caused an exception with test case:
-        ' <InlineData(1.0, 3.0, 0.0, 3.0)> ' Inside R=Z0 circle on line
-        '        Return ((zLoad - zSource) / (zLoad + zSource)).ToComplex
-
-        ' This version caused an exception with test case:
-        ' <InlineData(1.0, 1.0, 1.0, 999)> ' R=Z0 circle above line
-        '        Return ((zSource - zLoad) / (zLoad + zSource)).ToComplex
-
-        ' TRY DOING THAT WITH ABS TO COMBINE BOTH APPROACHES.
-        Dim MinusComp As System.Numerics.Complex =
-            System.Numerics.Complex.Abs(zLoad.ToComplex - zSource.ToComplex)
-        Dim MinusImp As Impedance = New Impedance(MinusComp.Real, MinusComp.Imaginary)
-        Dim Plus As Impedance = zLoad + zSource
-        Return (MinusImp / Plus).ToComplex
+        Dim LoadComp As System.Numerics.Complex = zLoad.ToComplex
+        Dim SourceComp As System.Numerics.Complex = zSource.ToComplex
+        Return (LoadComp - SourceComp) / (LoadComp + SourceComp)
 
     End Function ' VoltageReflectionCoefficient
 
@@ -788,8 +805,8 @@ Public Structure Impedance
         End If
 
         '        Return Impedance.VoltageReflectionCoefficient(New Impedance(z0, 0), Me)
-        Dim NewImp As New Impedance(z0, 0)
-        Return Impedance.VoltageReflectionCoefficient(NewImp, Me)
+        Dim SourceImp As New Impedance(z0, 0)
+        Return Impedance.VoltageReflectionCoefficient(SourceImp, Me)
 
     End Function ' VoltageReflectionCoefficient
 
@@ -991,7 +1008,8 @@ Public Structure Impedance
         ' Input checking.
         ' Leave one consolidated test for now. The version below was based on
         ' considering whether special cases may exist where some of the
-        ' rejections may need to be allowed.
+        ' rejections may need to be allowed. Work with pure reactances would
+        ' need to allow for R=0.
         If resistance < 0.0 OrElse Double.IsInfinity(resistance) Then
             'Dim CaughtBy As System.Reflection.MethodBase =
             '    System.Reflection.MethodBase.GetCurrentMethod

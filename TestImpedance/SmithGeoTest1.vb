@@ -12,23 +12,22 @@ Namespace GeometryTests
 
         Const INF As Double = Double.PositiveInfinity
 
-        '<InlineData(ChartX, ChartY, ChartRad, Z0, R, RadiusR)> ' Model
+        ' NOTE: SOME OF THE VALUES BELOW MAY HAVE BEEN TAKEN AS ESTIMATES AND MAY NEED TO BE UPDATED AS MORE TESTS CHECK FOR INCREASED PRECISION.
+        '<InlineData(ChartX, ChartY, ChartRad,      Z0,        R, RadiusR)> ' Model
         <Theory>
-        <InlineData(4.0, 5.0, 2.0, 1.0, INF, 0.0)> ' B: Open circuit
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 1.0)> ' J: Center point
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 1.0)> ' R=Z0 circle above line
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 1.0)> ' R=Z0 circle below line
-        <InlineData(4.0, 5.0, 2.0, 1.0, 2.0, 2 / 3.0)> ' Inside R=Z0 circle above line
-        <InlineData(4.0, 5.0, 2.0, 50.0, 100.0, 2 / 3.0)> ' Inside R=Z0 circle above line
-        <InlineData(4.0, 5.0, 2.0, 1.0, 3.0, 0.5)> ' Inside R=Z0 circle on line
-        <InlineData(4.0, 5.0, 2.0, 1.0, 2.0, 2 / 3.0)> ' M: Inside R=Z0 circle below line
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, 4 / 3.0)> ' G=Y0 circle above line
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, 4 / 3.0)> ' G=Y0 circle below line
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 3.0, 1.5)> ' Inside G=Y0 circle
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 3.0, 1.5)> ' D: Inside G=Y0 above line
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 1.0)> ' On R=Z0 circle, above line
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 1.0)> ' On R=Z0 circle, below line
+        <InlineData(4.0, 5.0, 2.0, 1.0, 2.0, 2 / 3.0)> ' Inside R=Z0 circle, above line
+        <InlineData(4.0, 5.0, 2.0, 50.0, 100.0, 2 / 3.0)> ' Inside R=Z0 circle, above line
+        <InlineData(4.0, 5.0, 2.0, 1.0, 3.0, 0.5)> ' Inside R=Z0 circle, on line
+        <InlineData(4.0, 5.0, 2.0, 1.0, 2.0, 2.0 / 3)> ' M: Inside R=Z0 circle, below line
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, 4 / 3.0)> ' G=Y0 circle, above line
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, 4 / 3.0)> ' G=Y0 circle, below line
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 3.0, 1.5)> ' Inside G=Y0 circle, on line
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 3.0, 1.5)> ' D: Inside G=Y0, above line
         <InlineData(4.0, 5.0, 2.0, 75.0, 25.0, 1.5)> ' E: NormZ 1/3 + j1/3
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, 4 / 3.0)> ' L: Inside G=Y0 below line
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, 4 / 3.0)> ' L: Inside G=Y0 below line
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, 4 / 3.0)> ' L: Inside G=Y0, below line
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.2, 5 / 3.0)> ' Top remainder
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.4, 1.4286)> ' Bottom remainder
         Sub GetRadiusR_GoodInput_Succeeds(gridCenterX As Double, gridCenterY As Double, gridRadius As Double,
@@ -41,17 +40,9 @@ Namespace GeometryTests
             Assert.Equal(expectRadR, RadiusAns, Precision)
         End Sub
 
-
-        '<InlineData(4.0, 5.0, 2.0, 1.0, R, RadiusR)> ' Outside of circle
-        '<InlineData(4.0, 5.0, 2.0, 1.0, -2.0, RadiusR)> ' NormR<=0
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0, 2.0)> ' A: Short circuit
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0, 2.0)> ' C: Perimeter
-
-
         <Theory>
-        <InlineData(4.0, 5.0, 2.0, 1.0, -2.0)> ' NormR<=0
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0)> ' A: Short circuit
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0)> ' C: Perimeter
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' A: Short circuit
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' C: Perimeter
         Sub GetRadiusR_BadInput_Fails(gridCenterX As Double, gridCenterY As Double, gridDiameter As Double,
                                       z0 As Double, testR As Double)
 
@@ -69,20 +60,20 @@ Namespace GeometryTests
 
         Const INF As Double = Double.PositiveInfinity
 
-        '<InlineData(ChartX, ChartY, ChartRad, Z0, X, RadiusX)> ' Model
+        ' NOTE: SOME OF THE VALUES BELOW MAY HAVE BEEN TAKEN AS ESTIMATES AND MAY NEED TO BE UPDATED AS MORE TESTS CHECK FOR INCREASED PRECISION.
+        '<InlineData(ChartX, ChartY, ChartRad,      Z0,       X, RadiusX)> ' Model
+        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,       X, RadiusX)> ' Base circle
         <Theory>
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, 4.0)> ' C: Perimeter
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 2.0)> ' R=Z0 circle above line
-        <InlineData(4.0, 5.0, 2.0, 1.0, -2.0, 1.0)> ' R=Z0 circle below line
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, 4.0)> ' Inside R=Z0 circle above line
-        <InlineData(4.0, 5.0, 2.0, 50.0, 25.0, 4.0)> ' Inside R=Z0 circle above line
-        <InlineData(4.0, 5.0, 2.0, 1.0, -2.0, 1.0)> ' M: Inside R=Z0 circle below line
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, 4.0)> ' G=Y0 circle above line
-        <InlineData(4.0, 5.0, 2.0, 1.0, -1 / 2.0, 4.0)> ' G=Y0 circle below line
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 3.0, 6.0)> ' D: Inside G=Y0 above line
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 2.0)> ' On R=Z0 circle, above line
+        <InlineData(4.0, 5.0, 2.0, 1.0, -2.0, 1.0)> ' On R=Z0 circle, below line
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, 4.0)> ' Inside R=Z0 circle, above line
+        <InlineData(4.0, 5.0, 2.0, 50.0, 25.0, 4.0)> ' Inside R=Z0 circle, above line
+        <InlineData(4.0, 5.0, 2.0, 1.0, -2.0, 1.0)> ' M: Inside R=Z0 circle, below line
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, 4.0)> ' G=Y0 circle, above line
+        <InlineData(4.0, 5.0, 2.0, 1.0, -1 / 2.0, 4.0)> ' G=Y0 circle, below line
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 3.0, 6.0)> ' D: Inside G=Y0, above line
         <InlineData(4.0, 5.0, 2.0, 75.0, 25.0, 6.0)> ' E: NormZ 1/3 + j1/3
-        <InlineData(4.0, 5.0, 2.0, 1.0, -1 / 3.0, 6.0)> ' L: Inside G=Y0 below line
-        <InlineData(4.0, 5.0, 2.0, 1.0, -1 / 3.0, 6.0)> ' L: Inside G=Y0 below line
+        <InlineData(4.0, 5.0, 2.0, 1.0, -1 / 3.0, 6.0)> ' L: Inside G=Y0, below line
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.4, 1.4286)> ' Top remainder
         <InlineData(4.0, 5.0, 2.0, 1.0, -0.8, 2.5)> ' Bottom remainder
         Sub GetRadiusX_GoodInput_Succeeds(gridCenterX As Double, gridCenterY As Double, gridRadius As Double,
@@ -96,11 +87,11 @@ Namespace GeometryTests
         End Sub
 
         <Theory>
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0)> ' A: Short circuit
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0)> ' B: Open circuit
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0)> ' J: Center point
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0)> ' Inside R=Z0 circle on line
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0)> ' Inside G=Y0 circle
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' A: Short circuit
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' B: Open circuit
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' J: Center point
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' Inside R=Z0 circle, on line
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' Inside G=Y0 circle, on line
         Sub GetRadiusX_BadInput_Fails(gridCenterX As Double, gridCenterY As Double, gridDiameter As Double,
                                       z0 As Double, testX As Double)
 
@@ -169,21 +160,23 @@ Namespace GeometryTests
         '<InlineData(   4.0,    5.0,      2.0,  1.0,   1.0,    1.0,    0.5,    -0.5,    4.4,    5.8,     1.0,     2.0,   4.0/3,     999,  2.6180)> ' On R=Z0 circle, above line
         '<InlineData(   4.0,    5.0,      2.0,  1.0,   1.0,   -2.0,    0.2,     0.4,    5.0,    4.0,     1.0,     1.0,   5.0/3,     999,  5.8284)> ' On R=Z0 circle, below line
         '<InlineData(   4.0,    5.0,      2.0,  1.0,   2.0,  1/2.0,   0.48,   -0.15,  4.703, 5.2162,   2/3.0,     4.0,   1.351,     999,  2.1626)> ' Inside R=Z0 circle, above line
-        '<InlineData(   4.0,    5.0,      2.0, 50.0, 100.0,   25.0,  0.016,  -0.008,  4.703, 5.2162,   2/3.0,     4.0,   1.351,     999,  2.1626)> ' Inside R=Z0 circle, above line
-        '<InlineData(   4.0,    5.0,      2.0,  1.0,   3.0,    0.0,   0.35,     0.0,    5.0,    5.0,     0.5,     INF,   3.0/2,     999,     3.0)> ' Inside R=Z0 circle, on line
+        '<InlineData(   4.0,    5.0,      2.0, 50.0, 100.0,   25.0, 0.0094,  -0.008,  4.703, 5.2162,   2/3.0,     4.0,  1.3605,     999,  2.1626)> ' Inside R=Z0 circle, above line
+        '<InlineData(   4.0,    5.0,      2.0,  1.0,   3.0,    0.0,   0.35,     0.0,    5.0,    5.0,     0.5,     INF,  1.4815,     999,     3.0)> ' Inside R=Z0 circle, on line
         '<InlineData(   4.0,    5.0,      2.0,  1.0,   2.0,   -2.0,   0.25,    0.25,  5.077,  4.385,   2.0/3,     1.0,   1.600,     999,  4.2656)> ' M: Inside R=Z0 circle, below line
-        '<InlineData(   4.0,    5.0,      2.0,  1.0, 1/2.0,  1/2.0,    1.0,    -1.0,    3.6,    5.8,   4/3.0,     4.0,     1.0,     999,  2.6180)> ' G=Y0 circle, above line
-        '<InlineData(   4.0,    5.0,      2.0,  1.0, 1/2.0, -1/2.0,    1.0,     1.0,    3.6,    4.2,   4/3.0,     4.0,     1.0,     999,  2.6180)> ' G=Y0 circle, below line
+        '<InlineData(   4.0,    5.0,      2.0,  1.0, 1/2.0,  1/2.0, 1.0000,    -1.0,    3.6,    5.8,   4/3.0,     4.0,  1.0000,     999,  2.6180)> ' G=Y0 circle, above line
+        '<InlineData(   4.0,    5.0,      2.0,  1.0, 1/2.0, -1/2.0, 1.0000,     1.0,    3.6,    4.2,   4/3.0,     4.0,  1.0000,     999,  2.6180)> ' G=Y0 circle, below line
         '<InlineData(   4.0,    5.0,      2.0,  1.0, 1/3.0,    0.0,    3.0,     0.0,    3.0,    5.0,     1.5,     INF,     0.5,     999,     3.0)> ' Inside G=Y0 circle, on line
         '<InlineData(   4.0,    5.0,      2.0,  1.0, 1/3.0,  1/3.0,    1.5,    -1.5,  3.175,    5.7,     1.5,     6.0,     0.8,     999,  3.3699)> ' D: Inside G=Y0, above line
-        '<InlineData(   4.0,    5.0,      2.0, 75.0,  25.0,   25.0, 0.0133, -0.0133,  3.175,    5.7,     1.5,     6.0,     0.8,     999,  3.3699)> ' E: NormZ 1/3 + j1/3
-        '<InlineData(   4.0,    5.0,      2.0,  1.0, 1/2.0, -1/3.0,    1.4,     0.9, 3.4588, 4.4353,   4/3.0,   0.833,  1.75/2,     999,  2.2845)> ' L: Inside G=Y0, below line
-        '<InlineData(   4.0,    5.0,      2.0,  1.0,   0.2,    1.4,    0.1,     0.7  4.5882, 6.6471,   5/3.0,  1.4286,     1.8,     999, 14.9330)> ' Top remainder
-        '<InlineData(   4.0,    5.0,      2.0,  1.0,   0.4,   -0.8,    0.5,     1.0,  3.845,   3.75,  1.4286,     2.5, 4.0 / 3,     999,  4.2656)> ' Bottom remainder
+        '<InlineData(   4.0,    5.0,      2.0, 75.0,  25.0,   25.0, 0.0133, -0.0133,  3.175,    5.7,     1.5,     6.0,  1.0013,     999,  3.3699)> ' E: NormZ 1/3 + j1/3
+        '<InlineData(   4.0,    5.0,      2.0,  1.0, 1/2.0, -1/3.0,    1.4,     0.9, 3.4588, 4.4353,   4/3.0,   0.833,  0.8333,     999,  2.2845)> ' L: Inside G=Y0, below line
+        '<InlineData(   4.0,    5.0,      2.0,  1.0,   0.2,    1.4,    0.1,     0.7  4.5882, 6.6471,   5/3.0,  1.4286,  1.8182,     999, 14.9330)> ' Top remainder
+        '<InlineData(   4.0,    5.0,      2.0,  1.0,   0.4,   -0.8,    0.5,     1.0,  3.845,   3.75,  1.4286,     2.5,   4.0/3,     999,  4.2656)> ' Bottom remainder
 
 
-        ''<InlineData(ChartX, ChartY, ChartRad,   Z0,      G, RadiusG)> ' Model
-        ''<InlineData(   4.0,    5.0,      2.0,  1.0,      G, RadiusG)> ' Base circle
+
+
+        '<InlineData(ChartX, ChartY, ChartRad,   Z0,      G, RadiusG)> ' Model
+        '<InlineData(   4.0,    5.0,      2.0,  1.0,      G, RadiusG)> ' Base circle
         <Theory>
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 1.0)> ' J: Center point
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.5, 4.0 / 3)> ' On R=Z0 circle, above line
@@ -196,17 +189,14 @@ Namespace GeometryTests
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 1.0)> ' G=Y0 circle, below line
         <InlineData(4.0, 5.0, 2.0, 1.0, 3.0, 0.5)> ' Inside G=Y0 circle, on line
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.5, 0.8)> ' D: Inside G=Y0, above line
-        <InlineData(4.0, 5.0, 2.0, 75.0, 0.02, 0.8)> ' E: NormZ 1/3 + j1/3
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1.4, 0.833333)> ' L: Inside G=Y0, below line
+        <InlineData(4.0, 5.0, 2.0, 75.0, 0.0133, 1.0013)> ' E: NormZ 1/3 + j1/3
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1.4, 0.8333)> ' L: Inside G=Y0, below line
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.1, 1.8182)> ' Top remainder
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.5, 4.0 / 3)> ' Bottom remainder
         Sub GetRadiusG_GoodInput_Succeeds(gridCenterX As Double, gridCenterY As Double, gridRadius As Double,
                                           z0 As Double, testG As Double, expectRad As Double)
 
-
-
             Const Precision As Double = 0.0005
-            '            Const Precision As Double = 0.1
 
             Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridRadius * 2.0, z0)
             Dim RadiusAns As Double = SmithCirc.GetRadiusG(testG)
