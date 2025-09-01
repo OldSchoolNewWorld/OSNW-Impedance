@@ -690,42 +690,14 @@ Public Structure Impedance
 
 #Region "Other Shared Methods"
 
-    '''' <summary>
-    '''' Calculates the voltage reflection coefficient (Gamma) when the specified
-    '''' <paramref name="zLoad"/> <c>Impedance</c> is connected to the specified
-    '''' <paramref name="zSource"/> <c>Impedance</c>.
-    '''' </summary>
-    '''' <param name="zSource">Specifies the impedance of the source.</param>
-    '''' <param name="zLoad">Specifies the impedance of the load.</param>
-    '''' <returns>The voltage reflection coefficient.</returns>
-    'Public Shared Function VoltageReflectionCoefficient(
-    '    ByVal zSource As Impedance, ByVal zLoad As Impedance) _
-    '    As System.Numerics.Complex
-
-    '    ' REF: Reflection and Transmission Coefficients Explained
-    '    ' https://www.rfwireless-world.com/terminology/reflection-and-transmission-coefficients
-    '    ' has the numerator shown as "Zload - Zsource".
-
-    '    ' REF: Mathematical Construction and Properties of the Smith Chart
-    '    ' https://www.allaboutcircuits.com/technical-articles/mathematical-construction-and-properties-of-the-smith-chart/
-    '    ' has mostly the same but with the numerator shown as "Zsource - Zload".
-
-    '    ' This version caused an exception with test case:
-    '    ' <InlineData(1.0, 3.0, 0.0, 3.0)> ' Inside R=Z0 circle on line
-    '    '        Return ((zLoad - zSource) / (zLoad + zSource)).ToComplex
-
-    '    ' This version caused an exception with test case:
-    '    ' <InlineData(1.0, 1.0, 1.0, 999)> ' R=Z0 circle above line
-    '    '        Return ((zSource - zLoad) / (zLoad + zSource)).ToComplex
-
-    '    ' TRY DOING THAT WITH ABS TO COMBINE BOTH APPROACHES.
-    '    Dim MinusComp As System.Numerics.Complex =
-    '        System.Numerics.Complex.Abs(zLoad.ToComplex - zSource.ToComplex)
-    '    Dim MinusImp As Impedance = New Impedance(MinusComp.Real, MinusComp.Imaginary)
-    '    Dim Plus As Impedance = zLoad + zSource
-    '    Return (MinusImp / Plus).ToComplex
-
-    'End Function ' VoltageReflectionCoefficient
+    ''' <summary>
+    ''' Calculates the voltage reflection coefficient (Gamma) when the specified
+    ''' <paramref name="zLoad"/> <c>Impedance</c> is connected to the specified
+    ''' <paramref name="zSource"/> <c>Impedance</c>.
+    ''' </summary>
+    ''' <param name="zSource">Specifies the impedance of the source.</param>
+    ''' <param name="zLoad">Specifies the impedance of the load.</param>
+    ''' <returns>The voltage reflection coefficient.</returns>
     Public Shared Function VoltageReflectionCoefficient(
         ByVal zSource As Impedance, ByVal zLoad As Impedance) _
         As System.Numerics.Complex
