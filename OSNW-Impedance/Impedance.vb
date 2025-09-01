@@ -698,6 +698,8 @@ Public Structure Impedance
     ''' <param name="zSource">Specifies the impedance of the source.</param>
     ''' <param name="zLoad">Specifies the impedance of the load.</param>
     ''' <returns>The voltage reflection coefficient.</returns>
+    ''' <remarks>The voltage reflection coefficient (Gamma) is a scalar value
+    ''' with no dimension.</remarks>
     Public Shared Function VoltageReflectionCoefficient(
         ByVal zSource As Impedance, ByVal zLoad As Impedance) _
         As System.Numerics.Complex
@@ -724,6 +726,8 @@ Public Structure Impedance
     ''' <param name="zSource">Specifies the impedance of the source.</param>
     ''' <param name="zLoad">Specifies the impedance of the load.</param>
     ''' <returns>the power reflection coefficient.</returns>
+    ''' <remarks>The power reflection coefficient is a scalar value with no
+    ''' dimension.</remarks>
     Public Shared Function PowerReflectionCoefficient(
         ByVal zSource As Impedance, ByVal zLoad As Impedance) _
         As System.Numerics.Complex
@@ -732,144 +736,6 @@ Public Structure Impedance
             Impedance.VoltageReflectionCoefficient(zSource, zLoad)
         Return Gamma * Gamma
     End Function ' PowerReflectionCoefficient
-
-#End Region ' "Other Shared Methods"
-
-#Region "Other Instance Methods"
-
-#Region "VoltageReflectionCoefficient"
-
-    ''' <summary>
-    ''' Calculates the voltage reflection coefficient (Gamma) when this instance
-    ''' is connected to the specified
-    ''' <paramref name="zSource"/> <c>Impedance</c>.
-    ''' </summary>
-    ''' <param name="zSource">Specifies the impedance of the source.</param>
-    ''' <returns>The voltage reflection coefficient.</returns>
-    Public Function VoltageReflectionCoefficient(ByVal zSource As Impedance) _
-        As System.Numerics.Complex
-
-        Return Impedance.VoltageReflectionCoefficient(zSource, Me)
-    End Function ' VoltageReflectionCoefficient
-
-    ''' <summary>
-    ''' Calculates the voltage reflection coefficient (Gamma) when this instance
-    ''' is connected to the specified characteristic impedance.
-    ''' </summary>
-    ''' <param name="z0">Specifies the characteristic impedance, in ohms.</param>
-    ''' <returns>The voltage reflection coefficient for the current instance based
-    ''' on the specified characteristic impedance.</returns>
-    ''' <exception cref="System.ArgumentOutOfRangeException">When
-    ''' <paramref name="z0"/> is not a positive, non-zero value or is
-    ''' infinite.</exception>
-    Public Function VoltageReflectionCoefficient(ByVal z0 As System.Double) _
-        As System.Numerics.Complex
-
-        ' Input checking.
-        If z0 <= 0.0 Then
-            'Dim CaughtBy As System.Reflection.MethodBase =
-            '    System.Reflection.MethodBase.GetCurrentMethod
-            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGVMBGTZ)
-        ElseIf Double.IsInfinity(z0) Then
-            'Dim CaughtBy As System.Reflection.MethodBase =
-            '    System.Reflection.MethodBase.GetCurrentMethod
-            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHIV)
-        End If
-
-        '        Return Impedance.VoltageReflectionCoefficient(New Impedance(z0, 0), Me)
-        Dim SourceImp As New Impedance(z0, 0)
-        Return Impedance.VoltageReflectionCoefficient(SourceImp, Me)
-
-    End Function ' VoltageReflectionCoefficient
-
-#End Region ' "VoltageReflectionCoefficient"
-
-#Region "PowerReflectionCoefficient"
-
-    ''' <summary>
-    ''' Calculates the power reflection coefficient (COMMON NAME???) when this instance
-    ''' is connected to the specified
-    ''' <paramref name="zSource"/> <c>Impedance</c>.
-    ''' </summary>
-    ''' <param name="zSource">Specifies the impedance of the source.</param>
-    ''' <returns>the power reflection coefficient.</returns>
-    Public Function PowerReflectionCoefficient(ByVal zSource As Impedance) _
-        As System.Numerics.Complex
-
-        Dim Gamma As System.Numerics.Complex =
-            Me.VoltageReflectionCoefficient(zSource)
-        Return Gamma * Gamma
-    End Function ' PowerReflectionCoefficient
-
-    ''' <summary>
-    ''' Calculates the power reflection coefficient (COMMON NAME???) when this instance
-    ''' is connected to the specified characteristic impedance.
-    ''' </summary>
-    ''' <param name="z0">Specifies the characteristic impedance, in ohms.</param>
-    ''' <returns>the power reflection coefficient for the current instance based
-    ''' on the specified characteristic impedance.</returns>
-    ''' <exception cref="System.ArgumentOutOfRangeException">When
-    ''' <paramref name="z0"/> is not a positive, non-zero value or is
-    ''' infinite.</exception>
-    Public Function PowerReflectionCoefficient(ByVal z0 As System.Double) _
-        As System.Numerics.Complex
-
-        ' Input checking.
-        If z0 <= 0.0 Then
-            'Dim CaughtBy As System.Reflection.MethodBase =
-            '    System.Reflection.MethodBase.GetCurrentMethod
-            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGVMBGTZ)
-        ElseIf Double.IsInfinity(z0) Then
-            'Dim CaughtBy As System.Reflection.MethodBase =
-            '    System.Reflection.MethodBase.GetCurrentMethod
-            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHIV)
-        End If
-
-        Dim Gamma As System.Numerics.Complex =
-            Me.VoltageReflectionCoefficient(z0)
-        Return Gamma * Gamma
-
-    End Function ' PowerReflectionCoefficient
-
-#End Region ' "PowerReflectionCoefficient"
-
-    ' ADD MULTIPLE VERSIONS AS DONE WITH VoltageReflectionCoefficient AND PowerReflectionCoefficient?
-
-    ''' <summary>
-    ''' Calculates the voltage standing wave ratio for this instance based on
-    ''' the specified characteristic impedance.
-    ''' </summary>
-    ''' <param name="z0">Specifies the characteristic impedance, in ohms.</param>
-    ''' <returns>The voltage standing wave ratio for the current instance at the
-    ''' specified characteristic impedance.</returns>
-    ''' <exception cref="System.ArgumentOutOfRangeException">
-    ''' When <paramref name="z0"/> is not a positive, non-zero value.
-    ''' </exception>
-    Public Function VSWR(ByVal z0 As System.Double) As System.Double
-
-        ' Input checking.
-        If z0 <= 0.0 Then
-            'Dim CaughtBy As System.Reflection.MethodBase =
-            '    System.Reflection.MethodBase.GetCurrentMethod
-            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGVMBGTZ)
-        ElseIf Double.IsInfinity(z0) Then
-            'Dim CaughtBy As System.Reflection.MethodBase =
-            '    System.Reflection.MethodBase.GetCurrentMethod
-            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHIV)
-        End If
-
-        ' REF:
-        ' https://www.antenna-theory.com/definitions/vswr.php
-        ' https://www.antenna-theory.com/definitions/vswr-calculator.php
-        ' https://www.microwaves101.com/encyclopedias/voltage-standing-wave-ratio-vswr
-
-        'Dim Gamma As System.Numerics.Complex = Me.VoltageReflectionCoefficient(z0)
-        'Dim AbsGamma As System.Double = System.Numerics.Complex.Abs(Gamma)
-        Dim AbsGamma As System.Double =
-            System.Numerics.Complex.Abs(Me.VoltageReflectionCoefficient(z0))
-        Return (1.0 + AbsGamma) / (1.0 - AbsGamma)
-
-    End Function ' VSWR
 
     ''' <summary>
     ''' Adds two <c>Impedance</c>s in series.
@@ -941,6 +807,151 @@ Public Structure Impedance
     '    ' when created.
     '    Return (loadZ.ToAdmittance + addY).ToImpedance
     'End Function ' AddParallelAdmittance
+
+#End Region ' "Other Shared Methods"
+
+#Region "Other Instance Methods"
+
+#Region "VoltageReflectionCoefficient"
+
+    ''' <summary>
+    ''' Calculates the voltage reflection coefficient (Gamma) when this instance
+    ''' is connected to the specified
+    ''' <paramref name="zSource"/> <c>Impedance</c>.
+    ''' </summary>
+    ''' <param name="zSource">Specifies the impedance of the source.</param>
+    ''' <returns>The voltage reflection coefficient.</returns>
+    ''' <remarks>The voltage reflection coefficient (Gamma) is a scalar value
+    ''' with no dimension.</remarks>
+    Public Function VoltageReflectionCoefficient(ByVal zSource As Impedance) _
+        As System.Numerics.Complex
+
+        Return Impedance.VoltageReflectionCoefficient(zSource, Me)
+    End Function ' VoltageReflectionCoefficient
+
+    ''' <summary>
+    ''' Calculates the voltage reflection coefficient (Gamma) when this instance
+    ''' is connected to the specified characteristic impedance.
+    ''' </summary>
+    ''' <param name="z0">Specifies the characteristic impedance, in ohms.</param>
+    ''' <returns>The voltage reflection coefficient for the current instance based
+    ''' on the specified characteristic impedance.</returns>
+    ''' <exception cref="System.ArgumentOutOfRangeException">When
+    ''' <paramref name="z0"/> is not a positive, non-zero value or is
+    ''' infinite.</exception>
+    ''' <remarks>The voltage reflection coefficient (Gamma) is a scalar value
+    ''' with no dimension.</remarks>
+    Public Function VoltageReflectionCoefficient(ByVal z0 As System.Double) _
+        As System.Numerics.Complex
+
+        ' Input checking.
+        If z0 <= 0.0 Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGVMBGTZ)
+        ElseIf Double.IsInfinity(z0) Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHIV)
+        End If
+
+        '        Return Impedance.VoltageReflectionCoefficient(New Impedance(z0, 0), Me)
+        Dim SourceImp As New Impedance(z0, 0)
+        Return Impedance.VoltageReflectionCoefficient(SourceImp, Me)
+
+    End Function ' VoltageReflectionCoefficient
+
+#End Region ' "VoltageReflectionCoefficient"
+
+#Region "PowerReflectionCoefficient"
+
+    ''' <summary>
+    ''' Calculates the power reflection coefficient when this instance is
+    ''' connected to the specified <paramref name="zSource"/> <c>Impedance</c>.
+    ''' </summary>
+    ''' <param name="zSource">Specifies the impedance of the source.</param>
+    ''' <returns>the power reflection coefficient.</returns>
+    ''' <remarks>The power reflection coefficient is a scalar value with no
+    ''' dimension.</remarks>
+    Public Function PowerReflectionCoefficient(ByVal zSource As Impedance) _
+        As System.Numerics.Complex
+
+        Dim Gamma As System.Numerics.Complex =
+            Me.VoltageReflectionCoefficient(zSource)
+        Return Gamma * Gamma
+    End Function ' PowerReflectionCoefficient
+
+    ''' <summary>
+    ''' Calculates the power reflection coefficient when this instance is
+    ''' connected to the specified characteristic impedance.
+    ''' </summary>
+    ''' <param name="z0">Specifies the characteristic impedance, in ohms.</param>
+    ''' <returns>the power reflection coefficient for the current instance based
+    ''' on the specified characteristic impedance.</returns>
+    ''' <exception cref="System.ArgumentOutOfRangeException">When
+    ''' <paramref name="z0"/> is not a positive, non-zero value or is
+    ''' infinite.</exception>
+    ''' <remarks>The power reflection coefficient is a scalar value with no
+    ''' dimension.</remarks>
+    Public Function PowerReflectionCoefficient(ByVal z0 As System.Double) _
+        As System.Numerics.Complex
+
+        ' Input checking.
+        If z0 <= 0.0 Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGVMBGTZ)
+        ElseIf Double.IsInfinity(z0) Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHIV)
+        End If
+
+        Dim Gamma As System.Numerics.Complex =
+            Me.VoltageReflectionCoefficient(z0)
+        Return Gamma * Gamma
+
+    End Function ' PowerReflectionCoefficient
+
+#End Region ' "PowerReflectionCoefficient"
+
+    ' NEED/WANT ADD MULTIPLE VERSIONS AS DONE WITH VoltageReflectionCoefficient
+    ' AND PowerReflectionCoefficient?
+    ''' <summary>
+    ''' Calculates the voltage standing wave ratio for this instance based on
+    ''' the specified characteristic impedance.
+    ''' </summary>
+    ''' <param name="z0">Specifies the characteristic impedance, in ohms.</param>
+    ''' <returns>The voltage standing wave ratio for the current instance at the
+    ''' specified characteristic impedance.</returns>
+    ''' <exception cref="System.ArgumentOutOfRangeException">
+    ''' When <paramref name="z0"/> is not a positive, non-zero value.
+    ''' </exception>
+    Public Function VSWR(ByVal z0 As System.Double) As System.Double
+
+        ' Input checking.
+        If z0 <= 0.0 Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGVMBGTZ)
+        ElseIf Double.IsInfinity(z0) Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHIV)
+        End If
+
+        ' REF:
+        ' https://www.antenna-theory.com/definitions/vswr.php
+        ' https://www.antenna-theory.com/definitions/vswr-calculator.php
+        ' https://www.microwaves101.com/encyclopedias/voltage-standing-wave-ratio-vswr
+
+        'Dim Gamma As System.Numerics.Complex = Me.VoltageReflectionCoefficient(z0)
+        'Dim AbsGamma As System.Double = System.Numerics.Complex.Abs(Gamma)
+        Dim AbsGamma As System.Double =
+            System.Numerics.Complex.Abs(Me.VoltageReflectionCoefficient(z0))
+        Return (1.0 + AbsGamma) / (1.0 - AbsGamma)
+
+    End Function ' VSWR
 
 #End Region ' "Other Instance Methods"
 
