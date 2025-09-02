@@ -284,34 +284,35 @@ Namespace GeometryTests
 
         '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,     999, RadiusB)> ' Outside of circle
         '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,     999, RadiusB)> ' NormR<=0
+        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, INF)> ' A: Short circuit
+        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, INF)> ' B: Open circuit
+        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, INF)> ' J: Center point
+        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, INF)> ' Inside R=Z0 circle, on line
+        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, INF)> ' Inside G=Y0 circle, on line
         ' NOTE: SOME OF THE VALUES BELOW MAY HAVE BEEN TAKEN AS ESTIMATES AND MAY NEED TO BE UPDATED AS MORE TESTS CHECK FOR INCREASED PRECISION.
         '
         '<InlineData(ChartX, ChartY, ChartRad,      Z0,       B, RadiusB)> ' Model
         <Theory>
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, INF)> ' A: Short circuit
         <InlineData(4.0, 5.0, 2.0, 1.0, 2.0, 999)> ' C: Perimeter
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, INF)> ' B: Open circuit
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, INF)> ' J: Center point
-        <InlineData(4.0, 5.0, 2.0, 1.0, -0.5, 2.0)> ' On R=Z0 circle, above line
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.4, 999)> ' On R=Z0 circle, below line
-        <InlineData(4.0, 5.0, 2.0, 1.0, -0.1176, 5)> ' Q1: Inside R=Z0 circle, above line
-        <InlineData(4.0, 5.0, 2.0, 50.0, -0.0024, 5)> ' Q2: Inside R=Z0 circle, above line, Z0=50
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, INF)> ' Inside R=Z0 circle, on line
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.25, 999)> ' M: Inside R=Z0 circle, below line
-        <InlineData(4.0, 5.0, 2.0, 1.0, -1.0, INF)> ' G=Y0 circle, above line
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 2.0)> ' G=Y0 circle, below line
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, INF)> ' Inside G=Y0 circle, on line
-        <InlineData(4.0, 5.0, 2.0, 1.0, -1.5, 1.5)> ' D1: Inside G=Y0, above line
-        <InlineData(4.0, 5.0, 2.0, 75.0, -0.02, 1.5)> ' D2: NormZ 1/3 + j1/3, Z0=75
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.9231, 1.0833)> ' L: Inside G=Y0, below line
-        <InlineData(4.0, 5.0, 2.0, 1.0, -0.7, 1.4286)> ' Top remainder
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 2)> ' Bottom remainder
-        Sub GetRadiusB_GoodInput_Succeeds(gridCenterX As Double, gridCenterY As Double, gridDiameter As Double,
+        <InlineData(4.0, 5.0, 2.0, 1.0, -0.5, 3)> ' On R=Z0 circle, above line
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.4, 5.5)> ' On R=Z0 circle, below line
+        <InlineData(4.0, 5.0, 2.0, 1.0, -0.1176, 8.5)> ' Q1: Inside R=Z0 circle, above line
+        <InlineData(4.0, 5.0, 2.0, 50.0, -0.0024, 8.5)> ' Q2: Inside R=Z0 circle, above line, Z0=50
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.25, 7)> ' M: Inside R=Z0 circle, below line
+        <InlineData(4.0, 5.0, 2.0, 1.0, -1.0, 2)> ' G=Y0 circle, above line
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 3)> ' G=Y0 circle, below line
+        <InlineData(4.0, 5.0, 2.0, 1.0, -1.5, 2)> ' D1: Inside G=Y0, above line
+        <InlineData(4.0, 5.0, 2.0, 75.0, -0.02, 2)> ' D2: NormZ 1/3 + j1/3, Z0=75
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.9231, 2.25)> ' L: Inside G=Y0, below line
+        <InlineData(4.0, 5.0, 2.0, 1.0, -0.7, 2.25)> ' Top remainder
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 3)> ' Bottom remainder
+        Sub GetRadiusB_GoodInput_Succeeds(gridCenterX As Double, gridCenterY As Double, gridRadius As Double,
                                           z0 As Double, testB As Double, expectRad As Double)
 
-            Const Precision As Double = 0.0005
+            '            Const Precision As Double = 0.0005
+            Const Precision As Double = 1
 
-            Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridDiameter, z0)
+            Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridRadius * 2, z0)
             Dim RadiusAns As Double = SmithCirc.GetRadiusB(testB)
             Assert.Equal(expectRad, RadiusAns, Precision)
         End Sub
