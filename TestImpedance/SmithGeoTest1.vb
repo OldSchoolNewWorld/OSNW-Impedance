@@ -293,24 +293,24 @@ Namespace GeometryTests
         '
         '<InlineData(ChartX, ChartY, ChartRad,      Z0,       B, RadiusB)> ' Model
         <Theory>
-        <InlineData(4.0, 5.0, 2.0, 1.0, 2.0, 999)> ' C: Perimeter
-        <InlineData(4.0, 5.0, 2.0, 1.0, -0.5, 3)> ' On R=Z0 circle, above line
+        <InlineData(4.0, 5.0, 2.0, 1.0, 2.0, 1)> ' C: Perimeter
+        <InlineData(4.0, 5.0, 2.0, 1.0, -0.5, 4)> ' On R=Z0 circle, above line
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.4, 5.5)> ' On R=Z0 circle, below line
-        <InlineData(4.0, 5.0, 2.0, 1.0, -0.1176, 8.5)> ' Q1: Inside R=Z0 circle, above line
-        <InlineData(4.0, 5.0, 2.0, 50.0, -0.0024, 8.5)> ' Q2: Inside R=Z0 circle, above line, Z0=50
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.25, 7)> ' M: Inside R=Z0 circle, below line
+        <InlineData(4.0, 5.0, 2.0, 1.0, -0.1176, 17)> ' Q1: Inside R=Z0 circle, above line
+        <InlineData(4.0, 5.0, 2.0, 50.0, -0.0024, 17)> ' Q2: Inside R=Z0 circle, above line, Z0=50
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.25, 7.5)> ' M: Inside R=Z0 circle, below line
         <InlineData(4.0, 5.0, 2.0, 1.0, -1.0, 2)> ' G=Y0 circle, above line
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 3)> ' G=Y0 circle, below line
-        <InlineData(4.0, 5.0, 2.0, 1.0, -1.5, 2)> ' D1: Inside G=Y0, above line
-        <InlineData(4.0, 5.0, 2.0, 75.0, -0.02, 2)> ' D2: NormZ 1/3 + j1/3, Z0=75
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 2.25)> ' G=Y0 circle, below line
+        <InlineData(4.0, 5.0, 2.0, 1.0, -1.5, 1.5)> ' D1: Inside G=Y0, above line
+        <InlineData(4.0, 5.0, 2.0, 75.0, -0.02, 1.5)> ' D2: NormZ 1/3 + j1/3, Z0=75
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.9231, 2.25)> ' L: Inside G=Y0, below line
-        <InlineData(4.0, 5.0, 2.0, 1.0, -0.7, 2.25)> ' Top remainder
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 3)> ' Bottom remainder
+        <InlineData(4.0, 5.0, 2.0, 1.0, -0.7, 3)> ' Top remainder
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 2)> ' Bottom remainder
         Sub GetRadiusB_GoodInput_Succeeds(gridCenterX As Double, gridCenterY As Double, gridRadius As Double,
                                           z0 As Double, testB As Double, expectRad As Double)
 
             '            Const Precision As Double = 0.0005
-            Const Precision As Double = 1
+            Const Precision As Double = 0.5
 
             Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridRadius * 2, z0)
             Dim RadiusAns As Double = SmithCirc.GetRadiusB(testB)
