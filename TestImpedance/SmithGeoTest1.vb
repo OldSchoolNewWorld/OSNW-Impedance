@@ -554,48 +554,33 @@ Namespace GeometryTests
 
     Public Class TestGetPlotXY
 
-        ''<InlineData(GridX, GridY, Radius,   Z0,     R,      X,      GridX,  GridY)>
-        ''<InlineData(  4.0,   5.0,    2.0,  1.0,     R,      X,      GridX,  GridY)>
-        '<Theory>
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 1 / 3.0, 1 / 3.0, 3.1765, 5.7059)>
-        '<InlineData(4.0, 5.0, 2.0, 75.0, 25.0, 25.0, 3.1765, 5.7059)> ' NormZ 1/3 + j1/3
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 1.0, 4.4, 5.8)> ' On R=Z0 circle
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 2.0, 1 / 2.0, 4.703, 5.2162)>
-        '<InlineData(4.0, 5.0, 2.0, 50.0, 100.0, 25.0, 4.703, 5.2162)> ' NormZ 2 + j1/2
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 1 / 3.0, 0.0, 3.0, 5.0)>
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 0.0, 4.0, 5.0)> ' Center point
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 3.0, 0.0, 5.0, 5.0)>
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, -1 / 3.0, 3.4588, 4.4353)>
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 2.0, -2.0, 5.077, 4.385)>
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, -1 / 2.0, 3.6, 4.2)> ' On G=Y0 circle
+        Const INF As Double = Double.PositiveInfinity
 
-
-
-
-
-
+        ' NOTE: SOME OF THE VALUES BELOW MAY HAVE BEEN TAKEN AS ESTIMATES AND MAY
+        ' NEED TO BE UPDATED AS MORE TESTS CHECK FOR INCREASED PRECISION.
+        '<InlineData(ChartX, ChartY, ChartRad,      Z0,        R,       X,  PlotX,  PlotY)> ' Model
         <Theory>
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 0.0, 4.0, 5.0)> ' J: Center point
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 1.0, 4.4, 5.8)> ' R=Z0 circle above line
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, -2.0, 5.0, 4.0)> ' R=Z0 circle below line
-        <InlineData(4.0, 5.0, 2.0, 1.0, 2.0, 1 / 2.0, 4.703, 5.2162)> ' Inside R=Z0 circle below line
-        <InlineData(4.0, 5.0, 2.0, 1.0, 3.0, 0.0, 5.0, 5.0)> ' Inside R=Z0 circle on line
-        <InlineData(4.0, 5.0, 2.0, 50.0, 100.0, 25.0, 4.703, 5.2162)> ' Inside R=Z0 circle below line
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, 1 / 2.0, 3.6, 5.8)> ' G=Y0 circle above line
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, -1 / 2.0, 3.6, 4.2)> ' G=Y0 circle below line
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 3.0, 0.0, 3.0, 5.0)> ' Inside G=Y0 circle
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 0.0000, 4.0, 5.0)> ' J: Center point
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 1.0, 4.4, 5.8)> ' On R=Z0 circle, above line
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, -2.0, 5.0, 4.0)> ' On R=Z0 circle, below line
+        <InlineData(4.0, 5.0, 2.0, 1.0, 2.0, 1 / 2.0, 4.703, 5.2162)> ' Q1: Inside R=Z0 circle, above line
+        <InlineData(4.0, 5.0, 2.0, 50.0, 100.0, 25.0, 4.703, 5.2162)> ' Q2: Inside R=Z0 circle, above line, Z0=50
+        <InlineData(4.0, 5.0, 2.0, 1.0, 3.0, 0.0000, 5.0, 5.0)> ' Inside R=Z0 circle, on line
+        <InlineData(4.0, 5.0, 2.0, 1.0, 2.0, -2.0, 5.077, 4.385)> ' M: Inside R=Z0 circle, below line
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, 1 / 2.0, 3.6, 5.8)> ' G=Y0 circle, above line
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, -1 / 2.0, 3.6, 4.2)> ' G=Y0 circle, below line
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 3.0, 0.0000, 3.0, 5.0)> ' Inside G=Y0 circle, on line
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 3.0, 1 / 3.0, 3.1765, 5.7059)> ' D1: Inside G=Y0, above line
+        <InlineData(4.0, 5.0, 2.0, 75.0, 25.0, 25.0, 3.1765, 5.7059)> ' D2: NormZ 1/3 + j1/3, Z0=75
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, -1 / 3.0, 3.4588, 4.4353)> ' L: Inside G=Y0, below line
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.2, 1.4, 4.5882, 6.6471)> ' Top remainder
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.4, -0.8, 3.8462, 3.7692)> ' Bottom remainder
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 3.0, 1 / 3.0, 3.1765, 5.7059)> ' D:
-        <InlineData(4.0, 5.0, 2.0, 75.0, 25.0, 25.0, 3.1765, 5.7059)> ' E: NormZ 1/3 + j1/3
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, -1 / 3.0, 3.4588, 4.4353)> ' L:
-        <InlineData(4.0, 5.0, 2.0, 1.0, 2.0, -2.0, 5.077, 4.385)> ' M:
-        Sub TryGetXYPlot_GoodInput_Succeeds(
+        Sub TryGetPlotXY_GoodInput_Succeeds(
             gridCenterX As Double, gridCenterY As Double, gridRadius As Double, z0 As Double,
             testR As Double, testX As Double, expectPlotX As Double, expectPlotY As Double)
 
-            ' This loose precision may be needed due to the use of PointF in GetPlotXY.
-            Const Precision As Double = 0.001
+            Const Precision As Double = 0.0005
+            '            Const Precision As Double = 0.1
 
             Dim GridX, GridY As Double
             Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridRadius * 2.0, z0)
@@ -611,26 +596,51 @@ Namespace GeometryTests
 
 
 
-        '<InlineData(4.0, 5.0, 2.0, 1.0, -2.0, X, GridX, GridY)> ' NormR<=0
-        '<InlineData(4.0, 5.0, 2.0, 1.0, R, X, 2.5, 6.5)> ' Outside of circle
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0, 0.0, 2.0, 5.0)> ' A: Short circuit
-        '<InlineData(4.0, 5.0, 2.0, 1.0, INF, 0.0, 6.0, 5.0)> ' B: Open circuit
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0, 1 / 2.0, 2.8, 6.6)> ' C: Perimeter
-
-
+        '<InlineData(4.0, 5.0, 2.0, 1.0, -2.0, 999, GridX, GridY)> ' NormR<=0
+        '<InlineData(4.0, 5.0, 2.0, 1.0, 999, 999, 2.5, 6.5)> ' Outside of circle
+        '<InlineData(4.0, 5.0, 2.0, 1.0, INF, 0.0000, 6.0, 5.0)> ' B: Open circuit
+        '
         <Theory>
-        <InlineData(4.0, 5.0, 4.0, 1.0, 0.0)> ' NormR=0
-        <InlineData(4.0, 5.0, 4.0, 1.0, -2.0)> ' NormR<=0
-        Public Sub TryGetPlotXY_BadInput_Fails(gridCenterX As Double, gridCenterY As Double, gridDiameter As Double,
-                                               z0 As Double, testR As Double)
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 0.0000, 2.0, 5.0)> ' A: Short circuit
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 1 / 2.0, 2.8, 6.6)> ' C: Perimeter
+        Public Sub TryGetPlotXY_BadInput_Fails(
+            gridCenterX As Double, gridCenterY As Double, gridRadius As Double, z0 As Double,
+            testR As Double, testX As Double, expectPlotX As Double, expectPlotY As Double)
 
-            Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridDiameter, z0)
             Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
             Sub()
                 ' Code that throws the exception
-                Dim RadiusAns As Double = SmithCirc.GetRadiusR(testR)
+                Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridRadius * 2, z0)
+                Dim DidIt As Boolean = SmithCirc.GetPlotXY(testR, testX, gridCenterX, gridCenterY)
             End Sub)
         End Sub
+
+
+
+
+        '<Theory>
+        '<InlineData(4.0, 5.0, 2.0, 1.0, -2.0, 999, GridX, GridY)> ' NormR<=0
+        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 0.0000, 2.0, 5.0)> ' A: Short circuit
+        '<InlineData(4.0, 5.0, 2.0, 1.0, INF, 0.0000, 6.0, 5.0)> ' B: Open circuit
+        '<InlineData(4.0, 5.0, 2.0, 1.0, 999, 999, 2.5, 6.5)> ' Outside of circle
+        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 1 / 2.0, 2.8, 6.6)> ' C: Perimeter
+        'Public Sub TryGetPlotXY_BadInput_Fails(
+        '    gridCenterX As Double, gridCenterY As Double, gridRadius As Double, z0 As Double,
+        '    testR As Double, testX As Double, expectPlotX As Double, expectPlotY As Double
+
+        '    Try
+        '        Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
+        '            Sub()
+        '                ' Code that throws the exception
+        '                Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridDiameter, z0)
+        '                Dim RadiusAns As Double = SmithCirc.GetPlotXY(testR, testX, GridX, GridY)
+        '            End Sub)
+        '    Catch ex As Exception
+        '        Assert.True(True)
+        '        Exit Sub
+        '    End Try
+        '    Assert.True(False, "Did not fail")
+        'End Sub
 
     End Class ' TestGetPlotXY
 
