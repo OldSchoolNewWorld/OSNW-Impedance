@@ -14,31 +14,6 @@ Namespace GeometryTests
 
         ' NOTE: SOME OF THE VALUES BELOW MAY HAVE BEEN TAKEN AS ESTIMATES AND MAY
         ' NEED TO BE UPDATED AS MORE TESTS CHECK FOR INCREASED PRECISION.
-        '<InlineData(ChartX, ChartY, ChartRad,      Z0,        R,       X,      G,       B,  PlotX,  PlotY, RadiusR, RadiusX, RadiusG, RadiusB,    VSWR)> ' Model
-        ' <Theory>
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,      999,     999,    999,     999,    2.5,    6.5, RadiusR, RadiusX, RadiusG, RadiusB,    VSWR)> ' Outside of circle
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,  -2.0000,     999,    999,     999,  GridX,  GridY, RadiusR, RadiusX, RadiusG, RadiusB,    VSWR)> ' NormR<=0
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.0000,  0.0000, 0.0000,  0.0000, 2.0000, 5.0000,  2.0000,     INF,  0.0000,     INF,     INF)> ' A: Short circuit
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.0000,   1/2.0, 0.0000, -2.0000,    2.8,    6.6,  2.0000,  4.0000,     INF,   1.000,     INF)> ' C: Perimeter
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,      INF,  0.0000, 0.0000,  0.0000,    6.0, 5.0000,  0.0000,     INF,  2.0000,     INF,     INF)> ' B: Open circuit
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   1.0000,  0.0000, 1.0000,  0.0000, 4.0000, 5.0000,  1.0000,     INF,  1.0000,     INF,  1.0000)> ' J: Center point
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   1.0000,  1.0000, 0.5000, -0.5000,    4.4,    5.8,  1.0000,  2.0000,   4.0/3,  4.0000,  2.6180)> ' On R=Z0 circle, above line
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   1.0000, -2.0000, 0.2000,  0.4000, 5.0000, 4.0000,  1.0000,  1.0000,   5.0/3,  5.0000,  5.8284)> ' On R=Z0 circle, below line
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   2.0000,   1/2.0, 0.4706, -0.1176, 4.7027, 5.2162,   2/3.0,  4.0000,  1.3600, 17.0000,  2.1626)> ' Q1: Inside R=Z0 circle, above line
-        '<InlineData(4.0000, 5.0000,   2.0000, 50.0000, 100.0000, 25.0000, 0.0094, -0.0024, 4.7027, 5.2162,   2/3.0,  4.0000,  1.3605, 16.6667,  2.1626)> ' Q2: Inside R=Z0 circle, above line, Z0=50
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   3.0000,  0.0000,  1.0/3,  0.0000, 5.0000, 5.0000,     0.5,     INF,  1.5000,     999,  3.0000)> ' Inside R=Z0 circle, on line
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   2.0000, -2.0000, 0.2500,  0.2500,  5.077,  4.385,   2.0/3,  1.0000,   1.600,  8.0000,  4.2656)> ' M: Inside R=Z0 circle, below line
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/2.0,   1/2.0, 1.0000,  -1.000,    3.6,    5.8,   4/3.0,  4.0000,  1.0000,  2.0000,  2.6180)> ' G=Y0 circle, above line
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/2.0,  -1/2.0, 1.0000,  1.0000,    3.6,    4.2,   4/3.0,  4.0000,  1.0000,  2.0000,  2.6180)> ' G=Y0 circle, below line
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/3.0,  0.0000, 3.0000,  0.0000, 3.0000, 5.0000,     1.5,     INF,  0.5000,     999,  3.0000)> ' Inside G=Y0 circle, on line
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/3.0,   1/3.0, 1.5000, -1.5000,  3.175,    5.7,     1.5,     6.0,  0.8000,  1.3333,  3.3699)> ' D1: Inside G=Y0, above line
-        '<InlineData(4.0000, 5.0000,   2.0000, 75.0000,  25.0000, 25.0000, 0.0200, -0.0200,  3.175,    5.7,     1.5,     6.0,  0.8000,  1.3333,  3.3699)> ' D2: NormZ 1/3 + j1/3, Z0=75
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/2.0,  -1/3.0, 1.3846,  0.9231, 3.4588, 4.4353,   4/3.0,  6.0000,  0.8387,  2.2500,  2.2845)> ' L: Inside G=Y0, below line
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.2000,  1.4000, 0.1000, -0.7000  4.5882, 6.6471,   5/3.0,  1.4286,  1.8182,  2.8571, 14.9330)> ' Top remainder
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.4000, -0.8000, 0.5000,  1.0000,  3.845,   3.75,  1.4286,     2.5,   4.0/3,  2.0000,  4.2656)> ' Bottom remainder
-
-        ' NOTE: SOME OF THE VALUES BELOW MAY HAVE BEEN TAKEN AS ESTIMATES AND MAY
-        ' NEED TO BE UPDATED AS MORE TESTS CHECK FOR INCREASED PRECISION.
         '<InlineData(ChartX, ChartY, ChartRad,      Z0,        R, RadiusR)> ' Model
         <Theory>
         <InlineData(4.0, 5.0, 2.0, 1.0, INF, 0.0000)> ' B: Open circuit
@@ -109,35 +84,6 @@ Namespace GeometryTests
 
         Const INF As Double = Double.PositiveInfinity
 
-
-        ' NOTE: SOME OF THE VALUES BELOW MAY HAVE BEEN TAKEN AS ESTIMATES AND MAY
-        ' NEED TO BE UPDATED AS MORE TESTS CHECK FOR INCREASED PRECISION.
-        '<InlineData(ChartX, ChartY, ChartRad,      Z0,        R,       X,      G,       B,  PlotX,  PlotY, RadiusR, RadiusX, RadiusG, RadiusB,    VSWR)> ' Model
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,        R,       X,      G,       B,  PlotX,  PlotY, RadiusR, RadiusX, RadiusG, RadiusB,    VSWR)> ' Base circle
-        ' <Theory>
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,      999,     999,    999,     999,    2.5,    6.5, RadiusR, RadiusX, RadiusG, RadiusB,    VSWR)> ' Outside of circle
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,  -2.0000,     999,    999,     999,  GridX,  GridY, RadiusR, RadiusX, RadiusG, RadiusB,    VSWR)> ' NormR<=0
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.0000,  0.0000, 0.0000,  0.0000, 2.0000, 5.0000,  2.0000,     INF,  0.0000,     INF,     INF)> ' A: Short circuit
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.0000,   1/2.0, 0.0000, -2.0000,    2.8,    6.6,  2.0000,  4.0000,     INF,   1.000,     INF)> ' C: Perimeter
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,      INF,  0.0000, 0.0000,  0.0000,    6.0, 5.0000,  0.0000,     INF,  2.0000,     INF,     INF)> ' B: Open circuit
-        '
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   1.0000,  0.0000, 1.0000,  0.0000, 4.0000, 5.0000,  1.0000,     INF,  1.0000,     INF,  1.0000)> ' J: Center point
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   1.0000,  1.0000, 0.5000, -0.5000,    4.4,    5.8,  1.0000,  2.0000,   4.0/3,  4.0000,  2.6180)> ' On R=Z0 circle, above line
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   1.0000, -2.0000, 0.2000,  0.4000, 5.0000, 4.0000,  1.0000,  1.0000,   5.0/3,  5.0000,  5.8284)> ' On R=Z0 circle, below line
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   2.0000,   1/2.0, 0.4706, -0.1176, 4.7027, 5.2162,   2/3.0,  4.0000,  1.3600, 17.0000,  2.1626)> ' Q1: Inside R=Z0 circle, above line
-        '<InlineData(4.0000, 5.0000,   2.0000, 50.0000, 100.0000, 25.0000, 0.0094, -0.0024, 4.7027, 5.2162,   2/3.0,  4.0000,  1.3605, 16.6667,  2.1626)> ' Q2: Inside R=Z0 circle, above line, Z0=50
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   3.0000,  0.0000,  1.0/3,  0.0000, 5.0000, 5.0000,     0.5,     INF,  1.5000,     999,  3.0000)> ' Inside R=Z0 circle, on line
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   2.0000, -2.0000, 0.2500,  0.2500,  5.077,  4.385,   2.0/3,  1.0000,   1.600,  8.0000,  4.2656)> ' M: Inside R=Z0 circle, below line
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/2.0,   1/2.0, 1.0000,  -1.000,    3.6,    5.8,   4/3.0,  4.0000,  1.0000,  2.0000,  2.6180)> ' G=Y0 circle, above line
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/2.0,  -1/2.0, 1.0000,  1.0000,    3.6,    4.2,   4/3.0,  4.0000,  1.0000,  2.0000,  2.6180)> ' G=Y0 circle, below line
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/3.0,  0.0000, 3.0000,  0.0000, 3.0000, 5.0000,     1.5,     INF,  0.5000,     999,  3.0000)> ' Inside G=Y0 circle, on line
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/3.0,   1/3.0, 1.5000, -1.5000,  3.175,    5.7,     1.5,     6.0,  0.8000,  1.3333,  3.3699)> ' D1: Inside G=Y0, above line
-        '<InlineData(4.0000, 5.0000,   2.0000, 75.0000,  25.0000, 25.0000, 0.0200, -0.0200,  3.175,    5.7,     1.5,     6.0,  0.8000,  1.3333,  3.3699)> ' D2: NormZ 1/3 + j1/3, Z0=75
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/2.0,  -1/3.0, 1.3846,  0.9231, 3.4588, 4.4353,   4/3.0,  6.0000,  0.8387,  2.2500,  2.2845)> ' L: Inside G=Y0, below line
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.2000,  1.4000, 0.1000, -0.7000  4.5882, 6.6471,   5/3.0,  1.4286,  1.8182,  2.8571, 14.9330)> ' Top remainder
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.4000, -0.8000, 0.5000,  1.0000,  3.845,   3.75,  1.4286,     2.5,   4.0/3,  2.0000,  4.2656)> ' Bottom remainder
-
-
         ' NOTE: SOME OF THE VALUES BELOW MAY HAVE BEEN TAKEN AS ESTIMATES AND MAY
         ' NEED TO BE UPDATED AS MORE TESTS CHECK FOR INCREASED PRECISION.
         '<InlineData(ChartX, ChartY, ChartRad,      Z0,       X, RadiusX)> ' Model
@@ -164,7 +110,6 @@ Namespace GeometryTests
             Dim RadiusAns As Double = SmithCirc.GetRadiusX(testX)
             Assert.Equal(expectRad, RadiusAns, Precision)
         End Sub
-
 
         ''<InlineData(4.0, 5.0, 2.0, 1.0, 999)> ' Outside of circle
         ''<InlineData(4.0, 5.0, 2.0, 1.0, 999)> ' NormR<=0
@@ -214,23 +159,6 @@ Namespace GeometryTests
     Public Class TestGetRadiusG
 
         Const INF As Double = Double.PositiveInfinity
-
-        <Theory>
-        <InlineData(4.0, 8.0, 4.0, 1.0, 5, 2.0 / 6)>
-        <InlineData(4.0, 8.0, 4.0, 1.0, 2, 2.0 / 3)>
-        <InlineData(4.0, 8.0, 4.0, 1.0, 1, 1.0)>
-        <InlineData(4.0, 8.0, 4.0, 1.0, 0.5, 4.0 / 3)>
-        <InlineData(4.0, 8.0, 4.0, 1.0, 0.2, 10.0 / 6)>
-        <InlineData(4.0, 8.0, 4.0, 1.0, 1 / 3, 1.5)>
-        Sub GetRadiusG_EasyValues_Succeed(gridCenterX As Double, gridCenterY As Double, gridRadius As Double,
-                                          z0 As Double, testG As Double, expectRad As Double)
-
-            Const Precision As Double = 0.0005
-
-            Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridRadius, z0)
-            Dim RadiusAns As Double = SmithCirc.GetRadiusG(testG)
-            Assert.Equal(expectRad, RadiusAns, Precision)
-        End Sub
 
         ' NOTE: SOME OF THE VALUES BELOW MAY HAVE BEEN TAKEN AS ESTIMATES AND MAY
         ' NEED TO BE UPDATED AS MORE TESTS CHECK FOR INCREASED PRECISION.
@@ -308,35 +236,6 @@ Namespace GeometryTests
     Public Class TestGetRadiusB
 
         Const INF As Double = Double.PositiveInfinity
-
-
-        ' NOTE: SOME OF THE VALUES BELOW MAY HAVE BEEN TAKEN AS ESTIMATES AND MAY
-        ' NEED TO BE UPDATED AS MORE TESTS CHECK FOR INCREASED PRECISION.
-        '<InlineData(ChartX, ChartY, ChartRad,      Z0,        R,       X,      G,       B,  PlotX,  PlotY, RadiusR, RadiusX, RadiusG, RadiusB,    VSWR)> ' Model
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,        R,       X,      G,       B,  PlotX,  PlotY, RadiusR, RadiusX, RadiusG, RadiusB,    VSWR)> ' Base circle
-        ' <Theory>
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,      999,     999,    999,     999,    2.5,    6.5, RadiusR, RadiusX, RadiusG, RadiusB,    VSWR)> ' Outside of circle
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,  -2.0000,     999,    999,     999,  GridX,  GridY, RadiusR, RadiusX, RadiusG, RadiusB,    VSWR)> ' NormR<=0
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.0000,  0.0000, 0.0000,  0.0000, 2.0000, 5.0000,  2.0000,     INF,  0.0000,     INF,     INF)> ' A: Short circuit
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.0000,   1/2.0, 0.0000, -2.0000,    2.8,    6.6,  2.0000,  4.0000,     INF,   1.000,     INF)> ' C: Perimeter
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,      INF,  0.0000, 0.0000,  0.0000,    6.0, 5.0000,  0.0000,     INF,  2.0000,     INF,     INF)> ' B: Open circuit
-        '
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   1.0000,  0.0000, 1.0000,  0.0000, 4.0000, 5.0000,  1.0000,     INF,  1.0000,     INF,  1.0000)> ' J: Center point
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   1.0000,  1.0000, 0.5000, -0.5000,    4.4,    5.8,  1.0000,  2.0000,   4.0/3,  4.0000,  2.6180)> ' On R=Z0 circle, above line
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   1.0000, -2.0000, 0.2000,  0.4000, 5.0000, 4.0000,  1.0000,  1.0000,   5.0/3,  5.0000,  5.8284)> ' On R=Z0 circle, below line
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   2.0000,   1/2.0, 0.4706, -0.1176, 4.7027, 5.2162,   2/3.0,  4.0000,  1.3600, 17.0000,  2.1626)> ' Q1: Inside R=Z0 circle, above line
-        '<InlineData(4.0000, 5.0000,   2.0000, 50.0000, 100.0000, 25.0000, 0.0094, -0.0024, 4.7027, 5.2162,   2/3.0,  4.0000,  1.3605, 16.6667,  2.1626)> ' Q2: Inside R=Z0 circle, above line, Z0=50
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   3.0000,  0.0000,  1.0/3,  0.0000, 5.0000, 5.0000,     0.5,     INF,  1.5000,     999,  3.0000)> ' Inside R=Z0 circle, on line
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   2.0000, -2.0000, 0.2500,  0.2500,  5.077,  4.385,   2.0/3,  1.0000,   1.600,  8.0000,  4.2656)> ' M: Inside R=Z0 circle, below line
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/2.0,   1/2.0, 1.0000,  -1.000,    3.6,    5.8,   4/3.0,  4.0000,  1.0000,  2.0000,  2.6180)> ' G=Y0 circle, above line
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/2.0,  -1/2.0, 1.0000,  1.0000,    3.6,    4.2,   4/3.0,  4.0000,  1.0000,  2.0000,  2.6180)> ' G=Y0 circle, below line
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/3.0,  0.0000, 3.0000,  0.0000, 3.0000, 5.0000,     1.5,     INF,  0.5000,     999,  3.0000)> ' Inside G=Y0 circle, on line
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/3.0,   1/3.0, 1.5000, -1.5000,  3.175,    5.7,     1.5,     6.0,  0.8000,  1.3333,  3.3699)> ' D1: Inside G=Y0, above line
-        '<InlineData(4.0000, 5.0000,   2.0000, 75.0000,  25.0000, 25.0000, 0.0200, -0.0200,  3.175,    5.7,     1.5,     6.0,  0.8000,  1.3333,  3.3699)> ' D2: NormZ 1/3 + j1/3, Z0=75
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/2.0,  -1/3.0, 1.3846,  0.9231, 3.4588, 4.4353,   4/3.0,  6.0000,  0.8387,  2.2500,  2.2845)> ' L: Inside G=Y0, below line
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.2000,  1.4000, 0.1000, -0.7000  4.5882, 6.6471,   5/3.0,  1.4286,  1.8182,  2.8571, 14.9330)> ' Top remainder
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.4000, -0.8000, 0.5000,  1.0000,  3.845,   3.75,  1.4286,     2.5,   4.0/3,  2.0000,  4.2656)> ' Bottom remainder
-
 
         ' NOTE: SOME OF THE VALUES BELOW MAY HAVE BEEN TAKEN AS ESTIMATES AND MAY
         ' NEED TO BE UPDATED AS MORE TESTS CHECK FOR INCREASED PRECISION.
