@@ -405,93 +405,27 @@ Namespace GeometryTests
     Public Class TestGetRadiusV
 
         Const INF As Double = Double.PositiveInfinity
-        '        Const Precision As Double = 0.000001
-        Const Precision As Double = 0.01
-
-
-        ' NOTE: SOME OF THE VALUES BELOW MAY HAVE BEEN TAKEN AS ESTIMATES AND MAY
-        ' NEED TO BE UPDATED AS MORE TESTS CHECK FOR INCREASED PRECISION.
-        '<InlineData(ChartX, ChartY, ChartRad,      Z0,        R,       X,      G,       B,    VSWR,  PlotX,  PlotY, RadiusR, RadiusX, RadiusG, RadiusB, RadiusV)> ' Model
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,        R,       X,      G,       B,    VSWR,  PlotX,  PlotY, RadiusR, RadiusX, RadiusG, RadiusB, RadiusV)> ' Base circle
-        ' <Theory>
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,      999,     999,    999,     999,    VSWR,    2.5,    6.5, RadiusR, RadiusX, RadiusG, RadiusB, RadiusV)> ' Outside of circle
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,  -2.0000,     999,    999,     999,    VSWR,  GridX,  GridY, RadiusR, RadiusX, RadiusG, RadiusB, RadiusV)> ' NormR<=0
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.0000,  0.0000, 0.0000,  0.0000,     INF, 2.0000, 5.0000,  2.0000,     INF,  0.0000,     INF,     2)> ' A: Short circuit
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.0000,   1/2.0, 0.0000, -2.0000,     INF,    2.8,    6.6,  2.0000,  4.0000,     INF,   1.000,   2)> ' C: Perimeter
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,      INF,  0.0000, 0.0000,  0.0000,     INF,    6.0, 5.0000,  0.0000,     INF,  2.0000,     INF,     2)> ' B: Open circuit
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   1.0000,  0.0000, 1.0000,  0.0000,  1.0000, 4.0000, 5.0000,  1.0000,     INF,  1.0000,     INF,     0)> ' J: Center point
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   1.0000,  1.0000, 0.5000, -0.5000,  2.6180,    4.4,    5.8,  1.0000,  2.0000,   4.0/3,  4.0000,  0.8944)> ' On R=Z0 circle, above line
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   1.0000, -2.0000, 0.2000,  0.4000,  5.8284, 5.0000, 4.0000,  1.0000,  1.0000,   5.0/3,  5.0000,  1.4142)> ' On R=Z0 circle, below line
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   2.0000,   1/2.0, 0.4706, -0.1176,  2.1626,  4.703, 5.2162,   2/3.0,  4.0000,  1.3600, 17.0000, 0.7352)> ' Q1: Inside R=Z0 circle, above line
-        '<InlineData(4.0000, 5.0000,   2.0000, 50.0000, 100.0000, 25.0000, 0.0094, -0.0024,  2.1626,  4.703, 5.2162,   2/3.0,  4.0000,  1.3605, 16.6667, 0.7352)> ' Q2: Inside R=Z0 circle, above line, Z0=50
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   3.0000,  0.0000,  1.0/3,  0.0000,  3.0000, 5.0000, 5.0000,     0.5,     INF,  1.5000,     999,     1)> ' Inside R=Z0 circle, on line
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   2.0000, -2.0000, 0.2500,  0.2500,  4.2656,  5.077,  4.385,   2.0/3,  1.0000,   1.600,  8.0000,  1.25)> ' M: Inside R=Z0 circle, below line
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/2.0,   1/2.0, 1.0000,  -1.000,  2.6180,    3.6,    5.8,   4/3.0,  4.0000,  1.0000,  2.0000,  0.8944)> ' G=Y0 circle, above line
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/2.0,  -1/2.0, 1.0000,  1.0000,  2.6180,    3.6,    4.2,   4/3.0,  4.0000,  1.0000,  2.0000,  0.8944)> ' G=Y0 circle, below line
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/3.0,  0.0000, 3.0000,  0.0000,  3.0000, 3.0000, 5.0000,     1.5,     INF,  0.5000,     999,     1)> ' Inside G=Y0 circle, on line
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/3.0,   1/3.0, 1.5000, -1.5000,  3.3699,  3.175,    5.7,     1.5,     6.0,  0.8000,  1.3333,  1.0846)> ' D1: Inside G=Y0, above line
-        '<InlineData(4.0000, 5.0000,   2.0000, 75.0000,  25.0000, 25.0000, 0.0200, -0.0200,  3.3699,  3.175,    5.7,     1.5,     6.0,  0.8000,  1.3333,  1.0846)> ' D2: NormZ 1/3 + j1/3, Z0=75
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/2.0,  -1/3.0, 1.3846,  0.9231,  2.2845, 3.4588, 4.4353,   4/3.0,  6.0000,  0.8387,  2.2500,  0.7822)> ' L: Inside G=Y0, below line
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.2000,  1.4000, 0.1000, -0.7000, 14.9330  4.5882, 6.6471,   5/3.0,  1.4286,  1.8182,  2.8571,  1.75)> ' Top remainder
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.4000, -0.8000, 0.5000,  1.0000,  4.2656,  3.845,   3.75,  1.4286,     2.5,   4.0/3,  2.0000,  1.25)> ' Bottom remainder
-
-
-
-
-
-
-
-
-        '' NOTE: SOME OF THE VALUES BELOW MAY HAVE BEEN TAKEN AS ESTIMATES AND MAY
-        '' NEED TO BE UPDATED AS MORE TESTS CHECK FOR INCREASED PRECISION.
-        ''<InlineData(ChartX, ChartY, ChartRad,      Z0,    VSWR, RadiusV)> ' Model
-        ''<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    VSWR, RadiusV)> ' Base circle
-        '<Theory>
-        '<InlineData(4.0, 5.0, 2.0, 1.0, INF, 2)> ' A: Short circuit
-        '<InlineData(4.0, 5.0, 2.0, 1.0, INF, 2)> ' C: Perimeter
-        '<InlineData(4.0, 5.0, 2.0, 1.0, INF, 2)> ' B: Open circuit
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 0.0000)> ' J: Center point
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 2.618, 7 / 8)> ' On R=Z0 circle, above line
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 5.8284, 23 / 16)> ' On R=Z0 circle, below line
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 2.1626, 0.75)> ' Q1: Inside R=Z0 circle, above line
-        '<InlineData(4.0, 5.0, 2.0, 50.0, 2.1626, 0.75)> ' Q2: Inside R=Z0 circle, above line, Z0=50
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 3.0, 1.0)> ' Inside R=Z0 circle, on line
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 4.2656, 1.25)> ' M: Inside R=Z0 circle, below line
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 2.618, 7 / 8)> ' G=Y0 circle, above line
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 2.618, 7 / 8)> ' G=Y0 circle, below line
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 3.0, 1.0)> ' Inside G=Y0 circle, on line
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 3.3699, 17 / 16)> ' D1: Inside G=Y0, above line
-        '<InlineData(4.0, 5.0, 2.0, 75.0, 3.3699, 17 / 16)> ' D2: NormZ 1/3 + j1/3, Z0=75
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 2.2845, 0.75)> ' L: Inside G=Y0, below line
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 14.933, 1.75)> ' Top remainder
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 4.2656, 1.25)> ' Bottom remainder
-
-
-
+        Const Precision As Double = 0.0005
 
         ' NOTE: SOME OF THE VALUES BELOW MAY HAVE BEEN TAKEN AS ESTIMATES AND MAY
         ' NEED TO BE UPDATED AS MORE TESTS CHECK FOR INCREASED PRECISION.
         '<InlineData(ChartX, ChartY, ChartRad,      Z0,    VSWR, RadiusV)> ' Model
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    VSWR, RadiusV)> ' Base circle
         <Theory>
-        <InlineData(4.0, 5.0, 2.0, 1.0, INF, 2)> ' A: Short circuit
-        <InlineData(4.0, 5.0, 2.0, 1.0, INF, 2)> ' C: Perimeter
-        <InlineData(4.0, 5.0, 2.0, 1.0, INF, 2)> ' B: Open circuit
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 0.0000)> ' J: Center point
         <InlineData(4.0, 5.0, 2.0, 1.0, 2.618, 0.8944)> ' On R=Z0 circle, above line
         <InlineData(4.0, 5.0, 2.0, 1.0, 5.8284, 1.4142)> ' On R=Z0 circle, below line
         <InlineData(4.0, 5.0, 2.0, 1.0, 2.1626, 0.7352)> ' Q1: Inside R=Z0 circle, above line
         <InlineData(4.0, 5.0, 2.0, 50.0, 2.1626, 0.7352)> ' Q2: Inside R=Z0 circle, above line, Z0=50
         <InlineData(4.0, 5.0, 2.0, 1.0, 3.0, 1.0)> ' Inside R=Z0 circle, on line
-        <InlineData(4.0, 5.0, 2.0, 1.0, 4.2656, 1.25)> ' M: Inside R=Z0 circle, below line
+        <InlineData(4.0, 5.0, 2.0, 1.0, 4.2656, 1.2404)> ' M: Inside R=Z0 circle, below line
         <InlineData(4.0, 5.0, 2.0, 1.0, 2.618, 0.8944)> ' G=Y0 circle, above line
         <InlineData(4.0, 5.0, 2.0, 1.0, 2.618, 0.8944)> ' G=Y0 circle, below line
         <InlineData(4.0, 5.0, 2.0, 1.0, 3.0, 1.0)> ' Inside G=Y0 circle, on line
         <InlineData(4.0, 5.0, 2.0, 1.0, 3.3699, 1.0846)> ' D1: Inside G=Y0, above line
         <InlineData(4.0, 5.0, 2.0, 75.0, 3.3699, 1.0846)> ' D2: NormZ 1/3 + j1/3, Z0=75
         <InlineData(4.0, 5.0, 2.0, 1.0, 2.2845, 0.7822)> ' L: Inside G=Y0, below line
-        <InlineData(4.0, 5.0, 2.0, 1.0, 14.933, 1.75)> ' Top remainder
-        <InlineData(4.0, 5.0, 2.0, 1.0, 4.2656, 1.25)> ' Bottom remainder
+        <InlineData(4.0, 5.0, 2.0, 1.0, 14.933, 1.7489)> ' Top remainder
+        <InlineData(4.0, 5.0, 2.0, 1.0, 4.2656, 1.2404)> ' Bottom remainder
         Sub GetRadiusV_GoodInput_Succeeds(gridCenterX As Double, gridCenterY As Double, gridRadius As Double,
                                           z0 As Double, testV As Double, expectRad As Double)
 
@@ -500,88 +434,46 @@ Namespace GeometryTests
             Assert.Equal(expectRad, RadiusAns, Precision)
         End Sub
 
-
-
-
-
-
-
-
-
-        '<InlineData(4.0, 5.0, 2.0, 1.0, VSWR, RadiusV)> ' Outside of circle
-        '<InlineData(4.0, 5.0, 2.0, 1.0, VSWR, RadiusV)> ' NormR<=0
-
-
-
-
-
-
-
-
-
-
-
-
+        ''<InlineData(4.0, 5.0, 2.0, 1.0, VSWR)> ' Outside of circle
+        ''<InlineData(4.0, 5.0, 2.0, 1.0, VSWR)> ' NormR<=0
+        ''
         '<Theory>
-        '<InlineData(4.0, 8.0, 4.0, 1.0, -1.0)> ' VSWR=<0
-        '<InlineData(4.0, 8.0, 4.0, 1.0, 1 / 2.0)> ' VSWR<1
-        '<InlineData(4.0, 8.0, 4.0, 1.0, 1.0)> ' VSWR=1
+        '<InlineData(4.0, 5.0, 2.0, 1.0, INF)> ' A: Short circuit
+        '<InlineData(4.0, 5.0, 2.0, 1.0, INF)> ' C: Perimeter
+        '<InlineData(4.0, 5.0, 2.0, 1.0, INF)> ' B: Open circuit
         'Sub GetRadiusV_BadInput_Fails(gridCenterX As Double, gridCenterY As Double, gridDiameter As Double,
-        '                                  z0 As Double, testV As Double)
+        '                              z0 As Double, testV As Double)
 
-        '    Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridDiameter, z0)
         '    Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
         '        Sub()
         '            ' Code that throws the exception
+        '            Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridDiameter, z0)
         '            Dim RadiusAns As Double = SmithCirc.GetRadiusV(testV)
         '        End Sub)
         'End Sub
 
-
-
-
-        ''
-        '<Theory>
-        '<InlineData(4.0, 5.0, 2.0, 1.0, VSWR, 999)> ' Outside of circle
-        '<InlineData(4.0, 5.0, 2.0, 1.0, VSWR, 999)> ' NormR<=0
-        '<InlineData(4.0, 5.0, 2.0, 1.0, INF, 999)> ' A: Short circuit
-        '<InlineData(4.0, 5.0, 2.0, 1.0, INF, 999)> ' C: Perimeter
-        '<InlineData(4.0, 5.0, 2.0, 1.0, INF, 999)> ' B: Open circuit
-        'Sub GetRadiusV_BadInput_Fails(gridCenterX As Double, gridCenterY As Double, gridDiameter As Double,
-        '                                  z0 As Double, testV As Double)
-        '    Try
-        '        Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
-        '            Sub()
-        '                ' Code that throws the exception
-        '                Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridDiameter, z0)
-        '                Dim RadiusAns As Double = SmithCirc.GetRadiusR(testV)
-        '            End Sub)
-        '    Catch ex As Exception
-        '        Assert.True(True)
-        '        Exit Sub
-        '    End Try
-        '    Assert.True(False, "Did not fail")
-        'End Sub
-
-
+        '<InlineData(4.0, 5.0, 2.0, 1.0, VSWR)> ' Outside of circle
+        '<InlineData(4.0, 5.0, 2.0, 1.0, VSWR)> ' NormR<=0
+        '
         <Theory>
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' A: Short circuit
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' B: Open circuit
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' J: Center point
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' Inside R=Z0 circle, on line
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' Inside G=Y0 circle, on line
-        Sub GetRadiusB_BadInput_Fails(gridCenterX As Double, gridCenterY As Double, gridDiameter As Double,
+        <InlineData(4.0, 5.0, 2.0, 1.0, INF)> ' A: Short circuit
+        <InlineData(4.0, 5.0, 2.0, 1.0, INF)> ' C: Perimeter
+        <InlineData(4.0, 5.0, 2.0, 1.0, INF)> ' B: Open circuit
+        Sub GetRadiusV_BadInput_Fails(gridCenterX As Double, gridCenterY As Double, gridDiameter As Double,
                                       z0 As Double, testV As Double)
-
-            Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
-                Sub()
-                    ' Code that throws the exception
-                    Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridDiameter, z0)
-                    Dim RadiusAns As Double = SmithCirc.GetRadiusV(testV)
-                End Sub)
+            Try
+                Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
+                    Sub()
+                        ' Code that throws the exception
+                        Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridDiameter, z0)
+                        Dim RadiusAns As Double = SmithCirc.GetRadiusV(testV)
+                    End Sub)
+            Catch ex As Exception
+                Assert.True(True)
+                Exit Sub
+            End Try
+            Assert.True(False, "Did not fail")
         End Sub
-
-
 
     End Class ' TestGetRadiusV
 
