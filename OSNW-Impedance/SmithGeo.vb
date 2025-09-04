@@ -452,7 +452,7 @@ Public Class SmithMainCircle
     ''' <paramref name="vswr"/> is less than or equal to one.</exception>
     Public Function GetRadiusV(ByVal vswr As System.Double) As System.Double
 
-        If vswr <= 1.0 Then
+        If vswr < 1.0 Then
             'Dim CaughtBy As System.Reflection.MethodBase =
             '    System.Reflection.MethodBase.GetCurrentMethod
             Throw New System.ArgumentOutOfRangeException(
