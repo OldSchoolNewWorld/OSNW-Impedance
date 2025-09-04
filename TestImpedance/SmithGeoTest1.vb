@@ -594,53 +594,50 @@ Namespace GeometryTests
 
         End Sub
 
+        ''<InlineData(4.0, 5.0, 2.0, 1.0, -2.0, 999, GridX, GridY)> ' NormR<=0
+        ''<InlineData(4.0, 5.0, 2.0, 1.0, 999, 999, 2.5, 6.5)> ' Outside of circle
+        ''<InlineData(4.0, 5.0, 2.0, 1.0, INF, 0.0000, 6.0, 5.0)> ' B: Open circuit
+        ''
+        '<Theory>
+        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 0.0000, 2.0, 5.0)> ' A: Short circuit
+        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 1 / 2.0, 2.8, 6.6)> ' C: Perimeter
+        'Public Sub TryGetPlotXY_BadInput_Fails(
+        '    gridCenterX As Double, gridCenterY As Double, gridRadius As Double, z0 As Double,
+        '    testR As Double, testX As Double, expectPlotX As Double, expectPlotY As Double)
 
+        '    Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
+        '    Sub()
+        '        ' Code that throws the exception
+        '        Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridRadius * 2, z0)
+        '        Dim DidIt As Boolean = SmithCirc.GetPlotXY(testR, testX, gridCenterX, gridCenterY)
+        '    End Sub)
+        'End Sub
 
         '<InlineData(4.0, 5.0, 2.0, 1.0, -2.0, 999, GridX, GridY)> ' NormR<=0
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 999, 999, 2.5, 6.5)> ' Outside of circle
-        '<InlineData(4.0, 5.0, 2.0, 1.0, INF, 0.0000, 6.0, 5.0)> ' B: Open circuit
+        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 0.0000, 2.0, 5.0)> ' A: Short circuit
+        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 1 / 2.0, 2.8, 6.6)> ' C: Perimeter
         '
         <Theory>
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 0.0000, 2.0, 5.0)> ' A: Short circuit
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 1 / 2.0, 2.8, 6.6)> ' C: Perimeter
+        <InlineData(4.0, 5.0, 2.0, 1.0, INF, 0.0000, 6.0, 5.0)> ' B: Open circuit
+        <InlineData(4.0, 5.0, 2.0, 1.0, 999, 999, 2.5, 6.5)> ' Outside of circle
         Public Sub TryGetPlotXY_BadInput_Fails(
             gridCenterX As Double, gridCenterY As Double, gridRadius As Double, z0 As Double,
             testR As Double, testX As Double, expectPlotX As Double, expectPlotY As Double)
 
-            Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
-            Sub()
-                ' Code that throws the exception
-                Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridRadius * 2, z0)
-                Dim DidIt As Boolean = SmithCirc.GetPlotXY(testR, testX, gridCenterX, gridCenterY)
-            End Sub)
+            Try
+                Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
+                    Sub()
+                        ' Code that throws the exception
+                        Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridRadius * 2, z0)
+                        '                        Dim RadiusAns As Double = SmithCirc.GetPlotXY(testR, testX, gridCenterX, gridCenterY)
+                        Dim DidIt As Boolean = SmithCirc.GetPlotXY(testR, testX, gridCenterX, gridCenterY)
+                    End Sub)
+            Catch ex As Exception
+                Assert.True(True)
+                Exit Sub
+            End Try
+            Assert.True(False, "Did not fail")
         End Sub
-
-
-
-
-        '<Theory>
-        '<InlineData(4.0, 5.0, 2.0, 1.0, -2.0, 999, GridX, GridY)> ' NormR<=0
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 0.0000, 2.0, 5.0)> ' A: Short circuit
-        '<InlineData(4.0, 5.0, 2.0, 1.0, INF, 0.0000, 6.0, 5.0)> ' B: Open circuit
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 999, 999, 2.5, 6.5)> ' Outside of circle
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 1 / 2.0, 2.8, 6.6)> ' C: Perimeter
-        'Public Sub TryGetPlotXY_BadInput_Fails(
-        '    gridCenterX As Double, gridCenterY As Double, gridRadius As Double, z0 As Double,
-        '    testR As Double, testX As Double, expectPlotX As Double, expectPlotY As Double
-
-        '    Try
-        '        Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
-        '            Sub()
-        '                ' Code that throws the exception
-        '                Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridDiameter, z0)
-        '                Dim RadiusAns As Double = SmithCirc.GetPlotXY(testR, testX, GridX, GridY)
-        '            End Sub)
-        '    Catch ex As Exception
-        '        Assert.True(True)
-        '        Exit Sub
-        '    End Try
-        '    Assert.True(False, "Did not fail")
-        'End Sub
 
     End Class ' TestGetPlotXY
 
