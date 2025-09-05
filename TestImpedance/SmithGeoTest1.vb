@@ -265,19 +265,6 @@ Namespace GeometryTests
             Assert.Equal(expectRad, RadiusAns, Precision)
         End Sub
 
-        '<Theory>
-        '<InlineData(4.0, 8.0, 4.0, 1.0, 0.0)> ' NormB=0
-        'Sub GetRadiusB_BadInput_Fails(gridCenterX As Double, gridCenterY As Double, gridDiameter As Double,
-        '                              z0 As Double, testB As Double)
-
-        '    Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridDiameter, z0)
-        '    Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
-        '        Sub()
-        '            ' Code that throws the exception
-        '            Dim RadiusAns As Double = SmithCirc.GetRadiusB(testB)
-        '        End Sub)
-        'End Sub
-
         '<InlineData(4.0, 5.0, 2.0, 1.0, 999)> ' Outside of circle
         '<InlineData(4.0, 5.0, 2.0, 1.0, 999)> ' NormR<=0
         '<InlineData(4.0, 8.0, 4.0, 1.0, 0.0)> ' NormB=0
@@ -465,7 +452,7 @@ Namespace GeometryTests
         <InlineData(4.0, 5.0, 2.0, 1.0, 2.0, 1 / 2.0, 4.7027, 5.2162)> ' Q1: Inside R=Z0 circle, above line
         <InlineData(4.0, 5.0, 2.0, 50.0, 100.0, 25.0, 4.7027, 5.2162)> ' Q2: Inside R=Z0 circle, above line, Z0=50
         <InlineData(4.0, 5.0, 2.0, 1.0, 3.0, 0.0000, 5.0, 5.0)> ' Inside R=Z0 circle, on line
-        <InlineData(4.0, 5.0, 2.0, 1.0, 2.0, -2.0, 5.077, 4.385)> ' M: Inside R=Z0 circle, below line
+        <InlineData(4.0, 5.0, 2.0, 1.0, 2.0, -2.0, 5.077, 4.3846)> ' M: Inside R=Z0 circle, below line
         <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, 1 / 2.0, 3.6, 5.8)> ' G=Y0 circle, above line
         <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, -1 / 2.0, 3.6, 4.2)> ' G=Y0 circle, below line
         <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 3.0, 0.0000, 3.0, 5.0)> ' Inside G=Y0 circle, on line
@@ -543,6 +530,7 @@ Namespace GeometryTests
 
         Const INF As Double = Double.PositiveInfinity
 
+
         ' NOTE: SOME OF THE VALUES BELOW MAY HAVE BEEN TAKEN AS ESTIMATES AND MAY
         ' NEED TO BE UPDATED AS MORE TESTS CHECK FOR INCREASED PRECISION.
         '<InlineData(ChartX, ChartY, ChartRad,      Z0,        R,       X,  PlotX,  PlotY)> ' Model
@@ -568,9 +556,9 @@ Namespace GeometryTests
             expectR As Double, expectX As Double,
             plotX As Double, plotY As Double)
 
-            '            Const Precision As Double = 0.01
-            '   THE LOOSE PRECISION HERE SEEMS TO BE A RESULT OF THE USE OF FLOATING POINT VALUES.
-            Const Precision As Double = 0.05
+            ' The reduced precision here is due to the use of floating point values and the number of calculations in GetZFromPlot.
+            '            Const Precision As Double = 0.0005
+            Const Precision As Double = 0.005
 
             Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridRadius * 2, z0)
             Dim ZAns As Impedance = SmithCirc.GetZFromPlot(plotX, plotY)
