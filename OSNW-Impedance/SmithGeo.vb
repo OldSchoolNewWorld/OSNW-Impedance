@@ -459,14 +459,16 @@ Public Class SmithMainCircle
                 NameOf(vswr), Impedance.MSGVMBGTE1)
         End If
 
-        ' By observation, a geometry solution
-        '     The rightmost edge of the VSWR-circle is tangent to the leftmost
-        '     edge of the R-circle whose resistance magnitude matches the VSWR
-        '     magnitude.
-        '        Return Me.GridRadius - (Me.GetRadiusR(vswr) * 2.0)
-
-        ' Alternate form.
-        Return Me.GridRadius * (vswr - 1.0) / (vswr + 1.0)
+        If Double.IsInfinity(vswr) Then
+            ' By observation, a geometry solution
+            '     The rightmost edge of the VSWR-circle is tangent to the leftmost
+            '     edge of the R-circle whose resistance magnitude matches the VSWR
+            '     magnitude.
+            Return Me.GridRadius - (Me.GetRadiusR(vswr) * 2.0)
+        Else
+            ' Alternate form.
+            Return Me.GridRadius * (vswr - 1.0) / (vswr + 1.0)
+        End If
 
     End Function ' GetRadiusV
 
