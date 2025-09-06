@@ -1236,7 +1236,7 @@ Public Class VCircle
 End Class ' VCircle
 
 ''' <summary>
-''' A class that represents the geometry of an impedance plot on a Smith Chart.
+''' A class that represents the geometry of an impedance plotted on a Smith Chart.
 ''' Dimensions are in generic "units".
 ''' </summary>
 Public Class ZPlot
@@ -1303,21 +1303,19 @@ Public Class ZPlot
     End Property
 
     ''' <summary>
-    ''' Attempts to generate a set of values describing the geometry of the
-    ''' <c>ZPlot</c>, on the associated <see cref="SmithMainCircle"/>.
+    ''' Attempts to generate and apply a set of values describing the geometry
+    ''' of the <c>ZPlot</c>, on the associated <see cref="SmithMainCircle"/>.
     ''' </summary>
-    ''' <param name="resistance"></param>
-    ''' <param name="reactance"></param>
     ''' <returns>Returns <c>True</c> if the process succeeds; otherwise,
     ''' <c>False</c>.</returns>
-    Public Function TryGetPlotXY(ByRef resistance As System.Double,
-        ByRef reactance As System.Double) _
+    Public Function TryGetPlotXY() _
         As System.Boolean
 
         Try
             ' Calculate values relative to the host outer circle.
             ' Then populate values relative to the Cartesian grid.
-            Me.MainCircle.GetPlotXY(resistance, reactance, GridCenterX, GridCenterY)
+            Me.MainCircle.GetPlotXY(
+                Me.Resistance, Me.Reactance, Me.GridCenterX, Me.GridCenterX)
             Return True
         Catch ex As Exception
             Return False
@@ -1326,17 +1324,15 @@ Public Class ZPlot
 
     ''' <summary>
     ''' Sets the Cartesian coordinates of the <c>ZPlot</c>, based on its
-    ''' resistance and conductance values, in the associated
+    ''' resistance and reactance values, in the associated
     ''' <see cref="SmithMainCircle"/>.
     ''' </summary>
     ''' <remarks>
     ''' This method is intended to be called after the circle has been
     ''' constructed, to set the basic properties.
     ''' </remarks>
-    Public Sub SetPlotXY(ByRef gridCenterX As System.Double,
-                         ByRef gridCenterY As System.Double)
-
-        If Not Me.TryGetPlotXY(Resistance, Reactance) Then
+    Private Sub SetPlotXY()
+        If Not Me.TryGetPlotXY() Then
             Dim CaughtBy As System.Reflection.MethodBase =
                 System.Reflection.MethodBase.GetCurrentMethod
             Throw New System.InvalidOperationException(
@@ -1369,6 +1365,7 @@ Public Class ZPlot
         Me.m_MainCircle = mainCircle
         Me.m_Resistance = resistance
         Me.m_Reactance = reactance
+        Me.SetPlotXY()
 
     End Sub ' New
 
