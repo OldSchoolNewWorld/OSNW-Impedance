@@ -39,9 +39,11 @@ Imports System.Text.Json.Serialization
 ' REF: Impedance matching
 ' https://en.wikipedia.org/wiki/Impedance_matching
 
-' Spread Spectrum Scene
+' REF: Spread Spectrum Scene
 ' http://www.sss-mag.com/smith.html
 
+' REF: Formulas of Impedances in AC Circuits
+' https://www.mathforengineers.com/AC-circuits/formulas-of-impedances-in-ac-circuits.html
 
 ' FROM OLD YTT CODE AND .NET Source:
 '    <SerializableAttribute()>

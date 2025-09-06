@@ -9,10 +9,6 @@ Imports Xunit
 Imports OsnwImpd = OSNW.Numerics.Impedance
 Imports OsnwNumSS = OSNW.Numerics.StandardizationStyles
 
-' Look for some solved cases to test the math. Some formulas and schematics are at:
-' REF: Formulas of Impedances in AC Circuits
-' https://www.mathforengineers.com/AC-circuits/formulas-of-impedances-in-ac-circuits.html
-
 ' Test Data
 ' These are common test data points for Impedance and Smith Chart tests. They
 ' include special cases and a mix of +/-, left/right, above/below/on, etc.
