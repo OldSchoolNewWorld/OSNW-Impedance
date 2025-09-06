@@ -26,13 +26,11 @@ Imports OsnwNumSS = OSNW.Numerics.StandardizationStyles
 
 ' Const INF As Double = Double.PositiveInfinity
 
-' NOTE: SOME OF THE VALUES BELOW MAY HAVE BEEN TAKEN AS ESTIMATES AND MAY
-' NEED TO BE UPDATED AS MORE TESTS CHECK FOR INCREASED PRECISION.
 '<InlineData(ChartX, ChartY, ChartRad,      Z0,        R,       X,      G,       B,    VSWR,  PlotX,  PlotY, RadiusR, RadiusX, RadiusG, RadiusB, RadiusV)> ' Model
 '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,        R,       X,      G,       B,    VSWR,  PlotX,  PlotY, RadiusR, RadiusX, RadiusG, RadiusB, RadiusV)> ' Base circle
 ' <Theory>
-'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,      999,     999,    999,     999,    VSWR,    2.5,    6.5, RadiusR, RadiusX, RadiusG, RadiusB, RadiusV)> ' Outside of circle
-'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,  -2.0000,     999,    999,     999,    VSWR,  GridX,  GridY, RadiusR, RadiusX, RadiusG, RadiusB, RadiusV)> ' NormR<=0
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,      999,     999,    999,     999,     999,    2.5,    6.5, RadiusR, RadiusX, RadiusG, RadiusB, RadiusV)> ' Outside of circle
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,  -2.0000,     999,    999,     999,     999,  GridX,  GridY, RadiusR, RadiusX, RadiusG, RadiusB, RadiusV)> ' NormR<=0
 '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.0000,  0.0000, 0.0000,  0.0000,     INF, 2.0000, 5.0000,  2.0000,     INF,  0.0000,     INF,  2.0000)> ' A: Short circuit
 '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.0000,   1/2.0, 0.0000, -2.0000,     INF,    2.8,    6.6,  2.0000,  4.0000,     INF,   1.000,  2.0000)> ' C: Perimeter
 '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,      INF,  0.0000, 0.0000,  0.0000,     INF, 6.0000, 5.0000,  0.0000,     INF,  2.0000,     INF,  2.0000)> ' B: Open circuit
@@ -531,7 +529,6 @@ Namespace TestImpedanceMath
         Const INF As Double = Double.PositiveInfinity
         Const Precision As Double = 0.0005
 
-        ' NOTE: SOME OF THE VALUES BELOW MAY HAVE BEEN TAKEN AS ESTIMATES AND MAY NEED TO BE UPDATED AS MORE TESTS CHECK FOR INCREASED PRECISION.
         '<InlineData(       R,       X,      G,       B)> ' Model
         <Theory>
         <InlineData(0.0000, 0.0000, 0.0000, 0.0000)> ' A: Short circuit
@@ -558,20 +555,24 @@ Namespace TestImpedanceMath
             Assert.Equal(expectB, Y.Susceptance, Precision)
         End Sub
 
-        '<Theory>
-        '<InlineData(INF, 0.0000, 0.0000, 0.0000)> ' B: Open circuit
-        'Sub ToAdmittance_BadInput_Fails(r As Double, x As Double, expectG As Double, expectB As Double)
-        '    Dim Imp As New Impedance(r, x)
-        '    Dim Y As Admittance = Imp.ToAdmittance()
-        '    Assert.Equal(expectG, Y.Conductance, Precision)
-        '    Assert.Equal(expectB, Y.Susceptance, Precision)
-        'End Sub
+        '<InlineData(999, 999, 999, 999)> ' Outside of circle
+        <Theory>
+        <InlineData(-2.0, 999, 999, 999)> ' NormR<=0
+        <InlineData(INF, 0.0000, 0.0000, 0.0000)> ' B: Open circuit
+        Sub ToAdmittance_BadInput_Fails1(r As Double, x As Double, expectG As Double, expectB As Double)
+            Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
+                Sub()
+                    ' Code that throws the exception
+                    Dim Imp As New Impedance(r, x)
+                    Dim Y As Admittance = Imp.ToAdmittance()
+                End Sub)
+        End Sub
 
         '<InlineData(999, 999, 999, 999)> ' Outside of circle
         <Theory>
         <InlineData(-2.0, 999, 999, 999)> ' NormR<=0
         <InlineData(INF, 0.0000, 0.0000, 0.0000)> ' B: Open circuit
-        Sub ToAdmittance_BadInput_Fails(r As Double, x As Double, expectG As Double, expectB As Double)
+        Sub ToAdmittance_BadInput_Fails2(r As Double, x As Double, expectG As Double, expectB As Double)
             Try
                 ' Code that throws the exception.
                 Dim Imp As New Impedance(r, x)
@@ -589,8 +590,6 @@ Namespace TestImpedanceMath
 
         Const INF As Double = Double.PositiveInfinity
 
-        ' NOTE: SOME OF THE VALUES BELOW MAY HAVE BEEN TAKEN AS ESTIMATES AND MAY
-        ' NEED TO BE UPDATED AS MORE TESTS CHECK FOR INCREASED PRECISION.
         '<InlineData(     Z0,        R,       X,    VSWR)> ' Model
         <Theory>
         <InlineData(1.0, 0.0000, 0.0000, INF)> ' A: Short circuit
@@ -620,25 +619,24 @@ Namespace TestImpedanceMath
 
         End Sub
 
-        ''<InlineData(1.0, 999, 999)> ' Outside of circle
-        ''<InlineData(1.0, -2.0, 999)> ' NormR<=0
-        '<Theory>
-        '<InlineData(1.0, INF, 0.0000)> ' B: Open circuit
-        'Sub VSWR_BadInput_Fails(z0 As Double, r As Double, x As Double)
-        '    Dim Imp As New Impedance(r, x)
-        '    Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
-        '        Sub()
-        '            ' Code that throws the exception
-        '            Dim AnsVWSR As Double = Imp.VSWR(z0)
-        '        End Sub)
-        'End Sub
-
-        '<InlineData(999, 999, VSWR)> ' Outside of circle
-        '<InlineData(-2.0, 999, VSWR)> ' NormR<=0
-        '
+        '<InlineData(1.0, 999, 999)> ' Outside of circle
         <Theory>
+        <InlineData(1.0, -2.0, 999)> ' NormR<=0
+        <InlineData(1.0, INF, 0.0000)> ' B: Open circuit
+        Sub VSWR_BadInput_Fails1(z0 As Double, r As Double, x As Double)
+            Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
+                Sub()
+                    ' Code that throws the exception
+                    Dim Imp As New Impedance(r, x)
+                    Dim AnsVWSR As Double = Imp.VSWR(z0)
+                End Sub)
+        End Sub
+
+        '<InlineData(1.0, 999, 999, 999)> ' Outside of circle
+        <Theory>
+        <InlineData(1.0, -2.0, 999, 999)> ' NormR<=0
         <InlineData(1.0, INF, 0.0000, INF)> ' B: Open circuit
-        Sub VSWR_BadInput_Fails(z0 As Double, r As Double, x As Double, expectVSWR As Double)
+        Sub VSWR_BadInput_Fails2(z0 As Double, r As Double, x As Double, expectVSWR As Double)
             Try
                 ' Code that throws the exception.
                 Dim Imp As New Impedance(r, x)
