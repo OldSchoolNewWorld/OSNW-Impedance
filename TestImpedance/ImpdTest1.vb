@@ -554,11 +554,11 @@ Namespace TestImpedanceMath
             Assert.Equal(expectB, Y.Susceptance, Precision)
         End Sub
 
-        '<InlineData(999, 999, 999, 999)> ' Outside of main circle
+        '<InlineData(999, 999)> ' Outside of main circle
         <Theory>
-        <InlineData(-2.0, 999, 999, 999)> ' NormR<=0
-        <InlineData(INF, 0.0000, 0.0000, 0.0000)> ' C: Open circuit
-        Sub ToAdmittance_BadInput_Fails1(r As Double, x As Double, expectG As Double, expectB As Double)
+        <InlineData(-2.0, 999)> ' NormR<=0
+        <InlineData(INF, 0.0000)> ' C: Open circuit
+        Sub ToAdmittance_BadInput_Fails1(r As Double, x As Double)
             Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
                 Sub()
                     ' Code that throws the exception
@@ -567,11 +567,11 @@ Namespace TestImpedanceMath
                 End Sub)
         End Sub
 
-        '<InlineData(999, 999, 999, 999)> ' Outside of main circle
+        '<InlineData(999, 999)> ' Outside of main circle
         <Theory>
-        <InlineData(-2.0, 999, 999, 999)> ' NormR<=0
-        <InlineData(INF, 0.0000, 0.0000, 0.0000)> ' C: Open circuit
-        Sub ToAdmittance_BadInput_Fails2(r As Double, x As Double, expectG As Double, expectB As Double)
+        <InlineData(-2.0, 999)> ' NormR<=0
+        <InlineData(INF, 0.0000)> ' C: Open circuit
+        Sub ToAdmittance_BadInput_Fails2(r As Double, x As Double)
             Try
                 ' Code that throws the exception.
                 Dim Imp As New Impedance(r, x)
@@ -631,11 +631,11 @@ Namespace TestImpedanceMath
                 End Sub)
         End Sub
 
-        '<InlineData(1.0, 999, 999, 999)> ' Outside of main circle
+        '<InlineData(1.0, 999, 999)> ' Outside of main circle
         <Theory>
-        <InlineData(1.0, -2.0, 999, 999)> ' NormR<=0
-        <InlineData(1.0, INF, 0.0000, INF)> ' C: Open circuit
-        Sub VSWR_BadInput_Fails2(z0 As Double, r As Double, x As Double, expectVSWR As Double)
+        <InlineData(1.0, -2.0, 999)> ' NormR<=0
+        <InlineData(1.0, INF, 0.0000)> ' C: Open circuit
+        Sub VSWR_BadInput_Fails2(z0 As Double, r As Double, x As Double)
             Try
                 ' Code that throws the exception.
                 Dim Imp As New Impedance(r, x)

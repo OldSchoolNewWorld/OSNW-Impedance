@@ -498,16 +498,16 @@ Namespace GeometryTests
         '    End Sub)
         'End Sub
 
-        '<InlineData(4.0, 5.0, 2.0, 1.0, -2.0, 999, GridX, GridY)> ' NormR<=0
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 0.0000, 2.0, 5.0)> ' A: Short circuit
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 1 / 2.0, 2.8, 6.6)> ' B: On perimeter
+        '<InlineData(4.0, 5.0, 2.0, 1.0, -2.0, 999)> ' NormR<=0
+        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 0.0000)> ' A: Short circuit
+        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 1 / 2.0)> ' B: On perimeter
         '
         <Theory>
-        <InlineData(4.0, 5.0, 2.0, 1.0, INF, 0.0000, 6.0, 5.0)> ' C: Open circuit
-        <InlineData(4.0, 5.0, 2.0, 1.0, 999, 999, 2.5, 6.5)> ' Outside of main circle
+        <InlineData(4.0, 5.0, 2.0, 1.0, INF, 0.0000)> ' C: Open circuit
+        <InlineData(4.0, 5.0, 2.0, 1.0, 999, 999)> ' Outside of main circle
         Public Sub TryGetPlotXY_BadInput_Fails(
             gridCenterX As Double, gridCenterY As Double, gridRadius As Double, z0 As Double,
-            testR As Double, testX As Double, expectPlotX As Double, expectPlotY As Double)
+            testR As Double, testX As Double)
 
             Try
                 Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
