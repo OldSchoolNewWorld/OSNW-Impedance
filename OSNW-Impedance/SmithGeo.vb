@@ -566,7 +566,7 @@ Public Class SmithMainCircle
             Dim CaughtBy As System.Reflection.MethodBase =
                 System.Reflection.MethodBase.GetCurrentMethod
             Const ErrTail As System.String =
-            "must be inside the Smith Chart main circle."
+                "must be INSIDE the Smith Chart main circle."
             Throw New System.ArgumentOutOfRangeException(
                 $"The point ({plotX}, {plotY} {ErrTail})")
         End If

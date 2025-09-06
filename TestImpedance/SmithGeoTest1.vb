@@ -402,7 +402,7 @@ Namespace GeometryTests
 
         <Theory>
         <InlineData(2.0, 8.0, 1.5, 2.5, 8.5, 0.5)>
-        Sub GetIntersections_Inside_NoIntersections(
+        Sub GetIntersections_Inside_NoIntersections_Succeeds(
             c1X As Double, c1Y As Double, c1R As Double,
             c2X As Double, c2Y As Double, c2R As Double)
 
@@ -415,7 +415,7 @@ Namespace GeometryTests
 
         <Theory>
         <InlineData(2.0, 8.0, 1.5, 4.0, 8.5, 0.5)>
-        Sub GetIntersections_Outside_NoIntersections(
+        Sub GetIntersections_Outside_NoIntersections_Succeeds(
             c1X As Double, c1Y As Double, c1R As Double,
             c2X As Double, c2Y As Double, c2R As Double)
 
@@ -432,10 +432,9 @@ Namespace GeometryTests
 
         Const INF As Double = Double.PositiveInfinity
 
-        ' NOTE: SOME OF THE VALUES BELOW MAY HAVE BEEN TAKEN AS ESTIMATES AND MAY
-        ' NEED TO BE UPDATED AS MORE TESTS CHECK FOR INCREASED PRECISION.
         '<InlineData(ChartX, ChartY, ChartRad,      Z0,        R,       X,  PlotX,  PlotY)> ' Model
         <Theory>
+        <InlineData(4.0, 5.0, 2.0, 1.0, INF, 0.0000, 6.0, 5.0)> ' C: Open circuit
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 0.0000, 4.0, 5.0)> ' D: Center point
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 1.0, 4.4, 5.8)> ' E: On R=Z0 circle, above line
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, -2.0, 5.0, 4.0)> ' F: On R=Z0 circle, below line
@@ -445,9 +444,9 @@ Namespace GeometryTests
         <InlineData(4.0, 5.0, 2.0, 1.0, 2.0, -2.0, 5.077, 4.3846)> ' I: Inside R=Z0 circle, below line
         <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, 1 / 2.0, 3.6, 5.8)> ' J: On G=Y0 circle, above line
         <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, -1 / 2.0, 3.6, 4.2)> ' K: On G=Y0 circle, below line
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 3.0, 0.0000, 3.0, 5.0)> ' M: Inside G=Y0 circle, on line
         <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 3.0, 1 / 3.0, 3.1765, 5.7059)> ' L1: Inside G=Y0 circle, above line
         <InlineData(4.0, 5.0, 2.0, 75.0, 25.0, 25.0, 3.1765, 5.7059)> ' L2: NormZ 1/3 + j1/3, Z0=75
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 3.0, 0.0000, 3.0, 5.0)> ' M: Inside G=Y0 circle, on line
         <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, -1 / 3.0, 3.4588, 4.4353)> ' N: Inside G=Y0 circle, below line
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.2, 1.4, 4.5882, 6.6471)> ' O: Top remainder
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.4, -0.8, 3.8462, 3.7692)> ' P: Bottom remainder
@@ -469,44 +468,36 @@ Namespace GeometryTests
 
         End Sub
 
-        ''<InlineData(4.0, 5.0, 2.0, 1.0, -2.0, 999, GridX, GridY)> ' NormR<=0
-        ''<InlineData(4.0, 5.0, 2.0, 1.0, 999, 999, 2.5, 6.5)> ' Outside of main circle
-        ''<InlineData(4.0, 5.0, 2.0, 1.0, INF, 0.0000, 6.0, 5.0)> ' C: Open circuit
-        ''
-        '<Theory>
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 0.0000, 2.0, 5.0)> ' A: Short circuit
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 1 / 2.0, 2.8, 6.6)> ' B: On perimeter
-        'Public Sub TryGetPlotXY_BadInput_Fails(
-        '    gridCenterX As Double, gridCenterY As Double, gridRadius As Double, z0 As Double,
-        '    testR As Double, testX As Double, expectPlotX As Double, expectPlotY As Double)
-
-        '    Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
-        '    Sub()
-        '        ' Code that throws the exception
-        '        Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridRadius * 2, z0)
-        '        Dim DidIt As Boolean = SmithCirc.GetPlotXY(testR, testX, gridCenterX, gridCenterY)
-        '    End Sub)
-        'End Sub
-
         '<InlineData(4.0, 5.0, 2.0, 1.0, -2.0, 999)> ' NormR<=0
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 0.0000)> ' A: Short circuit
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 1 / 2.0)> ' B: On perimeter
-        '
+        '<InlineData(4.0, 5.0, 2.0, 1.0, 999, 999)> ' Outside of main circle
         <Theory>
-        <InlineData(4.0, 5.0, 2.0, 1.0, INF, 0.0000)> ' C: Open circuit
-        <InlineData(4.0, 5.0, 2.0, 1.0, 999, 999)> ' Outside of main circle
-        Public Sub TryGetPlotXY_BadInput_Fails(
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 0.0000)> ' A: Short circuit
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 1 / 2.0)> ' B: On perimeter
+        Public Sub TryGetPlotXY_BadInput_Fails1(
+            gridCenterX As Double, gridCenterY As Double, gridRadius As Double, z0 As Double,
+            testR As Double, testX As Double)
+
+            Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
+            Sub()
+                ' Code that throws the exception
+                Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridRadius * 2, z0)
+                Dim DidIt As Boolean = SmithCirc.GetPlotXY(testR, testX, gridCenterX, gridCenterY)
+            End Sub)
+        End Sub
+
+        '<InlineData(4.0, 5.0, 2.0, 1.0, -2.0, 999, GridX, GridY)> ' NormR<=0
+        '<InlineData(4.0, 5.0, 2.0, 1.0, 999, 999)> ' Outside of main circle
+        <Theory>
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 0.0000)> ' A: Short circuit
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 1 / 2.0)> ' B: On perimeter
+        Public Sub TryGetPlotXY_BadInput_Fails2(
             gridCenterX As Double, gridCenterY As Double, gridRadius As Double, z0 As Double,
             testR As Double, testX As Double)
 
             Try
-                Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
-                    Sub()
-                        ' Code that throws the exception
-                        Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridRadius * 2, z0)
-                        '                        Dim RadiusAns As Double = SmithCirc.GetPlotXY(testR, testX, gridCenterX, gridCenterY)
-                        Dim DidIt As Boolean = SmithCirc.GetPlotXY(testR, testX, gridCenterX, gridCenterY)
-                    End Sub)
+                ' Code that throws the exception
+                Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridRadius * 2, z0)
+                Dim DidIt As Boolean = SmithCirc.GetPlotXY(testR, testX, gridCenterX, gridCenterY)
             Catch ex As Exception
                 Assert.True(True)
                 Exit Sub
@@ -518,11 +509,6 @@ Namespace GeometryTests
 
     Public Class TestGetZFromPlot
 
-        Const INF As Double = Double.PositiveInfinity
-
-
-        ' NOTE: SOME OF THE VALUES BELOW MAY HAVE BEEN TAKEN AS ESTIMATES AND MAY
-        ' NEED TO BE UPDATED AS MORE TESTS CHECK FOR INCREASED PRECISION.
         '<InlineData(ChartX, ChartY, ChartRad,      Z0,        R,       X,  PlotX,  PlotY)> ' Model
         <Theory>
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 1 / 2.0, 2.8, 6.6)> ' B: On perimeter
@@ -532,12 +518,12 @@ Namespace GeometryTests
         <InlineData(4.0, 5.0, 2.0, 1.0, 2.0, 1 / 2.0, 4.7027, 5.2162)> ' G1: Inside R=Z0 circle, above line
         <InlineData(4.0, 5.0, 2.0, 50.0, 100.0, 25.0, 4.7027, 5.2162)> ' G2: Inside R=Z0 circle, above line, Z0=50
         <InlineData(4.0, 5.0, 2.0, 1.0, 3.0, 0.0000, 5.0, 5.0)> ' H: Inside R=Z0 circle, on line
-        <InlineData(4.0, 5.0, 2.0, 1.0, 2.0, -2.0, 5.077, 4.385)> ' I: Inside R=Z0 circle, below line
+        <InlineData(4.0, 5.0, 2.0, 1.0, 2.0, -2.0, 5.077, 4.3846)> ' I: Inside R=Z0 circle, below line
         <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, 1 / 2.0, 3.6, 5.8)> ' J: On G=Y0 circle, above line
         <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, -1 / 2.0, 3.6, 4.2)> ' K: On G=Y0 circle, below line
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 3.0, 0.0000, 3.0, 5.0)> ' M: Inside G=Y0 circle, on line
         <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 3.0, 1 / 3.0, 3.1765, 5.7059)> ' L1: Inside G=Y0 circle, above line
         <InlineData(4.0, 5.0, 2.0, 75.0, 25.0, 25.0, 3.1765, 5.7059)> ' L2: NormZ 1/3 + j1/3, Z0=75
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 3.0, 0.0000, 3.0, 5.0)> ' M: Inside G=Y0 circle, on line
         <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, -1 / 3.0, 3.4588, 4.4353)> ' N: Inside G=Y0 circle, below line
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.2, 1.4, 4.5882, 6.6471)> ' O: Top remainder
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.4, -0.8, 3.8462, 3.7692)> ' P: Bottom remainder
@@ -558,7 +544,6 @@ Namespace GeometryTests
         End Sub
 
         '<InlineData(4.0, 5.0, 2.0, 1.0, GridX, GridY)> ' NormR<=0
-        '
         <Theory>
         <InlineData(4.0, 5.0, 2.0, 1.0, 2.5, 6.5)> ' Outside of main circle
         <InlineData(4.0, 5.0, 2.0, 1.0, 6.0, 5.0)> ' C: Open circuit
@@ -575,42 +560,49 @@ Namespace GeometryTests
                 End Sub)
         End Sub
 
-        ''<InlineData(4.0, 5.0, 2.0, 1.0, GridX, GridY)> ' NormR<=0
-        ''
-        '<Theory>
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 2.5, 6.5)> ' Outside of main circle
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 6.0, 5.0)> ' C: Open circuit
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 2.0, 5.0)> ' A: Short circuit
-        'Public Sub GetZFromPlot_BadInput_Fails2(
-        '    gridCenterX As Double, gridCenterY As Double, gridRadius As Double, z0 As Double,
-        '    plotX As Double, plotY As Double)
+        '<InlineData(4.0, 5.0, 2.0, 1.0, GridX, GridY)> ' NormR<=0
+        <Theory>
+        <InlineData(4.0, 5.0, 2.0, 1.0, 2.5, 6.5)> ' Outside of main circle
+        <InlineData(4.0, 5.0, 2.0, 1.0, 6.0, 5.0)> ' C: Open circuit
+        <InlineData(4.0, 5.0, 2.0, 1.0, 2.0, 5.0)> ' A: Short circuit
+        Public Sub GetZFromPlot_BadInput_Fails2(
+            gridCenterX As Double, gridCenterY As Double, gridRadius As Double, z0 As Double,
+            plotX As Double, plotY As Double)
 
-        '    Const Precision As Double = 0.0005
+            Try
+                ' Code that throws the exception
+                Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridRadius * 2, z0)
+                Dim ZAns As Impedance = SmithCirc.GetZFromPlot(plotX, plotY)
+            Catch ex As Exception
+                Assert.True(True)
+                Exit Sub
+            End Try
+            Assert.True(False, "Did not fail")
 
-        '    Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridRadius * 2.0, z0)
-        '    Dim ZAns As Impedance = SmithCirc.GetZFromPlot(plotX, plotY)
-        '    Assert.Equal(expectR, ZAns.Resistance, Precision)
-        '    Assert.Equal(expectX, ZAns.Reactance, Precision)
-
-        'End Sub
+        End Sub
 
     End Class ' TestGetZFromPlot
 
     Public Class TestGetYFromPlot
 
-        '<InlineData(GridX, GridY, Radius,   Z0,   G,       B,  GridX,  GridY)> ' Model
-        '<InlineData(  4.0,   5.0,    2.0,  1.0,   G,       B,  GridX,  GridY)> ' Model
+        '<InlineData(ChartX, ChartY, ChartRad,      Z0,      G,       B,  PlotX,  PlotY)> ' Model
         <Theory>
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1.5, -1.5, 3.1765, 5.7059)>
-        <InlineData(4.0, 5.0, 2.0, 75.0, 0.0133333333, -0.0133333333, 3.1765, 5.7059)> ' NormZ 1/3 + j1/3
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.5, -0.5, 4.4, 5.8)> ' On R=Z0 circle
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.48, -0.15, 4.7027, 5.2162)>
-        <InlineData(4.0, 5.0, 2.0, 50.0, 0.016, -0.008, 4.7027, 5.2162)> ' NormZ 2 + j1/2
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 0.0, 4.0, 5.0)> ' Center point
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.35, 0.0, 5.0, 5.0)>
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1.4, 0.9, 3.4588, 4.4353)>
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.25, 0.25, 5.077, 4.385)>
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 1.0, 3.6, 4.2)> ' On G=Y0 circle
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, -2.0, 2.8, 6.6)> ' B: On perimeter
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 0.0000, 4.0, 5.0)> ' D: Center point
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.5, -0.5, 4.4, 5.8)> ' E: On R=Z0 circle, above line
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.2, 0.4, 5.0, 4.0)> ' F: On R=Z0 circle, below line
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.4706, -0.1176, 4.7027, 5.2162)> ' G1: Inside R=Z0 circle, above line
+        <InlineData(4.0, 5.0, 2.0, 50.0, 0.0094, -0.0024, 4.7027, 5.2162)> ' G2: Inside R=Z0 circle, above line, Z0=50
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1.0 / 3, 0.0000, 5.0, 5.0)> ' H: Inside R=Z0 circle, on line
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.25, 0.25, 5.077, 4.3846)> ' I: Inside R=Z0 circle, below line
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, -1.0, 3.6, 5.8)> ' J: On G=Y0 circle, above line
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 1.0, 3.6, 4.2)> ' K: On G=Y0 circle, below line
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1.5, -1.5, 3.1765, 5.7059)> ' L1: Inside G=Y0 circle, above line
+        <InlineData(4.0, 5.0, 2.0, 75.0, 0.02, -0.02, 3.1765, 5.7059)> ' L2: NormZ 1/3 + j1/3, Z0=75
+        <InlineData(4.0, 5.0, 2.0, 1.0, 3.0, 0.0000, 3.0, 5.0)> ' M: Inside G=Y0 circle, on line
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1.3846, 0.9231, 3.4588, 4.4353)> ' N: Inside G=Y0 circle, below line
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.1, -0.7, 4.5882, 6.6471)> ' O: Top remainder
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.5, 1.0, 3.8462, 3.7692)> ' P: Bottom remainder
         Public Sub GetYFromPlot_GoodInput_Succeeds(
             gridCenterX As Double, gridCenterY As Double, gridRadius As Double, z0 As Double,
             expectG As Double, expectB As Double,
@@ -625,15 +617,42 @@ Namespace GeometryTests
 
         End Sub
 
-        <Fact>
-        Public Sub GetYFromPlot_BadInput_Fails()
+        '<InlineData(4.0, 5.0, 2.0, 1.0, GridX, GridY)> ' NormR<=0
+        <Theory>
+        <InlineData(4.0, 5.0, 2.0, 1.0, 2.0, 5.0)> ' A: Short circuit
+        <InlineData(4.0, 5.0, 2.0, 1.0, 2.5, 6.5)> ' Outside of main circle
+        <InlineData(4.0, 5.0, 2.0, 1.0, 6.0, 5.0)> ' C: Open circuit
+        Public Sub GetYFromPlot_BadInput_Fails1(
+            gridCenterX As Double, gridCenterY As Double, gridRadius As Double, z0 As Double,
+            plotX As Double, plotY As Double)
+
             ' Try GetYFromPlot with point outside circle.
-            Dim SmithCirc As New SmithMainCircle(4, 5, 4, 1)
             Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
             Sub()
                 ' Code that throws the exception
-                Dim ZAns As Admittance = SmithCirc.GetYFromPlot(2.5, 6.5)
+                Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridRadius, z0)
+                Dim ZAns As Admittance = SmithCirc.GetYFromPlot(plotX, plotY)
             End Sub)
+        End Sub
+
+        '<InlineData(4.0, 5.0, 2.0, 1.0, GridX, GridY)> ' NormR<=0
+        <Theory>
+        <InlineData(4.0, 5.0, 2.0, 1.0, 2.0, 5.0)> ' A: Short circuit
+        <InlineData(4.0, 5.0, 2.0, 1.0, 2.5, 6.5)> ' Outside of main circle
+        <InlineData(4.0, 5.0, 2.0, 1.0, 6.0, 5.0)> ' C: Open circuit
+        Public Sub GetYFromPlot_BadInput_Fails2(
+            gridCenterX As Double, gridCenterY As Double, gridRadius As Double, z0 As Double,
+            plotX As Double, plotY As Double)
+
+            Try
+                ' Code that throws the exception
+                Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridRadius, z0)
+                Dim ZAns As Admittance = SmithCirc.GetYFromPlot(plotX, plotY)
+            Catch ex As Exception
+                Assert.True(True)
+                Exit Sub
+            End Try
+            Assert.True(False, "Did not fail")
         End Sub
 
     End Class ' TestGetYFromPlot
