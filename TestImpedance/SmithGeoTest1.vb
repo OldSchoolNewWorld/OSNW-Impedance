@@ -567,15 +567,32 @@ Namespace GeometryTests
 
         End Sub
 
-        ''<InlineData(4.0, 5.0, 2.0, 1.0, -2.0, 999, GridX, GridY)> ' NormR<=0
+        '<InlineData(4.0, 5.0, 2.0, 1.0, GridX, GridY)> ' NormR<=0
+        '
+        <Theory>
+        <InlineData(4.0, 5.0, 2.0, 1.0, 2.5, 6.5)> ' Outside of main circle
+        <InlineData(4.0, 5.0, 2.0, 1.0, 6.0, 5.0)> ' C: Open circuit
+        <InlineData(4.0, 5.0, 2.0, 1.0, 2.0, 5.0)> ' A: Short circuit
+        Public Sub GetZFromPlot_BadInput_Fails1(
+            gridCenterX As Double, gridCenterY As Double, gridRadius As Double, z0 As Double,
+            plotX As Double, plotY As Double)
+            ' Try GetZFromPlot with point outside circle.
+            Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
+                Sub()
+                    ' Code that throws the exception
+                    Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridRadius * 2, z0)
+                    Dim ZAns As Impedance = SmithCirc.GetZFromPlot(plotX, plotY)
+                End Sub)
+        End Sub
+
+        ''<InlineData(4.0, 5.0, 2.0, 1.0, GridX, GridY)> ' NormR<=0
         ''
         '<Theory>
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 999, 999, 2.5, 6.5)> ' Outside of main circle
-        '<InlineData(4.0, 5.0, 2.0, 1.0, INF, 0.0000, 6.0, 5.0)> ' C: Open circuit
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 0.0000, 2.0, 5.0)> ' A: Short circuit
-        'Public Sub GetZFromPlot_BadInput_Fails(
+        '<InlineData(4.0, 5.0, 2.0, 1.0, 2.5, 6.5)> ' Outside of main circle
+        '<InlineData(4.0, 5.0, 2.0, 1.0, 6.0, 5.0)> ' C: Open circuit
+        '<InlineData(4.0, 5.0, 2.0, 1.0, 2.0, 5.0)> ' A: Short circuit
+        'Public Sub GetZFromPlot_BadInput_Fails2(
         '    gridCenterX As Double, gridCenterY As Double, gridRadius As Double, z0 As Double,
-        '    expectR As Double, expectX As Double,
         '    plotX As Double, plotY As Double)
 
         '    Const Precision As Double = 0.0005
@@ -586,25 +603,6 @@ Namespace GeometryTests
         '    Assert.Equal(expectX, ZAns.Reactance, Precision)
 
         'End Sub
-
-        '<InlineData(4.0, 5.0, 2.0, 1.0, -2.0, 999, GridX, GridY)> ' NormR<=0
-        '
-        <Theory>
-        <InlineData(4.0, 5.0, 2.0, 1.0, 999, 999, 2.5, 6.5)> ' Outside of main circle
-        <InlineData(4.0, 5.0, 2.0, 1.0, INF, 0.0000, 6.0, 5.0)> ' C: Open circuit
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 0.0000, 2.0, 5.0)> ' A: Short circuit
-        Public Sub GetZFromPlot_BadInput_Fails(
-            gridCenterX As Double, gridCenterY As Double, gridRadius As Double, z0 As Double,
-            expectR As Double, expectX As Double,
-            plotX As Double, plotY As Double)
-            ' Try GetZFromPlot with point outside circle.
-            Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
-                Sub()
-                    ' Code that throws the exception
-                    Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridRadius * 2, z0)
-                    Dim ZAns As Impedance = SmithCirc.GetZFromPlot(plotX, plotY)
-                End Sub)
-        End Sub
 
     End Class ' TestGetZFromPlot
 
