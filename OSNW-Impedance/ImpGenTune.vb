@@ -502,8 +502,8 @@ Partial Public Structure Impedance
         ' chart.
 
         ' Chart location cases:
-        ' A: At the short circuit point on the left. Omit; Covered by B.
-        ' B: Anywhere else on the outer circle. R=0.0.
+        ' A: At the short circuit point. Omit; Covered by B.
+        ' B: Anywhere else on the perimeter. R=0.0.
         ' C: At the open circuit point on the right.
         ' D: At the center.
         ' E: On the R=Z0 circle.
@@ -536,7 +536,7 @@ Partial Public Structure Impedance
         ' RESITANCE.    
         ' Check for a short- or open-circuit.
         If NormR.Equals(0.0) OrElse System.Double.IsInfinity(NormR) Then
-            ' A: At the short circuit point on the left. Omit; Covered by B.
+            ' A: At the short circuit point. Omit; Covered by B.
             ' B: Anywhere else on the outer circle. R=0.0
             ' C: At the open circuit point on the right.
             transformations = Nothing
@@ -647,8 +647,8 @@ Partial Public Structure Impedance
     '    ' chart.
 
     '    ' Chart location cases:
-    '    ' A: At the short circuit point on the left. Omit; Covered by B.
-    '    ' B: Anywhere else on the outer circle. R=0.0.
+    '    ' A: At the short circuit point. Omit; Covered by B.
+    '    ' B: Anywhere else on the perimeter. R=0.0.
     '    ' C: At the open circuit point on the right.
     '    ' D: At the center.
     '    ' E: On the R=Z0 circle.

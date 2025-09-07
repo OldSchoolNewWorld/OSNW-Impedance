@@ -14,8 +14,8 @@ Namespace GeometryTests
 
         '<InlineData(ChartX, ChartY, ChartRad,      Z0,        R, RadiusR)> ' Model
         <Theory>
-        <InlineData(4.0, 5.0, 2.0, 1.0, INF, 0.0000)> ' C: Open circuit
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 1.0)> ' D: Center point
+        <InlineData(4.0, 5.0, 2.0, 1.0, INF, 0.0000)> ' C: At the open circuit point on the right.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 1.0)> ' D: At the center.
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 1.0)> ' E: On R=Z0 circle, above line
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 1.0)> ' F: On R=Z0 circle, below line
         <InlineData(4.0, 5.0, 2.0, 1.0, 2.0, 2.0 / 3)> ' G1: Inside R=Z0 circle, above line
@@ -43,8 +43,8 @@ Namespace GeometryTests
         '<InlineData(4.0, 5.0, 2.0, 1.0, 999)> ' Outside of main circle
         <Theory>
         <InlineData(4.0, 5.0, 2.0, 1.0, -2.0)> ' NormR<=0
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' A: Short circuit
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' B: On perimeter
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' A: At the short circuit point. Omit - covered by B.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' B: Anywhere else on the perimeter. R=0.0.
         Sub GetRadiusR_BadInput_Fails1(gridCenterX As Double, gridCenterY As Double, gridDiameter As Double,
                                        z0 As Double, testR As Double)
 
@@ -59,8 +59,8 @@ Namespace GeometryTests
         '<InlineData(4.0, 5.0, 2.0, 1.0, 999)> ' Outside of main circle
         <Theory>
         <InlineData(4.0, 5.0, 2.0, 1.0, -2.0)> ' NormR<=0
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' A: Short circuit
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' B: On perimeter
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' A: At the short circuit point. Omit - covered by B.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' B: Anywhere else on the perimeter. R=0.0.
         Sub GetRadiusR_BadInput_Fails2(gridCenterX As Double, gridCenterY As Double, gridDiameter As Double,
                                        z0 As Double, testR As Double)
             Try
@@ -82,7 +82,7 @@ Namespace GeometryTests
 
         '<InlineData(ChartX, ChartY, ChartRad,      Z0,       X, RadiusX)> ' Model
         <Theory>
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, 4.0)> ' B: On perimeter
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, 4.0)> ' B: Anywhere else on the perimeter. R=0.0.
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 2.0)> ' E: On R=Z0 circle, above line
         <InlineData(4.0, 5.0, 2.0, 1.0, -2.0, 1.0)> ' F: On R=Z0 circle, below line
         <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, 4.0)> ' G1: Inside R=Z0 circle, above line
@@ -108,9 +108,9 @@ Namespace GeometryTests
         '<InlineData(4.0, 5.0, 2.0, 1.0, 999)> ' Outside of main circle
         '<InlineData(4.0, 5.0, 2.0, 1.0, 999)> ' NormR<=0
         <Theory>
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' A: Short circuit
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' C: Open circuit
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' D: Center point
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' A: At the short circuit point. Omit - covered by B.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' C: At the open circuit point on the right.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' D: At the center.
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' H: Inside R=Z0 circle, on line
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' M: Inside G=Y0 circle, on line
         Sub GetRadiusX_BadInput_Fails1(gridCenterX As Double, gridCenterY As Double, gridDiameter As Double,
@@ -127,9 +127,9 @@ Namespace GeometryTests
         '<InlineData(4.0, 5.0, 2.0, 1.0, 999)> ' Outside of main circle
         '<InlineData(4.0, 5.0, 2.0, 1.0, 999)> ' NormR<=0
         <Theory>
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' A: Short circuit
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' C: Open circuit
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' D: Center point
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' A: At the short circuit point. Omit - covered by B.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' C: At the open circuit point on the right.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' D: At the center.
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' H: Inside R=Z0 circle, on line
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' M: Inside G=Y0 circle, on line
         Sub GetRadiusX_BadInput_Fails2(gridCenterX As Double, gridCenterY As Double, gridDiameter As Double,
@@ -153,7 +153,7 @@ Namespace GeometryTests
 
         '<InlineData(ChartX, ChartY, ChartRad,      Z0,      G, RadiusG)> ' Model
         <Theory>
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 1.0)> ' D: Center point
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 1.0)> ' D: At the center.
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.5, 4.0 / 3)> ' E: On R=Z0 circle, above line
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.2, 5.0 / 3)> ' F: On R=Z0 circle, below line
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.4706, 1.36)> ' G1: Inside R=Z0 circle, above line
@@ -181,9 +181,9 @@ Namespace GeometryTests
         '<InlineData(4.0, 5.0, 2.0, 1.0, 999)> ' Outside of main circle
         '<InlineData(4.0, 5.0, 2.0, 1.0, 999)> ' NormR<=0
         <Theory>
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' A: Short circuit
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' B: On perimeter
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' C: Open circuit
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' A: At the short circuit point. Omit - covered by B.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' B: Anywhere else on the perimeter. R=0.0.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' C: At the open circuit point on the right.
         Sub GetRadiusG_BadInput_Fails1(gridCenterX As Double, gridCenterY As Double, gridRadius As Double,
                                        z0 As Double, testG As Double)
 
@@ -198,9 +198,9 @@ Namespace GeometryTests
         '<InlineData(4.0, 5.0, 2.0, 1.0, 999)> ' Outside of main circle
         '<InlineData(4.0, 5.0, 2.0, 1.0, 999)> ' NormR<=0
         <Theory>
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' A: Short circuit
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' B: On perimeter
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' C: Open circuit
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' A: At the short circuit point. Omit - covered by B.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' B: Anywhere else on the perimeter. R=0.0.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' C: At the open circuit point on the right.
         Sub GetRadiusG_BadInput_Fails2(gridCenterX As Double, gridCenterY As Double, gridRadius As Double,
                                        z0 As Double, testG As Double)
             Try
@@ -222,7 +222,7 @@ Namespace GeometryTests
 
         '<InlineData(ChartX, ChartY, ChartRad,      Z0,       B, RadiusB)> ' Model
         <Theory>
-        <InlineData(4.0, 5.0, 2.0, 1.0, -2.0, 1.0)> ' B: On perimeter
+        <InlineData(4.0, 5.0, 2.0, 1.0, -2.0, 1.0)> ' B: Anywhere else on the perimeter. R=0.0.
         <InlineData(4.0, 5.0, 2.0, 1.0, -0.5, 4.0)> ' E: On R=Z0 circle, above line
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.4, 5.0)> ' F: On R=Z0 circle, below line
         <InlineData(4.0, 5.0, 2.0, 1.0, -0.1176, 17.0)> ' G1: Inside R=Z0 circle, above line
@@ -249,9 +249,9 @@ Namespace GeometryTests
         '<InlineData(4.0, 5.0, 2.0, 1.0, 999)> ' Outside of main circle
         '<InlineData(4.0, 5.0, 2.0, 1.0, 999)> ' NormR<=0
         <Theory>
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' A: Short circuit
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' C: Open circuit
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' D: Center point
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' A: At the short circuit point. Omit - covered by B.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' C: At the open circuit point on the right.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' D: At the center.
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' H: Inside R=Z0 circle, on line
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' M: Inside G=Y0 circle, on line
         Sub GetRadiusB_BadInput_Fails1(gridCenterX As Double, gridCenterY As Double, gridRadius As Double,
@@ -268,9 +268,9 @@ Namespace GeometryTests
         '<InlineData(4.0, 5.0, 2.0, 1.0, 999)> ' Outside of main circle
         '<InlineData(4.0, 5.0, 2.0, 1.0, 999)> ' NormR<=0
         <Theory>
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' A: Short circuit
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' C: Open circuit
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' D: Center point
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' A: At the short circuit point. Omit - covered by B.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' C: At the open circuit point on the right.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' D: At the center.
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' H: Inside R=Z0 circle, on line
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' M: Inside G=Y0 circle, on line
         Sub GetRadiusB_BadInput_Fails2(gridCenterX As Double, gridCenterY As Double, gridRadius As Double,
@@ -294,10 +294,10 @@ Namespace GeometryTests
         Const Precision As Double = 0.0005
 
         <Theory>
-        <InlineData(4.0, 5.0, 2.0, 1.0, INF, 2.0)> ' A: Short circuit
-        <InlineData(4.0, 5.0, 2.0, 1.0, INF, 2.0)> ' B: On perimeter
-        <InlineData(4.0, 5.0, 2.0, 1.0, INF, 2.0)> ' C: Open circuit
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 0.0000)> ' D: Center point
+        <InlineData(4.0, 5.0, 2.0, 1.0, INF, 2.0)> ' A: At the short circuit point. Omit - covered by B.
+        <InlineData(4.0, 5.0, 2.0, 1.0, INF, 2.0)> ' B: Anywhere else on the perimeter. R=0.0.
+        <InlineData(4.0, 5.0, 2.0, 1.0, INF, 2.0)> ' C: At the open circuit point on the right.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 0.0000)> ' D: At the center.
         <InlineData(4.0, 5.0, 2.0, 1.0, 2.618, 0.8944)> ' E: On R=Z0 circle, above line
         <InlineData(4.0, 5.0, 2.0, 1.0, 5.8284, 1.4142)> ' F: On R=Z0 circle, below line
         <InlineData(4.0, 5.0, 2.0, 1.0, 2.1626, 0.7352)> ' G1: Inside R=Z0 circle, above line
@@ -434,8 +434,8 @@ Namespace GeometryTests
 
         '<InlineData(ChartX, ChartY, ChartRad,      Z0,        R,       X,  PlotX,  PlotY)> ' Model
         <Theory>
-        <InlineData(4.0, 5.0, 2.0, 1.0, INF, 0.0000, 6.0, 5.0)> ' C: Open circuit
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 0.0000, 4.0, 5.0)> ' D: Center point
+        <InlineData(4.0, 5.0, 2.0, 1.0, INF, 0.0000, 6.0, 5.0)> ' C: At the open circuit point on the right.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 0.0000, 4.0, 5.0)> ' D: At the center.
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 1.0, 4.4, 5.8)> ' E: On R=Z0 circle, above line
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, -2.0, 5.0, 4.0)> ' F: On R=Z0 circle, below line
         <InlineData(4.0, 5.0, 2.0, 1.0, 2.0, 1 / 2.0, 4.7027, 5.2162)> ' G1: Inside R=Z0 circle, above line
@@ -471,8 +471,8 @@ Namespace GeometryTests
         '<InlineData(4.0, 5.0, 2.0, 1.0, -2.0, 999)> ' NormR<=0
         '<InlineData(4.0, 5.0, 2.0, 1.0, 999, 999)> ' Outside of main circle
         <Theory>
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 0.0000)> ' A: Short circuit
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 1 / 2.0)> ' B: On perimeter
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 0.0000)> ' A: At the short circuit point. Omit - covered by B.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 1 / 2.0)> ' B: Anywhere else on the perimeter. R=0.0.
         Public Sub TryGetPlotXY_BadInput_Fails1(
             gridCenterX As Double, gridCenterY As Double, gridRadius As Double, z0 As Double,
             testR As Double, testX As Double)
@@ -488,8 +488,8 @@ Namespace GeometryTests
         '<InlineData(4.0, 5.0, 2.0, 1.0, -2.0, 999, GridX, GridY)> ' NormR<=0
         '<InlineData(4.0, 5.0, 2.0, 1.0, 999, 999)> ' Outside of main circle
         <Theory>
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 0.0000)> ' A: Short circuit
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 1 / 2.0)> ' B: On perimeter
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 0.0000)> ' A: At the short circuit point. Omit - covered by B.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 1 / 2.0)> ' B: Anywhere else on the perimeter. R=0.0.
         Public Sub TryGetPlotXY_BadInput_Fails2(
             gridCenterX As Double, gridCenterY As Double, gridRadius As Double, z0 As Double,
             testR As Double, testX As Double)
@@ -511,8 +511,8 @@ Namespace GeometryTests
 
         '<InlineData(ChartX, ChartY, ChartRad,      Z0,        R,       X,  PlotX,  PlotY)> ' Model
         <Theory>
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 1 / 2.0, 2.8, 6.6)> ' B: On perimeter
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 0.0000, 4.0, 5.0)> ' D: Center point
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 1 / 2.0, 2.8, 6.6)> ' B: Anywhere else on the perimeter. R=0.0.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 0.0000, 4.0, 5.0)> ' D: At the center.
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 1.0, 4.4, 5.8)> ' E: On R=Z0 circle, above line
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, -2.0, 5.0, 4.0)> ' F: On R=Z0 circle, below line
         <InlineData(4.0, 5.0, 2.0, 1.0, 2.0, 1 / 2.0, 4.7027, 5.2162)> ' G1: Inside R=Z0 circle, above line
@@ -546,8 +546,8 @@ Namespace GeometryTests
         '<InlineData(4.0, 5.0, 2.0, 1.0, GridX, GridY)> ' NormR<=0
         <Theory>
         <InlineData(4.0, 5.0, 2.0, 1.0, 2.5, 6.5)> ' Outside of main circle
-        <InlineData(4.0, 5.0, 2.0, 1.0, 6.0, 5.0)> ' C: Open circuit
-        <InlineData(4.0, 5.0, 2.0, 1.0, 2.0, 5.0)> ' A: Short circuit
+        <InlineData(4.0, 5.0, 2.0, 1.0, 6.0, 5.0)> ' C: At the open circuit point on the right.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 2.0, 5.0)> ' A: At the short circuit point. Omit - covered by B.
         Public Sub GetZFromPlot_BadInput_Fails1(
             gridCenterX As Double, gridCenterY As Double, gridRadius As Double, z0 As Double,
             plotX As Double, plotY As Double)
@@ -563,8 +563,8 @@ Namespace GeometryTests
         '<InlineData(4.0, 5.0, 2.0, 1.0, GridX, GridY)> ' NormR<=0
         <Theory>
         <InlineData(4.0, 5.0, 2.0, 1.0, 2.5, 6.5)> ' Outside of main circle
-        <InlineData(4.0, 5.0, 2.0, 1.0, 6.0, 5.0)> ' C: Open circuit
-        <InlineData(4.0, 5.0, 2.0, 1.0, 2.0, 5.0)> ' A: Short circuit
+        <InlineData(4.0, 5.0, 2.0, 1.0, 6.0, 5.0)> ' C: At the open circuit point on the right.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 2.0, 5.0)> ' A: At the short circuit point. Omit - covered by B.
         Public Sub GetZFromPlot_BadInput_Fails2(
             gridCenterX As Double, gridCenterY As Double, gridRadius As Double, z0 As Double,
             plotX As Double, plotY As Double)
@@ -587,8 +587,8 @@ Namespace GeometryTests
 
         '<InlineData(ChartX, ChartY, ChartRad,      Z0,      G,       B,  PlotX,  PlotY)> ' Model
         <Theory>
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, -2.0, 2.8, 6.6)> ' B: On perimeter
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 0.0000, 4.0, 5.0)> ' D: Center point
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, -2.0, 2.8, 6.6)> ' B: Anywhere else on the perimeter. R=0.0.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 0.0000, 4.0, 5.0)> ' D: At the center.
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.5, -0.5, 4.4, 5.8)> ' E: On R=Z0 circle, above line
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.2, 0.4, 5.0, 4.0)> ' F: On R=Z0 circle, below line
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.4706, -0.1176, 4.7027, 5.2162)> ' G1: Inside R=Z0 circle, above line
@@ -619,9 +619,9 @@ Namespace GeometryTests
 
         '<InlineData(4.0, 5.0, 2.0, 1.0, GridX, GridY)> ' NormR<=0
         <Theory>
-        <InlineData(4.0, 5.0, 2.0, 1.0, 2.0, 5.0)> ' A: Short circuit
+        <InlineData(4.0, 5.0, 2.0, 1.0, 2.0, 5.0)> ' A: At the short circuit point. Omit - covered by B.
         <InlineData(4.0, 5.0, 2.0, 1.0, 2.5, 6.5)> ' Outside of main circle
-        <InlineData(4.0, 5.0, 2.0, 1.0, 6.0, 5.0)> ' C: Open circuit
+        <InlineData(4.0, 5.0, 2.0, 1.0, 6.0, 5.0)> ' C: At the open circuit point on the right.
         Public Sub GetYFromPlot_BadInput_Fails1(
             gridCenterX As Double, gridCenterY As Double, gridRadius As Double, z0 As Double,
             plotX As Double, plotY As Double)
@@ -637,9 +637,9 @@ Namespace GeometryTests
 
         '<InlineData(4.0, 5.0, 2.0, 1.0, GridX, GridY)> ' NormR<=0
         <Theory>
-        <InlineData(4.0, 5.0, 2.0, 1.0, 2.0, 5.0)> ' A: Short circuit
+        <InlineData(4.0, 5.0, 2.0, 1.0, 2.0, 5.0)> ' A: At the short circuit point. Omit - covered by B.
         <InlineData(4.0, 5.0, 2.0, 1.0, 2.5, 6.5)> ' Outside of main circle
-        <InlineData(4.0, 5.0, 2.0, 1.0, 6.0, 5.0)> ' C: Open circuit
+        <InlineData(4.0, 5.0, 2.0, 1.0, 6.0, 5.0)> ' C: At the open circuit point on the right.
         Public Sub GetYFromPlot_BadInput_Fails2(
             gridCenterX As Double, gridCenterY As Double, gridRadius As Double, z0 As Double,
             plotX As Double, plotY As Double)

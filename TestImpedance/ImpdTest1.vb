@@ -27,10 +27,10 @@ Imports OsnwNumSS = OSNW.Numerics.StandardizationStyles
 ' <Theory>
 '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,      999,     999,    999,     999,     999,    2.5,    6.5, RadiusR, RadiusX, RadiusG, RadiusB, RadiusV)> ' Outside of main circle
 '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,  -2.0000,     999,    999,     999,     999,  GridX,  GridY, RadiusR, RadiusX, RadiusG, RadiusB, RadiusV)> ' NormR<=0
-'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.0000,  0.0000, 0.0000,  0.0000,     INF, 2.0000, 5.0000,  2.0000,     INF,  0.0000,     INF,  2.0000)> ' A: Short circuit
-'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.0000,   1/2.0, 0.0000, -2.0000,     INF,    2.8,    6.6,  2.0000,  4.0000,     INF,   1.000,  2.0000)> ' B: On perimeter
-'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,      INF,  0.0000, 0.0000,  0.0000,     INF, 6.0000, 5.0000,  0.0000,     INF,  2.0000,     INF,  2.0000)> ' C: Open circuit
-'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   1.0000,  0.0000, 1.0000,  0.0000,  1.0000, 4.0000, 5.0000,  1.0000,     INF,  1.0000,     INF,  0.0000)> ' D: Center point
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.0000,  0.0000, 0.0000,  0.0000,     INF, 2.0000, 5.0000,  2.0000,     INF,  0.0000,     INF,  2.0000)> ' A: At the short circuit point. Omit - covered by B.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.0000,   1/2.0, 0.0000, -2.0000,     INF,    2.8,    6.6,  2.0000,  4.0000,     INF,   1.000,  2.0000)> ' B: Anywhere else on the perimeter. R=0.0.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,      INF,  0.0000, 0.0000,  0.0000,     INF, 6.0000, 5.0000,  0.0000,     INF,  2.0000,     INF,  2.0000)> ' C: At the open circuit point on the right.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   1.0000,  0.0000, 1.0000,  0.0000,  1.0000, 4.0000, 5.0000,  1.0000,     INF,  1.0000,     INF,  0.0000)> ' D: At the center.
 '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   1.0000,  1.0000, 0.5000, -0.5000,  2.6180, 4.4000, 5.8000,  1.0000,  2.0000,   4.0/3,  4.0000,  0.8944)> ' E: On R=Z0 circle, above line
 '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   1.0000, -2.0000, 0.2000,  0.4000,  5.8284, 5.0000, 4.0000,  1.0000,  1.0000,   5.0/3,  5.0000,  1.4142)> ' F: On R=Z0 circle, below line
 '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   2.0000,   1/2.0, 0.4706, -0.1176,  2.1626, 4.7027, 5.2162,   2.0/3,  4.0000,  1.3600, 17.0000,  0.7352)> ' G1: Inside R=Z0 circle, above line
@@ -526,9 +526,9 @@ Namespace TestImpedanceMath
 
         '<InlineData(       R,       X,      G,       B)> ' Model
         <Theory>
-        <InlineData(0.0000, 0.0000, 0.0000, 0.0000)> ' A: Short circuit
-        <InlineData(0.0000, 1 / 2.0, 0.0000, -2.0)> ' B: On perimeter
-        <InlineData(1.0, 0.0000, 1.0, 0.0000)> ' D: Center point
+        <InlineData(0.0000, 0.0000, 0.0000, 0.0000)> ' A: At the short circuit point. Omit - covered by B.
+        <InlineData(0.0000, 1 / 2.0, 0.0000, -2.0)> ' B: Anywhere else on the perimeter. R=0.0.
+        <InlineData(1.0, 0.0000, 1.0, 0.0000)> ' D: At the center.
         <InlineData(1.0, 1.0, 0.5, -0.5)> ' E: On R=Z0 circle, above line
         <InlineData(1.0, -2.0, 0.2, 0.4)> ' F: On R=Z0 circle, below line
         <InlineData(2.0, 1 / 2.0, 0.4706, -0.1176)> ' G1: Inside R=Z0 circle, above line
@@ -553,7 +553,7 @@ Namespace TestImpedanceMath
         '<InlineData(999, 999)> ' Outside of main circle
         <Theory>
         <InlineData(-2.0, 999)> ' NormR<=0
-        <InlineData(INF, 0.0000)> ' C: Open circuit
+        <InlineData(INF, 0.0000)> ' C: At the open circuit point on the right.
         Sub ToAdmittance_BadInput_Fails1(r As Double, x As Double)
             Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
                 Sub()
@@ -566,7 +566,7 @@ Namespace TestImpedanceMath
         '<InlineData(999, 999)> ' Outside of main circle
         <Theory>
         <InlineData(-2.0, 999)> ' NormR<=0
-        <InlineData(INF, 0.0000)> ' C: Open circuit
+        <InlineData(INF, 0.0000)> ' C: At the open circuit point on the right.
         Sub ToAdmittance_BadInput_Fails2(r As Double, x As Double)
             Try
                 ' Code that throws the exception.
@@ -587,9 +587,9 @@ Namespace TestImpedanceMath
 
         '<InlineData(     Z0,        R,       X,    VSWR)> ' Model
         <Theory>
-        <InlineData(1.0, 0.0000, 0.0000, INF)> ' A: Short circuit
-        <InlineData(1.0, 0.0000, 1 / 2.0, INF)> ' B: On perimeter
-        <InlineData(1.0, 1.0, 0.0000, 1.0)> ' D: Center point
+        <InlineData(1.0, 0.0000, 0.0000, INF)> ' A: At the short circuit point. Omit - covered by B.
+        <InlineData(1.0, 0.0000, 1 / 2.0, INF)> ' B: Anywhere else on the perimeter. R=0.0.
+        <InlineData(1.0, 1.0, 0.0000, 1.0)> ' D: At the center.
         <InlineData(1.0, 1.0, 1.0, 2.618)> ' E: On R=Z0 circle, above line
         <InlineData(1.0, 1.0, -2.0, 5.8284)> ' F: On R=Z0 circle, below line
         <InlineData(1.0, 2.0, 1 / 2.0, 2.1626)> ' G1: Inside R=Z0 circle, above line
@@ -617,7 +617,7 @@ Namespace TestImpedanceMath
         '<InlineData(1.0, 999, 999)> ' Outside of main circle
         <Theory>
         <InlineData(1.0, -2.0, 999)> ' NormR<=0
-        <InlineData(1.0, INF, 0.0000)> ' C: Open circuit
+        <InlineData(1.0, INF, 0.0000)> ' C: At the open circuit point on the right.
         Sub VSWR_BadInput_Fails1(z0 As Double, r As Double, x As Double)
             Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
                 Sub()
@@ -630,7 +630,7 @@ Namespace TestImpedanceMath
         '<InlineData(1.0, 999, 999)> ' Outside of main circle
         <Theory>
         <InlineData(1.0, -2.0, 999)> ' NormR<=0
-        <InlineData(1.0, INF, 0.0000)> ' C: Open circuit
+        <InlineData(1.0, INF, 0.0000)> ' C: At the open circuit point on the right.
         Sub VSWR_BadInput_Fails2(z0 As Double, r As Double, x As Double)
             Try
                 ' Code that throws the exception.

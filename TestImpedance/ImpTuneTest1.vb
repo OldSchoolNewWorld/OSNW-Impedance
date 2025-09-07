@@ -10,8 +10,8 @@ Imports Xunit
 ' chart.
 
 ' Chart location cases:
-' A: At the short circuit point on the left. Omit; Covered by B.
-' B: Anywhere else on the outer circle. R=0.0.
+' A: At the short circuit point. Omit; Covered by B.
+' B: Anywhere else on the perimeter. R=0.0.
 ' C: At the open circuit point on the right.
 ' D: At the center.
 ' E: On the R=Z0 circle.
@@ -27,6 +27,41 @@ Imports Xunit
 ' I: In the top remainder.
 ' J: In the bottom remainder.
 
+
+
+
+' A: At the short circuit point. Omit - covered by B.
+' B: Anywhere else on the perimeter. R=0.0.
+' C: At the open circuit point on the right.
+' D: At the center.
+' E: On R=Z0 circle, above line
+' F: On R=Z0 circle, below line
+' G1: Inside R=Z0 circle, above line
+' G2: Inside R=Z0 circle, above line, Z0=50
+' H: Inside R=Z0 circle, on line
+' I: Inside R=Z0 circle, below line
+' J: On G=Y0 circle, above line
+' K: On G=Y0 circle, below line
+' L1: Inside G=Y0 circle, above line
+' L2: NormZ 1/3 + j1/3, Z0=75
+' M: Inside G=Y0 circle, on line
+' N: Inside G=Y0 circle, below line
+' O: Top remainder
+' P: Bottom remainder
+
+
+
+
+
+
+
+
+xxxx
+
+
+
+
+
 Class Messages
     Public Const TF As String = "Tuning failed."
     Public Const ITC As String = "Incorrect transformation count."
@@ -36,7 +71,7 @@ End Class ' Messages
 Namespace TrySelectTuningLayoutTests
 
     Public Class TestTrySelectTuningLayoutA
-        ' A: At the short circuit point on the left. Omit; Covered by B.
+        ' A: At the short circuit point. Omit; Covered by B.
 
         <Fact>
         Public Sub TrySelectTuning_PositionA_Fails()
@@ -54,7 +89,7 @@ Namespace TrySelectTuningLayoutTests
     End Class ' TestTrySelectTuningLayoutA
 
     Public Class TestTrySelectTuningLayoutB
-        ' B: Anywhere else on the outer circle. R=0.0.
+        ' B: Anywhere else on the perimeter. R=0.0.
 
         <Fact>
         Public Sub TrySelectTuning_PositionBZeroR_Fails()
