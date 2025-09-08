@@ -269,19 +269,7 @@ Partial Public Structure Impedance
             ' reactance.
 
             If NormB > 0.0 Then
-                ' J: On G=Y0, above resonance line. Only needs reactance.
-                ' CW on a G-circle needs a shunt capacitor.
-                Dim V1 As System.Double = -NormB
-                Dim EffectiveY As New Admittance(0, V1)
-                Dim EffectiveZ As Impedance = EffectiveY.ToImpedance
-                transformations = {
-                    New Transformation With {
-                    .Style = TransformationStyles.ShuntCap,
-                    .Value1 = EffectiveZ.Reactance}
-                }
-                Return True
-            Else
-                ' K: On G=Y0, below resonance line. Only needs reactance.
+                ' K: On G=Y0 circle, below resonance line. Only needs reactance.
                 ' CCW on a G-circle needs a shunt inductor.
                 Dim V1 As System.Double = -NormB
                 Dim EffectiveY As New Admittance(0, V1)
@@ -289,6 +277,18 @@ Partial Public Structure Impedance
                 transformations = {
                     New Transformation With {
                     .Style = TransformationStyles.ShuntInd,
+                    .Value1 = EffectiveZ.Reactance}
+                }
+                Return True
+            Else
+                ' J: On G=Y0 circle, above resonance line. Only needs reactance.
+                ' CW on a G-circle needs a shunt capacitor.
+                Dim V1 As System.Double = -NormB
+                Dim EffectiveY As New Admittance(0, V1)
+                Dim EffectiveZ As Impedance = EffectiveY.ToImpedance
+                transformations = {
+                    New Transformation With {
+                    .Style = TransformationStyles.ShuntCap,
                     .Value1 = EffectiveZ.Reactance}
                 }
                 Return True
@@ -506,15 +506,15 @@ Partial Public Structure Impedance
         ' B: Anywhere else on the perimeter. R=0.0.
         ' C: At the open circuit point on the right.
         ' D: At the center.
-        ' E: On the R=Z0 circle.
+        ' On the R=Z0 circle.
         '     Omit: On the resonance line. Already covered by C or D.
         '     E: On R=Z0 circle, above resonance line. Only needs reactance.
         '     F: On R=Z0 circle, below resonance line. Only needs reactance.
         ' GHI: Inside the R=Z0 circle. Two choices: CW or CCW on the G-circle.
-        ' G: On the G=Y0 circle.
+        ' On the G=Y0 circle.
         '     Omit: On the resonance line. Already either A or D.
-        '     J: On G=Y0, above resonance line. Only needs reactance.
-        '     K: On G=Y0, below resonance line. Only needs reactance.
+        '     J: On G=Y0 circle, above resonance line. Only needs reactance.
+        '     K: On G=Y0 circle, below resonance line. Only needs reactance.
         ' LMN: Inside the G=Y0 circle. Two choices: CW or CCW on the R-circle.
         ' O: In the top remainder.
         ' P: In the bottom remainder.
@@ -658,8 +658,8 @@ Partial Public Structure Impedance
     '    ' GHI: Inside the R=Z0 circle. Two choices: CW or CCW on the G-circle.
     '    ' G: On the G=Y0 circle.
     '    '     Omit: On the resonance line. Already either A or D.
-    '    '     J: On G=Y0, above resonance line. Only needs reactance.
-    '    '     K: On G=Y0, below resonance line. Only needs reactance.
+    '    '     J: On G=Y0 circle, above resonance line. Only needs reactance.
+    '    '     K: On G=Y0 circle, below resonance line. Only needs reactance.
     '    ' LMN: Inside the G=Y0 circle. Two choices: CW or CCW on the R-circle.
     '    ' O: In the top remainder.
     '    ' P: In the bottom remainder.

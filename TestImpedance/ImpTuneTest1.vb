@@ -23,8 +23,8 @@ Imports Xunit
 ' I: Inside R=Z0 circle, below resonance line.
 ' On the G=Y0 circle.
 ' On G=Y0 circle, on resonance line. Omit - already either A or D.
-' J: On G=Y0, above resonance line. Only needs reactance.
-' K: On G=Y0, below resonance line. Only needs reactance.
+' J: On G=Y0 circle, above resonance line. Only needs reactance.
+' K: On G=Y0 circle, below resonance line. Only needs reactance.
 ' Inside the G=Y0 circle. Two choices: CW or CCW on the R-circle.
 ' L1: Inside G=Y0 circle, above line.
 ' L2: Inside G=Y0 circle, above line. Z0=75.
@@ -156,22 +156,23 @@ Namespace TrySelectTuningLayoutTests
 
     End Class ' TestTrySelectTuningLayoutEF
 
-    Public Class TestTrySelectTuningLayoutG
-        ' G: On the G=Y0 circle.
-        '     Omit: On the resonance line. Already either A or D.
-        '     J: On G=Y0, above resonance line. Only needs reactance.
-        '     K: On G=Y0, below resonance line. Only needs reactance.
+    Public Class TestTrySelectTuningLayoutJK
+        ' On the G=Y0 circle.
+        ' On G=Y0 circle, on resonance line. Omit - already either A or D.
+        ' J: On G=Y0 circle, above resonance line. Only needs reactance.
+        ' K: On G=Y0 circle, below resonance line. Only needs reactance.
 
-        <Fact>
-        Public Sub TrySelectTuning_PositionG1_Succeeds()
+        '<InlineData(    Z0,      G,       B)> ' Model
+        <Theory>
+        <InlineData(1.0, 1.0, -1.0)> ' J: On G=Y0 circle, above resonance line. Only needs reactance.
+        Public Sub TrySelectTuning_PositionJ_Succeeds(z0 As Double, g As Double, b As Double)
 
-            Dim TestY As New OSNW.Numerics.Admittance(1.0, 3.0)
+            Dim TestY As New OSNW.Numerics.Admittance(g, b)
             Dim TestZ As OSNW.Numerics.Impedance = TestY.ToImpedance
-            Dim TestZ0 As Double = 1.0
 
-            Dim TargetZ As New Impedance(TestZ0, 0.0)
+            Dim TargetZ As New Impedance(z0, 0.0)
             Dim transformations As Transformation() = Array.Empty(Of Transformation)
-            If Not TestZ.TrySelectTuningLayout(TestZ0, transformations) Then
+            If Not TestZ.TrySelectTuningLayout(z0, transformations) Then
                 Assert.True(False, Messages.TF)
             End If
             Dim AddZ As New Impedance(0.0, transformations(0).Value1)
@@ -179,21 +180,22 @@ Namespace TrySelectTuningLayoutTests
 
             Assert.True(transformations.Length = 1, Messages.ITC)
             Assert.True(transformations(0).Style.Equals(TransformationStyles.ShuntCap), Messages.ITS)
-            Assert.Equal(1.0 / 3.0, transformations(0).Value1)
+            Assert.Equal(-1, transformations(0).Value1)
             Assert.Equal(TargetZ, CombinedZ)
 
         End Sub
 
-        <Fact>
-        Public Sub TrySelectTuning_PositionG2_Succeeds()
+        '<InlineData(    Z0,      G,       B)> ' Model
+        <Theory>
+        <InlineData(1.0, 1.0, 1.0)> ' K: On G=Y0 circle, below resonance line. Only needs reactance.
+        Public Sub TrySelectTuning_PositionK_Succeeds(z0 As Double, g As Double, b As Double)
 
-            Dim TestY As New OSNW.Numerics.Admittance(1.0, -3.0)
+            Dim TestY As New OSNW.Numerics.Admittance(g, b)
             Dim TestZ As OSNW.Numerics.Impedance = TestY.ToImpedance
-            Dim TestZ0 As Double = 1.0
 
-            Dim TargetZ As New Impedance(TestZ0, 0.0)
+            Dim TargetZ As New Impedance(z0, 0.0)
             Dim transformations As Transformation() = Array.Empty(Of Transformation)
-            If Not TestZ.TrySelectTuningLayout(TestZ0, transformations) Then
+            If Not TestZ.TrySelectTuningLayout(z0, transformations) Then
                 Assert.True(False, Messages.TF)
             End If
             Dim AddZ As New Impedance(0.0, transformations(0).Value1)
@@ -201,16 +203,14 @@ Namespace TrySelectTuningLayoutTests
 
             Assert.True(transformations.Length = 1, Messages.ITC)
             Assert.True(transformations(0).Style.Equals(TransformationStyles.ShuntInd), Messages.ITS)
-            Assert.Equal(-1.0 / 3.0, transformations(0).Value1)
+            Assert.Equal(1, transformations(0).Value1)
             Assert.Equal(TargetZ, CombinedZ)
 
         End Sub
 
-    End Class ' TestTrySelectTuningLayoutG
+    End Class ' TestTrySelectTuningLayoutJK
 
-
-
-    Public Class TestTrySelectTuningLayoutF
+    Public Class TestTrySelectTuningLayoutGHI
         ' GHI: Inside the R=Z0 circle. Two choices: CW or CCW on the G-circle.
 
         <Fact>
@@ -252,7 +252,7 @@ Namespace TrySelectTuningLayoutTests
         ' Assert.True(False)
         'End Sub
 
-    End Class ' TestTrySelectTuningLayoutF
+    End Class ' TestTrySelectTuningLayoutGHI
     'xxxx
 
 
