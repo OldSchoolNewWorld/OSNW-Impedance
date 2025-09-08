@@ -206,7 +206,7 @@ Partial Public Structure Impedance
             ' reactance.
 
             If NormX > 0.0 Then
-                ' E1: Above the resonance line. Only needs reactance.
+                ' E: On R=Z0 circle, above resonance line. Only needs reactance.
                 ' CCW on a R-circle needs a series capacitor.
                 transformations = {
                     New Transformation With {
@@ -226,7 +226,7 @@ Partial Public Structure Impedance
                 ' total admittance Y=0.1+j0. For Y=0.1+j0, Z=10+j0. NO.
 
             Else
-                ' E2: Below the resonance line. Only needs reactance.
+                ' F: On R=Z0 circle, below resonance line. Only needs reactance.
                 ' CW on a R-circle needs a series inductor.
                 transformations = {
                     New Transformation With {
@@ -269,7 +269,7 @@ Partial Public Structure Impedance
             ' reactance.
 
             If NormB > 0.0 Then
-                ' G1: Above the resonance line. Only needs reactance.
+                ' J: On G=Y0, above resonance line. Only needs reactance.
                 ' CW on a G-circle needs a shunt capacitor.
                 Dim V1 As System.Double = -NormB
                 Dim EffectiveY As New Admittance(0, V1)
@@ -281,7 +281,7 @@ Partial Public Structure Impedance
                 }
                 Return True
             Else
-                ' G2: Below the resonance line. Only needs reactance.
+                ' K: On G=Y0, below resonance line. Only needs reactance.
                 ' CCW on a G-circle needs a shunt inductor.
                 Dim V1 As System.Double = -NormB
                 Dim EffectiveY As New Admittance(0, V1)
@@ -298,7 +298,7 @@ Partial Public Structure Impedance
     End Function ' OnGEqualsY0
 
     '''' <summary>
-    '''' F: Inside the R=Z0 circle. Two choices: CW or CCW on the G-circle.
+    '''' GHI: Inside the R=Z0 circle. Two choices: CW or CCW on the G-circle.
     '''' </summary>
     '''' <param name="z0">xxxxxxxxxx</param>
     '''' <param name="transformations">xxxxxxxxxx</param>
@@ -447,7 +447,7 @@ Partial Public Structure Impedance
     End Function ' InsideREqualsZ0
 
     '''' <summary>
-    '''' H: Inside the G=Y0 circle. Two choices: CW or CCW on the R-circle.
+    '''' LMN: Inside the G=Y0 circle. Two choices: CW or CCW on the R-circle.
     '''' </summary>
     '''' <param name="z0">xxxxxxxxxx</param>
     '''' <param name="transformations">xxxxxxxxxx</param>
@@ -508,16 +508,16 @@ Partial Public Structure Impedance
         ' D: At the center.
         ' E: On the R=Z0 circle.
         '     Omit: On the resonance line. Already covered by C or D.
-        '     E1: Above the resonance line. Only needs reactance.
-        '     E2: Below the resonance line. Only needs reactance.
-        ' F: Inside the R=Z0 circle. Two choices: CW or CCW on the G-circle.
+        '     E: On R=Z0 circle, above resonance line. Only needs reactance.
+        '     F: On R=Z0 circle, below resonance line. Only needs reactance.
+        ' GHI: Inside the R=Z0 circle. Two choices: CW or CCW on the G-circle.
         ' G: On the G=Y0 circle.
-        '     Omit: On the resonance line. Already either B or D.
-        '     G1: Above the resonance line. Only needs reactance.
-        '     G2: Below the resonance line. Only needs reactance.
-        ' H: Inside the G=Y0 circle. Two choices: CW or CCW on the R-circle.
-        ' I: In the top remainder.
-        ' J: In the bottom remainder.
+        '     Omit: On the resonance line. Already either A or D.
+        '     J: On G=Y0, above resonance line. Only needs reactance.
+        '     K: On G=Y0, below resonance line. Only needs reactance.
+        ' LMN: Inside the G=Y0 circle. Two choices: CW or CCW on the R-circle.
+        ' O: In the top remainder.
+        ' P: In the bottom remainder.
 
         Dim NormR As System.Double = Me.Resistance / z0
         Dim NormX As System.Double = Me.Reactance / z0
@@ -653,16 +653,16 @@ Partial Public Structure Impedance
     '    ' D: At the center.
     '    ' E: On the R=Z0 circle.
     '    '     Omit: On the resonance line. Already covered by C or D.
-    '    '     E1: Above the resonance line. Only needs reactance.
-    '    '     E2: Below the resonance line. Only needs reactance.
-    '    ' F: Inside the R=Z0 circle. Two choices: CW or CCW on the G-circle.
+    '    '     E: On R=Z0 circle, above resonance line. Only needs reactance.
+    '    '     F: On R=Z0 circle, below resonance line. Only needs reactance.
+    '    ' GHI: Inside the R=Z0 circle. Two choices: CW or CCW on the G-circle.
     '    ' G: On the G=Y0 circle.
-    '    '     Omit: On the resonance line. Already either B or D.
-    '    '     G1: Above the resonance line. Only needs reactance.
-    '    '     G2: Below the resonance line. Only needs reactance.
-    '    ' H: Inside the G=Y0 circle. Two choices: CW or CCW on the R-circle.
-    '    ' I: In the top remainder.
-    '    ' J: In the bottom remainder.
+    '    '     Omit: On the resonance line. Already either A or D.
+    '    '     J: On G=Y0, above resonance line. Only needs reactance.
+    '    '     K: On G=Y0, below resonance line. Only needs reactance.
+    '    ' LMN: Inside the G=Y0 circle. Two choices: CW or CCW on the R-circle.
+    '    ' O: In the top remainder.
+    '    ' P: In the bottom remainder.
 
     '    ' A series inductor moves CW on a R-circle.
     '    ' A series capacitor moves CCW on a R-circle.
