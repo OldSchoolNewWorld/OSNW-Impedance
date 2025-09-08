@@ -18,14 +18,14 @@ Namespace GeometryTests
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 1.0)> ' D: At the center.
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 1.0)> ' E: On R=Z0 circle, above resonance line. Only needs reactance.
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 1.0)> ' F: On R=Z0 circle, below resonance line. Only needs reactance.
-        <InlineData(4.0, 5.0, 2.0, 1.0, 2.0, 2.0 / 3)> ' G1: Inside R=Z0 circle, above line
-        <InlineData(4.0, 5.0, 2.0, 50.0, 100.0, 2.0 / 3)> ' G2: Inside R=Z0 circle, above line, Z0=50
+        <InlineData(4.0, 5.0, 2.0, 1.0, 2.0, 2.0 / 3)> ' G1: Inside R=Z0 circle, above resonance line.
+        <InlineData(4.0, 5.0, 2.0, 50.0, 100.0, 2.0 / 3)> ' G2: Inside R=Z0 circle, above resonance line, Z0=50
         <InlineData(4.0, 5.0, 2.0, 1.0, 3.0, 0.5)> ' H: Inside R=Z0 circle, on line
         <InlineData(4.0, 5.0, 2.0, 1.0, 2.0, 2.0 / 3)> ' I: Inside R=Z0 circle, below resonance line.
         <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, 4.0 / 3)> ' J: On G=Y0 circle, above resonance line. Only needs reactance.
         <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, 4.0 / 3)> ' K: On G=Y0 circle, below resonance line. Only needs reactance.
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 3.0, 1.5)> ' L1: Inside G=Y0 circle, above line.
-        <InlineData(4.0, 5.0, 2.0, 75.0, 25.0, 1.5)> ' L2: Inside G=Y0 circle, above line. Z0=75.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 3.0, 1.5)> ' L1: Inside G=Y0 circle, above resonance line.
+        <InlineData(4.0, 5.0, 2.0, 75.0, 25.0, 1.5)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
         <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 3.0, 1.5)> ' M: Inside G=Y0 circle, on line
         <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, 4.0 / 3)> ' N: Inside G=Y0 circle, below line
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.2, 5.0 / 3)> ' O: In the top remainder.
@@ -85,13 +85,13 @@ Namespace GeometryTests
         <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, 4.0)> ' B: Anywhere else on the perimeter. R=0.0.
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 2.0)> ' E: On R=Z0 circle, above resonance line. Only needs reactance.
         <InlineData(4.0, 5.0, 2.0, 1.0, -2.0, 1.0)> ' F: On R=Z0 circle, below resonance line. Only needs reactance.
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, 4.0)> ' G1: Inside R=Z0 circle, above line
-        <InlineData(4.0, 5.0, 2.0, 50.0, 25.0, 4.0)> ' G2: Inside R=Z0 circle, above line, Z0=50
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, 4.0)> ' G1: Inside R=Z0 circle, above resonance line.
+        <InlineData(4.0, 5.0, 2.0, 50.0, 25.0, 4.0)> ' G2: Inside R=Z0 circle, above resonance line, Z0=50
         <InlineData(4.0, 5.0, 2.0, 1.0, -2.0, 1.0)> ' I: Inside R=Z0 circle, below resonance line.
         <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, 4.0)> ' J: On G=Y0 circle, above resonance line. Only needs reactance.
         <InlineData(4.0, 5.0, 2.0, 1.0, -1 / 2.0, 4.0)> ' K: On G=Y0 circle, below resonance line. Only needs reactance.
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 3.0, 6.0)> ' L1: Inside G=Y0 circle, above line.
-        <InlineData(4.0, 5.0, 2.0, 75.0, 25.0, 6.0)> ' L2: Inside G=Y0 circle, above line. Z0=75.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 3.0, 6.0)> ' L1: Inside G=Y0 circle, above resonance line.
+        <InlineData(4.0, 5.0, 2.0, 75.0, 25.0, 6.0)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
         <InlineData(4.0, 5.0, 2.0, 1.0, -1 / 3.0, 6.0)> ' N: Inside G=Y0 circle, below line
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.4, 1.4286)> ' O: In the top remainder.
         <InlineData(4.0, 5.0, 2.0, 1.0, -0.8, 2.5)> ' P: In the bottom remainder.
@@ -156,14 +156,14 @@ Namespace GeometryTests
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 1.0)> ' D: At the center.
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.5, 4.0 / 3)> ' E: On R=Z0 circle, above resonance line. Only needs reactance.
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.2, 5.0 / 3)> ' F: On R=Z0 circle, below resonance line. Only needs reactance.
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.4706, 1.36)> ' G1: Inside R=Z0 circle, above line
-        <InlineData(4.0, 5.0, 2.0, 50.0, 0.0094, 1.3605)> ' G2: Inside R=Z0 circle, above line, Z0=50
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.4706, 1.36)> ' G1: Inside R=Z0 circle, above resonance line.
+        <InlineData(4.0, 5.0, 2.0, 50.0, 0.0094, 1.3605)> ' G2: Inside R=Z0 circle, above resonance line, Z0=50
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.0 / 3, 1.5)> ' H: Inside R=Z0 circle, on line
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.25, 1.6)> ' I: Inside R=Z0 circle, below resonance line.
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 1.0)> ' J: On G=Y0 circle, above resonance line. Only needs reactance.
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 1.0)> ' K: On G=Y0 circle, below resonance line. Only needs reactance.
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1.5, 0.8)> ' L1: Inside G=Y0 circle, above line.
-        <InlineData(4.0, 5.0, 2.0, 75.0, 0.02, 0.8)> ' L2: Inside G=Y0 circle, above line. Z0=75.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1.5, 0.8)> ' L1: Inside G=Y0 circle, above resonance line.
+        <InlineData(4.0, 5.0, 2.0, 75.0, 0.02, 0.8)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
         <InlineData(4.0, 5.0, 2.0, 1.0, 3.0, 0.5)> ' M: Inside G=Y0 circle, on line
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.3846, 0.8387)> ' N: Inside G=Y0 circle, below line
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.1, 1.8182)> ' O: In the top remainder.
@@ -225,13 +225,13 @@ Namespace GeometryTests
         <InlineData(4.0, 5.0, 2.0, 1.0, -2.0, 1.0)> ' B: Anywhere else on the perimeter. R=0.0.
         <InlineData(4.0, 5.0, 2.0, 1.0, -0.5, 4.0)> ' E: On R=Z0 circle, above resonance line. Only needs reactance.
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.4, 5.0)> ' F: On R=Z0 circle, below resonance line. Only needs reactance.
-        <InlineData(4.0, 5.0, 2.0, 1.0, -0.1176, 17.0)> ' G1: Inside R=Z0 circle, above line
-        <InlineData(4.0, 5.0, 2.0, 50.0, -0.0024, 16.6667)> ' G2: Inside R=Z0 circle, above line, Z0=50
+        <InlineData(4.0, 5.0, 2.0, 1.0, -0.1176, 17.0)> ' G1: Inside R=Z0 circle, above resonance line.
+        <InlineData(4.0, 5.0, 2.0, 50.0, -0.0024, 16.6667)> ' G2: Inside R=Z0 circle, above resonance line, Z0=50
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.25, 8.0)> ' I: Inside R=Z0 circle, below resonance line.
         <InlineData(4.0, 5.0, 2.0, 1.0, -1.0, 2.0)> ' J: On G=Y0 circle, above resonance line. Only needs reactance.
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 2.0)> ' K: On G=Y0 circle, below resonance line. Only needs reactance.
-        <InlineData(4.0, 5.0, 2.0, 1.0, -1.5, 1.3333)> ' L1: Inside G=Y0 circle, above line.
-        <InlineData(4.0, 5.0, 2.0, 75.0, -0.02, 1.3333)> ' L2: Inside G=Y0 circle, above line. Z0=75.
+        <InlineData(4.0, 5.0, 2.0, 1.0, -1.5, 1.3333)> ' L1: Inside G=Y0 circle, above resonance line.
+        <InlineData(4.0, 5.0, 2.0, 75.0, -0.02, 1.3333)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.9231, 2.25)> ' N: Inside G=Y0 circle, below line
         <InlineData(4.0, 5.0, 2.0, 1.0, -0.7, 2.8571)> ' O: In the top remainder.
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 2.0)> ' P: In the bottom remainder.
@@ -300,14 +300,14 @@ Namespace GeometryTests
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 0.0000)> ' D: At the center.
         <InlineData(4.0, 5.0, 2.0, 1.0, 2.618, 0.8944)> ' E: On R=Z0 circle, above resonance line. Only needs reactance.
         <InlineData(4.0, 5.0, 2.0, 1.0, 5.8284, 1.4142)> ' F: On R=Z0 circle, below resonance line. Only needs reactance.
-        <InlineData(4.0, 5.0, 2.0, 1.0, 2.1626, 0.7352)> ' G1: Inside R=Z0 circle, above line
-        <InlineData(4.0, 5.0, 2.0, 50.0, 2.1626, 0.7352)> ' G2: Inside R=Z0 circle, above line, Z0=50
+        <InlineData(4.0, 5.0, 2.0, 1.0, 2.1626, 0.7352)> ' G1: Inside R=Z0 circle, above resonance line.
+        <InlineData(4.0, 5.0, 2.0, 50.0, 2.1626, 0.7352)> ' G2: Inside R=Z0 circle, above resonance line, Z0=50
         <InlineData(4.0, 5.0, 2.0, 1.0, 3.0, 1.0)> ' H: Inside R=Z0 circle, on line
         <InlineData(4.0, 5.0, 2.0, 1.0, 4.2656, 1.2404)> ' I: Inside R=Z0 circle, below resonance line.
         <InlineData(4.0, 5.0, 2.0, 1.0, 2.618, 0.8944)> ' J: On G=Y0 circle, above resonance line. Only needs reactance.
         <InlineData(4.0, 5.0, 2.0, 1.0, 2.618, 0.8944)> ' K: On G=Y0 circle, below resonance line. Only needs reactance.
-        <InlineData(4.0, 5.0, 2.0, 1.0, 3.3699, 1.0846)> ' L1: Inside G=Y0 circle, above line.
-        <InlineData(4.0, 5.0, 2.0, 75.0, 3.3699, 1.0846)> ' L2: Inside G=Y0 circle, above line. Z0=75.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 3.3699, 1.0846)> ' L1: Inside G=Y0 circle, above resonance line.
+        <InlineData(4.0, 5.0, 2.0, 75.0, 3.3699, 1.0846)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
         <InlineData(4.0, 5.0, 2.0, 1.0, 3.0, 1.0)> ' M: Inside G=Y0 circle, on line
         <InlineData(4.0, 5.0, 2.0, 1.0, 2.2845, 0.7822)> ' N: Inside G=Y0 circle, below line
         <InlineData(4.0, 5.0, 2.0, 1.0, 14.933, 1.7489)> ' O: In the top remainder.
@@ -438,14 +438,14 @@ Namespace GeometryTests
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 0.0000, 4.0, 5.0)> ' D: At the center.
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 1.0, 4.4, 5.8)> ' E: On R=Z0 circle, above resonance line. Only needs reactance.
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, -2.0, 5.0, 4.0)> ' F: On R=Z0 circle, below resonance line. Only needs reactance.
-        <InlineData(4.0, 5.0, 2.0, 1.0, 2.0, 1 / 2.0, 4.7027, 5.2162)> ' G1: Inside R=Z0 circle, above line
-        <InlineData(4.0, 5.0, 2.0, 50.0, 100.0, 25.0, 4.7027, 5.2162)> ' G2: Inside R=Z0 circle, above line, Z0=50
+        <InlineData(4.0, 5.0, 2.0, 1.0, 2.0, 1 / 2.0, 4.7027, 5.2162)> ' G1: Inside R=Z0 circle, above resonance line.
+        <InlineData(4.0, 5.0, 2.0, 50.0, 100.0, 25.0, 4.7027, 5.2162)> ' G2: Inside R=Z0 circle, above resonance line, Z0=50
         <InlineData(4.0, 5.0, 2.0, 1.0, 3.0, 0.0000, 5.0, 5.0)> ' H: Inside R=Z0 circle, on line
         <InlineData(4.0, 5.0, 2.0, 1.0, 2.0, -2.0, 5.077, 4.3846)> ' I: Inside R=Z0 circle, below resonance line.
         <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, 1 / 2.0, 3.6, 5.8)> ' J: On G=Y0 circle, above resonance line. Only needs reactance.
         <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, -1 / 2.0, 3.6, 4.2)> ' K: On G=Y0 circle, below resonance line. Only needs reactance.
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 3.0, 1 / 3.0, 3.1765, 5.7059)> ' L1: Inside G=Y0 circle, above line.
-        <InlineData(4.0, 5.0, 2.0, 75.0, 25.0, 25.0, 3.1765, 5.7059)> ' L2: Inside G=Y0 circle, above line. Z0=75.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 3.0, 1 / 3.0, 3.1765, 5.7059)> ' L1: Inside G=Y0 circle, above resonance line.
+        <InlineData(4.0, 5.0, 2.0, 75.0, 25.0, 25.0, 3.1765, 5.7059)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
         <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 3.0, 0.0000, 3.0, 5.0)> ' M: Inside G=Y0 circle, on line
         <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, -1 / 3.0, 3.4588, 4.4353)> ' N: Inside G=Y0 circle, below line
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.2, 1.4, 4.5882, 6.6471)> ' O: In the top remainder.
@@ -515,14 +515,14 @@ Namespace GeometryTests
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 0.0000, 4.0, 5.0)> ' D: At the center.
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 1.0, 4.4, 5.8)> ' E: On R=Z0 circle, above resonance line. Only needs reactance.
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, -2.0, 5.0, 4.0)> ' F: On R=Z0 circle, below resonance line. Only needs reactance.
-        <InlineData(4.0, 5.0, 2.0, 1.0, 2.0, 1 / 2.0, 4.7027, 5.2162)> ' G1: Inside R=Z0 circle, above line
-        <InlineData(4.0, 5.0, 2.0, 50.0, 100.0, 25.0, 4.7027, 5.2162)> ' G2: Inside R=Z0 circle, above line, Z0=50
+        <InlineData(4.0, 5.0, 2.0, 1.0, 2.0, 1 / 2.0, 4.7027, 5.2162)> ' G1: Inside R=Z0 circle, above resonance line.
+        <InlineData(4.0, 5.0, 2.0, 50.0, 100.0, 25.0, 4.7027, 5.2162)> ' G2: Inside R=Z0 circle, above resonance line, Z0=50
         <InlineData(4.0, 5.0, 2.0, 1.0, 3.0, 0.0000, 5.0, 5.0)> ' H: Inside R=Z0 circle, on line
         <InlineData(4.0, 5.0, 2.0, 1.0, 2.0, -2.0, 5.077, 4.3846)> ' I: Inside R=Z0 circle, below resonance line.
         <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, 1 / 2.0, 3.6, 5.8)> ' J: On G=Y0 circle, above resonance line. Only needs reactance.
         <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, -1 / 2.0, 3.6, 4.2)> ' K: On G=Y0 circle, below resonance line. Only needs reactance.
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 3.0, 1 / 3.0, 3.1765, 5.7059)> ' L1: Inside G=Y0 circle, above line.
-        <InlineData(4.0, 5.0, 2.0, 75.0, 25.0, 25.0, 3.1765, 5.7059)> ' L2: Inside G=Y0 circle, above line. Z0=75.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 3.0, 1 / 3.0, 3.1765, 5.7059)> ' L1: Inside G=Y0 circle, above resonance line.
+        <InlineData(4.0, 5.0, 2.0, 75.0, 25.0, 25.0, 3.1765, 5.7059)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
         <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 3.0, 0.0000, 3.0, 5.0)> ' M: Inside G=Y0 circle, on line
         <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, -1 / 3.0, 3.4588, 4.4353)> ' N: Inside G=Y0 circle, below line
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.2, 1.4, 4.5882, 6.6471)> ' O: In the top remainder.
@@ -591,14 +591,14 @@ Namespace GeometryTests
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 0.0000, 4.0, 5.0)> ' D: At the center.
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.5, -0.5, 4.4, 5.8)> ' E: On R=Z0 circle, above resonance line. Only needs reactance.
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.2, 0.4, 5.0, 4.0)> ' F: On R=Z0 circle, below resonance line. Only needs reactance.
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.4706, -0.1176, 4.7027, 5.2162)> ' G1: Inside R=Z0 circle, above line
-        <InlineData(4.0, 5.0, 2.0, 50.0, 0.0094, -0.0024, 4.7027, 5.2162)> ' G2: Inside R=Z0 circle, above line, Z0=50
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.4706, -0.1176, 4.7027, 5.2162)> ' G1: Inside R=Z0 circle, above resonance line.
+        <InlineData(4.0, 5.0, 2.0, 50.0, 0.0094, -0.0024, 4.7027, 5.2162)> ' G2: Inside R=Z0 circle, above resonance line, Z0=50
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.0 / 3, 0.0000, 5.0, 5.0)> ' H: Inside R=Z0 circle, on line
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.25, 0.25, 5.077, 4.3846)> ' I: Inside R=Z0 circle, below resonance line.
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, -1.0, 3.6, 5.8)> ' J: On G=Y0 circle, above resonance line. Only needs reactance.
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 1.0, 3.6, 4.2)> ' K: On G=Y0 circle, below resonance line. Only needs reactance.
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1.5, -1.5, 3.1765, 5.7059)> ' L1: Inside G=Y0 circle, above line.
-        <InlineData(4.0, 5.0, 2.0, 75.0, 0.02, -0.02, 3.1765, 5.7059)> ' L2: Inside G=Y0 circle, above line. Z0=75.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1.5, -1.5, 3.1765, 5.7059)> ' L1: Inside G=Y0 circle, above resonance line.
+        <InlineData(4.0, 5.0, 2.0, 75.0, 0.02, -0.02, 3.1765, 5.7059)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
         <InlineData(4.0, 5.0, 2.0, 1.0, 3.0, 0.0000, 3.0, 5.0)> ' M: Inside G=Y0 circle, on line
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.3846, 0.9231, 3.4588, 4.4353)> ' N: Inside G=Y0 circle, below line
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.1, -0.7, 4.5882, 6.6471)> ' O: In the top remainder.

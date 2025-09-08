@@ -510,7 +510,11 @@ Partial Public Structure Impedance
         '     Omit: On the resonance line. Already covered by C or D.
         '     E: On R=Z0 circle, above resonance line. Only needs reactance.
         '     F: On R=Z0 circle, below resonance line. Only needs reactance.
-        ' GHI: Inside the R=Z0 circle. Two choices: CW or CCW on the G-circle.
+        ' Inside the R=Z0 circle. Two choices: CW or CCW on the G-circle.
+        '     G1: Inside R=Z0 circle, above resonance line.
+        '     G2: Inside R=Z0 circle, above resonance line, Z0=50
+        '     H: Inside R=Z0 circle, on line
+        '     I: Inside R=Z0 circle, below resonance line.
         ' On the G=Y0 circle.
         '     Omit: On the resonance line. Already either A or D.
         '     J: On G=Y0 circle, above resonance line. Only needs reactance.
