@@ -317,6 +317,13 @@ Partial Public Structure Impedance
         ' The first move will be to the intersection of the R- and X-circles
         ' that contain the load impedance.
 
+
+        ' LOOKING FOR THE INTERSECTIONS MAY NOT BE NEEDED! NormB IS NOW KNOWN
+        ' AND CAN PROBABLY JUST BE TUNED OUT.
+
+
+
+
         Dim MainCirc As New SmithMainCircle(1.0, 1.0, 1.0, 1.0) ' Arbitrary.
         Dim CircR As New RCircle(MainCirc, NormR)
         Dim CircG As New GCircle(MainCirc, NormG)
@@ -324,20 +331,29 @@ Partial Public Structure Impedance
             As System.Collections.Generic.List(Of System.Drawing.PointF) =
             GenericCircle.GetIntersections(CircR, CircG)
 
-        ' THESE CHECKS CAN BE DELETED AFTER THE GetIntersections RESULTS ARE KNOWN TO BE CORRECT.
+        ' THESE CHECKS CAN BE DELETED AFTER THE GetIntersections() RESULTS ARE
+        ' KNOWN TO BE CORRECT.
         ' There should now be two intersection points, with one above, and one
         ' below, the resonance line.
-        ' The X values should match.
-        ' The Y values should be the same distance above and below the resonance line.
         If Intersections.Count <> 2 Then
             'Dim CaughtBy As System.Reflection.MethodBase =
             '    System.Reflection.MethodBase.GetCurrentMethod
             Throw New System.ApplicationException(Impedance.MSGIIC)
         End If
-
-        If Not (System.Math.Abs(Intersections(1).Y - MainCirc.GridCenterY)).Equals(
-            System.Math.Abs(Intersections(0).Y - MainCirc.GridCenterY)) Then
-
+        ' The X values should match. Check for reasonable equality when using
+        ' floating point values.
+        If Not EqualEnough(Intersections(0).X, Intersections(0).X) Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ApplicationException("X values do not match.")
+        End If
+        ' The Y values should be the same distance above and below the resonance
+        ' line. Check for reasonable equality when using floating point values.
+        Dim Offset0 As System.Double =
+            System.Math.Abs(Intersections(0).Y - MainCirc.GridCenterY)
+        Dim Offset1 As System.Double =
+            System.Math.Abs(Intersections(1).Y - MainCirc.GridCenterY)
+        If Not EqualEnough(Offset1, Offset0) Then
             'Dim CaughtBy As System.Reflection.MethodBase =
             '    System.Reflection.MethodBase.GetCurrentMethod
             Throw New System.ApplicationException("Y offsets do not match.")

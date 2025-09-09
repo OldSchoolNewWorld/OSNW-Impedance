@@ -146,6 +146,33 @@ Public Structure Impedance
 
 #Region "System.ValueType Implementations"
 
+    ''' <summary>
+    ''' Check for reasonable equality when using floating point values.
+    ''' </summary>
+    ''' <param name="otherVal">Specifies the value to be compared to
+    ''' <paramref name="refVal"/>.</param>
+    ''' <param name="refVal">Specifies a base value for comparison.</param>
+    ''' <returns><c>True</c> if the values are reasonably close;
+    ''' otherwise, <c>False</c>.</returns>
+    '''<remarks>This does the comparison based on scale, not on an absolute
+    ''' numeric difference.</remarks>
+    Public Shared Function EqualEnough(ByVal otherVal As System.Double,
+        ByVal refVal As System.Double) As System.Boolean
+
+        ' REF: Precision and complex numbers
+        ' <see href="https://github.com/dotnet/docs/blob/main/docs/fundamentals/runtime-libraries/system-numerics-complex.md#precision-and-complex-numbers"/>
+
+        Const DIFFACTOR As System.Double = 0.001
+
+        'Dim Tolerance As System.Double = System.Math.Abs(refVal * DIFFACTOR)
+        'Dim Diff As System.Double = System.Math.Abs(otherVal - refVal)
+        'Return Diff < Tolerance
+
+        Return System.Math.Abs(otherVal - refVal) <
+            System.Math.Abs(refVal * DIFFACTOR)
+
+    End Function ' EqualEnough
+
     ' public override bool Equals([NotNullWhen(true)] object? obj)
     ' {
     '     return obj is Complex other && Equals(other);
@@ -186,6 +213,7 @@ Public Structure Impedance
         ' This may have to be changed to determine equality within some
         ' reasonable bounds. See 
         ' <see href="https://github.com/dotnet/docs/blob/main/docs/fundamentals/runtime-libraries/system-numerics-complex.md#precision-and-complex-numbers"/>
+        ' That is now available via EqualEnough(otherVal, refVal) above.
         Return Me.ToComplex().Equals(value.ToComplex())
     End Function ' Equals
 
