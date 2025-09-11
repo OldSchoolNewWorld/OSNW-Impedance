@@ -2,6 +2,7 @@
 Option Strict On
 Option Compare Binary
 Option Infer Off
+Imports System.Net.Mime.MediaTypeNames
 Imports System.Runtime.InteropServices
 
 
@@ -307,87 +308,133 @@ Partial Public Structure Impedance
         ByRef transformations As Transformation()) _
         As System.Boolean
 
-        Dim NormR As System.Double = Me.Resistance / z0
+        'Dim NormR As System.Double = Me.Resistance / z0
         'Dim NormX As System.Double = Me.Reactance / z0
         Dim Y0 As System.Double = 1.0 / z0
         Dim Y As Admittance = Me.ToAdmittance()
-        Dim NormG As System.Double = Y.Conductance / Y0
+        'Dim NormG As System.Double = Y.Conductance / Y0
         'Dim NormB As System.Double = Y.Susceptance / Y0
 
-        ' The first move will be to the intersection of the R- and X-circles
-        ' that contain the load impedance.
+        ' From inside the R=Z0 circle, there are two choices:
+        '  - Move CW on the G-circle to reach the R=Z0 circle, using a shunt capacitor.
+        '  - Move CCW on the G-circle to reach the R=Z0 circle, using a shunt inductor.
 
+        ' The first move will be to the intersection of the R=Z0 circle and the
+        ' G-circle that contains the load impedance.
 
-        ' LOOKING FOR THE INTERSECTIONS MAY NOT BE NEEDED! NormB IS NOW KNOWN
-        ' AND CAN PROBABLY JUST BE TUNED OUT.
-
-
-
-
-        Dim MainCirc As New SmithMainCircle(1.0, 1.0, 1.0, 1.0) ' Arbitrary.
-        Dim CircR As New RCircle(MainCirc, NormR)
-        Dim CircG As New GCircle(MainCirc, NormG)
+        ' Determine the circles and intersections.
+        Dim MainCirc As New SmithMainCircle(1.0, 1.0, 1.0, z0) ' Arbitrary.
+        Dim CircR As New RCircle(MainCirc, z0)
+        Dim CircG As New GCircle(MainCirc, Y.Conductance)
         Dim Intersections _
             As System.Collections.Generic.List(Of System.Drawing.PointF) =
             GenericCircle.GetIntersections(CircR, CircG)
 
-        ' THESE CHECKS CAN BE DELETED AFTER THE GetIntersections() RESULTS ARE
-        ' KNOWN TO BE CORRECT.
-        ' There should now be two intersection points, with one above, and one
-        ' below, the resonance line.
-        If Intersections.Count <> 2 Then
-            'Dim CaughtBy As System.Reflection.MethodBase =
-            '    System.Reflection.MethodBase.GetCurrentMethod
-            Throw New System.ApplicationException(Impedance.MSGIIC)
-        End If
-        ' The X values should match. Check for reasonable equality when using
-        ' floating point values.
-        If Not EqualEnough(Intersections(0).X, Intersections(0).X) Then
-            'Dim CaughtBy As System.Reflection.MethodBase =
-            '    System.Reflection.MethodBase.GetCurrentMethod
-            Throw New System.ApplicationException("X values do not match.")
-        End If
-        ' The Y values should be the same distance above and below the resonance
-        ' line. Check for reasonable equality when using floating point values.
-        Dim Offset0 As System.Double =
-            System.Math.Abs(Intersections(0).Y - MainCirc.GridCenterY)
-        Dim Offset1 As System.Double =
-            System.Math.Abs(Intersections(1).Y - MainCirc.GridCenterY)
-        If Not EqualEnough(Offset1, Offset0) Then
-            'Dim CaughtBy As System.Reflection.MethodBase =
-            '    System.Reflection.MethodBase.GetCurrentMethod
-            Throw New System.ApplicationException("Y offsets do not match.")
-        End If
+        '' THESE CHECKS CAN BE DELETED/COMMENTED AFTER THE GetIntersections()
+        '' RESULTS ARE KNOWN TO BE CORRECT.
+        '' There should now be two intersection points, with one above, and one
+        '' below, the resonance line.
+        'If Intersections.Count <> 2 Then
+        '    'Dim CaughtBy As System.Reflection.MethodBase =
+        '    '    System.Reflection.MethodBase.GetCurrentMethod
+        '    Throw New System.ApplicationException(Impedance.MSGIIC)
+        'End If
+        '' The X values should match. Check for reasonable equality when using
+        '' floating point values.
+        'If Not EqualEnough(Intersections(0).X, Intersections(0).X) Then
+        '    'Dim CaughtBy As System.Reflection.MethodBase =
+        '    '    System.Reflection.MethodBase.GetCurrentMethod
+        '    Throw New System.ApplicationException("X values do not match.")
+        'End If
+        '' The Y values should be the same distance above and below the
+        '' resonance line. Check for reasonable equality when using floating
+        '' point values.
+        'Dim Offset0 As System.Double =
+        '    System.Math.Abs(Intersections(0).Y - MainCirc.GridCenterY)
+        'Dim Offset1 As System.Double =
+        '    System.Math.Abs(Intersections(1).Y - MainCirc.GridCenterY)
+        'If Not EqualEnough(Offset1, Offset0) Then
+        '    'Dim CaughtBy As System.Reflection.MethodBase =
+        '    '    System.Reflection.MethodBase.GetCurrentMethod
+        '    Throw New System.ApplicationException("Y offsets do not match.")
+        'End If
 
         ' There are now two intersection points, with one each above and below
         ' the resonance line. The X values match. The Y values are the same
         ' distance above and below the resonance line.
+        ' Determine the image Impedance at each intersection.
+        Dim Image0Z As Impedance =
+            MainCirc.GetZFromPlot(Intersections(0).X, Intersections(0).Y)
+        Dim Image1Z As Impedance =
+            MainCirc.GetZFromPlot(Intersections(1).X, Intersections(1).Y)
+        ' Determine the image Admittance at each intersection.
+        Dim Image0Y As Admittance =
+            MainCirc.GetYFromPlot(Intersections(0).X, Intersections(0).Y)
+        Dim Image1Y As Admittance =
+            MainCirc.GetYFromPlot(Intersections(1).X, Intersections(1).Y)
+
+        '
+        '
+        ' XXXXX WHAT NEXT? XXXXX
+        '
+
+        ' Whether moving CW or CCW, the R- and G-circles through the image
+        ' Impedances will intersect at two points that have the same R and same
+        ' G values.
+
+        '' THESE CHECKS CAN BE DELETED/COMMENTED AFTER THE R AND G VALUE RESULTS
+        '' ARE KNOWN TO BE CORRECT.
+        If Not EqualEnough(Image1Z.Resistance, Image0Z.Resistance) Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ApplicationException("R values do not match.")
+        End If
+        If Not EqualEnough(Image1Y.Conductance, Image0Y.Conductance) Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ApplicationException("G values do not match.")
+        End If
+
+
+
+
+        ' There are two ways to proceed:
+        '  - Use a shunt capacitor to move CW on the G-circle to the R=Z0
+        '  circle, then use a series inductor to move CW on the R=Z0 circle to
+        '  the center.
+        '  - Use a shunt inductor to move CCW on the G-circle to the R=Z0
+        '  circle, then use a series capacitor to move CCW on the R=Z0 circle to
+        '  the center.
+        ' Would there ever be a reason to prefer one approach over the other?
+        '  - To favor high- or low-pass?
+        '  - To favor the shortest first path?
+
+
+
+        '
+        '
+        ' XXXXX WHAT NEXT? XXXXX
+        '
+
+        ' Whether moving CW or CCW, the R- and G-circles through the image
+        ' Impedances will intersect at two points that have the same R and same
+        ' G values.
+
+
+
+        Return False ' DEFAULT UNTIL IMPLEMENTED.
 
 
 
         ''
         ''
         '' XXXXX WHAT NEXT? XXXXX
-
-        ' Determine Z at either intersection.
-        Dim Z1 As Impedance = MainCirc.GetZFromPlot(Intersections(0).X, Intersections(0).Y)
-
-
-
-
-
-
-        ''
-        ''
-        '' XXXXX WHAT NEXT? XXXXX
-        '' Move CW or CCW on the G-circle to reach the R=Z0 circle.
-        '' Would there ever be a case to prefer the long path?
-        '' Maybe to favor high- or low-pass?
         ''
         ''
 
-        '' Whether moving CW or CCW, the R and G-circles through Z will intersect at two points that have
-        '' the same R and and same G values.
+
+
+
 
 
 
@@ -563,11 +610,11 @@ Partial Public Structure Impedance
             Return False
         End If
 
-        If NormR >= z0 Then
+        If NormR >= 1.0 Then
             Return If(NormR.Equals(z0),
                 Me.OnREqualsZ0(z0, transformations),
                 Me.InsideREqualsZ0(z0, transformations))
-        ElseIf NormG >= Y0 Then
+        ElseIf NormG >= 1.0 Then
             Return If(NormG.Equals(Y0),
                 Me.OnGEqualsY0(z0, transformations),
                 Me.InsideGEqualsY0(z0, transformations))
