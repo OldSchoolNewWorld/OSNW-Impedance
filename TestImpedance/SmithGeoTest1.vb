@@ -383,7 +383,7 @@ Namespace GeometryTests
         <InlineData(2.0, 8.0, 1.5, 2.0, 5.5, 1, 2.0, 6.5, 2.0, 6.5)> ' Outside tangent.
         <InlineData(2.0, 5.5, 1, 2.0, 8.0, 1.5, 2.0, 6.5, 2.0, 6.5)> ' Outside tangent.
         <InlineData(2.0, 8.0, 1.5, 3.0, 8.0, 0.5, 3.5, 8, 3.5, 8)> ' Inside tangent.
-        Sub GetIntersections_OneIntersections_Succeeds(
+        Sub GetIntersections_OneIntersection_Succeeds(
             c1X As Double, c1Y As Double, c1R As Double,
             c2X As Double, c2Y As Double, c2R As Double,
             expect1x As Double, expect1y As Double,

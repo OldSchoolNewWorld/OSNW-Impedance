@@ -310,7 +310,7 @@ Partial Public Structure Impedance
 
         'Dim NormR As System.Double = Me.Resistance / z0
         'Dim NormX As System.Double = Me.Reactance / z0
-        Dim Y0 As System.Double = 1.0 / z0
+        'Dim Y0 As System.Double = 1.0 / z0
         Dim Y As Admittance = Me.ToAdmittance()
         'Dim NormG As System.Double = Y.Conductance / Y0
         'Dim NormB As System.Double = Y.Susceptance / Y0
@@ -323,7 +323,8 @@ Partial Public Structure Impedance
         ' G-circle that contains the load impedance.
 
         ' Determine the circles and intersections.
-        Dim MainCirc As New SmithMainCircle(1.0, 1.0, 1.0, z0) ' Arbitrary.
+        '        Dim MainCirc As New SmithMainCircle(1.0, 1.0, 1.0, z0) ' Arbitrary.
+        Dim MainCirc As New SmithMainCircle(4.0, 5.0, 4.0, z0) ' Arbitrary.
         Dim CircR As New RCircle(MainCirc, z0)
         Dim CircG As New GCircle(MainCirc, Y.Conductance)
         Dim Intersections _
@@ -362,38 +363,36 @@ Partial Public Structure Impedance
         ' There are now two intersection points, with one each above and below
         ' the resonance line. The X values match. The Y values are the same
         ' distance above and below the resonance line.
+
         ' Determine the image Impedance at each intersection.
         Dim Image0Z As Impedance =
             MainCirc.GetZFromPlot(Intersections(0).X, Intersections(0).Y)
         Dim Image1Z As Impedance =
             MainCirc.GetZFromPlot(Intersections(1).X, Intersections(1).Y)
+
         ' Determine the image Admittance at each intersection.
         Dim Image0Y As Admittance =
             MainCirc.GetYFromPlot(Intersections(0).X, Intersections(0).Y)
         Dim Image1Y As Admittance =
             MainCirc.GetYFromPlot(Intersections(1).X, Intersections(1).Y)
 
-        '
-        '
-        ' XXXXX WHAT NEXT? XXXXX
-        '
-
-        ' Whether moving CW or CCW, the R- and G-circles through the image
-        ' Impedances will intersect at two points that have the same R and same
-        ' G values.
+        ' Whether moving CW or CCW, the R=Z0 circle and the G-circle through the
+        ' image Impedances will intersect at two points that have the same R and
+        ' same G values.
 
         '' THESE CHECKS CAN BE DELETED/COMMENTED AFTER THE R AND G VALUE RESULTS
         '' ARE KNOWN TO BE CORRECT.
-        If Not EqualEnough(Image1Z.Resistance, Image0Z.Resistance) Then
-            'Dim CaughtBy As System.Reflection.MethodBase =
-            '    System.Reflection.MethodBase.GetCurrentMethod
-            Throw New System.ApplicationException("R values do not match.")
-        End If
-        If Not EqualEnough(Image1Y.Conductance, Image0Y.Conductance) Then
-            'Dim CaughtBy As System.Reflection.MethodBase =
-            '    System.Reflection.MethodBase.GetCurrentMethod
-            Throw New System.ApplicationException("G values do not match.")
-        End If
+        'If Not EqualEnough(Image1Z.Resistance, Image0Z.Resistance) Then
+        '    'Dim CaughtBy As System.Reflection.MethodBase =
+        '    '    System.Reflection.MethodBase.GetCurrentMethod
+        '    Throw New System.ApplicationException("R values do not match.")
+        'End If
+        'If Not EqualEnough(Image1Y.Conductance, Image0Y.Conductance) Then
+        '    'Dim CaughtBy As System.Reflection.MethodBase =
+        '    '    System.Reflection.MethodBase.GetCurrentMethod
+        '    Throw New System.ApplicationException("G values do not match.")
+        'End If
+
 
 
 
@@ -416,9 +415,46 @@ Partial Public Structure Impedance
         ' XXXXX WHAT NEXT? XXXXX
         '
 
-        ' Whether moving CW or CCW, the R- and G-circles through the image
-        ' Impedances will intersect at two points that have the same R and same
-        ' G values.
+        ' Determine the needed change for the move to the image Impedance.
+        Dim Val01 As System.Double = Image0Z.Reactance - Me.Reactance
+        Dim Val11 As System.Double = Image1Z.Reactance - Me.Reactance
+
+
+
+        Dim ImageResult0 As New Impedance(Me.Resistance, Me.Reactance + Val01)
+        Dim ImageResult1 As New Impedance(Me.Resistance, Me.Reactance + Val11)
+
+
+
+
+
+        Return False ' DEFAULT UNTIL IMPLEMENTED.
+
+
+
+
+
+
+
+
+
+        ' Determine the needed change for the move from the image Impedance to
+        ' the center.
+        Dim Val02 As System.Double = Image0Z.Reactance - Me.Reactance
+        Dim Val12 As System.Double = Image1Z.Reactance - Me.Reactance
+
+
+
+
+        '' CW on a G-circle needs a shunt capacitor.
+        'Dim Val02 As System.Double = Val1
+
+        '' CCW on a G-circle needs a shunt inductor.
+        'Dim Val11 As System.Double = Val1
+
+
+
+
 
 
 
