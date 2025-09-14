@@ -3,6 +3,7 @@ Option Strict On
 Option Compare Binary
 Option Infer Off
 Imports System.Net.Mime.MediaTypeNames
+Imports System.Runtime.CompilerServices
 Imports System.Runtime.InteropServices
 
 
@@ -299,6 +300,136 @@ Partial Public Structure Impedance
     End Function ' OnGEqualsY0
 
     '''' <summary>
+    '''' xxxxxxxxxxxxxxxxxx
+    '''' </summary>
+    '''' <param name="mainCirc">xxxxxxxxxxxxxxxxxx</param>
+    '''' <param name="intersection">xxxxxxxxxxxxxxxxxx</param>
+    '''' <param name="transformations">xxxxxxxxxxxxxxxxxx</param>
+    '''' <returns>xxxxxxxxxxxxxxxxxx</returns>
+    Private Function InsideREqualsZ0(ByVal mainCirc As SmithMainCircle,
+        ByVal intersection As System.Drawing.PointF,
+        ByRef transformation As Transformation) As System.Boolean
+
+        ' DEV: This development implementation is based on selection of pure
+        ' impedances. A future derivation might need to select the nearest
+        ' commonly available component values, as a pratical consideration. In
+        ' that case, the math should be changed to add an impedance/admittance
+        ' with actual R/X/G/B values.
+
+        Try
+
+            ' First move.
+            Dim ImageY As Admittance =
+                mainCirc.GetYFromPlot(intersection.X, intersection.Y)
+            Dim DiffB As System.Double =
+                ImageY.Susceptance - Me.ToAdmittance.Susceptance
+
+            ' Second move.
+            Dim ImageZ As Impedance =
+                mainCirc.GetZFromPlot(intersection.X, intersection.Y)
+            Dim DiffR As System.Double = -ImageZ.Reactance
+
+            ' Select the transformations based on the location of the
+            ' intersection relative to the resonance line.
+            If intersection.Y > mainCirc.GridCenterY Then
+                ' Intersection above the resonance line.
+
+                ' Use a shunt inductor to move CCW on the G-circle to the R=Z0
+                ' circle, then use a series capacitor to move CCW on the R=Z0
+                ' circle to the center.
+                transformation = New Transformation With {
+                    .Style = TransformationStyles.ShuntIndSeriesCap,
+                    .Value1 = DiffB,
+                    .Value2 = DiffR
+                }
+
+            Else
+                ' Intersection below the resonance line.
+
+                '  Use a shunt capacitor to move CW on the G-circle to the R=Z0
+                '  circle, then use a series inductor to move CW on the R=Z0
+                '  circle to the center.
+                transformation = New Transformation With {
+                    .Style = TransformationStyles.ShuntCapSeriesInd,
+                    .Value1 = DiffB,
+                    .Value2 = DiffR
+                }
+            End If
+
+        Catch CaughtEx As Exception
+
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            'Throw New System.InvalidOperationException(
+            '    $"Failed to process {CaughtBy}.")
+
+            Return False ' DEFAULT UNTIL IMPLEMENTED.
+
+        End Try
+
+        ' On getting this far,
+        Return True
+
+    End Function ' InsideREqualsZ0
+
+    ''' <summary>
+    ''' xxxxxxxxxxxxxxxxxx
+    ''' Worker for tests below.
+    ''' </summary>
+    ''' <param name="z0">xxxxxxxxxxxxxxxxxx</param>
+    ''' <param name="aTransformation">xxxxxxxxxxxxxxxxxx</param>
+    ''' <returns>xxxxxxxxxxxxxxxxxx</returns>
+    Private Function ValidateTransformation(ByVal z0 As System.Double,
+        ByVal aTransformation As Transformation) As System.Boolean
+
+        Dim TargetZ As New Impedance(z0, 0.0)
+        Dim WorkZ As Impedance
+        Dim FixupY As Admittance
+        Dim FixupZ As Impedance
+
+        If aTransformation.Style = TransformationStyles.ShuntCapSeriesInd Then
+
+            FixupY = New Admittance(0.0, aTransformation.Value1)
+            WorkZ = Impedance.AddShuntImpedance(Me, FixupY.ToImpedance)
+
+            FixupZ = New Impedance(0.0, aTransformation.Value2)
+            WorkZ = Impedance.AddShuntImpedance(WorkZ, FixupZ)
+
+            Dim NearlyZero As System.Double = z0 * 0.000001
+            If Not Impedance.EqualEnough(WorkZ.Resistance, z0) OrElse
+                Not Impedance.EqualZeroEnough(WorkZ.Reactance, NearlyZero) Then
+                'Dim CaughtBy As System.Reflection.MethodBase =
+                '    System.Reflection.MethodBase.GetCurrentMethod
+                Throw New System.ApplicationException("Transformation did not reach target.")
+            End If
+
+        ElseIf aTransformation.Style = TransformationStyles.ShuntIndSeriesCap Then
+
+            FixupY = New Admittance(0.0, aTransformation.Value1)
+            WorkZ = Impedance.AddShuntImpedance(Me, FixupY.ToImpedance)
+
+            FixupZ = New Impedance(0.0, aTransformation.Value2)
+            WorkZ = Impedance.AddSeriesImpedance(WorkZ, FixupZ)
+
+            Dim NearlyZero As System.Double = z0 * 0.000001
+            If Not Impedance.EqualEnough(WorkZ.Resistance, z0) OrElse
+                Not Impedance.EqualZeroEnough(WorkZ.Reactance, NearlyZero) Then
+                'Dim CaughtBy As System.Reflection.MethodBase =
+                '    System.Reflection.MethodBase.GetCurrentMethod
+                Throw New System.ApplicationException("Transformation did not reach target.")
+            End If
+
+        Else
+            ' Invalid transformation style.
+            Return False
+        End If
+
+        ' On getting this far,
+        Return True
+
+    End Function ' ValidateTransformation
+
+    '''' <summary>
     '''' GHI: Inside the R=Z0 circle. Two choices: CW or CCW on the G-circle.
     '''' </summary>
     '''' <param name="z0">xxxxxxxxxx</param>
@@ -315,21 +446,27 @@ Partial Public Structure Impedance
         'Dim NormG As System.Double = Y.Conductance / Y0
         'Dim NormB As System.Double = Y.Susceptance / Y0
 
-        ' From inside the R=Z0 circle, there are two choices:
-        '  - Move CW on the G-circle to reach the R=Z0 circle, using a shunt capacitor.
-        '  - Move CCW on the G-circle to reach the R=Z0 circle, using a shunt inductor.
-
         ' The first move will be to the intersection of the R=Z0 circle and the
-        ' G-circle that contains the load impedance.
+        ' G-circle that contains the load impedance. From inside the R=Z0
+        ' circle, there are two ways to proceed:
+        '  - Use a shunt capacitor to move CW on the G-circle to the R=Z0
+        '  circle, then use a series inductor to move CW on the R=Z0 circle to
+        '  the center.
+        '  - Use a shunt inductor to move CCW on the G-circle to the R=Z0
+        '  circle, then use a series capacitor to move CCW on the R=Z0 circle to
+        '  the center.
+        ' Would there ever be a reason to prefer one approach over the other?
+        '  - To favor high- or low-pass?
+        '  - To favor the shortest first path?
 
-        ' Determine the circles and intersections.
+        ' Determine the circles and their intersections.
         '        Dim MainCirc As New SmithMainCircle(1.0, 1.0, 1.0, z0) ' Arbitrary.
-        Dim MainCirc As New SmithMainCircle(4.0, 5.0, 4.0, z0) ' Arbitrary.
+        Dim MainCirc As New SmithMainCircle(4.0, 5.0, 4.0, z0) ' Match test data.
         Dim CircR As New RCircle(MainCirc, z0)
         Dim CircG As New GCircle(MainCirc, Y.Conductance)
         Dim Intersections _
             As System.Collections.Generic.List(Of System.Drawing.PointF) =
-            GenericCircle.GetIntersections(CircR, CircG)
+                GenericCircle.GetIntersections(CircR, CircG)
 
         '' THESE CHECKS CAN BE DELETED/COMMENTED AFTER THE GetIntersections()
         '' RESULTS ARE KNOWN TO BE CORRECT.
@@ -360,97 +497,51 @@ Partial Public Structure Impedance
         '    Throw New System.ApplicationException("Y offsets do not match.")
         'End If
 
-        ' There are now two intersection points, with one each above and below
+        ' There are now two intersection points, with one above and one below
         ' the resonance line. The X values match. The Y values are the same
         ' distance above and below the resonance line.
 
-        ' Determine the image Impedance at each intersection.
-        Dim Image0Z As Impedance =
-            MainCirc.GetZFromPlot(Intersections(0).X, Intersections(0).Y)
-        Dim Image1Z As Impedance =
-            MainCirc.GetZFromPlot(Intersections(1).X, Intersections(1).Y)
+        ' Expect two valid solutions, one to each intersection.
+        Dim Transformation0 As Transformation
+        If Not Me.InsideREqualsZ0(
+            MainCirc, Intersections(0), Transformation0) Then
 
-        ' Determine the image Admittance at each intersection.
-        Dim Image0Y As Admittance =
-            MainCirc.GetYFromPlot(Intersections(0).X, Intersections(0).Y)
-        Dim Image1Y As Admittance =
-            MainCirc.GetYFromPlot(Intersections(1).X, Intersections(1).Y)
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ApplicationException("Transformation 0 failed.")
+        End If
+        Dim Transformation1 As Transformation
+        If Not Me.InsideREqualsZ0(
+            MainCirc, Intersections(1), Transformation1) Then
 
-        ' Whether moving CW or CCW, the R=Z0 circle and the G-circle through the
-        ' image Impedances will intersect at two points that have the same R and
-        ' same G values.
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ApplicationException("Transformation 1 failed.")
+        End If
 
-        '' THESE CHECKS CAN BE DELETED/COMMENTED AFTER THE R AND G VALUE RESULTS
-        '' ARE KNOWN TO BE CORRECT.
-        'If Not EqualEnough(Image1Z.Resistance, Image0Z.Resistance) Then
-        '    'Dim CaughtBy As System.Reflection.MethodBase =
-        '    '    System.Reflection.MethodBase.GetCurrentMethod
-        '    Throw New System.ApplicationException("R values do not match.")
-        'End If
-        'If Not EqualEnough(Image1Y.Conductance, Image0Y.Conductance) Then
-        '    'Dim CaughtBy As System.Reflection.MethodBase =
-        '    '    System.Reflection.MethodBase.GetCurrentMethod
-        '    Throw New System.ApplicationException("G values do not match.")
-        'End If
-
-
-
-
-
-        ' There are two ways to proceed:
-        '  - Use a shunt capacitor to move CW on the G-circle to the R=Z0
-        '  circle, then use a series inductor to move CW on the R=Z0 circle to
-        '  the center.
-        '  - Use a shunt inductor to move CCW on the G-circle to the R=Z0
-        '  circle, then use a series capacitor to move CCW on the R=Z0 circle to
-        '  the center.
-        ' Would there ever be a reason to prefer one approach over the other?
-        '  - To favor high- or low-pass?
-        '  - To favor the shortest first path?
+        ' THESE CHECKS CAN BE DELETED/COMMENTED AFTER THE Transformation RESULTS
+        ' ARE KNOWN TO BE CORRECT.
+        ' There should now be two valid solutions the tune to Z=Z0+j0.0.
+        ' Check first solution.
+        If Not ValidateTransformation(z0, Transformation0) Then
+            Return False ' DEFAULT UNTIL IMPLEMENTED.
+        End If
+        ' Check second solution.
+        If Not ValidateTransformation(z0, Transformation1) Then
+            Return False ' DEFAULT UNTIL IMPLEMENTED.
+        End If
 
 
 
-        '
-        '
-        ' XXXXX WHAT NEXT? XXXXX
-        '
-
-        ' Determine the needed change for the move to the image Impedance.
-        Dim Val01 As System.Double = Image0Z.Reactance - Me.Reactance
-        Dim Val11 As System.Double = Image1Z.Reactance - Me.Reactance
-
-
-
-        Dim ImageResult0 As New Impedance(Me.Resistance, Me.Reactance + Val01)
-        Dim ImageResult1 As New Impedance(Me.Resistance, Me.Reactance + Val11)
+        ''
+        ''
+        '' XXXXX WHAT NEXT? XXXXX
+        ''
+        ''
 
 
 
 
-
-        Return False ' DEFAULT UNTIL IMPLEMENTED.
-
-
-
-
-
-
-
-
-
-        ' Determine the needed change for the move from the image Impedance to
-        ' the center.
-        Dim Val02 As System.Double = Image0Z.Reactance - Me.Reactance
-        Dim Val12 As System.Double = Image1Z.Reactance - Me.Reactance
-
-
-
-
-        '' CW on a G-circle needs a shunt capacitor.
-        'Dim Val02 As System.Double = Val1
-
-        '' CCW on a G-circle needs a shunt inductor.
-        'Dim Val11 As System.Double = Val1
 
 
 
@@ -476,73 +567,8 @@ Partial Public Structure Impedance
 
 
 
-        '''' CW on a G-circle needs a shunt capacitor.
-        ''Dim Val11 As System.Double = -NormB
-        ''Dim EffectiveY1 As New Admittance(0, Val11)
-        ''Dim EffectiveZ1 As Impedance = EffectiveY1.ToImpedance
-        ''Dim Image1 As Impedance = Impedance.AddShuntImpedance(Me, EffectiveZ1)
-
-        '' CW on a G-circle needs a shunt capacitor.
-        '' Move to the image impedance point.
-
-        'Dim ImageZR As System.Double = z0
-        'Dim ImageZX As System.Double
-        'Dim ImageYG As System.Double = normg
-        'Dim ImageYB As System.Double
-
-
-
-
-
-        'Dim WantToMoveToZ As New Impedance(1.0, NormX)
-        'Dim WantToMoveToY As Admittance = WantToMoveToZ.ToAdmittance
-        'Dim DeltaYComp As System.Numerics.Complex =
-        '    WantToMoveToY.ToComplex - Y.ToComplex
-        'Dim DeltaY As New Admittance(DeltaYComp.Real, DeltaYComp.Imaginary)
-
-
-
-        '''' Then CW on a R-circle needs a series inductor.
-        ''        Dim Val12 As System.Double = -Image1.Reactance
-        ''        Dim EffectiveZ2 As New Impedance(0, Val12)
-
-
-        '''' Then construct the transformation.
-        ''Dim T1 As New Transformation With {
-        ''    .Style = TransformationStyles.ShuntCap,
-        ''    .Value1 = EffectiveZ1.Reactance,
-        ''    .Value2 = EffectiveZ2.Reactance
-        ''}
-
-
-
-
-        '''' CCW on a G-circle needs a shunt inductor.
-        ''Dim V21 As System.Double = -NormB
-        ''Dim EffectiveY2 As New Admittance(0, V21)
-        ''Dim EffectiveZ2 As Impedance = EffectiveY2.ToImpedance
-
-        '''' Then that needs xxxxxxxxxxxxxx.
-
-        '''' Then construct the transformation.
-        ''Dim T2 As New Transformation With {
-        ''    .Style = TransformationStyles.ShuntInd,
-        ''    .Value1 = EffectiveZ2.Reactance
-        ''}
-        'Dim T2 As New Transformation
-
-
-
-
-        'transformations = {T1, T2}
-        'Return True
-
-
-
 
         Return False ' DEFAULT UNTIL IMPLEMENTED.
-
-
     End Function ' InsideREqualsZ0
 
     '''' <summary>

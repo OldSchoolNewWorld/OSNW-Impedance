@@ -152,26 +152,49 @@ Public Structure Impedance
     ''' <param name="otherVal">Specifies the value to be compared to
     ''' <paramref name="refVal"/>.</param>
     ''' <param name="refVal">Specifies a base value for comparison.</param>
-    ''' <returns><c>True</c> if the values are reasonably close;
+    ''' <returns><c>True</c> if the values are reasonably close in value;
     ''' otherwise, <c>False</c>.</returns>
-    '''<remarks>This does the comparison based on scale, not on an absolute
-    ''' numeric difference.</remarks>
+    ''' <remarks>
+    ''' <c>EqualEnough()</c> does the comparison based on scale, not on an
+    ''' absolute numeric difference.
+    ''' There is no way to scale a comparison to zero. When a zero reference would cause a failure here, use <see cref="EqualZeroEnough"/>.
+    ''' </remarks>
     Public Shared Function EqualEnough(ByVal otherVal As System.Double,
         ByVal refVal As System.Double) As System.Boolean
 
         ' REF: Precision and complex numbers
         ' <see href="https://github.com/dotnet/docs/blob/main/docs/fundamentals/runtime-libraries/system-numerics-complex.md#precision-and-complex-numbers"/>
 
-        Const DIFFACTOR As System.Double = 0.001
+        Const DIFFFACTOR As System.Double = 0.001
 
-        'Dim Tolerance As System.Double = System.Math.Abs(refVal * DIFFACTOR)
-        'Dim Diff As System.Double = System.Math.Abs(otherVal - refVal)
+        'Dim Tolerance As System.Double = System.Math.Abs(refVal * DIFFFACTOR)
+        'Dim Diff As System.Double = System.Math.Abs(value - refVal)
         'Return Diff < Tolerance
 
         Return System.Math.Abs(otherVal - refVal) <
-            System.Math.Abs(refVal * DIFFACTOR)
+            System.Math.Abs(refVal * DIFFFACTOR)
 
     End Function ' EqualEnough
+
+    ''' <summary>
+    ''' Check for reasonable equality to zero when using floating point values.
+    ''' </summary>
+    ''' <param name="value">xxxxxxxxxxxxx</param>
+    ''' <param name="zeroTolerance">Specifies an acceptable offset from
+    ''' zero.</param>
+    ''' <returns><c>True</c> if <paramref name="value"/> is reasonably close to
+    ''' zero; otherwise, <c>False</c>.</returns>
+    ''' <remarks>Use this when an actual zero reference would cause a failure in
+    ''' <see cref="EqualEnough"/>. Select <paramref name="value"/> such that it
+    ''' is a good representation of zero relative to other known
+    ''' values.</remarks>
+    Public Shared Function EqualZeroEnough(ByVal value As System.Double,
+        ByVal zeroTolerance As System.Double) As System.Boolean
+
+        ' REF: Precision and complex numbers
+        ' <see href="https://github.com/dotnet/docs/blob/main/docs/fundamentals/runtime-libraries/system-numerics-complex.md#precision-and-complex-numbers"/>
+        Return System.Math.Abs(value) < System.Math.Abs(zeroTolerance)
+    End Function ' EqualZeroEnough
 
     ' public override bool Equals([NotNullWhen(true)] object? obj)
     ' {
@@ -213,7 +236,7 @@ Public Structure Impedance
         ' This may have to be changed to determine equality within some
         ' reasonable bounds. See 
         ' <see href="https://github.com/dotnet/docs/blob/main/docs/fundamentals/runtime-libraries/system-numerics-complex.md#precision-and-complex-numbers"/>
-        ' That is now available via EqualEnough(otherVal, refVal) above.
+        ' That is now available via EqualEnough(value, refVal) above.
         Return Me.ToComplex().Equals(value.ToComplex())
     End Function ' Equals
 
