@@ -333,7 +333,7 @@ Public Class SmithMainCircle
     End Function ' PlotIsInside
 
     ''' <summary>
-    ''' Calculates the radius of a R-circle associated with the current instance
+    ''' Calculates the radius of an R-circle associated with the current instance
     ''' for a <paramref name="resistance"/> specified in ohms.
     ''' </summary>
     ''' <param name="resistance">Specifies the resistance in ohms.</param>

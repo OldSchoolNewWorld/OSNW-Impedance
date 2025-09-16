@@ -147,6 +147,26 @@ Public Structure Impedance
 #Region "System.ValueType Implementations"
 
     ''' <summary>
+    ''' Check for reasonable equality to zero when using floating point values.
+    ''' </summary>
+    ''' <param name="value">xxxxxxxxxxxxx</param>
+    ''' <param name="zeroTolerance">Specifies an acceptable offset from
+    ''' zero.</param>
+    ''' <returns><c>True</c> if <paramref name="value"/> is reasonably close to
+    ''' zero; otherwise, <c>False</c>.</returns>
+    ''' <remarks>Use this when an actual zero reference would cause a failure in
+    ''' <see cref="EqualEnough"/>. Select <paramref name="zeroTolerance"/> such
+    ''' that it is a good representation of zero relative to other known
+    ''' values.</remarks>
+    Public Shared Function EqualEnoughZero(ByVal value As System.Double,
+        ByVal zeroTolerance As System.Double) As System.Boolean
+
+        ' REF: Precision and complex numbers
+        ' <see href="https://github.com/dotnet/docs/blob/main/docs/fundamentals/runtime-libraries/system-numerics-complex.md#precision-and-complex-numbers"/>
+        Return System.Math.Abs(value) < System.Math.Abs(zeroTolerance)
+    End Function ' EqualEnoughZero
+
+    ''' <summary>
     ''' Check for reasonable equality when using floating point values.
     ''' </summary>
     ''' <param name="otherVal">Specifies the value to be compared to
@@ -154,10 +174,14 @@ Public Structure Impedance
     ''' <param name="refVal">Specifies a base value for comparison.</param>
     ''' <returns><c>True</c> if the values are reasonably close in value;
     ''' otherwise, <c>False</c>.</returns>
+    ''' <exception cref="ArgumentOutOfRangeException"></exception>
+    ''' <exception cref="System.ArgumentOutOfRangeException">When either
+    ''' parameter is zero.</exception>
     ''' <remarks>
     ''' <c>EqualEnough()</c> does the comparison based on scale, not on an
     ''' absolute numeric difference.
-    ''' There is no way to scale a comparison to zero. When a zero reference would cause a failure here, use <see cref="EqualZeroEnough"/>.
+    ''' There is no way to scale a comparison to zero. When a zero reference
+    ''' would cause a failure here, use <see cref="EqualEnoughZero"/>.
     ''' </remarks>
     Public Shared Function EqualEnough(ByVal otherVal As System.Double,
         ByVal refVal As System.Double) As System.Boolean
@@ -167,34 +191,27 @@ Public Structure Impedance
 
         Const DIFFFACTOR As System.Double = 0.001
 
-        'Dim Tolerance As System.Double = System.Math.Abs(refVal * DIFFFACTOR)
-        'Dim Diff As System.Double = System.Math.Abs(value - refVal)
-        'Return Diff < Tolerance
+        ' Input checking.
+        Const ZeroMessage As System.String = MSGCHZV & " Use EqualEnoughZero()."
+        If refVal.Equals(0.0) Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(
+                NameOf(refVal), ZeroMessage)
+
+        End If
+        If otherVal.Equals(0.0) Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(
+                NameOf(otherVal), ZeroMessage)
+
+        End If
 
         Return System.Math.Abs(otherVal - refVal) <
             System.Math.Abs(refVal * DIFFFACTOR)
 
     End Function ' EqualEnough
-
-    ''' <summary>
-    ''' Check for reasonable equality to zero when using floating point values.
-    ''' </summary>
-    ''' <param name="value">xxxxxxxxxxxxx</param>
-    ''' <param name="zeroTolerance">Specifies an acceptable offset from
-    ''' zero.</param>
-    ''' <returns><c>True</c> if <paramref name="value"/> is reasonably close to
-    ''' zero; otherwise, <c>False</c>.</returns>
-    ''' <remarks>Use this when an actual zero reference would cause a failure in
-    ''' <see cref="EqualEnough"/>. Select <paramref name="value"/> such that it
-    ''' is a good representation of zero relative to other known
-    ''' values.</remarks>
-    Public Shared Function EqualZeroEnough(ByVal value As System.Double,
-        ByVal zeroTolerance As System.Double) As System.Boolean
-
-        ' REF: Precision and complex numbers
-        ' <see href="https://github.com/dotnet/docs/blob/main/docs/fundamentals/runtime-libraries/system-numerics-complex.md#precision-and-complex-numbers"/>
-        Return System.Math.Abs(value) < System.Math.Abs(zeroTolerance)
-    End Function ' EqualZeroEnough
 
     ' public override bool Equals([NotNullWhen(true)] object? obj)
     ' {

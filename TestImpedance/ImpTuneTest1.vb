@@ -5,7 +5,7 @@ Option Infer Off
 Imports OSNW.Numerics
 Imports Xunit
 
-' The terminology here relates to solving conjugate matches on a Smith chart.
+' The terminology here relates to solving conjugate matches on a Smith Chart.
 
 ' Chart location cases:
 ' A: At the short circuit point. Omit - covered by B.
@@ -213,21 +213,13 @@ Namespace TrySelectTuningLayoutTests
     Public Class TestTrySelectTuningLayoutGHI
         ' GHI: Inside the R=Z0 circle. Two choices: CW or CCW on the G-circle.
 
-        '<InlineData(ChartX, ChartY, ChartRad,      Z0,        R,       X,      G,       B,    VSWR,  PlotX,  PlotY, RadiusR, RadiusX, RadiusG, RadiusB, RadiusV)> ' Model
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,        R,       X,      G,       B,    VSWR,  PlotX,  PlotY, RadiusR, RadiusX, RadiusG, RadiusB, RadiusV)> ' Base circle
-        '<Theory>
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   2.0000,   1/2.0, 0.4706, -0.1176,  2.1626, 4.7027, 5.2162,   2.0/3,  4.0000,  1.3600, 17.0000,  0.7352)> ' G1: Inside R=Z0 circle, above resonance line.
-        '<InlineData(4.0000, 5.0000,   2.0000, 50.0000, 100.0000, 25.0000, 0.0094, -0.0024,  2.1626, 4.7027, 5.2162,   2.0/3,  4.0000,  1.3605, 16.6667,  0.7352)> ' G2: Inside R=Z0 circle, above resonance line, Z0=50
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   3.0000,  0.0000,  1.0/3,  0.0000,  3.0000, 5.0000, 5.0000,  0.5000,     INF,  1.5000,     INF,  1.0000)> ' H: Inside R=Z0 circle, on line
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   2.0000, -2.0000, 0.2500,  0.2500,  4.2656, 5.0770, 4.3846,   2.0/3,  1.0000,  1.6000,  8.0000,  1.2404)> ' I: Inside R=Z0 circle, below resonance line.   Public Sub TrySelectTuning_PositionFCW_Succeeds()
-
         '<InlineData(     Z0,        R,       X)> ' Model
         <Theory>
         <InlineData(1.0, 2.0, 1 / 2.0)> ' G1: Inside R=Z0 circle, above resonance line.
         <InlineData(50.0, 100.0, 25.0)> ' G2: Inside R=Z0 circle, above resonance line, Z0=50
         <InlineData(1.0, 3.0, 0.0000)> ' H: Inside R=Z0 circle, on line
         <InlineData(1.0, 2.0, -2.0)> ' I: Inside R=Z0 circle, below resonance line.
-        Public Sub TrySelectTuning_PositionGCW_Succeeds(z0 As Double, r As Double, x As Double)
+        Public Sub TrySelectTuning_PositionGHI_Succeeds(z0 As Double, r As Double, x As Double)
 
             Dim TestZ As New OSNW.Numerics.Impedance(r, x)
 
@@ -236,44 +228,23 @@ Namespace TrySelectTuningLayoutTests
             If Not TestZ.TrySelectTuningLayout(z0, transformations) Then
                 Assert.True(False, Messages.TF)
             End If
+            Assert.True(True)
 
-
-
-
-            'xxxx
-
-
-            ' Assert.True(False)
         End Sub
 
-        '<Fact>
-        'Public Sub TrySelectTuning_PositionGCCW_Succeeds()
-
-        '    Dim TestZ As New OSNW.Numerics.Impedance(2.0, 1.0)
-        '    Dim TestZ0 As Double = 1.0
-
-        '    Dim TargetZ As New Impedance(TestZ0, 0.0)
-        '    Dim transformations As Transformation() = Array.Empty(Of Transformation)
-
-
-        '    xxxx
-
-
-
-
-        ' Assert.True(False)
+        '<Theory>
+        'Public Sub TrySelectTuning_PositionGHI_Fails()
+        '    '
+        '    '
+        '    '
+        '    '
+        '    '
         'End Sub
 
     End Class ' TestTrySelectTuningLayoutGHI
-    'xxxx
-
-
-
-
 
     Public Class TestTrySelectTuningX
         ' Chart location cases:
-        ' GHI: Inside the R=Z0 circle. Two choices: CW or CCW on the G-circle.
         ' LMN: Inside the G=Y0 circle. Two choices: CW or CCW on the R-circle.
         ' O: In the top remainder.
         ' P: In the bottom remainder.

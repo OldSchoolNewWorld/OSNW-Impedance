@@ -2,16 +2,11 @@
 Option Strict On
 Option Compare Binary
 Option Infer Off
-Imports System.Net.Mime.MediaTypeNames
-Imports System.Runtime.CompilerServices
-Imports System.Runtime.InteropServices
-
-
 
 ' The generic tuning process is intended to be able to select a method to obtain
 ' a conjugate match for a load impedance to a source characteristic impedance.
 ' It is not intended to select specific capacitance or inductance values. The
-' goal is to be able to lay out a L-section and select a reactance value for
+' goal is to be able to lay out an L-section and select a reactance value for
 ' each component. Those reactance values could then be used to select
 ' appropriate component values based on frequency.
 
@@ -37,9 +32,9 @@ Imports System.Runtime.InteropServices
 ' http://www.antenna-theory.com/tutorial/smith/chart.php
 
 '              Component impact
-' A series inductor moves CW on a R-circle.
+' A series inductor moves CW on an R-circle.
 ' A shunt inductor moves CCW on a G-circle.
-' A series capacitor moves CCW on a R-circle.
+' A series capacitor moves CCW on an R-circle.
 ' A shunt capacitor moves CW on a G-circle.
 
 '             Component selection
@@ -209,7 +204,7 @@ Partial Public Structure Impedance
 
             If NormX > 0.0 Then
                 ' E: On R=Z0 circle, above resonance line. Only needs reactance.
-                ' CCW on a R-circle needs a series capacitor.
+                ' CCW on an R-circle needs a series capacitor.
                 transformations = {
                     New Transformation With {
                     .Style = TransformationStyles.SeriesCap,
@@ -218,7 +213,7 @@ Partial Public Structure Impedance
                 Return True
 
                 ' Consider alternative approaches.
-                ' CW on a R-circle would need a series inductor, increasing
+                ' CW on an R-circle would need a series inductor, increasing
                 ' the inductance of an already inductive load. NO.
                 ' What about tuning the equivalent admittance?
                 ' CCW on a G-circle would need a shunt inductor, reducing
@@ -229,7 +224,7 @@ Partial Public Structure Impedance
 
             Else
                 ' F: On R=Z0 circle, below resonance line. Only needs reactance.
-                ' CW on a R-circle needs a series inductor.
+                ' CW on an R-circle needs a series inductor.
                 transformations = {
                     New Transformation With {
                     .Style = TransformationStyles.SeriesInd,
@@ -299,37 +294,113 @@ Partial Public Structure Impedance
 
     End Function ' OnGEqualsY0
 
-    '''' <summary>
-    '''' xxxxxxxxxxxxxxxxxx
-    '''' </summary>
-    '''' <param name="mainCirc">xxxxxxxxxxxxxxxxxx</param>
-    '''' <param name="intersection">xxxxxxxxxxxxxxxxxx</param>
-    '''' <param name="transformations">xxxxxxxxxxxxxxxxxx</param>
-    '''' <returns>xxxxxxxxxxxxxxxxxx</returns>
+    ''' <summary>
+    ''' xxxxxxxxxxxxxxxxxx
+    ''' Worker for routines below.
+    ''' </summary>
+    ''' <param name="z0">xxxxxxxxxxxxxxxxxx</param>
+    ''' <param name="aTransformation">xxxxxxxxxxxxxxxxxx</param>
+    ''' <returns>xxxxxxxxxxxxxxxxxx</returns>
+    Private Function ValidateTransformation(ByVal z0 As System.Double,
+        ByVal aTransformation As Transformation) As System.Boolean
+
+        Dim TargetZ As New Impedance(z0, 0.0)
+        Dim WorkZ As Impedance
+        Dim FixupY As Admittance
+        Dim FixupZ As Impedance
+
+        If aTransformation.Style = TransformationStyles.ShuntCapSeriesInd Then
+
+            FixupY = New Admittance(0.0, aTransformation.Value1)
+            FixupZ = FixupY.ToImpedance
+            WorkZ = Impedance.AddShuntImpedance(Me, FixupZ)
+
+            FixupZ = New Impedance(0.0, aTransformation.Value2)
+            WorkZ = Impedance.AddSeriesImpedance(WorkZ, FixupZ)
+
+            Dim NearlyZero As System.Double = z0 * 0.000001
+            If Not Impedance.EqualEnough(WorkZ.Resistance, z0) Then
+                'Dim CaughtBy As System.Reflection.MethodBase =
+                '    System.Reflection.MethodBase.GetCurrentMethod
+                Throw New System.ApplicationException(
+                    "Resistance did not reach target.")
+            End If
+            If Not Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero) Then
+                'Dim CaughtBy As System.Reflection.MethodBase =
+                '    System.Reflection.MethodBase.GetCurrentMethod
+                Throw New System.ApplicationException(
+                    "Reactance did not reach target.")
+            End If
+
+        ElseIf aTransformation.Style = TransformationStyles.ShuntIndSeriesCap Then
+
+            FixupY = New Admittance(0.0, aTransformation.Value1)
+            FixupZ = FixupY.ToImpedance
+            WorkZ = Impedance.AddShuntImpedance(Me, FixupZ)
+
+            FixupZ = New Impedance(0.0, aTransformation.Value2)
+            WorkZ = Impedance.AddSeriesImpedance(WorkZ, FixupZ)
+
+            Dim NearlyZero As System.Double = z0 * 0.000001
+            If Not Impedance.EqualEnough(WorkZ.Resistance, z0) OrElse
+                Not Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero) Then
+                'Dim CaughtBy As System.Reflection.MethodBase =
+                '    System.Reflection.MethodBase.GetCurrentMethod
+                Throw New System.ApplicationException("Transformation did not reach target.")
+            End If
+
+        Else
+            ' Invalid transformation style.
+            Return False
+        End If
+
+        ' On getting this far,
+        Return True
+
+    End Function ' ValidateTransformation
+
+    ''' <summary>
+    '''  Processes one intersection found in
+    '''  <see cref="M:InsideREqualsZ0(z0, transformations)"/>".>
+    ''' </summary>
+    ''' <param name="mainCirc">xxxxxxxxxxxxxxxxxx</param>
+    ''' <param name="intersection">xxxxxxxxxxxxxxxxxx</param>
+    ''' <param name="transformation">xxxxxxxxxxxxxxxxxx</param>
+    ''' <returns>xxxxxxxxxxxxxxxxxx</returns>
     Private Function InsideREqualsZ0(ByVal mainCirc As SmithMainCircle,
         ByVal intersection As System.Drawing.PointF,
         ByRef transformation As Transformation) As System.Boolean
 
         ' DEV: This development implementation is based on selection of pure
         ' impedances. A future derivation might need to select the nearest
-        ' commonly available component values, as a pratical consideration. In
+        ' commonly available component values, as a practical consideration. In
         ' that case, the math should be changed to add an impedance/admittance
-        ' with actual R/X/G/B values.
+        ' with actual R/X values.
+
+        'Dim NormR As System.Double = Me.Resistance / z0
+        'Dim NormX As System.Double = Me.Reactance / z0
+        'Dim Y0 As System.Double = 1.0 / z0
+        Dim Y As Admittance = Me.ToAdmittance()
+        'Dim NormG As System.Double = Y.Conductance / Y0
+        'Dim NormB As System.Double = Y.Susceptance / Y0
 
         Try
 
-            ' First move.
+            ' First move, to the image impedance.
             Dim ImageY As Admittance =
                 mainCirc.GetYFromPlot(intersection.X, intersection.Y)
-            Dim DiffB As System.Double =
-                ImageY.Susceptance - Me.ToAdmittance.Susceptance
+            Dim DiffImageB As System.Double =
+                ImageY.Susceptance - Y.Susceptance
+            Dim DiffY As New Admittance(0.0, DiffImageB)
 
             ' Second move.
             Dim ImageZ As Impedance =
                 mainCirc.GetZFromPlot(intersection.X, intersection.Y)
-            Dim DiffR As System.Double = -ImageZ.Reactance
+            'Dim DiffFinalX As System.Double = 0.0 - ImageZ.Reactance
+            Dim DiffFinalX As System.Double = -ImageZ.Reactance
+            Dim DiffFinalZ As New Impedance(0.0, DiffFinalX)
 
-            ' Select the transformations based on the location of the
+            ' Select the transformations, based on the location of the
             ' intersection relative to the resonance line.
             If intersection.Y > mainCirc.GridCenterY Then
                 ' Intersection above the resonance line.
@@ -339,10 +410,9 @@ Partial Public Structure Impedance
                 ' circle to the center.
                 transformation = New Transformation With {
                     .Style = TransformationStyles.ShuntIndSeriesCap,
-                    .Value1 = DiffB,
-                    .Value2 = DiffR
+                    .Value1 = DiffImageB,
+                    .Value2 = DiffFinalX
                 }
-
             Else
                 ' Intersection below the resonance line.
 
@@ -351,8 +421,8 @@ Partial Public Structure Impedance
                 '  circle to the center.
                 transformation = New Transformation With {
                     .Style = TransformationStyles.ShuntCapSeriesInd,
-                    .Value1 = DiffB,
-                    .Value2 = DiffR
+                    .Value1 = DiffImageB,
+                    .Value2 = DiffFinalX
                 }
             End If
 
@@ -371,63 +441,6 @@ Partial Public Structure Impedance
         Return True
 
     End Function ' InsideREqualsZ0
-
-    ''' <summary>
-    ''' xxxxxxxxxxxxxxxxxx
-    ''' Worker for tests below.
-    ''' </summary>
-    ''' <param name="z0">xxxxxxxxxxxxxxxxxx</param>
-    ''' <param name="aTransformation">xxxxxxxxxxxxxxxxxx</param>
-    ''' <returns>xxxxxxxxxxxxxxxxxx</returns>
-    Private Function ValidateTransformation(ByVal z0 As System.Double,
-        ByVal aTransformation As Transformation) As System.Boolean
-
-        Dim TargetZ As New Impedance(z0, 0.0)
-        Dim WorkZ As Impedance
-        Dim FixupY As Admittance
-        Dim FixupZ As Impedance
-
-        If aTransformation.Style = TransformationStyles.ShuntCapSeriesInd Then
-
-            FixupY = New Admittance(0.0, aTransformation.Value1)
-            WorkZ = Impedance.AddShuntImpedance(Me, FixupY.ToImpedance)
-
-            FixupZ = New Impedance(0.0, aTransformation.Value2)
-            WorkZ = Impedance.AddShuntImpedance(WorkZ, FixupZ)
-
-            Dim NearlyZero As System.Double = z0 * 0.000001
-            If Not Impedance.EqualEnough(WorkZ.Resistance, z0) OrElse
-                Not Impedance.EqualZeroEnough(WorkZ.Reactance, NearlyZero) Then
-                'Dim CaughtBy As System.Reflection.MethodBase =
-                '    System.Reflection.MethodBase.GetCurrentMethod
-                Throw New System.ApplicationException("Transformation did not reach target.")
-            End If
-
-        ElseIf aTransformation.Style = TransformationStyles.ShuntIndSeriesCap Then
-
-            FixupY = New Admittance(0.0, aTransformation.Value1)
-            WorkZ = Impedance.AddShuntImpedance(Me, FixupY.ToImpedance)
-
-            FixupZ = New Impedance(0.0, aTransformation.Value2)
-            WorkZ = Impedance.AddSeriesImpedance(WorkZ, FixupZ)
-
-            Dim NearlyZero As System.Double = z0 * 0.000001
-            If Not Impedance.EqualEnough(WorkZ.Resistance, z0) OrElse
-                Not Impedance.EqualZeroEnough(WorkZ.Reactance, NearlyZero) Then
-                'Dim CaughtBy As System.Reflection.MethodBase =
-                '    System.Reflection.MethodBase.GetCurrentMethod
-                Throw New System.ApplicationException("Transformation did not reach target.")
-            End If
-
-        Else
-            ' Invalid transformation style.
-            Return False
-        End If
-
-        ' On getting this far,
-        Return True
-
-    End Function ' ValidateTransformation
 
     '''' <summary>
     '''' GHI: Inside the R=Z0 circle. Two choices: CW or CCW on the G-circle.
@@ -531,44 +544,9 @@ Partial Public Structure Impedance
             Return False ' DEFAULT UNTIL IMPLEMENTED.
         End If
 
+        ' On getting this far,
+        Return True
 
-
-        ''
-        ''
-        '' XXXXX WHAT NEXT? XXXXX
-        ''
-        ''
-
-
-
-
-
-
-
-
-
-
-
-        Return False ' DEFAULT UNTIL IMPLEMENTED.
-
-
-
-        ''
-        ''
-        '' XXXXX WHAT NEXT? XXXXX
-        ''
-        ''
-
-
-
-
-
-
-
-
-
-
-        Return False ' DEFAULT UNTIL IMPLEMENTED.
     End Function ' InsideREqualsZ0
 
     '''' <summary>
@@ -604,10 +582,6 @@ Partial Public Structure Impedance
 
 
     End Function ' InsideGEqualsY0
-    'xxxx
-
-
-
 
     ''' <summary>
     ''' Attempts to obtain a conjugate match from the current load instance to
@@ -624,7 +598,7 @@ Partial Public Structure Impedance
         As System.Boolean
 
         ' The terminology here relates to solving conjugate matches on a Smith
-        ' chart.
+        ' Chart.
 
         ' Chart location cases:
         ' A: At the short circuit point. Omit; Covered by B.
@@ -773,7 +747,7 @@ Partial Public Structure Impedance
     '    As System.Boolean
 
     '    ' The terminology here relates to solving conjugate matches on a Smith
-    '    ' chart.
+    '    ' Chart.
 
     '    ' Chart location cases:
     '    ' A: At the short circuit point. Omit; Covered by B.
@@ -793,8 +767,8 @@ Partial Public Structure Impedance
     '    ' O: In the top remainder.
     '    ' P: In the bottom remainder.
 
-    '    ' A series inductor moves CW on a R-circle.
-    '    ' A series capacitor moves CCW on a R-circle.
+    '    ' A series inductor moves CW on an R-circle.
+    '    ' A series capacitor moves CCW on an R-circle.
     '    ' A shunt inductor moves CCW on a G-circle.
     '    ' A shunt capacitor moves CW on a G-circle.
     '    ' A series resistor moves an impedance along the R-circles. 
