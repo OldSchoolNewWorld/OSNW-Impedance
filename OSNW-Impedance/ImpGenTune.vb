@@ -170,15 +170,33 @@ End Structure ' Transformation
 
 Partial Public Structure Impedance
 
-    '''' <summary>
-    '''' E: On the R=Z0 circle.
-    '''' </summary>
-    '''' <param name="z0">xxxxxxxxxx</param>
-    '''' <param name="transformations">xxxxxxxxxx</param>
-    '''' <returns>xxxxxxxxxx</returns>
+    ''' <summary>
+    ''' Attempts to obtain a conjugate match from the current instance (load
+    ''' impedance) to the source characteristic impedance specified by
+    ''' <paramref name="z0"/>, when the current instance appears directly on the
+    ''' R=Z0 circle.
+    ''' </summary>
+    ''' <param name="z0">Specifies the characteristic impedance to which the
+    ''' current instance should be matched.</param>
+    ''' <param name="transformations">xxxxxxxxxx</param>
+    ''' <returns>
+    ''' Returns <c>True</c> if the process succeeds; otherwise,
+    ''' <c>False</c>. Also returns, by reference in
+    ''' <paramref name="transformations"/>, the components to construct the
+    ''' match.</returns>
+    ''' <remarks>
+    ''' <paramref name="z0"/> is the characteristic impedance to which the
+    ''' current instance should be matched. It should have a practical value
+    ''' with regard to the impedance values involved.
+    ''' A succcessful process might result in an empty
+    ''' <paramref name="transformations"/>.
+    ''' </remarks>
     Private Function OnREqualsZ0(ByVal z0 As System.Double,
         ByRef transformations As Transformation()) _
         As System.Boolean
+
+        ' Test data E: On R=Z0 circle, above resonance line. Only needs reactance.
+        ' Test data F: On R=Z0 circle, below resonance line. Only needs reactance.
 
         'Dim NormR As System.Double = Me.Resistance / z0
         Dim NormX As System.Double = Me.Reactance / z0
@@ -191,7 +209,7 @@ Partial Public Structure Impedance
             ' This happens at two places. One would have been handled as
             ' position C. The other is at the center of the chart.
 
-            ' D: At the center.
+            ' Test data D: At the center.
             ' Z is at the center point and already has a conjugate match.
             transformations = {
                 New Transformation With {
@@ -203,7 +221,8 @@ Partial Public Structure Impedance
             ' reactance.
 
             If NormX > 0.0 Then
-                ' E: On R=Z0 circle, above resonance line. Only needs reactance.
+                ' Test data E: On R=Z0 circle, above resonance line. Only needs
+                ' reactance.
                 ' CCW on an R-circle needs a series capacitor.
                 transformations = {
                     New Transformation With {
@@ -223,7 +242,8 @@ Partial Public Structure Impedance
                 ' total admittance Y=0.1+j0. For Y=0.1+j0, Z=10+j0. NO.
 
             Else
-                ' F: On R=Z0 circle, below resonance line. Only needs reactance.
+                ' Test data F: On R=Z0 circle, below resonance line. Only needs
+                ' reactance.
                 ' CW on an R-circle needs a series inductor.
                 transformations = {
                     New Transformation With {
@@ -363,10 +383,15 @@ Partial Public Structure Impedance
     '''  Processes one intersection found in
     '''  <see cref="M:InsideREqualsZ0(z0, transformations)"/>".>
     ''' </summary>
-    ''' <param name="mainCirc">xxxxxxxxxxxxxxxxxx</param>
-    ''' <param name="intersection">xxxxxxxxxxxxxxxxxx</param>
-    ''' <param name="transformation">xxxxxxxxxxxxxxxxxx</param>
-    ''' <returns>xxxxxxxxxxxxxxxxxx</returns>
+    ''' <param name="mainCirc">Specifies an arbitrary
+    ''' <see cref="SmithMainCircle"/> reference for calculations.</param>
+    ''' <param name="intersection">Specifies the Cartesian coordinates of one
+    ''' intersection of R- and G-circles.</param>
+    ''' <param name="transformation">Specifies the proposed
+    ''' <see cref="Transformation"/> to be checked.</param>
+    ''' <returns><c>True</c> if the proposed <see cref="Transformation"/>
+    ''' results in a conjugate match for the current instance; otherwise,
+    ''' <c>False</c>.</returns>
     Private Function InsideREqualsZ0(ByVal mainCirc As SmithMainCircle,
         ByVal intersection As System.Drawing.PointF,
         ByRef transformation As Transformation) As System.Boolean
@@ -391,14 +416,11 @@ Partial Public Structure Impedance
                 mainCirc.GetYFromPlot(intersection.X, intersection.Y)
             Dim DiffImageB As System.Double =
                 ImageY.Susceptance - Y.Susceptance
-            Dim DiffY As New Admittance(0.0, DiffImageB)
 
             ' Second move.
             Dim ImageZ As Impedance =
                 mainCirc.GetZFromPlot(intersection.X, intersection.Y)
-            'Dim DiffFinalX As System.Double = 0.0 - ImageZ.Reactance
             Dim DiffFinalX As System.Double = -ImageZ.Reactance
-            Dim DiffFinalZ As New Impedance(0.0, DiffFinalX)
 
             ' Select the transformations, based on the location of the
             ' intersection relative to the resonance line.
@@ -427,14 +449,11 @@ Partial Public Structure Impedance
             End If
 
         Catch CaughtEx As Exception
-
             'Dim CaughtBy As System.Reflection.MethodBase =
             '    System.Reflection.MethodBase.GetCurrentMethod
             'Throw New System.InvalidOperationException(
             '    $"Failed to process {CaughtBy}.")
-
-            Return False ' DEFAULT UNTIL IMPLEMENTED.
-
+            Return False
         End Try
 
         ' On getting this far,
@@ -473,8 +492,8 @@ Partial Public Structure Impedance
         '  - To favor the shortest first path?
 
         ' Determine the circles and their intersections.
-        '        Dim MainCirc As New SmithMainCircle(1.0, 1.0, 1.0, z0) ' Arbitrary.
-        Dim MainCirc As New SmithMainCircle(4.0, 5.0, 4.0, z0) ' Match test data.
+        'Dim MainCirc As New SmithMainCircle(4.0, 5.0, 4.0, z0) ' Test data.
+        Dim MainCirc As New SmithMainCircle(1.0, 1.0, 1.0, z0) ' Arbitrary.
         Dim CircR As New RCircle(MainCirc, z0)
         Dim CircG As New GCircle(MainCirc, Y.Conductance)
         Dim Intersections _
@@ -532,17 +551,17 @@ Partial Public Structure Impedance
             Throw New System.ApplicationException("Transformation 1 failed.")
         End If
 
-        ' THESE CHECKS CAN BE DELETED/COMMENTED AFTER THE Transformation RESULTS
-        ' ARE KNOWN TO BE CORRECT.
-        ' There should now be two valid solutions the tune to Z=Z0+j0.0.
-        ' Check first solution.
-        If Not ValidateTransformation(z0, Transformation0) Then
-            Return False ' DEFAULT UNTIL IMPLEMENTED.
-        End If
-        ' Check second solution.
-        If Not ValidateTransformation(z0, Transformation1) Then
-            Return False ' DEFAULT UNTIL IMPLEMENTED.
-        End If
+        '' THESE CHECKS CAN BE DELETED/COMMENTED AFTER THE Transformation
+        '' RESULTS ARE KNOWN TO BE CORRECT.
+        '' There should now be two valid solutions the tune to Z=Z0+j0.0.
+        '' Check first solution.
+        'If Not ValidateTransformation(z0, Transformation0) Then
+        '    Return False
+        'End If
+        '' Check second solution.
+        'If Not ValidateTransformation(z0, Transformation1) Then
+        '    Return False
+        'End If
 
         ' On getting this far,
         Return True
@@ -656,28 +675,19 @@ Partial Public Structure Impedance
                 Me.InsideGEqualsY0(z0, transformations))
         End If
 
+        ' DELETE THIS AFTER TESTING CONFIRMS THAT IT IS NOT HIT BY ANY TEST CASES.
         ' On getting this far, the impedance will, usually, fall into either
         ' the top or bottom center section.
         If NormX.Equals(0.0) Then
             ' Z is ON the resonance line.
 
-            '
-            '
-            ' XXXXX WHAT NEXT? XXXXX
             ' Would this case have been caught above? Yes, it would be in or
             ' on the R or G-circle or at the center.
-            '
-            '
-
-            ' DELETE THIS AFTER TESTING CONFIRMS THAT IT IS NOT HIT BY ANY TEST CASES.
             Dim CaughtBy As System.Reflection.MethodBase =
                     System.Reflection.MethodBase.GetCurrentMethod
             Throw New ApplicationException(
                     """NormX.Equals(0.0)"" should never be matched in " &
                     NameOf(TrySelectTuningLayout))
-
-
-            Return False ' DEFAULT UNTIL IMPLEMENTED.
         ElseIf NormX > 0.0 Then
             ' Z is ABOVE the resonance line, between the G=Y0 and R=Z0 circles.
 
@@ -723,89 +733,5 @@ Partial Public Structure Impedance
         End If
 
     End Function ' TrySelectTuningLayout
-
-    '' USE THIS TO TRY TO SET UP MATCHING A LOAD TO AN ARBITRARY SOURCE
-    '' IMPEDANCE. IF IT WORKS OUT, MATCHING TO A CHARACTERISTIC IMPEDANCE COULD
-    '' JUST BE A SPECIAL CASE.
-    '''' <summary>
-    '''' Attempts to obtain a conjugate match from the current load instance to
-    '''' the source impedance specified by <paramref name="sourceR"/> and
-    '''' <paramref name="sourceX"/>.
-    '''' </summary>
-    '''' <param name="z0">Specifies the characteristic impedance to which the
-    '''' calculations should be referenced.</param>
-    '''' <param name="sourceR">Specifies the resistance component of the source
-    '''' impedance to which the current load instance should be matched.</param>
-    '''' <param name="sourceX">Specifies the reactance component of the source
-    '''' impedance to which the current load instance should be matched.</param>
-    '''' <param name="transformations"></param>
-    '''' <returns><c>True</c> if the xxxxxxxxxxxxxxx succeeds; otherwise,
-    '''' <c>False</c> and also returns xxxxxxxxxxxxxxx xxxxxxxxxxxxxxx.</returns>
-    'Public Function TrySelectTuningLayout(ByVal z0 As System.Double,
-    '    ByVal sourceR As System.Double, ByVal sourceX As System.Double,
-    '    ByRef transformations As Transformation()) _
-    '    As System.Boolean
-
-    '    ' The terminology here relates to solving conjugate matches on a Smith
-    '    ' Chart.
-
-    '    ' Chart location cases:
-    '    ' A: At the short circuit point. Omit; Covered by B.
-    '    ' B: Anywhere else on the perimeter. R=0.0.
-    '    ' C: At the open circuit point on the right.
-    '    ' D: At the center.
-    '    ' E: On the R=Z0 circle.
-    '    '     Omit: On the resonance line. Already covered by C or D.
-    '    '     E: On R=Z0 circle, above resonance line. Only needs reactance.
-    '    '     F: On R=Z0 circle, below resonance line. Only needs reactance.
-    '    ' GHI: Inside the R=Z0 circle. Two choices: CW or CCW on the G-circle.
-    '    ' G: On the G=Y0 circle.
-    '    '     Omit: On the resonance line. Already either A or D.
-    '    '     J: On G=Y0 circle, above resonance line. Only needs reactance.
-    '    '     K: On G=Y0 circle, below resonance line. Only needs reactance.
-    '    ' LMN: Inside the G=Y0 circle. Two choices: CW or CCW on the R-circle.
-    '    ' O: In the top remainder.
-    '    ' P: In the bottom remainder.
-
-    '    ' A series inductor moves CW on an R-circle.
-    '    ' A series capacitor moves CCW on an R-circle.
-    '    ' A shunt inductor moves CCW on a G-circle.
-    '    ' A shunt capacitor moves CW on a G-circle.
-    '    ' A series resistor moves an impedance along the R-circles. 
-    '    ' A shunt resistor moves an impedance along the constant G-circles.
-
-    '    Dim TargetNormR As System.Double = sourceR / z0
-    '    Dim TargetNormX As System.Double = sourceX / z0
-    '    Dim TargetNormZ As New Impedance(TargetNormR, TargetNormX)
-    '    Dim TargetNormY As Admittance = TargetNormZ.ToAdmittance()
-    '    Dim TargetNormG As System.Double = TargetNormY.Conductance
-    '    Dim TargetNormB As System.Double = TargetNormY.Susceptance
-
-    '    Dim OwnNormR As System.Double = Me.Resistance / z0
-    '    Dim OwnNormX As System.Double = Me.Reactance / z0
-
-
-
-
-    '    Return False ' DEFAULT UNTIL IMPLEMENTED.
-    'End Function ' TrySelectTuningLayout
-
-    '' USE THIS TO TRY TO SET UP MATCHING TO AN ARBITRARY SOURCE IMPEDANCE.
-    '''' <summary>
-    '''' Attempts to obtain a conjugate match from the current load instance to
-    '''' the source impedance specified by <paramref name="sourceZ"/>.
-    '''' </summary>
-    '''' <param name="z0">Specifies the characteristic impedance to which the
-    '''' calculations should be referenced.</param>
-    '''' <param name="sourceZ">Specifies the source impedance to which the
-    '''' current load instance should be matched.</param>
-    '''' <returns><c>True</c> if the xxxxxxxxxxxxxxx succeeds; otherwise,
-    '''' <c>False</c> and also returns xxxxxxxxxxxxxxx xxxxxxxxxxxxxxx.</returns>
-    'Public Function TrySelectTuningLayout(ByVal z0 As System.Double,
-    '    ByVal sourceZ As Impedance, ByRef transformations As Transformation()) _
-    '    As System.Boolean
-
-    '    Return TrySelectTuningLayout(z0, sourceZ.Resistance, sourceZ.Reactance, transformations)
-    'End Function ' TrySelectTuningLayout
 
 End Structure ' Impedance
