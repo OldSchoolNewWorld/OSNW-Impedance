@@ -89,8 +89,8 @@ Namespace TrySelectTuningLayoutTests
         ' D: At the center.
 
         '<InlineData(    Z0,        R,       X)> ' Model
-        '<Theory>
-        '<InlineData(1.0000,   1.0000,  0.0000)> ' D: At the center.
+        <Theory>
+        <InlineData(1.0, 1.0, 0.0000)> ' D: At the center.
         Public Sub TestTrySelectTuningLayoutD(z0 As Double, r As Double, x As Double)
 
             Dim Z As New OSNW.Numerics.Impedance(r, x)
@@ -211,7 +211,7 @@ Namespace TrySelectTuningLayoutTests
     End Class ' TestTrySelectTuningLayoutJK
 
     Public Class TestTrySelectTuningLayoutGHI
-        ' GHI: Inside the R=Z0 circle. Two choices: CW or CCW on the G-circle.
+        ' GHI: Inside the R=Z0 circle.
 
         '<InlineData(     Z0,        R,       X)> ' Model
         <Theory>
@@ -242,6 +242,39 @@ Namespace TrySelectTuningLayoutTests
         'End Sub
 
     End Class ' TestTrySelectTuningLayoutGHI
+
+    Public Class TestTrySelectTuningLayoutLMN
+        ' LMN: Inside the G=Y0 circle.
+
+        '<InlineData(     Z0,        R,       X)> ' Model
+        <Theory>
+        <InlineData(1.0, 1 / 3.0, 1 / 3.0)> ' L1: Inside G=Y0 circle, above resonance line.
+        <InlineData(75.0, 25.0, 25.0)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
+        <InlineData(1.0, 1 / 3.0, 0.0000)> ' M: Inside G=Y0 circle, on line
+        <InlineData(1.0, 1 / 2.0, -1 / 3.0)> ' N: Inside G=Y0 circle, below line
+        Public Sub TrySelectTuning_PositionLMN_Succeeds(z0 As Double, r As Double, x As Double)
+
+            Dim TestZ As New OSNW.Numerics.Impedance(r, x)
+
+            Dim TargetZ As New Impedance(z0, 0.0)
+            Dim transformations As Transformation() = Array.Empty(Of Transformation)
+            If Not TestZ.TrySelectTuningLayout(z0, transformations) Then
+                Assert.True(False, Messages.TF)
+            End If
+            Assert.True(True)
+
+        End Sub
+
+        '<Theory>
+        'Public Sub TrySelectTuning_PositionLMN_Fails()
+        '    '
+        '    '
+        '    '
+        '    '
+        '    '
+        'End Sub
+
+    End Class ' TestTrySelectTuningLayoutLMN
 
     Public Class TestTrySelectTuningX
         ' Chart location cases:

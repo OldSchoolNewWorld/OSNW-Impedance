@@ -569,6 +569,88 @@ Partial Public Structure Impedance
     End Function ' InsideREqualsZ0
 
     '''' <summary>
+    ''''  Processes one intersection found in
+    ''''  <see cref="M:InsideGEqualsY0(z0, transformations)"/>".>
+    '''' </summary>
+    '''' <param name="mainCirc">Specifies an arbitrary
+    '''' <see cref="SmithMainCircle"/> reference for calculations.</param>
+    '''' <param name="intersection">Specifies the Cartesian coordinates of one
+    '''' intersection of R- and G-circles.</param>
+    '''' <param name="transformation">Specifies the proposed
+    '''' <see cref="Transformation"/> to be checked.</param>
+    '''' <returns><c>True</c> if the proposed <see cref="Transformation"/>
+    '''' results in a conjugate match for the current instance; otherwise,
+    '''' <c>False</c>.</returns>
+    Private Function InsideGEqualsY0(ByVal mainCirc As SmithMainCircle,
+        ByVal intersection As System.Drawing.PointF,
+        ByRef transformation As Transformation) As System.Boolean
+
+        ' DEV: This development implementation is based on selection of pure
+        ' impedances. A future derivation might need to select the nearest
+        ' commonly available component values, as a practical consideration. In
+        ' that case, the math should be changed to add an impedance/admittance
+        ' with actual R/X values.
+
+        'Dim NormR As System.Double = Me.Resistance / z0
+        'Dim NormX As System.Double = Me.Reactance / z0
+        'Dim Y0 As System.Double = 1.0 / z0
+        Dim Y As Admittance = Me.ToAdmittance()
+        'Dim NormG As System.Double = Y.Conductance / Y0
+        'Dim NormB As System.Double = Y.Susceptance / Y0
+
+        Try
+
+            ' First move, to the image impedance.
+            Dim ImageY As Admittance =
+                mainCirc.GetYFromPlot(intersection.X, intersection.Y)
+            Dim DiffImageB As System.Double =
+                ImageY.Susceptance - Y.Susceptance
+
+            ' Second move.
+            Dim ImageZ As Impedance =
+                mainCirc.GetZFromPlot(intersection.X, intersection.Y)
+            Dim DiffFinalX As System.Double = -ImageZ.Reactance
+
+            ' Select the transformations, based on the location of the
+            ' intersection relative to the resonance line.
+            If intersection.Y > mainCirc.GridCenterY Then
+                ' Intersection above the resonance line.
+
+                ' Use a shunt inductor to move CCW on the G-circle to the R=Z0
+                ' circle, then use a series capacitor to move CCW on the R=Z0
+                ' circle to the center.
+                transformation = New Transformation With {
+                    .Style = TransformationStyles.ShuntIndSeriesCap,
+                    .Value1 = DiffImageB,
+                    .Value2 = DiffFinalX
+                }
+            Else
+                ' Intersection below the resonance line.
+
+                '  Use a shunt capacitor to move CW on the G-circle to the R=Z0
+                '  circle, then use a series inductor to move CW on the R=Z0
+                '  circle to the center.
+                transformation = New Transformation With {
+                    .Style = TransformationStyles.ShuntCapSeriesInd,
+                    .Value1 = DiffImageB,
+                    .Value2 = DiffFinalX
+                }
+            End If
+
+        Catch CaughtEx As Exception
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            'Throw New System.InvalidOperationException(
+            '    $"Failed to process {CaughtBy}.")
+            Return False
+        End Try
+
+        ' On getting this far,
+        Return True
+
+    End Function ' InsideGEqualsY0
+
+    '''' <summary>
     '''' LMN: Inside the G=Y0 circle. Two choices: CW or CCW on the R-circle.
     '''' </summary>
     '''' <param name="z0">xxxxxxxxxx</param>
@@ -580,25 +662,98 @@ Partial Public Structure Impedance
 
         'Dim NormR As System.Double = Me.Resistance / z0
         'Dim NormX As System.Double = Me.Reactance / z0
-        'Dim Y0 As System.Double = 1.0 / z0
+        Dim Y0 As System.Double = 1.0 / z0
         'Dim Y As Admittance = Me.ToAdmittance()
         'Dim NormG As System.Double = Y.Conductance / Y0
         'Dim NormB As System.Double = Y.Susceptance / Y0
 
-        '
-        '
-        ' XXXXX WHAT NEXT? XXXXX
-        ' Move CW or CCW on the R-circle to reach the G=Y0 circle.
-        ' Would there ever be a case to prefer the long path?
-        ' Maybe to favor high- or low-pass?
-        '
-        '
+        ' The first move will be to the intersection of the G=Y0 circle and the
+        ' R-circle that contains the load impedance. From inside the G=Y0
+        ' circle, there are two ways to proceed:
+        '  - Use a series inductor to move CW on the R-circle to the G=Y0
+        '  circle, then use a shunt capacitor to move CW on the G=Y0 circle to
+        '  the center.
+        '  - Use a series capacitor to move CCW on the R-circle to the G=Y0
+        '  circle, then use a shunt inductor to move CCW on the G=Y0 circle to
+        '  the center.
+        ' Would there ever be a reason to prefer one approach over the other?
+        '  - To favor high- or low-pass?
+        '  - To favor the shortest first path?
 
-        Return False ' DEFAULT UNTIL IMPLEMENTED.
-        'xxxx
+        ' Determine the circles and their intersections.
+        Dim MainCirc As New SmithMainCircle(4.0, 5.0, 4.0, z0) ' Test data.
+        'Dim MainCirc As New SmithMainCircle(1.0, 1.0, 1.0, z0) ' Arbitrary.
+        Dim CircG As New GCircle(MainCirc, Y0)
+        Dim CircR As New RCircle(MainCirc, Me.Resistance)
+        Dim Intersections _
+            As System.Collections.Generic.List(Of System.Drawing.PointF) =
+                GenericCircle.GetIntersections(CircR, CircG)
 
+        '' THESE CHECKS CAN BE DELETED/COMMENTED AFTER THE GetIntersections()
+        '' RESULTS ARE KNOWN TO BE CORRECT.
+        '' There should now be two intersection points, with one above, and one
+        '' below, the resonance line.
+        'If Intersections.Count <> 2 Then
+        '    'Dim CaughtBy As System.Reflection.MethodBase =
+        '    '    System.Reflection.MethodBase.GetCurrentMethod
+        '    Throw New System.ApplicationException(Impedance.MSGIIC)
+        'End If
+        '' The X values should match. Check for reasonable equality when using
+        '' floating point values.
+        'If Not EqualEnough(Intersections(0).X, Intersections(0).X) Then
+        '    'Dim CaughtBy As System.Reflection.MethodBase =
+        '    '    System.Reflection.MethodBase.GetCurrentMethod
+        '    Throw New System.ApplicationException("X values do not match.")
+        'End If
+        '' The Y values should be the same distance above and below the
+        '' resonance line. Check for reasonable equality when using floating
+        '' point values.
+        'Dim Offset0 As System.Double =
+        '    System.Math.Abs(Intersections(0).Y - MainCirc.GridCenterY)
+        'Dim Offset1 As System.Double =
+        '    System.Math.Abs(Intersections(1).Y - MainCirc.GridCenterY)
+        'If Not EqualEnough(Offset1, Offset0) Then
+        '    'Dim CaughtBy As System.Reflection.MethodBase =
+        '    '    System.Reflection.MethodBase.GetCurrentMethod
+        '    Throw New System.ApplicationException("Y offsets do not match.")
+        'End If
 
+        ' There are now two intersection points, with one above and one below
+        ' the resonance line. The X values match. The Y values are the same
+        ' distance above and below the resonance line.
 
+        ' Expect two valid solutions, one to each intersection.
+        Dim Transformation0 As Transformation
+        If Not Me.InsideGEqualsY0(
+            MainCirc, Intersections(0), Transformation0) Then
+
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ApplicationException("Transformation 0 failed.")
+        End If
+        Dim Transformation1 As Transformation
+        If Not Me.InsideGEqualsY0(
+            MainCirc, Intersections(1), Transformation1) Then
+
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ApplicationException("Transformation 1 failed.")
+        End If
+
+        '' THESE CHECKS CAN BE DELETED/COMMENTED AFTER THE Transformation
+        '' RESULTS ARE KNOWN TO BE CORRECT.
+        '' There should now be two valid solutions the tune to Z=Z0+j0.0.
+        '' Check first solution.
+        'If Not ValidateTransformation(z0, Transformation0) Then
+        '    Return False
+        'End If
+        '' Check second solution.
+        'If Not ValidateTransformation(z0, Transformation1) Then
+        '    Return False
+        'End If
+
+        ' On getting this far,
+        Return True
 
     End Function ' InsideGEqualsY0
 
