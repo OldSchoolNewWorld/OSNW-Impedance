@@ -371,11 +371,37 @@ Partial Public Structure Impedance
 
         ElseIf aTransformation.Style = TransformationStyles.SeriesIndShuntCap Then
 
-            Throw New NotImplementedException
+            FixupZ = New Impedance(0.0, aTransformation.Value1)
+            WorkZ = Impedance.AddSeriesImpedance(Me, FixupZ)
+
+            FixupY = New Admittance(0.0, aTransformation.Value2)
+            FixupZ = FixupY.ToImpedance
+            WorkZ = Impedance.AddShuntImpedance(WorkZ, FixupZ)
+
+            Dim NearlyZero As System.Double = z0 * 0.000001
+            If Not Impedance.EqualEnough(WorkZ.Resistance, z0) OrElse
+                Not Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero) Then
+                'Dim CaughtBy As System.Reflection.MethodBase =
+                '    System.Reflection.MethodBase.GetCurrentMethod
+                Throw New System.ApplicationException("Transformation did not reach target.")
+            End If
 
         ElseIf aTransformation.Style = TransformationStyles.SeriesCapShuntInd Then
 
-            Throw New NotImplementedException
+            FixupZ = New Impedance(0.0, aTransformation.Value1)
+            WorkZ = Impedance.AddSeriesImpedance(Me, FixupZ)
+
+            FixupY = New Admittance(0.0, aTransformation.Value2)
+            FixupZ = FixupY.ToImpedance
+            WorkZ = Impedance.AddShuntImpedance(WorkZ, FixupZ)
+
+            Dim NearlyZero As System.Double = z0 * 0.000001
+            If Not Impedance.EqualEnough(WorkZ.Resistance, z0) OrElse
+                Not Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero) Then
+                'Dim CaughtBy As System.Reflection.MethodBase =
+                '    System.Reflection.MethodBase.GetCurrentMethod
+                Throw New System.ApplicationException("Transformation did not reach target.")
+            End If
 
         Else
             ' Invalid transformation style.
