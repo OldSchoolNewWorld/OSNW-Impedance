@@ -601,15 +601,15 @@ Partial Public Structure Impedance
         Try
 
             ' First move, to the image impedance.
-            Dim ImageY As Admittance =
-                mainCirc.GetYFromPlot(intersection.X, intersection.Y)
-            Dim DiffImageB As System.Double =
-                ImageY.Susceptance - Y.Susceptance
-
-            ' Second move.
             Dim ImageZ As Impedance =
                 mainCirc.GetZFromPlot(intersection.X, intersection.Y)
-            Dim DiffFinalX As System.Double = -ImageZ.Reactance
+            Dim DiffImageX As System.Double =
+                ImageZ.Reactance - Me.Reactance
+
+            ' Second move.
+            Dim ImageY As Admittance =
+                mainCirc.GetYFromPlot(intersection.X, intersection.Y)
+            Dim DiffFinalY As System.Double = -ImageY.Susceptance
 
             ' Select the transformations, based on the location of the
             ' intersection relative to the resonance line.
@@ -621,8 +621,8 @@ Partial Public Structure Impedance
                 ' circle to the center.
                 transformation = New Transformation With {
                     .Style = TransformationStyles.ShuntIndSeriesCap,
-                    .Value1 = DiffImageB,
-                    .Value2 = DiffFinalX
+                    .Value1 = DiffImageX,
+                    .Value2 = DiffFinalY
                 }
             Else
                 ' Intersection below the resonance line.
@@ -632,8 +632,8 @@ Partial Public Structure Impedance
                 '  circle to the center.
                 transformation = New Transformation With {
                     .Style = TransformationStyles.ShuntCapSeriesInd,
-                    .Value1 = DiffImageB,
-                    .Value2 = DiffFinalX
+                    .Value1 = DiffImageX,
+                    .Value2 = DiffFinalY
                 }
             End If
 
@@ -689,34 +689,34 @@ Partial Public Structure Impedance
             As System.Collections.Generic.List(Of System.Drawing.PointF) =
                 GenericCircle.GetIntersections(CircR, CircG)
 
-        '' THESE CHECKS CAN BE DELETED/COMMENTED AFTER THE GetIntersections()
-        '' RESULTS ARE KNOWN TO BE CORRECT.
-        '' There should now be two intersection points, with one above, and one
-        '' below, the resonance line.
-        'If Intersections.Count <> 2 Then
-        '    'Dim CaughtBy As System.Reflection.MethodBase =
-        '    '    System.Reflection.MethodBase.GetCurrentMethod
-        '    Throw New System.ApplicationException(Impedance.MSGIIC)
-        'End If
-        '' The X values should match. Check for reasonable equality when using
-        '' floating point values.
-        'If Not EqualEnough(Intersections(0).X, Intersections(0).X) Then
-        '    'Dim CaughtBy As System.Reflection.MethodBase =
-        '    '    System.Reflection.MethodBase.GetCurrentMethod
-        '    Throw New System.ApplicationException("X values do not match.")
-        'End If
-        '' The Y values should be the same distance above and below the
-        '' resonance line. Check for reasonable equality when using floating
-        '' point values.
-        'Dim Offset0 As System.Double =
-        '    System.Math.Abs(Intersections(0).Y - MainCirc.GridCenterY)
-        'Dim Offset1 As System.Double =
-        '    System.Math.Abs(Intersections(1).Y - MainCirc.GridCenterY)
-        'If Not EqualEnough(Offset1, Offset0) Then
-        '    'Dim CaughtBy As System.Reflection.MethodBase =
-        '    '    System.Reflection.MethodBase.GetCurrentMethod
-        '    Throw New System.ApplicationException("Y offsets do not match.")
-        'End If
+        ' THESE CHECKS CAN BE DELETED/COMMENTED AFTER THE GetIntersections()
+        ' RESULTS ARE KNOWN TO BE CORRECT.
+        ' There should now be two intersection points, with one above, and one
+        ' below, the resonance line.
+        If Intersections.Count <> 2 Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ApplicationException(Impedance.MSGIIC)
+        End If
+        ' The X values should match. Check for reasonable equality when using
+        ' floating point values.
+        If Not EqualEnough(Intersections(0).X, Intersections(0).X) Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ApplicationException("X values do not match.")
+        End If
+        ' The Y values should be the same distance above and below the
+        ' resonance line. Check for reasonable equality when using floating
+        ' point values.
+        Dim Offset0 As System.Double =
+            System.Math.Abs(Intersections(0).Y - MainCirc.GridCenterY)
+        Dim Offset1 As System.Double =
+            System.Math.Abs(Intersections(1).Y - MainCirc.GridCenterY)
+        If Not EqualEnough(Offset1, Offset0) Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ApplicationException("Y offsets do not match.")
+        End If
 
         ' There are now two intersection points, with one above and one below
         ' the resonance line. The X values match. The Y values are the same
@@ -740,17 +740,17 @@ Partial Public Structure Impedance
             Throw New System.ApplicationException("Transformation 1 failed.")
         End If
 
-        '' THESE CHECKS CAN BE DELETED/COMMENTED AFTER THE Transformation
-        '' RESULTS ARE KNOWN TO BE CORRECT.
-        '' There should now be two valid solutions the tune to Z=Z0+j0.0.
-        '' Check first solution.
-        'If Not ValidateTransformation(z0, Transformation0) Then
-        '    Return False
-        'End If
-        '' Check second solution.
-        'If Not ValidateTransformation(z0, Transformation1) Then
-        '    Return False
-        'End If
+        ' THESE CHECKS CAN BE DELETED/COMMENTED AFTER THE Transformation
+        ' RESULTS ARE KNOWN TO BE CORRECT.
+        ' There should now be two valid solutions the tune to Z=Z0+j0.0.
+        ' Check first solution.
+        If Not ValidateTransformation(z0, Transformation0) Then
+            Return False
+        End If
+        ' Check second solution.
+        If Not ValidateTransformation(z0, Transformation1) Then
+            Return False
+        End If
 
         ' On getting this far,
         Return True
