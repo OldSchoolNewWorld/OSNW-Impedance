@@ -369,6 +369,14 @@ Partial Public Structure Impedance
                 Throw New System.ApplicationException("Transformation did not reach target.")
             End If
 
+        ElseIf aTransformation.Style = TransformationStyles.SeriesIndShuntCap Then
+
+            Throw New NotImplementedException
+
+        ElseIf aTransformation.Style = TransformationStyles.SeriesCapShuntInd Then
+
+            Throw New NotImplementedException
+
         Else
             ' Invalid transformation style.
             Return False
@@ -616,22 +624,22 @@ Partial Public Structure Impedance
             If intersection.Y > mainCirc.GridCenterY Then
                 ' Intersection above the resonance line.
 
-                ' Use a shunt inductor to move CCW on the G-circle to the R=Z0
-                ' circle, then use a series capacitor to move CCW on the R=Z0
+                ' Use a series inductor to move CW on the R-circle to the G=Y0
+                ' circle, then use a shunt capacitor to move CW on the G=Y0
                 ' circle to the center.
                 transformation = New Transformation With {
-                    .Style = TransformationStyles.ShuntIndSeriesCap,
+                    .Style = TransformationStyles.SeriesIndShuntCap,
                     .Value1 = DiffImageX,
                     .Value2 = DiffFinalY
                 }
             Else
                 ' Intersection below the resonance line.
 
-                '  Use a shunt capacitor to move CW on the G-circle to the R=Z0
-                '  circle, then use a series inductor to move CW on the R=Z0
+                '  Use a series capacitor to move CCW on the R-circle to the G=Y0
+                '  circle, then use a shunt inductor to move CCW on the G=Y0
                 '  circle to the center.
                 transformation = New Transformation With {
-                    .Style = TransformationStyles.ShuntCapSeriesInd,
+                    .Style = TransformationStyles.SeriesCapShuntInd,
                     .Value1 = DiffImageX,
                     .Value2 = DiffFinalY
                 }
