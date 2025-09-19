@@ -581,7 +581,7 @@ Namespace TestImpedanceMath
             Assert.True(False, "Did not fail")
         End Sub
 
-    End Class ' TestToAdmittance
+    End Class ' TestToAdmittance()
 
     Public Class TestVSWR
 

@@ -2,6 +2,9 @@
 Option Strict On
 Option Compare Binary
 Option Infer Off
+Imports System.Security.Cryptography.X509Certificates
+
+
 
 ' REF: Mathematical Construction and Properties of the Smith Chart
 ' https://www.allaboutcircuits.com/technical-articles/mathematical-construction-and-properties-of-the-smith-chart/
@@ -234,6 +237,141 @@ Public Class GenericCircle
     End Sub ' New
 
 End Class ' GenericCircle
+
+''' <summary>
+''' xxxxxxxxxx xxxxxxxxxx xxxxxxxxxx
+''' </summary>
+Public Class PlotDetails
+
+    Private ReadOnly m_PlotX As System.Double
+    ''' <summary>
+    ''' Represents the X-coordinate of the impedance plot, on a Cartesian grid.
+    ''' Dimensions are in generic "units".
+    ''' </summary>
+    Public ReadOnly Property GridX As System.Double
+        Get
+            Return Me.m_PlotX
+        End Get
+    End Property
+
+    Private ReadOnly m_PlotY As System.Double
+    ''' <summary>
+    ''' Represents the Y-coordinate of the impedance plot, on a Cartesian grid.
+    ''' Dimensions are in generic "units".
+    ''' </summary>
+    Public ReadOnly Property GridY As System.Double
+        Get
+            Return Me.m_PlotY
+        End Get
+    End Property
+
+    ''' <summary>
+    ''' xxxxxxxxxx
+    ''' A required reference for some of the calculations. in ohms.
+    ''' </summary>
+    Private ReadOnly m_z0 As System.Double
+
+    Private ReadOnly m_Impedance As Impedance
+    ''' <summary>
+    ''' xxxxxxxxxx
+    ''' </summary>
+    ''' <returns>xxxxxxxxxx</returns>
+    Public ReadOnly Property Impedance As Impedance
+        Get
+            Return Me.m_Impedance
+        End Get
+    End Property
+
+    ''' <summary>
+    ''' xxxxxxxxxx
+    ''' </summary>
+    ''' <returns>xxxxxxxxxx</returns>
+    Public ReadOnly Property Admittance As Admittance
+        Get
+            Return Me.m_Impedance.ToAdmittance()
+        End Get
+    End Property
+
+    ''' <summary>
+    ''' xxxxxxxxxx AKA Gamma
+    ''' </summary>
+    ''' <returns>xxxxxxxxxx</returns>
+    Public ReadOnly Property VoltageReflectionCoefficient _
+        As System.Numerics.Complex
+
+        Get
+            Return Me.m_Impedance.VoltageReflectionCoefficient(Me.m_z0)
+        End Get
+    End Property
+
+    ''' <summary>
+    ''' xxxxxxxxxx
+    ''' </summary>
+    ''' <returns>xxxxxxxxxx</returns>
+    Public ReadOnly Property PowerReflectionCoefficient _
+        As System.Numerics.Complex
+
+        Get
+            Dim VRC As System.Numerics.Complex =
+                Me.m_Impedance.VoltageReflectionCoefficient(Me.m_z0)
+            Return VRC * VRC
+        End Get
+    End Property
+
+    ''' <summary>
+    ''' xxxxxxxxxx
+    ''' </summary>
+    ''' <returns>xxxxxxxxxx</returns>
+    Public ReadOnly Property VSWR As Double
+        Get
+            Return Me.m_Impedance.VSWR(Me.m_z0)
+        End Get
+    End Property
+
+    '''' <summary>
+    '''' 
+    '''' </summary>
+    '''' <returns></returns>
+    'Public ReadOnly Property AngleOfReflection As System.Double
+    '    Get
+    '        Return Me.m_Impedance.AngleOfReflection(Me.m_z0)
+    '    End Get
+    'End Property
+
+    '''' <summary>
+    '''' 
+    '''' </summary>
+    '''' <returns></returns>
+    'Public ReadOnly Property AngleOfTransmission As System.Double
+    '    Get
+    '        Return Me.m_Impedance.AngleOfTransmission(Me.m_z0)
+    '    End Get
+    'End Property
+
+xxxx
+  
+''' <summary>
+'''  
+''' </summary>
+''' <param name="plotX">xxxxxxxxxx</param>
+''' <param name="plotY">xxxxxxxxxx</param>
+''' <param name="z0">xxxxxxxxxx</param>
+''' <param name="z">xxxxxxxxxx</param>
+Public Sub New(ByVal plotX As System.Double, ByVal plotY As System.Double,
+                   ByVal z0 As System.Double, ByVal z As Impedance)
+
+        Me.m_plotX = plotX
+        Me.m_plotX = plotY
+        Me.m_z0 = z0
+        Me.m_Impedance = z
+    End Sub ' New
+
+    'Public Sub New(ByVal z0 As System.Double, ByVal plotX As System.Double, ByVal plotY As System.Double)
+    '    Me.New(z0, GetZFromPlot(plotX, plotY))
+    'End Sub ' New
+
+End Class ' PlotDetails
+xxxx
 
 ''' <summary>
 ''' A class that represents the geometry of the outer circle of a Smith Chart,
@@ -664,12 +802,33 @@ Public Class SmithMainCircle
 
     End Function ' GetZFromPlot
 
+    ''' <summary>
+    ''' xxxxxxxxxx
+    ''' </summary>
+    ''' <param name="PlotX">xxxxxxxxxx</param>
+    ''' <param name="PlotY">xxxxxxxxxx</param>
+    ''' <returns>xxxxxxxxxx</returns>
     Public Function GetYFromPlot(
         PlotX As System.Double, PlotY As System.Double) As Admittance
 
         Dim Z As Impedance = Me.GetZFromPlot(PlotX, PlotY)
-        Return Z.ToAdmittance
+        Return Z.ToAdmittance()
     End Function ' GetYFromPlot
+
+    ''' <summary>
+    ''' xxxxxxxxxx
+    ''' </summary>
+    ''' <param name="plotX">xxxxxxxxxx</param>
+    ''' <param name="plotY">xxxxxxxxxx</param>
+    ''' <returns>xxxxxxxxxx</returns>
+    Public Function GetDetailsFromPlot(ByVal z0 As System.Double,
+        ByVal plotX As System.Double, ByVal plotY As System.Double) _
+        As PlotDetails
+
+        Dim Z As Impedance = GetZFromPlot(plotX, plotY)
+        Return New PlotDetails(z0, Z)
+    End Function ' GetDetailsFromPlot
+        xxxx
 
     ''' <summary>
     ''' Creates a new instance of the <c>SmithMainCircle</c> class with the

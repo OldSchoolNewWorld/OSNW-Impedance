@@ -851,7 +851,7 @@ Public Structure Impedance
 
         ' No input checking. loadZ and addZ are presumed to have been checked
         ' when created.
-        Return (loadZ.ToAdmittance + addZ.ToAdmittance).ToImpedance
+        Return (loadZ.ToAdmittance() + addZ.ToAdmittance()).ToImpedance
     End Function ' AddShuntImpedance
 
     '''' <summary>
@@ -875,7 +875,7 @@ Public Structure Impedance
 
     '    ' No input checking. loadZ and addY are presumed to have been checked
     '    ' when created.
-    '    Return (loadZ.ToAdmittance + addY).ToImpedance
+    '    Return (loadZ.ToAdmittance() + addY).ToImpedance
     'End Function ' AddParallelAdmittance
 
 #End Region ' "Other Shared Methods"
