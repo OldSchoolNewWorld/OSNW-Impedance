@@ -328,25 +328,25 @@ Public Class PlotDetails
         End Get
     End Property
 
-    '''' <summary>
-    '''' 
-    '''' </summary>
-    '''' <returns></returns>
-    'Public ReadOnly Property AngleOfReflection As System.Double
-    '    Get
-    '        Return Me.m_Impedance.AngleOfReflection(Me.m_z0)
-    '    End Get
-    'End Property
+    ''' <summary>
+    ''' 
+    ''' </summary>
+    ''' <returns></returns>
+    Public ReadOnly Property AngleOfReflection As System.Double
+        Get
+            Return Me.m_Impedance.AngleOfReflection(Me.m_z0)
+        End Get
+    End Property
 
-    '''' <summary>
-    '''' 
-    '''' </summary>
-    '''' <returns></returns>
-    'Public ReadOnly Property AngleOfTransmission As System.Double
-    '    Get
-    '        Return Me.m_Impedance.AngleOfTransmission(Me.m_z0)
-    '    End Get
-    'End Property
+    ''' <summary>
+    ''' 
+    ''' </summary>
+    ''' <returns></returns>
+    Public ReadOnly Property AngleOfTransmission As System.Double
+        Get
+            Return Me.m_Impedance.AngleOfTransmission(Me.m_z0)
+        End Get
+    End Property
 
 xxxx
   

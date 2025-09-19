@@ -1023,6 +1023,40 @@ Public Structure Impedance
 
     End Function ' VSWR
 
+
+
+
+
+    ''' <summary>
+    ''' 
+    ''' </summary>
+    ''' <returns></returns>
+    Public Function AngleOfReflection(ByVal z0 As System.Double) As System.Double
+
+        Dim MainCirc As New SmithMainCircle(4.0, 5.0, 4.0, z0) ' Test data.
+        'Dim MainCirc As New SmithMainCircle(1.0, 1.0, 1.0, z0) ' Arbitrary.
+
+
+        Return Me.m_Impedance.AngleOfReflection(Me.m_z0)
+    End Function
+
+    ''' <summary>
+    ''' 
+    ''' </summary>
+    ''' <returns></returns>
+    Public Function AngleOfTransmission(ByVal z0 As System.Double) As System.Double
+
+        '
+        '
+        '
+        '
+        '
+
+
+        Return Me.m_Impedance.AngleOfTransmission(Me.m_z0)
+    End Function
+    xxxx
+
 #End Region ' "Other Instance Methods"
 
 #Region "Constructors"
