@@ -9,16 +9,17 @@ Imports Xunit
 Imports OsnwImpd = OSNW.Numerics.Impedance
 Imports OsnwNumSS = OSNW.Numerics.StandardizationStyles
 
-' Test Data
+#Region "Test Data"
+
 ' These are common test data points for Impedance and Smith Chart tests. They
 ' include special cases and a mix of +/-, left/right, above/below/on, etc.
 ' ChartX, ChartY, ChartRad, PlotX, PlotY, RadiusR, RadiusX, RadiusG, and RadiusB
 ' are in generic "units" relative to the Cartesian plane on which a Smith Chart
 ' can be drawn.
-' Copy the entire list, then delete unused columns as needed to match the
-' process under test. After unused columns are stripped, some remaining tests
-' may be redundant. Any rows that cause EXPECTED errors can be used as tests of
-' bad data.
+' Copy an entire list, then delete unused columns as needed to match the process
+' under test. After unused columns are stripped, some remaining tests may be
+' redundant. Any rows that cause EXPECTED errors can be used as tests of bad
+' data.
 
 ' Const INF As Double = Double.PositiveInfinity
 
@@ -45,6 +46,32 @@ Imports OsnwNumSS = OSNW.Numerics.StandardizationStyles
 '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.4000, -0.8000, 0.5000,  1.0000,  4.2656, 3.8462, 3.7692,  1.4286,  2.5000,   4.0/3,  2.0000,  1.2404)> ' P: In the bottom remainder.
 '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,      999,     999,    999,     999,     999,    2.5,    6.5, RadiusR, RadiusX, RadiusG, RadiusB, RadiusV)> ' Q: Outside of main circle. Invalid.
 '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,  -2.0000,     999,    999,     999,     999,  GridX,  GridY, RadiusR, RadiusX, RadiusG, RadiusB, RadiusV)> ' R: NormR<=0. Invalid.
+
+'<InlineData(ChartX, ChartY, ChartRad,      Z0,        R,       X,      G,       B,       AOR,    AOT)> ' Model
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,        R,       X,      G,       B,       AOR,    AOT)> ' Base circle
+'<Theory>
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.0000,  0.0000, 0.0000,  0.0000,       INF,   2.0000)> ' A: At the short circuit point. Omit - covered by B.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.0000,   1/2.0, 0.0000, -2.0000,       INF,      2.8)> ' B: Anywhere else on the perimeter. R=0.0.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,      INF,  0.0000, 0.0000,  0.0000,       INF,   6.0000)> ' C: At the open circuit point on the right.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   1.0000,  0.0000, 1.0000,  0.0000,    0.0000,   0.0000)> ' D: At the center.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   1.0000,  1.0000, 0.5000, -0.5000,   63.4349,  18.4350)> ' E: On R=Z0 circle, above resonance line. Only needs reactance.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   1.0000, -2.0000, 0.2000,  0.4000,  -45.0000, -18.4350)> ' F: On R=Z0 circle, below resonance line. Only needs reactance.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   2.0000,   1/2.0, 0.4706, -0.1176,   17.1027,   4.5739)> ' G1: Inside R=Z0 circle, above resonance line.
+'<InlineData(4.0000, 5.0000,   2.0000, 50.0000, 100.0000, 25.0000, 0.0094, -0.0024,   17.1027,   4.5739)> ' G2: Inside R=Z0 circle, above resonance line, Z0=50
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   3.0000,  0.0000,  1.0/3,  0.0000,    0.0000,   0.0000)> ' H: Inside R=Z0 circle, on line
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   2.0000, -2.0000, 0.2500,  0.2500,  -29.7449, -11.3099)> ' I: Inside R=Z0 circle, below resonance line.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/2.0,   1/2.0, 1.0000, -1.0000,  116.5651,  26.5651)> ' J: On G=Y0 circle, above resonance line. Only needs reactance.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/2.0,  -1/2.0, 1.0000,  1.0000, -116.5651, -26.5651)> ' K: On G=Y0 circle, below resonance line. Only needs reactance.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/3.0,   1/3.0, 1.5000, -1.5000,  139.3987,  30.9638)> ' L1: Inside G=Y0 circle, above resonance line.
+'<InlineData(4.0000, 5.0000,   2.0000, 75.0000,  25.0000, 25.0000, 0.0200, -0.0200,  139.3987,  30.9638)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/3.0,  0.0000, 3.0000,  0.0000,  180.0000,   0.0000)> ' M: Inside G=Y0 circle, on line
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/2.0,  -1/3.0, 1.3846,  0.9231, -133.7811, -21.1613)> ' N: Inside G=Y0 circle, below line
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.2000,  1.4000, 0.1000, -0.7000,  70.34617,  32.4712)> ' O: In the top remainder.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.4000, -0.8000, 0.5000,  1.0000,  -97.1250, -33.6901)> ' P: In the bottom remainder.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,      999,     999,    999,     999,       999,      2.5)> ' Q: Outside of main circle. Invalid.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,  -2.0000,     999,    999,     999,       999,    GridX)> ' R: NormR<=0. Invalid.
+
+#End Region ' "Test Data"
 
 Public Class CultureTestVals
     ' A common set of test values for parsing routines.
@@ -644,30 +671,6 @@ Namespace TestImpedanceMath
         End Sub
 
     End Class ' TestVSWR
-
-    '<InlineData(ChartX, ChartY, ChartRad,      Z0,        R,       X,      G,       B,       AOR,    AOT)> ' Model
-    '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,        R,       X,      G,       B,       AOR,    AOT)> ' Base circle
-    '<Theory>
-    '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.0000,  0.0000, 0.0000,  0.0000,       INF,   2.0000)> ' A: At the short circuit point. Omit - covered by B.
-    '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.0000,   1/2.0, 0.0000, -2.0000,       INF,      2.8)> ' B: Anywhere else on the perimeter. R=0.0.
-    '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,      INF,  0.0000, 0.0000,  0.0000,       INF,   6.0000)> ' C: At the open circuit point on the right.
-    '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   1.0000,  0.0000, 1.0000,  0.0000,    0.0000,   0.0000)> ' D: At the center.
-    '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   1.0000,  1.0000, 0.5000, -0.5000,   63.4349,  18.4350)> ' E: On R=Z0 circle, above resonance line. Only needs reactance.
-    '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   1.0000, -2.0000, 0.2000,  0.4000,  -45.0000, -18.4350)> ' F: On R=Z0 circle, below resonance line. Only needs reactance.
-    '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   2.0000,   1/2.0, 0.4706, -0.1176,   17.1027,   4.5739)> ' G1: Inside R=Z0 circle, above resonance line.
-    '<InlineData(4.0000, 5.0000,   2.0000, 50.0000, 100.0000, 25.0000, 0.0094, -0.0024,   17.1027,   4.5739)> ' G2: Inside R=Z0 circle, above resonance line, Z0=50
-    '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   3.0000,  0.0000,  1.0/3,  0.0000,    0.0000,   0.0000)> ' H: Inside R=Z0 circle, on line
-    '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   2.0000, -2.0000, 0.2500,  0.2500,  -29.7449, -11.3099)> ' I: Inside R=Z0 circle, below resonance line.
-    '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/2.0,   1/2.0, 1.0000, -1.0000,  116.5651,  26.5651)> ' J: On G=Y0 circle, above resonance line. Only needs reactance.
-    '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/2.0,  -1/2.0, 1.0000,  1.0000, -116.5651, -26.5651)> ' K: On G=Y0 circle, below resonance line. Only needs reactance.
-    '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/3.0,   1/3.0, 1.5000, -1.5000,  139.3987,  30.9638)> ' L1: Inside G=Y0 circle, above resonance line.
-    '<InlineData(4.0000, 5.0000,   2.0000, 75.0000,  25.0000, 25.0000, 0.0200, -0.0200,  139.3987,  30.9638)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
-    '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/3.0,  0.0000, 3.0000,  0.0000,  180.0000,   0.0000)> ' M: Inside G=Y0 circle, on line
-    '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/2.0,  -1/3.0, 1.3846,  0.9231, -133.7811, -21.1613)> ' N: Inside G=Y0 circle, below line
-    '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.2000,  1.4000, 0.1000, -0.7000,  70.34617,  32.4712)> ' O: In the top remainder.
-    '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.4000, -0.8000, 0.5000,  1.0000,  -97.1250, -33.6901)> ' P: In the bottom remainder.
-    '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,      999,     999,    999,     999,       999,      2.5)> ' Q: Outside of main circle. Invalid.
-    '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,  -2.0000,     999,    999,     999,       999,    GridX)> ' R: NormR<=0. Invalid.
 
     Public Class TestAngleOfReflection
 
