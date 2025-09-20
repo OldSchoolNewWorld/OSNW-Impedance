@@ -1051,7 +1051,7 @@ Public Structure Impedance
                 '
                 TanAlpha = Opposite / Adjacent
                 RadAngle = System.Math.Atan(TanAlpha)
-                Return System.Math.PI - RadAngle
+                Return -System.Math.PI + RadAngle
                 '
                 '
             ElseIf PlotY > (MainCirc.GridCenterY) Then
@@ -1077,7 +1077,7 @@ Public Structure Impedance
                 '
                 TanAlpha = Opposite / Adjacent
                 RadAngle = System.Math.Atan(TanAlpha)
-                Return -RadAngle
+                Return RadAngle
                 '
                 '
             ElseIf PlotY > (MainCirc.GridCenterY) Then
@@ -1095,21 +1095,26 @@ Public Structure Impedance
                 '
                 '
             End If
-        End If
-
-
-
-
-
-        ' Vertical will have zero as the adjacent side.
-        If PlotX.Equals(MainCirc.GridCenterX) Then
-            ' Vertical.
-            If PlotY < (MainCirc.GridCenterY) Then
-                Return -System.Math.PI / 4.0
+        Else
+            ' Vertical will have zero as the adjacent side.
+            If PlotY > MainCirc.GridCenterY Then
+                ' Above the resonance line.
+                Return System.Math.PI / 2.0
+            ElseIf PlotY < MainCirc.GridCenterY Then
+                ' Below the resonance line.
+                Return -System.Math.PI / 2.0
             Else
-                Return System.Math.PI / 4.0
+                ' On the resonance line, at the center.
+                ' MATCHED, SO NO REFLECTION. SHOULD THIS HAVE *ANY* VALUE? NOT
+                ' 90 OR -90 DEGREES, SO USE ZERO FOR NOW.
+                Return 0.0
             End If
         End If
+
+
+
+
+
 
 
 
@@ -1194,7 +1199,7 @@ Public Structure Impedance
     ''' other calculations.
     ''' </para>
     ''' </remarks>
-    <JsonConstructor> ' See Use immutable types and properties.
+                              <JsonConstructor> ' See Use immutable types and properties.
     Public Sub New(ByVal resistance As System.Double,
                    ByVal reactance As System.Double)
 
@@ -1206,10 +1211,10 @@ Public Structure Impedance
         ' considering whether special cases may exist where some of the
         ' rejections may need to be allowed. Work with pure reactances would
         ' need to allow for R=0.
-        If resistance < 0.0 OrElse Double.IsInfinity(resistance) Then
+        If resistance <0.0 OrElse Double.IsInfinity(resistance) Then
             'Dim CaughtBy As System.Reflection.MethodBase =
-            '    System.Reflection.MethodBase.GetCurrentMethod
-            Throw New System.ArgumentOutOfRangeException(NameOf(resistance))
+                '    System.Reflection.MethodBase.GetCurrentMethod
+                Throw New System.ArgumentOutOfRangeException(NameOf(resistance))
         End If
         'If resistance < 0.0 Then
         '    Dim CaughtBy As System.Reflection.MethodBase =
