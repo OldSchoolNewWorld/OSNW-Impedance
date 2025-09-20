@@ -37,12 +37,10 @@ Imports OsnwNumSS = OSNW.Numerics.StandardizationStyles
 '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   2.0000, -2.0000, 0.2500,  0.2500,  4.2656, 5.0770, 4.3846,   2.0/3,  1.0000,  1.6000,  8.0000,  1.2404)> ' I: Inside R=Z0 circle, below resonance line.
 '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/2.0,   1/2.0, 1.0000, -1.0000,  2.6180, 3.6000, 5.8000,   4.0/3,  4.0000,  1.0000,  2.0000,  0.8944)> ' J: On G=Y0 circle, above resonance line. Only needs reactance.
 '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/2.0,  -1/2.0, 1.0000,  1.0000,  2.6180, 3.6000, 4.2000,   4.0/3,  4.0000,  1.0000,  2.0000,  0.8944)> ' K: On G=Y0 circle, below resonance line. Only needs reactance.
-
 '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/3.0,   1/3.0, 1.5000, -1.5000,  3.3699, 3.1765, 5.7059,  1.5000,  6.0000,  0.8000,  1.3333,  1.0846)> ' L1: Inside G=Y0 circle, above resonance line.
 '<InlineData(4.0000, 5.0000,   2.0000, 75.0000,  25.0000, 25.0000, 0.0200, -0.0200,  3.3699, 3.1765, 5.7059,  1.5000,  6.0000,  0.8000,  1.3333,  1.0846)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
 '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/3.0,  0.0000, 3.0000,  0.0000,  3.0000, 3.0000, 5.0000,  1.5000,     INF,  0.5000,     INF,  1.0000)> ' M: Inside G=Y0 circle, on line
 '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/2.0,  -1/3.0, 1.3846,  0.9231,  2.2845, 3.4588, 4.4353,   4.0/3,  6.0000,  0.8387,  2.2500,  0.7822)> ' N: Inside G=Y0 circle, below line
-
 '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.2000,  1.4000, 0.1000, -0.7000, 14.9330, 4.5882, 6.6471,   5.0/3,  1.4286,  1.8182,  2.8571,  1.7489)> ' O: In the top remainder.
 '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.4000, -0.8000, 0.5000,  1.0000,  4.2656, 3.8462, 3.7692,  1.4286,  2.5000,   4.0/3,  2.0000,  1.2404)> ' P: In the bottom remainder.
 '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,      999,     999,    999,     999,     999,    2.5,    6.5, RadiusR, RadiusX, RadiusG, RadiusB, RadiusV)> ' Q: Outside of main circle. Invalid.
@@ -646,5 +644,153 @@ Namespace TestImpedanceMath
         End Sub
 
     End Class ' TestVSWR
+
+    Public Class TestAngleOfReflection
+
+        '<InlineData(ChartX, ChartY, ChartRad,      Z0,        R,       X,      G,       B,     AOR,    AOT)> ' Model
+        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,        R,       X,      G,       B,     AOR,    AOT)> ' Base circle
+        '<Theory>
+        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.0000,  0.0000, 0.0000,  0.0000,     INF, 2.0000)> ' A: At the short circuit point. Omit - covered by B.
+        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.0000,   1/2.0, 0.0000, -2.0000,     INF,    2.8)> ' B: Anywhere else on the perimeter. R=0.0.
+        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,      INF,  0.0000, 0.0000,  0.0000,     INF, 6.0000)> ' C: At the open circuit point on the right.
+        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   1.0000,  0.0000, 1.0000,  0.0000,       0,      0)> ' D: At the center.
+        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   1.0000,  1.0000, 0.5000, -0.5000,      62,   18.5)> ' E: On R=Z0 circle, above resonance line. Only needs reactance.
+        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   1.0000, -2.0000, 0.2000,  0.4000,     -45,    -36)> ' F: On R=Z0 circle, below resonance line. Only needs reactance.
+        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   2.0000,   1/2.0, 0.4706, -0.1176,      18,     12)> ' G1: Inside R=Z0 circle, above resonance line.
+        '<InlineData(4.0000, 5.0000,   2.0000, 50.0000, 100.0000, 25.0000, 0.0094, -0.0024,      18,     12)> ' G2: Inside R=Z0 circle, above resonance line, Z0=50
+        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   3.0000,  0.0000,  1.0/3,  0.0000,       0,      0)> ' H: Inside R=Z0 circle, on line
+        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   2.0000, -2.0000, 0.2500,  0.2500,     -30,    -11)> ' I: Inside R=Z0 circle, below resonance line.
+        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/2.0,   1/2.0, 1.0000, -1.0000,     -59,    -25)> ' J: On G=Y0 circle, above resonance line. Only needs reactance.
+        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/2.0,  -1/2.0, 1.0000,  1.0000,     -40,    -27)> ' K: On G=Y0 circle, below resonance line. Only needs reactance.
+        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/3.0,   1/3.0, 1.5000, -1.5000,     141,     64)> ' L1: Inside G=Y0 circle, above resonance line.
+        '<InlineData(4.0000, 5.0000,   2.0000, 75.0000,  25.0000, 25.0000, 0.0200, -0.0200,     141,     64)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
+        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/3.0,  0.0000, 3.0000,  0.0000,     180,      0)> ' M: Inside G=Y0 circle, on line
+        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/2.0,  -1/3.0, 1.3846,  0.9231,    -146,    -22)> ' N: Inside G=Y0 circle, below line
+        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.2000,  1.4000, 0.1000, -0.7000,      71,     33)> ' O: In the top remainder.
+        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.4000, -0.8000, 0.5000,  1.0000,      98,    -37)> ' P: In the bottom remainder.
+        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,      999,     999,    999,     999,     999,    2.5)> ' Q: Outside of main circle. Invalid.
+        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,  -2.0000,     999,    999,     999,     999,  GridX)> ' R: NormR<=0. Invalid.
+
+
+
+
+
+        '<InlineData(     Z0,        R,       X,  AOR,    AOT)> ' Model
+        '<Theory>
+        '<InlineData( 1.0000,   0.0000,  0.0000,  INF, 2.0000)> ' A: At the short circuit point. Omit - covered by B.
+        '<InlineData( 1.0000,   0.0000,   1/2.0,  INF,    2.8)> ' B: Anywhere else on the perimeter. R=0.0.
+        '<InlineData( 1.0000,      INF,  0.0000,  INF, 6.0000)> ' C: At the open circuit point on the right.
+        '<InlineData( 1.0000,   1.0000,  0.0000,    0,      0)> ' D: At the center.
+        '<InlineData( 1.0000,   1.0000,  1.0000,   62,   18.5)> ' E: On R=Z0 circle, above resonance line. Only needs reactance.
+        '<InlineData( 1.0000,   1.0000, -2.0000,  -45,    -36)> ' F: On R=Z0 circle, below resonance line. Only needs reactance.
+        '<InlineData( 1.0000,   2.0000,   1/2.0,   18,     12)> ' G1: Inside R=Z0 circle, above resonance line.
+        '<InlineData(50.0000, 100.0000, 25.0000,   18,     12)> ' G2: Inside R=Z0 circle, above resonance line, Z0=50
+        '<InlineData( 1.0000,   3.0000,  0.0000,    0,      0)> ' H: Inside R=Z0 circle, on line
+        '<InlineData( 1.0000,   2.0000, -2.0000,  -30,    -11)> ' I: Inside R=Z0 circle, below resonance line.
+        '<InlineData( 1.0000,    1/2.0,   1/2.0,  -59,    -25)> ' J: On G=Y0 circle, above resonance line. Only needs reactance.
+        '<InlineData( 1.0000,    1/2.0,  -1/2.0,  -40,    -27)> ' K: On G=Y0 circle, below resonance line. Only needs reactance.
+        '<InlineData( 1.0000,    1/3.0,   1/3.0,  141,     64)> ' L1: Inside G=Y0 circle, above resonance line.
+        '<InlineData(75.0000,  25.0000, 25.0000,  141,     64)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
+        '<InlineData( 1.0000,    1/3.0,  0.0000,  180,      0)> ' M: Inside G=Y0 circle, on line
+        '<InlineData( 1.0000,    1/2.0,  -1/3.0, -146,    -22)> ' N: Inside G=Y0 circle, below line
+        '<InlineData( 1.0000,   0.2000,  1.4000,   71,     33)> ' O: In the top remainder.
+        '<InlineData( 1.0000,   0.4000, -0.8000,   98,    -37)> ' P: In the bottom remainder.
+        '<InlineData( 1.0000,      999,     999,  999,    2.5)> ' Q: Outside of main circle. Invalid.
+        '<InlineData( 1.0000,  -2.0000,     999,  999,  GridX)> ' R: NormR<=0. Invalid.
+
+        '<InlineData(     Z0,        R,       X,  AOR)> ' Model
+        '<Theory>
+        '<InlineData( 1.0000,   0.0000,  0.0000,  INF)> ' A: At the short circuit point. Omit - covered by B.
+        '<InlineData( 1.0000,   0.0000,   1/2.0,  INF)> ' B: Anywhere else on the perimeter. R=0.0.
+        '<InlineData( 1.0000,      INF,  0.0000,  INF)> ' C: At the open circuit point on the right.
+        '<InlineData( 1.0000,   1.0000,  0.0000,    0)> ' D: At the center.
+        '<InlineData( 1.0000,   1.0000,  1.0000,   62)> ' E: On R=Z0 circle, above resonance line. Only needs reactance.
+        '<InlineData( 1.0000,   1.0000, -2.0000,  -45)> ' F: On R=Z0 circle, below resonance line. Only needs reactance.
+        '<InlineData( 1.0000,   2.0000,   1/2.0,   18)> ' G1: Inside R=Z0 circle, above resonance line.
+        '<InlineData(50.0000, 100.0000, 25.0000,   18)> ' G2: Inside R=Z0 circle, above resonance line, Z0=50
+        '<InlineData( 1.0000,   3.0000,  0.0000,    0)> ' H: Inside R=Z0 circle, on line
+        '<InlineData( 1.0000,   2.0000, -2.0000,  -30)> ' I: Inside R=Z0 circle, below resonance line.
+        '<InlineData( 1.0000,    1/2.0,   1/2.0,  -59)> ' J: On G=Y0 circle, above resonance line. Only needs reactance.
+        '<InlineData( 1.0000,    1/2.0,  -1/2.0,  -40)> ' K: On G=Y0 circle, below resonance line. Only needs reactance.
+        '<InlineData( 1.0000,    1/3.0,   1/3.0,  141)> ' L1: Inside G=Y0 circle, above resonance line.
+        '<InlineData(75.0000,  25.0000, 25.0000,  141)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
+        '<InlineData( 1.0000,    1/3.0,  0.0000,  180)> ' M: Inside G=Y0 circle, on line
+        '<InlineData( 1.0000,    1/2.0,  -1/3.0, -146)> ' N: Inside G=Y0 circle, below line
+        '<InlineData( 1.0000,   0.2000,  1.4000,   71)> ' O: In the top remainder.
+        '<InlineData( 1.0000,   0.4000, -0.8000,   98)> ' P: In the bottom remainder.
+        '<InlineData( 1.0000,      999,     999,  999)> ' Q: Outside of main circle. Invalid.
+        '<InlineData( 1.0000,  -2.0000,     999,  999)> ' R: NormR<=0. Invalid.
+
+        '<InlineData(1.0, 0.0000, 0.0000, INF)> ' A: At the short circuit point. Omit - covered by B.
+        '<InlineData(1.0, 0.0000, 1 / 2.0, INF)> ' B: Anywhere else on the perimeter. R=0.0.
+        '<InlineData(1.0, INF, 0.0000, INF)> ' C: At the open circuit point on the right.
+        '<InlineData(     Z0,        R,       X,  AOR)> ' Model
+        <Theory>
+        <InlineData(1.0, 1.0, 0.0000, 0)> ' D: At the center.
+        <InlineData(1.0, 1.0, 1.0, 62)> ' E: On R=Z0 circle, above resonance line. Only needs reactance.
+        <InlineData(1.0, 1.0, -2.0, -45)> ' F: On R=Z0 circle, below resonance line. Only needs reactance.
+        <InlineData(1.0, 2.0, 1 / 2.0, 18)> ' G1: Inside R=Z0 circle, above resonance line.
+        <InlineData(50.0, 100.0, 25.0, 18)> ' G2: Inside R=Z0 circle, above resonance line, Z0=50
+        <InlineData(1.0, 3.0, 0.0000, 0)> ' H: Inside R=Z0 circle, on line
+        <InlineData(1.0, 2.0, -2.0, -30)> ' I: Inside R=Z0 circle, below resonance line.
+        <InlineData(1.0, 1 / 2.0, 1 / 2.0, -59)> ' J: On G=Y0 circle, above resonance line. Only needs reactance.
+        <InlineData(1.0, 1 / 2.0, -1 / 2.0, -40)> ' K: On G=Y0 circle, below resonance line. Only needs reactance.
+        <InlineData(1.0, 1 / 3.0, 1 / 3.0, 141)> ' L1: Inside G=Y0 circle, above resonance line.
+        <InlineData(75.0, 25.0, 25.0, 141)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
+        <InlineData(1.0, 1 / 3.0, 0.0000, 180)> ' M: Inside G=Y0 circle, on line
+        <InlineData(1.0, 1 / 2.0, -1 / 3.0, -146)> ' N: Inside G=Y0 circle, below line
+        <InlineData(1.0, 0.2, 1.4, 71)> ' O: In the top remainder.
+        <InlineData(1.0, 0.4, -0.8, 98)> ' P: In the bottom remainder.
+        <InlineData(1.0, 999, 999, 999)> ' Q: Outside of main circle. Invalid.
+        <InlineData(1.0, -2.0, 999, 999)> ' R: NormR<=0. Invalid.
+        Public Sub AngleOfReflection_GoodInput_Succeeds(z0 As Double, r As Double, x As Double, expectAOR As Double)
+
+            '            Const Precision As Double = 0.0005
+            Const Precision As Double = 5
+
+            Dim Imp As New Impedance(r, x)
+            Dim AnsAOR As Double = Imp.AngleOfReflection(z0)
+            Assert.Equal(expectAOR, AnsAOR, Precision)
+
+        End Sub
+
+    End Class ' TestAngleOfReflection
+
+    Public Class TestAngleOfTransmission
+
+        '<InlineData(     Z0,        R,       X,  AOR,    AOT)> ' Model
+        '<Theory>
+        '<InlineData( 1.0000,   0.0000,  0.0000,  INF, 2.0000)> ' A: At the short circuit point. Omit - covered by B.
+        '<InlineData( 1.0000,   0.0000,   1/2.0,  INF,    2.8)> ' B: Anywhere else on the perimeter. R=0.0.
+        '<InlineData( 1.0000,      INF,  0.0000,  INF, 6.0000)> ' C: At the open circuit point on the right.
+        '<InlineData( 1.0000,   1.0000,  0.0000,    0,      0)> ' D: At the center.
+        '<InlineData( 1.0000,   1.0000,  1.0000,   62,   18.5)> ' E: On R=Z0 circle, above resonance line. Only needs reactance.
+        '<InlineData( 1.0000,   1.0000, -2.0000,  -45,    -36)> ' F: On R=Z0 circle, below resonance line. Only needs reactance.
+        '<InlineData( 1.0000,   2.0000,   1/2.0,   18,     12)> ' G1: Inside R=Z0 circle, above resonance line.
+        '<InlineData(50.0000, 100.0000, 25.0000,   18,     12)> ' G2: Inside R=Z0 circle, above resonance line, Z0=50
+        '<InlineData( 1.0000,   3.0000,  0.0000,    0,      0)> ' H: Inside R=Z0 circle, on line
+        '<InlineData( 1.0000,   2.0000, -2.0000,  -30,    -11)> ' I: Inside R=Z0 circle, below resonance line.
+        '<InlineData( 1.0000,    1/2.0,   1/2.0,  -59,    -25)> ' J: On G=Y0 circle, above resonance line. Only needs reactance.
+        '<InlineData( 1.0000,    1/2.0,  -1/2.0,  -40,    -27)> ' K: On G=Y0 circle, below resonance line. Only needs reactance.
+        '<InlineData( 1.0000,    1/3.0,   1/3.0,  141,     64)> ' L1: Inside G=Y0 circle, above resonance line.
+        '<InlineData(75.0000,  25.0000, 25.0000,  141,     64)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
+        '<InlineData( 1.0000,    1/3.0,  0.0000,  180,      0)> ' M: Inside G=Y0 circle, on line
+        '<InlineData( 1.0000,    1/2.0,  -1/3.0, -146,    -22)> ' N: Inside G=Y0 circle, below line
+        '<InlineData( 1.0000,   0.2000,  1.4000,   71,     33)> ' O: In the top remainder.
+        '<InlineData( 1.0000,   0.4000, -0.8000,   98,    -37)> ' P: In the bottom remainder.
+        '<InlineData( 1.0000,      999,     999,  999,    2.5)> ' Q: Outside of main circle. Invalid.
+        '<InlineData( 1.0000,  -2.0000,     999,  999,  GridX)> ' R: NormR<=0. Invalid.
+
+        Public Sub AngleOfTransmission_GoodInput_Succeeds(z0 As Double, r As Double, x As Double, expectAOT As Double)
+
+            Const Precision As Double = 0.0005
+
+            Dim Imp As New Impedance(r, x)
+            Dim AnsAOT As Double = Imp.AngleOfTransmission(z0)
+            Assert.Equal(expectAOT, AnsAOT, Precision)
+
+        End Sub
+
+    End Class ' TestAngleOfTransmission
 
 End Namespace ' TestImpedanceMath

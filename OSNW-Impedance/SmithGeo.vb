@@ -329,9 +329,9 @@ Public Class PlotDetails
     End Property
 
     ''' <summary>
-    ''' 
+    ''' xxxxxxxxxx
     ''' </summary>
-    ''' <returns></returns>
+    ''' <returns>xxxxxxxxxx</returns>
     Public ReadOnly Property AngleOfReflection As System.Double
         Get
             Return Me.m_Impedance.AngleOfReflection(Me.m_z0)
@@ -339,25 +339,23 @@ Public Class PlotDetails
     End Property
 
     ''' <summary>
-    ''' 
+    ''' xxxxxxxxxx
     ''' </summary>
-    ''' <returns></returns>
+    ''' <returns>xxxxxxxxxx</returns>
     Public ReadOnly Property AngleOfTransmission As System.Double
         Get
             Return Me.m_Impedance.AngleOfTransmission(Me.m_z0)
         End Get
     End Property
 
-xxxx
-  
-''' <summary>
-'''  
-''' </summary>
-''' <param name="plotX">xxxxxxxxxx</param>
-''' <param name="plotY">xxxxxxxxxx</param>
-''' <param name="z0">xxxxxxxxxx</param>
-''' <param name="z">xxxxxxxxxx</param>
-Public Sub New(ByVal plotX As System.Double, ByVal plotY As System.Double,
+    ''' <summary>
+    '''  
+    ''' </summary>
+    ''' <param name="plotX">xxxxxxxxxx</param>
+    ''' <param name="plotY">xxxxxxxxxx</param>
+    ''' <param name="z0">xxxxxxxxxx</param>
+    ''' <param name="z">xxxxxxxxxx</param>
+    Public Sub New(ByVal plotX As System.Double, ByVal plotY As System.Double,
                    ByVal z0 As System.Double, ByVal z As Impedance)
 
         Me.m_plotX = plotX
@@ -371,7 +369,6 @@ Public Sub New(ByVal plotX As System.Double, ByVal plotY As System.Double,
     'End Sub ' New
 
 End Class ' PlotDetails
-xxxx
 
 ''' <summary>
 ''' A class that represents the geometry of the outer circle of a Smith Chart,
@@ -826,9 +823,8 @@ Public Class SmithMainCircle
         As PlotDetails
 
         Dim Z As Impedance = GetZFromPlot(plotX, plotY)
-        Return New PlotDetails(z0, Z)
+        Return New PlotDetails(plotX, plotY, z0, Z)
     End Function ' GetDetailsFromPlot
-        xxxx
 
     ''' <summary>
     ''' Creates a new instance of the <c>SmithMainCircle</c> class with the

@@ -1023,39 +1023,148 @@ Public Structure Impedance
 
     End Function ' VSWR
 
-
-
-
-
     ''' <summary>
-    ''' 
+    ''' xxxxxxxxxx
     ''' </summary>
-    ''' <returns></returns>
-    Public Function AngleOfReflection(ByVal z0 As System.Double) As System.Double
+    ''' <returns>xxxxxxxxxx</returns>
+    Public Function AngleOfReflectionRadians(ByVal z0 As System.Double) As System.Double
 
         Dim MainCirc As New SmithMainCircle(4.0, 5.0, 4.0, z0) ' Test data.
         'Dim MainCirc As New SmithMainCircle(1.0, 1.0, 1.0, z0) ' Arbitrary.
 
+        Dim PlotX As System.Double
+        Dim PlotY As System.Double
+        If Not MainCirc.GetPlotXY(Me.Resistance, Me.Reactance,
+                                  PlotX, PlotY) Then
+            Throw New ApplicationException("Failure getting PlotX, PlotY")
+        End If
 
-        Return Me.m_Impedance.AngleOfReflection(Me.m_z0)
-    End Function
+        Dim Opposite As System.Double = PlotY - MainCirc.GridCenterY
+        Dim Adjacent As System.Double = PlotX - MainCirc.GridCenterX
+        Dim TanAlpha As System.Double
+        Dim RadAngle As System.Double
+
+        If PlotX < (MainCirc.GridCenterX) Then
+            ' Left side.
+            If PlotY < (MainCirc.GridCenterY) Then
+                '
+                '
+                TanAlpha = Opposite / Adjacent
+                RadAngle = System.Math.Atan(TanAlpha)
+                Return System.Math.PI - RadAngle
+                '
+                '
+            ElseIf PlotY > (MainCirc.GridCenterY) Then
+                '
+                '
+                TanAlpha = Opposite / -Adjacent
+                RadAngle = System.Math.Atan(TanAlpha)
+                Return System.Math.PI - RadAngle
+                '
+                '
+            Else
+                ' On resonance line, left of center.
+                '
+                '
+                Return System.Math.PI
+                '
+                '
+            End If
+        ElseIf PlotX > (MainCirc.GridCenterX) Then
+            ' Right side.
+            If PlotY < (MainCirc.GridCenterY) Then
+                '
+                '
+                TanAlpha = Opposite / Adjacent
+                RadAngle = System.Math.Atan(TanAlpha)
+                Return -RadAngle
+                '
+                '
+            ElseIf PlotY > (MainCirc.GridCenterY) Then
+                '
+                '
+                TanAlpha = Opposite / Adjacent
+                RadAngle = System.Math.Atan(TanAlpha)
+                Return RadAngle
+                '
+                '
+            Else
+                '
+                '
+                Throw New NotImplementedException
+                '
+                '
+            End If
+        End If
+
+
+
+
+
+        ' Vertical will have zero as the adjacent side.
+        If PlotX.Equals(MainCirc.GridCenterX) Then
+            ' Vertical.
+            If PlotY < (MainCirc.GridCenterY) Then
+                Return -System.Math.PI / 4.0
+            Else
+                Return System.Math.PI / 4.0
+            End If
+        End If
+
+
+
+        If Adjacent.Equals(0.0) Then
+            ' Vertical. Above, below, nowhere?
+
+
+
+
+
+
+
+
+            Throw New ApplicationException("Adjacent.Equals(0.0)")
+        End If
+
+
+        'Dim TanAlpha As System.Double = Opposite / Adjacent
+        'Dim RadAngle As System.Double = System.Math.Atan(TanAlpha)
+        'Return RadAngle
+
+    End Function ' AngleOfReflectionRadians
 
     ''' <summary>
-    ''' 
+    ''' xxxxxxxxxx
     ''' </summary>
-    ''' <returns></returns>
+    ''' <returns>xxxxxxxxxx</returns>
+    Public Function AngleOfReflection(ByVal z0 As System.Double) As System.Double
+        Return Me.AngleOfReflectionRadians(z0) * 180.0 / System.Math.PI
+    End Function ' AngleOfReflection
+
+    ''' <summary>
+    ''' xxxxxxxxxx
+    ''' </summary>
+    ''' <returns>xxxxxxxxxx</returns>
+    Public Function AngleOfTransmissionRadians(ByVal z0 As System.Double) As System.Double
+
+        '
+        '
+        '
+        '
+        '
+
+
+        '        Return Me.m_Impedance.AngleOfTransmission(Me.m_z0)
+        Throw New NotImplementedException
+    End Function ' AngleOfTransmissionRadians
+
+    ''' <summary>
+    ''' xxxxxxxxxx
+    ''' </summary>
+    ''' <returns>xxxxxxxxxx</returns>
     Public Function AngleOfTransmission(ByVal z0 As System.Double) As System.Double
-
-        '
-        '
-        '
-        '
-        '
-
-
-        Return Me.m_Impedance.AngleOfTransmission(Me.m_z0)
-    End Function
-    xxxx
+        Return Me.AngleOfTransmissionRadians(z0) * 180.0 / System.Math.PI
+    End Function ' AngleOfTransmission
 
 #End Region ' "Other Instance Methods"
 
