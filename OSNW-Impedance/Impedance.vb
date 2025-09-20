@@ -1027,7 +1027,8 @@ Public Structure Impedance
     ''' xxxxxxxxxx
     ''' </summary>
     ''' <returns>xxxxxxxxxx</returns>
-    Public Function AngleOfReflectionRadians(ByVal z0 As System.Double) As System.Double
+    Public Function AngleOfReflectionRadians(ByVal z0 As System.Double) _
+        As System.Double
 
         Dim MainCirc As New SmithMainCircle(4.0, 5.0, 4.0, z0) ' Test data.
         'Dim MainCirc As New SmithMainCircle(1.0, 1.0, 1.0, z0) ' Arbitrary.
@@ -1044,57 +1045,25 @@ Public Structure Impedance
         Dim TanAlpha As System.Double
         Dim RadAngle As System.Double
 
-        If PlotX < (MainCirc.GridCenterX) Then
+        If PlotX < MainCirc.GridCenterX Then
             ' Left side.
-            If PlotY < (MainCirc.GridCenterY) Then
-                '
-                '
+            If PlotY < MainCirc.GridCenterY Then
                 TanAlpha = Opposite / Adjacent
                 RadAngle = System.Math.Atan(TanAlpha)
                 Return -System.Math.PI + RadAngle
-                '
-                '
-            ElseIf PlotY > (MainCirc.GridCenterY) Then
-                '
-                '
+            ElseIf PlotY > MainCirc.GridCenterY Then
                 TanAlpha = Opposite / -Adjacent
                 RadAngle = System.Math.Atan(TanAlpha)
                 Return System.Math.PI - RadAngle
-                '
-                '
             Else
                 ' On resonance line, left of center.
-                '
-                '
                 Return System.Math.PI
-                '
-                '
             End If
-        ElseIf PlotX > (MainCirc.GridCenterX) Then
+        ElseIf PlotX > MainCirc.GridCenterX Then
             ' Right side.
-            If PlotY < (MainCirc.GridCenterY) Then
-                '
-                '
-                TanAlpha = Opposite / Adjacent
-                RadAngle = System.Math.Atan(TanAlpha)
-                Return RadAngle
-                '
-                '
-            ElseIf PlotY > (MainCirc.GridCenterY) Then
-                '
-                '
-                TanAlpha = Opposite / Adjacent
-                RadAngle = System.Math.Atan(TanAlpha)
-                Return RadAngle
-                '
-                '
-            Else
-                '
-                '
-                Throw New NotImplementedException
-                '
-                '
-            End If
+            TanAlpha = Opposite / Adjacent
+            RadAngle = System.Math.Atan(TanAlpha)
+            Return RadAngle
         Else
             ' Vertical will have zero as the adjacent side.
             If PlotY > MainCirc.GridCenterY Then
@@ -1110,31 +1079,6 @@ Public Structure Impedance
                 Return 0.0
             End If
         End If
-
-
-
-
-
-
-
-
-        If Adjacent.Equals(0.0) Then
-            ' Vertical. Above, below, nowhere?
-
-
-
-
-
-
-
-
-            Throw New ApplicationException("Adjacent.Equals(0.0)")
-        End If
-
-
-        'Dim TanAlpha As System.Double = Opposite / Adjacent
-        'Dim RadAngle As System.Double = System.Math.Atan(TanAlpha)
-        'Return RadAngle
 
     End Function ' AngleOfReflectionRadians
 
@@ -1155,12 +1099,35 @@ Public Structure Impedance
         '
         '
         '
-        '
-        '
+        Dim MainCirc As New SmithMainCircle(4.0, 5.0, 4.0, z0) ' Test data.
+        'Dim MainCirc As New SmithMainCircle(1.0, 1.0, 1.0, z0) ' Arbitrary.
 
+        Dim PlotX As System.Double
+        Dim PlotY As System.Double
+        If Not MainCirc.GetPlotXY(Me.Resistance, Me.Reactance,
+                                  PlotX, PlotY) Then
+            Throw New ApplicationException("Failure getting PlotX, PlotY")
+        End If
 
-        '        Return Me.m_Impedance.AngleOfTransmission(Me.m_z0)
-        Throw New NotImplementedException
+        Dim Opposite As System.Double = PlotY - MainCirc.GridCenterY
+        Dim Adjacent As System.Double = PlotX - MainCirc.GridLeftEdgeX
+        Dim TanAlpha As System.Double
+        Dim RadAngle As System.Double
+
+        If PlotY < MainCirc.GridCenterY Then
+            TanAlpha = Opposite / Adjacent
+            RadAngle = System.Math.Atan(TanAlpha)
+            Return RadAngle
+        ElseIf PlotY > MainCirc.GridCenterY Then
+            TanAlpha = Opposite / Adjacent
+            RadAngle = System.Math.Atan(TanAlpha)
+            Return RadAngle
+        Else
+            TanAlpha = Opposite / Adjacent
+            RadAngle = System.Math.Atan(TanAlpha)
+            Return RadAngle
+        End If
+
     End Function ' AngleOfTransmissionRadians
 
     ''' <summary>
