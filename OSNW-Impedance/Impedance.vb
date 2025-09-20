@@ -1047,14 +1047,12 @@ Public Structure Impedance
 
         If PlotX < MainCirc.GridCenterX Then
             ' Left side.
-            If PlotY < MainCirc.GridCenterY Then
-                TanAlpha = Opposite / Adjacent
-                RadAngle = System.Math.Atan(TanAlpha)
+            TanAlpha = Opposite / Adjacent
+            RadAngle = System.Math.Atan(TanAlpha)
+            If PlotY > MainCirc.GridCenterY Then
+                Return System.Math.PI + RadAngle
+            ElseIf PlotY < MainCirc.GridCenterY Then
                 Return -System.Math.PI + RadAngle
-            ElseIf PlotY > MainCirc.GridCenterY Then
-                TanAlpha = Opposite / -Adjacent
-                RadAngle = System.Math.Atan(TanAlpha)
-                Return System.Math.PI - RadAngle
             Else
                 ' On resonance line, left of center.
                 Return System.Math.PI
