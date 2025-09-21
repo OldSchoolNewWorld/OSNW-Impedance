@@ -11,6 +11,12 @@ Imports OsnwNumSS = OSNW.Numerics.StandardizationStyles
 
 #Region "Test Data"
 
+Public Class CultureTestVals
+    ' A common set of test values for parsing routines.
+    Public Const SAMERESISTANCE As Double = 111_111.125 ' 1/8 is good for binary fractions.
+    Public Const SAMEREACTANCE As Double = 555_555.687_5 ' 11/16 is good for binary fractions.
+End Class
+
 ' These are common test data points for Impedance and Smith Chart tests. They
 ' include special cases and a mix of +/-, left/right, above/below/on, etc.
 ' ChartX, ChartY, ChartRad, PlotX, PlotY, RadiusR, RadiusX, RadiusG, and RadiusB
@@ -73,16 +79,13 @@ Imports OsnwNumSS = OSNW.Numerics.StandardizationStyles
 
 #End Region ' "Test Data"
 
-Public Class CultureTestVals
-    ' A common set of test values for parsing routines.
-    Public Const SAMERESISTANCE As Double = 111_111.125 ' 1/8 is good for binary fractions.
-    Public Const SAMEREACTANCE As Double = 555_555.687_5 ' 11/16 is good for binary fractions.
-End Class
-
 Namespace DevelopmentTests
     ' Used as a place for ad hoc tests.
 
     Public Class TestUnitTestExceptions
+
+        ' The first two tests below check for a specific exception. The third
+        ' test checks for ANY exception.
 
         <Fact>
         Public Sub ToString_NegativeResistance_Fails()
@@ -102,6 +105,21 @@ Namespace DevelopmentTests
                     Dim Y As New OSNW.Numerics.Admittance(-1.125, 5.675)
                     Dim AdmtStr As String = Y.ToString()
                 End Sub)
+        End Sub
+
+        <Theory>
+        <InlineData(-2.0, 999)> ' NormR<=0
+        <InlineData(Double.PositiveInfinity, 0.0000)> ' C: At the open circuit point on the right.
+        Sub ToAdmittance_BadInput_Fails2(r As Double, x As Double)
+            Try
+                ' Code that throws the exception.
+                Dim Imp As New Impedance(r, x)
+                Dim Y As Admittance = Imp.ToAdmittance()
+            Catch ex As Exception
+                Assert.True(True)
+                Exit Sub
+            End Try
+            Assert.True(False, "Did not fail")
         End Sub
 
     End Class ' TestUnitTestExceptions
