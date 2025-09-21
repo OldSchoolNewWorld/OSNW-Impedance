@@ -3,30 +3,16 @@ Option Strict On
 Option Compare Binary
 Option Infer Off
 
-
-
-
-
-
-
-' xxxxxxxxxxxxxxxxxxxxxxxx
-
-' REF: Reflection and Transmission Coefficients Explained
-' https://www.rfwireless-world.com/terminology/reflection-and-transmission-coefficients
-' T = (2.0 * Zl) / (Zl + Zs)
-
-'xxxxxxxxxxxxxxxxxxxxxxxx
-
-
-
-
-
-
-
-
 Partial Public Structure Impedance
 
 #Region "Voltage Reflection"
+
+
+
+    ' xxxxxxxxxx NO EXPECTED RESULTS KNOWN FOR THESE YET. xxxxxxxxxx
+    ' xxxxxxxxxx NO TEST SET UP FOR THESE YET. xxxxxxxxxx
+
+
 
     ''' <summary>
     ''' Calculates the voltage reflection coefficient (Gamma) when the specified
@@ -86,6 +72,10 @@ Partial Public Structure Impedance
     Public Function VoltageReflectionCoefficient(ByVal z0 As System.Double) _
         As System.Numerics.Complex
 
+        ' THE FORMULA THAT WAS USED HERE RETURNS A COMPLEX BUT
+        ' VoltageReflectionCoefficient_GoodInput_Succeeds REQUIRED A CALL TO
+        ' Complex.Magnitude TO MATCH WHAT SHOWS ON A SMITH CHART.
+
         ' Input checking.
         If z0 <= 0.0 Then
             'Dim CaughtBy As System.Reflection.MethodBase =
@@ -106,6 +96,13 @@ Partial Public Structure Impedance
 #End Region ' "Voltage Reflection"
 
 #Region "Power Reflection"
+
+
+
+    ' xxxxxxxxxx NO EXPECTED RESULTS KNOWN FOR THESE YET. xxxxxxxxxx
+    ' xxxxxxxxxx NO TEST SET UP FOR THESE YET. xxxxxxxxxx
+
+
 
     ''' <summary>
     ''' Calculates the power reflection coefficient (COMMON NAME???) when the specified
@@ -180,8 +177,8 @@ Partial Public Structure Impedance
 
 
 
-    ' xxxxxxxxxx NO TEST SET UP FOR THESE YET. xxxxxxxxxx
     ' xxxxxxxxxx NO EXPECTED RESULTS KNOWN FOR THESE YET. xxxxxxxxxx
+    ' xxxxxxxxxx NO TEST SET UP FOR THESE YET. xxxxxxxxxx
 
 
 
@@ -212,12 +209,25 @@ Partial Public Structure Impedance
 
     End Function ' VoltageTransmissionCoefficient
 
+    ''' <summary>
+    ''' xxxxxxxxxx
+    ''' </summary>
+    ''' <param name="zSource">xxxxxxxxxx</param>
+    ''' <returns>xxxxxxxxxx</returns>
     Public Function VoltageTransmissionCoefficient(ByVal zSource As Impedance) _
         As System.Numerics.Complex
 
         Return Impedance.VoltageTransmissionCoefficient(zSource, Me)
     End Function ' VoltageTransmissionCoefficient
 
+    ''' <summary>
+    ''' xxxxxxxxxx
+    ''' </summary>
+    ''' <param name="z0">xxxxxxxxxx</param>
+    ''' <exception cref="System.ArgumentOutOfRangeException">When
+    ''' <paramref name="z0"/> is not a positive, non-zero value or is
+    ''' infinite.</exception>
+    ''' <returns>xxxxxxxxxx</returns>
     Public Function VoltageTransmissionCoefficient(ByVal z0 As System.Double) _
         As System.Numerics.Complex
 
@@ -239,7 +249,6 @@ Partial Public Structure Impedance
     End Function ' VoltageTransmissionCoefficient
 
 #End Region ' "Voltage Transmission"
-        xxxx
 
 #Region "Power Transmission"
 
