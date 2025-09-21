@@ -77,6 +77,44 @@ End Class
 '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,      999,     999,    999,     999,       999,      2.5)> ' Q: Outside of main circle. Invalid.
 '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,  -2.0000,     999,    999,     999,       999,    GridX)> ' R: NormR<=0. Invalid.
 
+
+
+'<InlineData(ChartX, ChartY, ChartRad,      Z0,        R,       X, VRC, PRC, VTC, PTC,       AOR,    AOT)> ' Model
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,        R,       X, VRC, PRC, VTC, PTC,       AOR,    AOT)> ' Base circle
+'<Theory>
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.0000,  0.0000, VRC, PRC, VTC, PTC,       INF,   2.0000)> ' A: At the short circuit point. Omit - covered by B.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.0000,   1/2.0, VRC, PRC, VTC, PTC,       INF,      2.8)> ' B: Anywhere else on the perimeter. R=0.0.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,      INF,  0.0000, VRC, PRC, VTC, PTC,       INF,   6.0000)> ' C: At the open circuit point on the right.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   1.0000,  0.0000, VRC, PRC, VTC, PTC,    0.0000,   0.0000)> ' D: At the center.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   1.0000,  1.0000, VRC, PRC, VTC, PTC,   63.4349,  18.4350)> ' E: On R=Z0 circle, above resonance line. Only needs reactance.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   1.0000, -2.0000, VRC, PRC, VTC, PTC,  -45.0000, -18.4350)> ' F: On R=Z0 circle, below resonance line. Only needs reactance.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   2.0000,   1/2.0, VRC, PRC, VTC, PTC,   17.1027,   4.5739)> ' G1: Inside R=Z0 circle, above resonance line.
+'<InlineData(4.0000, 5.0000,   2.0000, 50.0000, 100.0000, 25.0000, VRC, PRC, VTC, PTC,   17.1027,   4.5739)> ' G2: Inside R=Z0 circle, above resonance line, Z0=50
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   3.0000,  0.0000, VRC, PRC, VTC, PTC,    0.0000,   0.0000)> ' H: Inside R=Z0 circle, on line
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   2.0000, -2.0000, VRC, PRC, VTC, PTC,  -29.7449, -11.3099)> ' I: Inside R=Z0 circle, below resonance line.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/2.0,   1/2.0, VRC, PRC, VTC, PTC,  116.5651,  26.5651)> ' J: On G=Y0 circle, above resonance line. Only needs reactance.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/2.0,  -1/2.0, VRC, PRC, VTC, PTC, -116.5651, -26.5651)> ' K: On G=Y0 circle, below resonance line. Only needs reactance.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/3.0,   1/3.0, VRC, PRC, VTC, PTC,  139.3987,  30.9638)> ' L1: Inside G=Y0 circle, above resonance line.
+'<InlineData(4.0000, 5.0000,   2.0000, 75.0000,  25.0000, 25.0000, VRC, PRC, VTC, PTC,  139.3987,  30.9638)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/3.0,  0.0000, VRC, PRC, VTC, PTC,  180.0000,   0.0000)> ' M: Inside G=Y0 circle, on line
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/2.0,  -1/3.0, VRC, PRC, VTC, PTC, -133.7811, -21.1613)> ' N: Inside G=Y0 circle, below line
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.2000,  1.4000, VRC, PRC, VTC, PTC,  70.34617,  32.4712)> ' O: In the top remainder.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.4000, -0.8000, VRC, PRC, VTC, PTC,  -97.1250, -33.6901)> ' P: In the bottom remainder.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,      999,     999, VRC, PRC, VTC, PTC,       999,      2.5)> ' Q: Outside of main circle. Invalid.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,  -2.0000,     999, VRC, PRC, VTC, PTC,       999,    GridX)> ' R: NormR<=0. Invalid.
+
+
+
+
+
+
+
+
+
+
+
+
+
 #End Region ' "Test Data"
 
 Namespace DevelopmentTests

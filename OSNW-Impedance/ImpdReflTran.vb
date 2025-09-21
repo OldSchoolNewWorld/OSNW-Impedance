@@ -3,7 +3,30 @@ Option Strict On
 Option Compare Binary
 Option Infer Off
 
+
+
+
+
+
+
+' xxxxxxxxxxxxxxxxxxxxxxxx
+
+' REF: Reflection and Transmission Coefficients Explained
+' https://www.rfwireless-world.com/terminology/reflection-and-transmission-coefficients
+' T = (2.0 * Zl) / (Zl + Zs)
+
+'xxxxxxxxxxxxxxxxxxxxxxxx
+
+
+
+
+
+
+
+
 Partial Public Structure Impedance
+
+#Region "Voltage Reflection"
 
     ''' <summary>
     ''' Calculates the voltage reflection coefficient (Gamma) when the specified
@@ -80,6 +103,10 @@ Partial Public Structure Impedance
 
     End Function ' VoltageReflectionCoefficient
 
+#End Region ' "Voltage Reflection"
+
+#Region "Power Reflection"
+
     ''' <summary>
     ''' Calculates the power reflection coefficient (COMMON NAME???) when the specified
     ''' <paramref name="zLoad"/> <c>Impedance</c> is connected to the specified
@@ -146,6 +173,96 @@ Partial Public Structure Impedance
         Return Gamma * Gamma
 
     End Function ' PowerReflectionCoefficient
+
+#End Region ' "Power Reflection"
+
+#Region "Voltage Transmission"
+
+
+
+    ' xxxxxxxxxx NO TEST SET UP FOR THESE YET. xxxxxxxxxx
+    ' xxxxxxxxxx NO EXPECTED RESULTS KNOWN FOR THESE YET. xxxxxxxxxx
+
+
+
+    ' xxxxxxxxxxxxxxxxxxxxxxxx
+    ' REF: Reflection and Transmission Coefficients Explained
+    ' https://www.rfwireless-world.com/terminology/reflection-and-transmission-coefficients
+    ' T = (2.0 * Zl) / (Zl + Zs)
+    'xxxxxxxxxxxxxxxxxxxxxxxx
+
+
+
+    ''' <summary>
+    ''' xxxxxxxxxx
+    ''' </summary>
+    ''' <param name="zSource">xxxxxxxxxx</param>
+    ''' <param name="zLoad">xxxxxxxxxx</param>
+    ''' <returns>xxxxxxxxxx</returns>
+    Public Shared Function VoltageTransmissionCoefficient(
+        ByVal zSource As Impedance, ByVal zLoad As Impedance) _
+        As System.Numerics.Complex
+
+        ' REF: Reflection and Transmission Coefficients Explained
+        ' https://www.rfwireless-world.com/terminology/reflection-and-transmission-coefficients
+
+        Dim LoadCplx As System.Numerics.Complex = zLoad.ToComplex
+        Dim SourceCplx As System.Numerics.Complex = zSource.ToComplex
+        Return 2.0 * LoadCplx / (LoadCplx + SourceCplx)
+
+    End Function ' VoltageTransmissionCoefficient
+
+    Public Function VoltageTransmissionCoefficient(ByVal zSource As Impedance) _
+        As System.Numerics.Complex
+
+        Return Impedance.VoltageTransmissionCoefficient(zSource, Me)
+    End Function ' VoltageTransmissionCoefficient
+
+    Public Function VoltageTransmissionCoefficient(ByVal z0 As System.Double) _
+        As System.Numerics.Complex
+
+        ' Input checking.
+        If z0 <= 0.0 Then
+            'Dim CaughtBy As System.Transmission.MethodBase =
+            '    System.Transmission.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGVMBGTZ)
+        ElseIf Double.IsInfinity(z0) Then
+            'Dim CaughtBy As System.Transmission.MethodBase =
+            '    System.Transmission.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHIV)
+        End If
+
+        '        Return Impedance.VoltageTransmissionCoefficient(New Impedance(z0, 0.0), Me)
+        Dim SourceImp As New Impedance(z0, 0.0)
+        Return Impedance.VoltageTransmissionCoefficient(SourceImp, Me)
+
+    End Function ' VoltageTransmissionCoefficient
+
+#End Region ' "Voltage Transmission"
+        xxxx
+
+#Region "Power Transmission"
+
+    ' xxxxxxxxxxxxxxxxxxxxxxxx
+    ' REF: Reflection and Transmission Coefficients Explained
+    ' https://www.rfwireless-world.com/terminology/reflection-and-transmission-coefficients
+    ' T = (2.0 * Zl) / (Zl + Zs)
+    'xxxxxxxxxxxxxxxxxxxxxxxx
+
+    ' xxxxxxxxxx NO TEST SET UP FOR THIS YET. xxxxxxxxxx
+    ' xxxxxxxxxx NO EXPECTED RESULTS KNOWN FOR THIS YET. xxxxxxxxxx
+    '
+    '
+    '
+    '
+    '
+
+#End Region ' "Power Transmission"
+
+#Region "Angle of Reflection"
+
+    ' ARE THE AngleOfReflection AND AngleOfTransmission ROUTINES UNIQUE, OR
+    ' SHARED, FOR VOLTAGE AND POWER?
 
     ''' <summary>
     ''' xxxxxxxxxx
@@ -216,15 +333,19 @@ Partial Public Structure Impedance
         Return Me.AngleOfReflectionRadians(z0) * 180.0 / System.Math.PI
     End Function ' AngleOfReflection
 
+#End Region ' "Angle of Reflection"
+
+#Region "Angle of Transmission"
+
+    ' ARE THE AngleOfReflection AND AngleOfTransmission ROUTINES UNIQUE, OR
+    ' SHARED, FOR VOLTAGE AND POWER?
+
     ''' <summary>
     ''' xxxxxxxxxx
     ''' </summary>
     ''' <returns>xxxxxxxxxx</returns>
     Public Function AngleOfTransmissionRadians(ByVal z0 As System.Double) As System.Double
 
-        '
-        '
-        '
         Dim MainCirc As New SmithMainCircle(4.0, 5.0, 4.0, z0) ' Test data.
         'Dim MainCirc As New SmithMainCircle(1.0, 1.0, 1.0, z0) ' Arbitrary.
 
@@ -266,19 +387,11 @@ Partial Public Structure Impedance
         Return Me.AngleOfTransmissionRadians(z0) * 180.0 / System.Math.PI
     End Function ' AngleOfTransmission
 
+#End Region ' "Angle of Transmission"
 
 
 
-    ' xxxxxxxxxxxxxxxxxxxxxxxx
-    ' ADD ROUTINES FOR VoltageTransmissionCoefficient
 
-    ' REF: Reflection and Transmission Coefficients Explained
-    ' https://www.rfwireless-world.com/terminology/reflection-and-transmission-coefficients
-    ' T = (2.0 * Zl) / (Zl + Zs)
-
-
-
-    'xxxxxxxxxxxxxxxxxxxxxxxx
 
 
 

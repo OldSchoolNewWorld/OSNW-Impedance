@@ -1,4 +1,5 @@
 ﻿'TODO:
+' Add routines for VoltageTransmissionCoefficient.
 ' Can a tuning design be selected based solely on an impedance, without consideration
 ' of capacitance, inductance, or frequency?
 '   It would not find capacitance/inductance values but maybe it would have the
