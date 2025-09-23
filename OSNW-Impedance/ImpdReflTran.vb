@@ -122,61 +122,55 @@ Partial Public Structure Impedance
 
 #Region "Power Reflection"
 
-
-
-    ' xxxxxxxxxx NO EXPECTED RESULTS KNOWN FOR THESE YET. xxxxxxxxxx
-    ' xxxxxxxxxx NO TEST SET UP FOR THESE YET. xxxxxxxxxx
-
-
-
     ''' <summary>
-    ''' Calculates the power reflection coefficient (COMMON NAME???) when the specified
-    ''' <paramref name="zLoad"/> <c>Impedance</c> is connected to the specified
-    ''' <paramref name="zSource"/> <c>Impedance</c>.
+    ''' Calculates the complex power reflection coefficient (COMMON NAME???)
+    ''' when the specified <paramref name="zLoad"/> <c>Impedance</c> is
+    ''' connected to the specified <paramref name="zSource"/> <c>Impedance</c>.
     ''' </summary>
     ''' <param name="zSource">Specifies the impedance of the source.</param>
     ''' <param name="zLoad">Specifies the impedance of the load.</param>
-    ''' <returns>the power reflection coefficient.</returns>
+    ''' <returns>The complex power reflection coefficient.</returns>
     ''' <remarks>The power reflection coefficient is a scalar value with no
     ''' dimension.</remarks>
-    Public Shared Function PowerReflectionCoefficient(
+    Public Shared Function PowerReflectionComplexCoefficient(
         ByVal zSource As Impedance, ByVal zLoad As Impedance) _
         As System.Numerics.Complex
 
         Dim Gamma As System.Numerics.Complex =
             Impedance.VoltageReflectionComplexCoefficient(zSource, zLoad)
         Return Gamma * Gamma
-    End Function ' PowerReflectionCoefficient
+    End Function ' PowerReflectionComplexCoefficient
 
     ''' <summary>
-    ''' Calculates the power reflection coefficient when this instance is
-    ''' connected to the specified <paramref name="zSource"/> <c>Impedance</c>.
+    ''' Calculates the complex power reflection coefficient when this instance
+    ''' is connected to the specified <paramref name="zSource"/>
+    ''' <c>Impedance</c>.
     ''' </summary>
     ''' <param name="zSource">Specifies the impedance of the source.</param>
-    ''' <returns>the power reflection coefficient.</returns>
+    ''' <returns>The complex power reflection coefficient.</returns>
     ''' <remarks>The power reflection coefficient is a scalar value with no
     ''' dimension.</remarks>
-    Public Function PowerReflectionCoefficient(ByVal zSource As Impedance) _
+    Public Function PowerReflectionComplexCoefficient(ByVal zSource As Impedance) _
         As System.Numerics.Complex
 
         Dim Gamma As System.Numerics.Complex =
             Me.VoltageReflectionComplexCoefficient(zSource)
         Return Gamma * Gamma
-    End Function ' PowerReflectionCoefficient
+    End Function ' PowerReflectionComplexCoefficient
 
     ''' <summary>
-    ''' Calculates the power reflection coefficient when this instance is
-    ''' connected to the specified characteristic impedance.
+    ''' Calculates the complex power reflection coefficient when this instance
+    ''' is connected to the specified characteristic impedance.
     ''' </summary>
     ''' <param name="z0">Specifies the characteristic impedance, in ohms.</param>
-    ''' <returns>the power reflection coefficient for the current instance based
-    ''' on the specified characteristic impedance.</returns>
+    ''' <returns>The complex power reflection coefficient for the current
+    ''' instance, based on the specified characteristic impedance.</returns>
     ''' <exception cref="System.ArgumentOutOfRangeException">When
     ''' <paramref name="z0"/> is not a positive, non-zero value or is
     ''' infinite.</exception>
     ''' <remarks>The power reflection coefficient is a scalar value with no
     ''' dimension.</remarks>
-    Public Function PowerReflectionCoefficient(ByVal z0 As System.Double) _
+    Public Function PowerReflectionComplexCoefficient(ByVal z0 As System.Double) _
         As System.Numerics.Complex
 
         ' Input checking.
@@ -193,6 +187,44 @@ Partial Public Structure Impedance
         Dim Gamma As System.Numerics.Complex =
             Me.VoltageReflectionComplexCoefficient(z0)
         Return Gamma * Gamma
+
+    End Function ' PowerReflectionComplexCoefficient
+
+
+
+    ''' <summary>
+    ''' Calculates the power reflection coefficient when this instance is
+    ''' connected to the specified characteristic impedance.
+    ''' </summary>
+    ''' <param name="z0">Specifies the characteristic impedance, in ohms.</param>
+    ''' <returns>The complex power reflection coefficient for the current
+    ''' instance, based on the specified characteristic impedance.</returns>
+    ''' <exception cref="System.ArgumentOutOfRangeException">When
+    ''' <paramref name="z0"/> is not a positive, non-zero value or is
+    ''' infinite.</exception>
+    ''' <remarks>The power reflection coefficient is a scalar value with no
+    ''' dimension.</remarks>
+    Public Function PowerReflectionCoefficient(ByVal z0 As System.Double) _
+        As System.Double
+
+        ' The underlying formula that was used here returns a Complex. This
+        ' routine uses Complex.Magnitude() to return a Double, to match what is
+        ' shown at the bottom of a Smith Chart.
+
+        ' Input checking.
+        If z0 <= 0.0 Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGVMBGTZ)
+        ElseIf Double.IsInfinity(z0) Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHIV)
+        End If
+
+        Dim Gamma As System.Numerics.Complex =
+            Me.VoltageReflectionComplexCoefficient(z0)
+        Return (Gamma * Gamma).Magnitude
 
     End Function ' PowerReflectionCoefficient
 
@@ -520,7 +552,7 @@ Partial Public Structure Impedance
 
 
     ' NEED/WANT ADD MULTIPLE VERSIONS AS DONE WITH VoltageReflectionComplexCoefficient
-    ' AND PowerReflectionCoefficient?
+    ' AND PowerReflectionComplexCoefficient?
     ''' <summary>
     ''' Calculates the voltage standing wave ratio for this instance based on
     ''' the specified characteristic impedance.
