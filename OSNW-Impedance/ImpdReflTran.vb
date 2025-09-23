@@ -190,8 +190,6 @@ Partial Public Structure Impedance
 
     End Function ' PowerReflectionComplexCoefficient
 
-
-
     ''' <summary>
     ''' Calculates the power reflection coefficient when this instance is
     ''' connected to the specified characteristic impedance.

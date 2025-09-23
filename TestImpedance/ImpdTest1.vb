@@ -626,129 +626,9 @@ Namespace TestImpedanceMath
 
     End Class ' TestToAdmittance()
 
-    Public Class TestVSWR
+End Namespace ' TestImpedanceMath
 
-        Const INF As Double = Double.PositiveInfinity
-
-        '<InlineData(     Z0,        R,       X,    VSWR)> ' Model
-        <Theory>
-        <InlineData(1.0, 0.0000, 0.0000, INF)> ' A: At the short circuit point. Omit - covered by B.
-        <InlineData(1.0, 0.0000, 1 / 2.0, INF)> ' B: Anywhere else on the perimeter. R=0.0.
-        <InlineData(1.0, 1.0, 0.0000, 1.0)> ' D: At the center.
-        <InlineData(1.0, 1.0, 1.0, 2.618)> ' E: On R=Z0 circle, above resonance line. Only needs reactance.
-        <InlineData(1.0, 1.0, -2.0, 5.8284)> ' F: On R=Z0 circle, below resonance line. Only needs reactance.
-        <InlineData(1.0, 2.0, 1 / 2.0, 2.1626)> ' G1: Inside R=Z0 circle, above resonance line.
-        <InlineData(50.0, 100.0, 25.0, 2.1626)> ' G2: Inside R=Z0 circle, above resonance line, Z0=50
-        <InlineData(1.0, 3.0, 0.0000, 3.0)> ' H: Inside R=Z0 circle, on line
-        <InlineData(1.0, 2.0, -2.0, 4.2656)> ' I: Inside R=Z0 circle, below resonance line.
-        <InlineData(1.0, 1 / 2.0, 1 / 2.0, 2.618)> ' J: On G=Y0 circle, above resonance line. Only needs reactance.
-        <InlineData(1.0, 1 / 2.0, -1 / 2.0, 2.618)> ' K: On G=Y0 circle, below resonance line. Only needs reactance.
-        <InlineData(1.0, 1 / 3.0, 0.0000, 3.0)> ' M: Inside G=Y0 circle, on line
-        <InlineData(1.0, 1 / 3.0, 1 / 3.0, 3.3699)> ' L1: Inside G=Y0 circle, above resonance line.
-        <InlineData(75.0, 25.0, 25.0, 3.3699)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
-        <InlineData(1.0, 1 / 2.0, -1 / 3.0, 2.2845)> ' N: Inside G=Y0 circle, below line
-        <InlineData(1.0, 0.2, 1.4, 14.933)> ' O: In the top remainder.
-        <InlineData(1.0, 0.4, -0.8, 4.2656)> ' P: In the bottom remainder.
-        Public Sub VSWR_GoodInput_Succeeds(z0 As Double, r As Double, x As Double, expectVSWR As Double)
-
-            Const Precision As Double = 0.0005
-
-            Dim Imp As New Impedance(r, x)
-            Dim AnsVWSR As Double = Imp.VSWR(z0)
-            Assert.Equal(expectVSWR, AnsVWSR, Precision)
-
-        End Sub
-
-        '<InlineData(1.0, 999, 999)> ' Outside of main circle
-        <Theory>
-        <InlineData(1.0, -2.0, 999)> ' NormR<=0
-        <InlineData(1.0, INF, 0.0000)> ' C: At the open circuit point on the right.
-        Sub VSWR_BadInput_Fails1(z0 As Double, r As Double, x As Double)
-            Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
-                Sub()
-                    ' Code that throws the exception
-                    Dim Imp As New Impedance(r, x)
-                    Dim AnsVWSR As Double = Imp.VSWR(z0)
-                End Sub)
-        End Sub
-
-        '<InlineData(1.0, 999, 999)> ' Outside of main circle
-        <Theory>
-        <InlineData(1.0, -2.0, 999)> ' NormR<=0
-        <InlineData(1.0, INF, 0.0000)> ' C: At the open circuit point on the right.
-        Sub VSWR_BadInput_Fails2(z0 As Double, r As Double, x As Double)
-            Try
-                ' Code that throws the exception.
-                Dim Imp As New Impedance(r, x)
-                Dim AnsVWSR As Double = Imp.VSWR(z0)
-            Catch ex As Exception
-                Assert.True(True)
-                Exit Sub
-            End Try
-            Assert.True(False, "Did not fail")
-        End Sub
-
-    End Class ' TestVSWR
-
-    Public Class TestAngleOfReflection
-
-        '<InlineData(     Z0,        R,       X      AOR)> ' Model
-        <Theory>
-        <InlineData(1.0, 1.0, 1.0, 63.4349)> ' E: On R=Z0 circle, above resonance line. Only needs reactance.
-        <InlineData(1.0, 1.0, -2.0, -45.0)> ' F: On R=Z0 circle, below resonance line. Only needs reactance.
-        <InlineData(1.0, 2.0, 1 / 2.0, 17.1027)> ' G1: Inside R=Z0 circle, above resonance line.
-        <InlineData(50.0, 100.0, 25.0, 17.1027)> ' G2: Inside R=Z0 circle, above resonance line, Z0=50
-        <InlineData(1.0, 3.0, 0.0000, 0.0000)> ' H: Inside R=Z0 circle, on line
-        <InlineData(1.0, 2.0, -2.0, -29.7449)> ' I: Inside R=Z0 circle, below resonance line.
-        <InlineData(1.0, 1 / 2.0, 1 / 2.0, 116.5651)> ' J: On G=Y0 circle, above resonance line. Only needs reactance.
-        <InlineData(1.0, 1 / 2.0, -1 / 2.0, -116.5651)> ' K: On G=Y0 circle, below resonance line. Only needs reactance.
-        <InlineData(1.0, 1 / 3.0, 1 / 3.0, 139.3987)> ' L1: Inside G=Y0 circle, above resonance line.
-        <InlineData(75.0, 25.0, 25.0, 139.3987)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
-        <InlineData(1.0, 1 / 3.0, 0.0000, 180.0)> ' M: Inside G=Y0 circle, on line
-        <InlineData(1.0, 1 / 2.0, -1 / 3.0, -133.7811)> ' N: Inside G=Y0 circle, below line
-        <InlineData(1.0, 0.2, 1.4, 70.34617)> ' O: In the top remainder.
-        <InlineData(1.0, 0.4, -0.8, -97.125)> ' P: In the bottom remainder.
-        Public Sub AngleOfReflection_GoodInput_Succeeds(z0 As Double, r As Double, x As Double, expectAOR As Double)
-
-            Const Precision As Double = 0.0005
-
-            Dim Imp As New Impedance(r, x)
-            Dim AnsAOR As Double = Imp.AngleOfReflection(z0)
-            Assert.Equal(expectAOR, AnsAOR, Precision)
-
-        End Sub
-
-    End Class ' TestAngleOfReflection
-
-    Public Class TestAngleOfTransmission
-
-        '<InlineData(     Z0,        R,       X,      AOT)> ' Model
-        <Theory>
-        <InlineData(1.0, 1.0, 1.0, 18.435)> ' E: On R=Z0 circle, above resonance line. Only needs reactance.
-        <InlineData(1.0, 1.0, -2.0, -18.435)> ' F: On R=Z0 circle, below resonance line. Only needs reactance.
-        <InlineData(1.0, 2.0, 1 / 2.0, 4.5739)> ' G1: Inside R=Z0 circle, above resonance line.
-        <InlineData(50.0, 100.0, 25.0, 4.5739)> ' G2: Inside R=Z0 circle, above resonance line, Z0=50
-        <InlineData(1.0, 3.0, 0.0000, 0.0000)> ' H: Inside R=Z0 circle, on line
-        <InlineData(1.0, 2.0, -2.0, -11.3099)> ' I: Inside R=Z0 circle, below resonance line.
-        <InlineData(1.0, 1 / 2.0, 1 / 2.0, 26.5651)> ' J: On G=Y0 circle, above resonance line. Only needs reactance.
-        <InlineData(1.0, 1 / 2.0, -1 / 2.0, -26.5651)> ' K: On G=Y0 circle, below resonance line. Only needs reactance.
-        <InlineData(1.0, 1 / 3.0, 1 / 3.0, 30.9638)> ' L1: Inside G=Y0 circle, above resonance line.
-        <InlineData(75.0, 25.0, 25.0, 30.9638)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
-        <InlineData(1.0, 1 / 3.0, 0.0000, 0.0000)> ' M: Inside G=Y0 circle, on line
-        <InlineData(1.0, 1 / 2.0, -1 / 3.0, -21.1613)> ' N: Inside G=Y0 circle, below line
-        <InlineData(1.0, 0.2, 1.4, 32.4712)> ' O: In the top remainder.
-        <InlineData(1.0, 0.4, -0.8, -33.6901)> ' P: In the bottom remainder.
-        Public Sub AngleOfTransmission_GoodInput_Succeeds(z0 As Double, r As Double, x As Double, expectAOT As Double)
-
-            Const Precision As Double = 0.0005
-
-            Dim Imp As New Impedance(r, x)
-            Dim AnsAOT As Double = Imp.AngleOfTransmission(z0)
-            Assert.Equal(expectAOT, AnsAOT, Precision)
-
-        End Sub
-
-    End Class ' TestAngleOfTransmission
+Namespace TestImpedanceReflection
 
     Public Class TestVoltageReflectionCoefficient
 
@@ -801,15 +681,10 @@ Namespace TestImpedanceMath
         Public Sub PowerReflectionCoefficient_GoodInput_Succeeds(z0 As Double, r As Double, x As Double, expectPRC As Double)
 
             Const Precision As Double = 0.0005
-            '            Const Precision As Double = 0.001
-            '            Const Precision As Double = 0.005
 
             Dim Imp As New Impedance(r, x)
-            Dim AnsPRC As Numerics.Complex = Imp.PowerReflectionCoefficient(z0)
-            Dim Mag As Double = AnsPRC.Magnitude
-
-            '            Assert.Equal(expectPRC, AnsVRC, Precision)
-            Assert.Equal(expectPRC, Mag, Precision)
+            Dim AnsPRC As Double = Imp.PowerReflectionCoefficient(z0)
+            Assert.Equal(expectPRC, AnsPRC, Precision)
 
         End Sub
 
@@ -887,4 +762,128 @@ Namespace TestImpedanceMath
 
     End Class ' TestPowerTransmissionCoefficient
 
-End Namespace ' TestImpedanceMath
+    Public Class TestAngleOfReflection
+
+        '<InlineData(     Z0,        R,       X      AOR)> ' Model
+        <Theory>
+        <InlineData(1.0, 1.0, 1.0, 63.4349)> ' E: On R=Z0 circle, above resonance line. Only needs reactance.
+        <InlineData(1.0, 1.0, -2.0, -45.0)> ' F: On R=Z0 circle, below resonance line. Only needs reactance.
+        <InlineData(1.0, 2.0, 1 / 2.0, 17.1027)> ' G1: Inside R=Z0 circle, above resonance line.
+        <InlineData(50.0, 100.0, 25.0, 17.1027)> ' G2: Inside R=Z0 circle, above resonance line, Z0=50
+        <InlineData(1.0, 3.0, 0.0000, 0.0000)> ' H: Inside R=Z0 circle, on line
+        <InlineData(1.0, 2.0, -2.0, -29.7449)> ' I: Inside R=Z0 circle, below resonance line.
+        <InlineData(1.0, 1 / 2.0, 1 / 2.0, 116.5651)> ' J: On G=Y0 circle, above resonance line. Only needs reactance.
+        <InlineData(1.0, 1 / 2.0, -1 / 2.0, -116.5651)> ' K: On G=Y0 circle, below resonance line. Only needs reactance.
+        <InlineData(1.0, 1 / 3.0, 1 / 3.0, 139.3987)> ' L1: Inside G=Y0 circle, above resonance line.
+        <InlineData(75.0, 25.0, 25.0, 139.3987)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
+        <InlineData(1.0, 1 / 3.0, 0.0000, 180.0)> ' M: Inside G=Y0 circle, on line
+        <InlineData(1.0, 1 / 2.0, -1 / 3.0, -133.7811)> ' N: Inside G=Y0 circle, below line
+        <InlineData(1.0, 0.2, 1.4, 70.34617)> ' O: In the top remainder.
+        <InlineData(1.0, 0.4, -0.8, -97.125)> ' P: In the bottom remainder.
+        Public Sub AngleOfReflection_GoodInput_Succeeds(z0 As Double, r As Double, x As Double, expectAOR As Double)
+
+            Const Precision As Double = 0.0005
+
+            Dim Imp As New Impedance(r, x)
+            Dim AnsAOR As Double = Imp.AngleOfReflection(z0)
+            Assert.Equal(expectAOR, AnsAOR, Precision)
+
+        End Sub
+
+    End Class ' TestAngleOfReflection
+
+    Public Class TestAngleOfTransmission
+
+        '<InlineData(     Z0,        R,       X,      AOT)> ' Model
+        <Theory>
+        <InlineData(1.0, 1.0, 1.0, 18.435)> ' E: On R=Z0 circle, above resonance line. Only needs reactance.
+        <InlineData(1.0, 1.0, -2.0, -18.435)> ' F: On R=Z0 circle, below resonance line. Only needs reactance.
+        <InlineData(1.0, 2.0, 1 / 2.0, 4.5739)> ' G1: Inside R=Z0 circle, above resonance line.
+        <InlineData(50.0, 100.0, 25.0, 4.5739)> ' G2: Inside R=Z0 circle, above resonance line, Z0=50
+        <InlineData(1.0, 3.0, 0.0000, 0.0000)> ' H: Inside R=Z0 circle, on line
+        <InlineData(1.0, 2.0, -2.0, -11.3099)> ' I: Inside R=Z0 circle, below resonance line.
+        <InlineData(1.0, 1 / 2.0, 1 / 2.0, 26.5651)> ' J: On G=Y0 circle, above resonance line. Only needs reactance.
+        <InlineData(1.0, 1 / 2.0, -1 / 2.0, -26.5651)> ' K: On G=Y0 circle, below resonance line. Only needs reactance.
+        <InlineData(1.0, 1 / 3.0, 1 / 3.0, 30.9638)> ' L1: Inside G=Y0 circle, above resonance line.
+        <InlineData(75.0, 25.0, 25.0, 30.9638)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
+        <InlineData(1.0, 1 / 3.0, 0.0000, 0.0000)> ' M: Inside G=Y0 circle, on line
+        <InlineData(1.0, 1 / 2.0, -1 / 3.0, -21.1613)> ' N: Inside G=Y0 circle, below line
+        <InlineData(1.0, 0.2, 1.4, 32.4712)> ' O: In the top remainder.
+        <InlineData(1.0, 0.4, -0.8, -33.6901)> ' P: In the bottom remainder.
+        Public Sub AngleOfTransmission_GoodInput_Succeeds(z0 As Double, r As Double, x As Double, expectAOT As Double)
+
+            Const Precision As Double = 0.0005
+
+            Dim Imp As New Impedance(r, x)
+            Dim AnsAOT As Double = Imp.AngleOfTransmission(z0)
+            Assert.Equal(expectAOT, AnsAOT, Precision)
+
+        End Sub
+
+    End Class ' TestAngleOfTransmission
+
+    Public Class TestVSWR
+
+        Const INF As Double = Double.PositiveInfinity
+
+        '<InlineData(     Z0,        R,       X,    VSWR)> ' Model
+        <Theory>
+        <InlineData(1.0, 0.0000, 0.0000, INF)> ' A: At the short circuit point. Omit - covered by B.
+        <InlineData(1.0, 0.0000, 1 / 2.0, INF)> ' B: Anywhere else on the perimeter. R=0.0.
+        <InlineData(1.0, 1.0, 0.0000, 1.0)> ' D: At the center.
+        <InlineData(1.0, 1.0, 1.0, 2.618)> ' E: On R=Z0 circle, above resonance line. Only needs reactance.
+        <InlineData(1.0, 1.0, -2.0, 5.8284)> ' F: On R=Z0 circle, below resonance line. Only needs reactance.
+        <InlineData(1.0, 2.0, 1 / 2.0, 2.1626)> ' G1: Inside R=Z0 circle, above resonance line.
+        <InlineData(50.0, 100.0, 25.0, 2.1626)> ' G2: Inside R=Z0 circle, above resonance line, Z0=50
+        <InlineData(1.0, 3.0, 0.0000, 3.0)> ' H: Inside R=Z0 circle, on line
+        <InlineData(1.0, 2.0, -2.0, 4.2656)> ' I: Inside R=Z0 circle, below resonance line.
+        <InlineData(1.0, 1 / 2.0, 1 / 2.0, 2.618)> ' J: On G=Y0 circle, above resonance line. Only needs reactance.
+        <InlineData(1.0, 1 / 2.0, -1 / 2.0, 2.618)> ' K: On G=Y0 circle, below resonance line. Only needs reactance.
+        <InlineData(1.0, 1 / 3.0, 0.0000, 3.0)> ' M: Inside G=Y0 circle, on line
+        <InlineData(1.0, 1 / 3.0, 1 / 3.0, 3.3699)> ' L1: Inside G=Y0 circle, above resonance line.
+        <InlineData(75.0, 25.0, 25.0, 3.3699)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
+        <InlineData(1.0, 1 / 2.0, -1 / 3.0, 2.2845)> ' N: Inside G=Y0 circle, below line
+        <InlineData(1.0, 0.2, 1.4, 14.933)> ' O: In the top remainder.
+        <InlineData(1.0, 0.4, -0.8, 4.2656)> ' P: In the bottom remainder.
+        Public Sub VSWR_GoodInput_Succeeds(z0 As Double, r As Double, x As Double, expectVSWR As Double)
+
+            Const Precision As Double = 0.0005
+
+            Dim Imp As New Impedance(r, x)
+            Dim AnsVWSR As Double = Imp.VSWR(z0)
+            Assert.Equal(expectVSWR, AnsVWSR, Precision)
+
+        End Sub
+
+        '<InlineData(1.0, 999, 999)> ' Outside of main circle
+        <Theory>
+        <InlineData(1.0, -2.0, 999)> ' NormR<=0
+        <InlineData(1.0, INF, 0.0000)> ' C: At the open circuit point on the right.
+        Sub VSWR_BadInput_Fails1(z0 As Double, r As Double, x As Double)
+            Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
+                Sub()
+                    ' Code that throws the exception
+                    Dim Imp As New Impedance(r, x)
+                    Dim AnsVWSR As Double = Imp.VSWR(z0)
+                End Sub)
+        End Sub
+
+        '<InlineData(1.0, 999, 999)> ' Outside of main circle
+        <Theory>
+        <InlineData(1.0, -2.0, 999)> ' NormR<=0
+        <InlineData(1.0, INF, 0.0000)> ' C: At the open circuit point on the right.
+        Sub VSWR_BadInput_Fails2(z0 As Double, r As Double, x As Double)
+            Try
+                ' Code that throws the exception.
+                Dim Imp As New Impedance(r, x)
+                Dim AnsVWSR As Double = Imp.VSWR(z0)
+            Catch ex As Exception
+                Assert.True(True)
+                Exit Sub
+            End Try
+            Assert.True(False, "Did not fail")
+        End Sub
+
+    End Class ' TestVSWR
+
+End Namespace ' Namespace TestImpedanceReflection
