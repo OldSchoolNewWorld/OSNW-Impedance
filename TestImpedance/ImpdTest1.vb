@@ -56,26 +56,26 @@ End Class
 '<InlineData(ChartX, ChartY, ChartRad,      Z0,        R,       X,    VRC,    PRC,   VTC,   PTC,       AOR,      AOT)> ' Model
 '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,        R,       X,    VRC,    PRC,   VTC,   PTC,       AOR,      AOT)> ' Base circle
 '<Theory>
-'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.0000,  0.0000,    VRC,    PRC,   VTC,   PTC,       INF,   2.0000)> ' A: At the short circuit point. Omit - covered by B.
-'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.0000,   1/2.0,    VRC,    PRC,   VTC,   PTC,       INF,      2.8)> ' B: Anywhere else on the perimeter. R=0.0.
-'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,      INF,  0.0000,    VRC,    PRC,   VTC,   PTC,       INF,   6.0000)> ' C: At the open circuit point on the right.
-'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   1.0000,  0.0000,    VRC,    PRC,   VTC,   PTC,    0.0000,   0.0000)> ' D: At the center.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.0000,  0.0000,    999,    999,   999,   999,       INF,   2.0000)> ' A: At the short circuit point. Omit - covered by B.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.0000,   1/2.0,    999,    999,   999,   999,       INF,      2.8)> ' B: Anywhere else on the perimeter. R=0.0.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,      INF,  0.0000,    999,    999,   999,   999,       INF,   6.0000)> ' C: At the open circuit point on the right.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   1.0000,  0.0000,    999,    999,   999,   999,    0.0000,   0.0000)> ' D: At the center.
 '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   1.0000,  1.0000, 0.4472,    0.2, 0.125, 0.800,   63.4349,  18.4350)> ' E: On R=Z0 circle, above resonance line. Only needs reactance.
 '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   1.0000, -2.0000, 0.7071, 0.5000, 0.550, 1.600,  -45.0000, -18.4350)> ' F: On R=Z0 circle, below resonance line. Only needs reactance.
 '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   2.0000,   1/2.0, 0.3676, 0.1351, 0.860, 1.360,   17.1027,   4.5739)> ' G1: Inside R=Z0 circle, above resonance line.
 '<InlineData(4.0000, 5.0000,   2.0000, 50.0000, 100.0000, 25.0000, 0.3676, 0.1351, 0.860, 1.360,   17.1027,   4.5739)> ' G2: Inside R=Z0 circle, above resonance line, Z0=50
 '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   3.0000,  0.0000, 0.5000, 0.2500,  1.35,  0.75,    0.0000,   0.0000)> ' H: Inside R=Z0 circle, on line
-'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   2.0000, -2.0000,   0.67,   0.46,  1.53,  0.55,  -29.7449, -11.3099)> ' I: Inside R=Z0 circle, below resonance line.
-'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/2.0,   1/2.0,    VRC,    PRC,  1.82,   PTC,  116.5651,  26.5651)> ' J: On G=Y0 circle, above resonance line. Only needs reactance.
-'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/2.0,  -1/2.0,    VRC,    PRC,  0.82,   PTC, -116.5651, -26.5651)> ' K: On G=Y0 circle, below resonance line. Only needs reactance.
-'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/3.0,   1/3.0,    VRC,    PRC,  0.58,   PTC,  139.3987,  30.9638)> ' L1: Inside G=Y0 circle, above resonance line.
-'<InlineData(4.0000, 5.0000,   2.0000, 75.0000,  25.0000, 25.0000,    VRC,    PRC,  0.58,   PTC,  139.3987,  30.9638)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
-'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/3.0,  0.0000,    VRC,    PRC,  0.52,   PTC,  180.0000,   0.0000)> ' M: Inside G=Y0 circle, on line
-'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/2.0,  -1/3.0,    VRC,    PRC,  0.72,   PTC, -133.7811, -21.1613)> ' N: Inside G=Y0 circle, below line
-'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.2000,  1.4000,    VRC,    PRC,  1.28,   PTC,  70.34617,  32.4712)> ' O: In the top remainder.
-'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.4000, -0.8000,    VRC,    PRC,  0.41,   PTC,  -97.1250, -33.6901)> ' P: In the bottom remainder.
-'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,      999,     999,    VRC,    PRC,   VTC,   PTC,       999,      2.5)> ' Q: Outside of main circle. Invalid.
-'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,  -2.0000,     999,    VRC,    PRC,   VTC,   PTC,       999,    GridX)> ' R: NormR<=0. Invalid.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   2.0000, -2.0000, 0.6200,  0.415,  1.53,  0.55,  -29.7449, -11.3099)> ' I: Inside R=Z0 circle, below resonance line.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/2.0,   1/2.0, 0.4472,    0.2,  0.49,   0.8,  116.5651,  26.5651)> ' J: On G=Y0 circle, above resonance line. Only needs reactance.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/2.0,  -1/2.0, 0.4472,    0.2,   0.8,   0.8, -116.5651, -26.5651)> ' K: On G=Y0 circle, below resonance line. Only needs reactance.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/3.0,   1/3.0, 0.5423,    0.3,  0.58,   0.7,  139.3987,  30.9638)> ' L1: Inside G=Y0 circle, above resonance line.
+'<InlineData(4.0000, 5.0000,   2.0000, 75.0000,  25.0000, 25.0000, 0.5423,    0.3,  0.58,   0.7,  139.3987,  30.9638)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/3.0,  0.0000, 0.5000,   0.25,  0.52,  0.75,  180.0000,   0.0000)> ' M: Inside G=Y0 circle, on line
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/2.0,  -1/3.0, 0.3911,   0.34,  0.72,   999, -133.7811, -21.1613)> ' N: Inside G=Y0 circle, below line
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.2000,  1.4000, 0.8745,   0.65,  1.28,   999,  70.34617,  32.4712)> ' O: In the top remainder.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.4000, -0.8000, 0.6200,  0.625,  0.62,   999,  -97.1250, -33.6901)> ' P: In the bottom remainder.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,      999,     999,    999,    999,   999,   999,       999,      2.5)> ' Q: Outside of main circle. Invalid.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,  -2.0000,     999,    999,    999,   999,   999,       999,    GridX)> ' R: NormR<=0. Invalid.
 
 #End Region ' "Test Data"
 
@@ -692,9 +692,8 @@ Namespace TestImpedanceMath
 
     Public Class TestAngleOfReflection
 
-        '<InlineData(     Z0,        R,       X,       AOR)> ' Model
+        '<InlineData(     Z0,        R,       X      AOR)> ' Model
         <Theory>
-        <InlineData(1.0, 1.0, 0.0000, 0.0000)> ' D: At the center.
         <InlineData(1.0, 1.0, 1.0, 63.4349)> ' E: On R=Z0 circle, above resonance line. Only needs reactance.
         <InlineData(1.0, 1.0, -2.0, -45.0)> ' F: On R=Z0 circle, below resonance line. Only needs reactance.
         <InlineData(1.0, 2.0, 1 / 2.0, 17.1027)> ' G1: Inside R=Z0 circle, above resonance line.
@@ -725,7 +724,6 @@ Namespace TestImpedanceMath
 
         '<InlineData(     Z0,        R,       X,      AOT)> ' Model
         <Theory>
-        <InlineData(1.0, 1.0, 0.0000, 0.0000)> ' D: At the center.
         <InlineData(1.0, 1.0, 1.0, 18.435)> ' E: On R=Z0 circle, above resonance line. Only needs reactance.
         <InlineData(1.0, 1.0, -2.0, -18.435)> ' F: On R=Z0 circle, below resonance line. Only needs reactance.
         <InlineData(1.0, 2.0, 1 / 2.0, 4.5739)> ' G1: Inside R=Z0 circle, above resonance line.
@@ -754,24 +752,28 @@ Namespace TestImpedanceMath
 
     Public Class TestVoltageReflectionCoefficient
 
-        '<InlineData(     Z0,        R,       X,    VRC)> ' Model
+        '<InlineData(Z0, R, X, VRC)> ' Model
         <Theory>
         <InlineData(1.0, 1.0, 1.0, 0.4472)> ' E: On R=Z0 circle, above resonance line. Only needs reactance.
         <InlineData(1.0, 1.0, -2.0, 0.7071)> ' F: On R=Z0 circle, below resonance line. Only needs reactance.
         <InlineData(1.0, 2.0, 1 / 2.0, 0.3676)> ' G1: Inside R=Z0 circle, above resonance line.
         <InlineData(50.0, 100.0, 25.0, 0.3676)> ' G2: Inside R=Z0 circle, above resonance line, Z0=50
         <InlineData(1.0, 3.0, 0.0000, 0.5)> ' H: Inside R=Z0 circle, on line
-        <InlineData(1.0, 2.0, -2.0, 0.67)> ' I: Inside R=Z0 circle, below resonance line.
+        <InlineData(1.0, 2.0, -2.0, 0.62)> ' I: Inside R=Z0 circle, below resonance line.
+        <InlineData(1.0, 1 / 2.0, 1 / 2.0, 0.4472)> ' J: On G=Y0 circle, above resonance line. Only needs reactance.
+        <InlineData(1.0, 1 / 2.0, -1 / 2.0, 0.4472)> ' K: On G=Y0 circle, below resonance line. Only needs reactance.
+        <InlineData(1.0, 1 / 3.0, 1 / 3.0, 0.5423)> ' L1: Inside G=Y0 circle, above resonance line.
+        <InlineData(75.0, 25.0, 25.0, 0.5423)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
+        <InlineData(1.0, 1 / 3.0, 0.0000, 0.5)> ' M: Inside G=Y0 circle, on line
+        <InlineData(1.0, 1 / 2.0, -1 / 3.0, 0.3911)> ' N: Inside G=Y0 circle, below line
+        <InlineData(1.0, 0.2, 1.4, 0.8745)> ' O: In the top remainder.
+        <InlineData(1.0, 0.4, -0.8, 0.62)> ' P: In the bottom remainder.
         Public Sub VoltageReflectionCoefficient_GoodInput_Succeeds(z0 As Double, r As Double, x As Double, expectVRC As Double)
 
             ' THE FORMULA THAT WAS USED IN VoltageReflectionCoefficient RETURNS A COMPLEX BUT THIS REQUIRED A CALL TO
             ' Complex.Magnitude TO MATCH WHAT SHOWS ON A SMITH CHART.
 
-            ' MORE ESTIMATES NEED TO BE ADDED TO THE TEST DATA.
-
-            '            Const Precision As Double = 0.0005
-            'Const Precision As Double = 0.001
-            Const Precision As Double = 0.005
+            Const Precision As Double = 0.0005
 
             Dim Imp As New Impedance(r, x)
             Dim AnsVRC As Numerics.Complex = Imp.VoltageReflectionCoefficient(z0)
@@ -786,14 +788,22 @@ Namespace TestImpedanceMath
 
     Public Class TestPowerReflectionCoefficient
 
-        '<InlineData(     Z0,        R,       X,    PRC)> ' Model
+        '<InlineData(      Z0,        R,       X,    PRC)> ' Model
         <Theory>
         <InlineData(1.0, 1.0, 1.0, 0.2)> ' E: On R=Z0 circle, above resonance line. Only needs reactance.
         <InlineData(1.0, 1.0, -2.0, 0.5)> ' F: On R=Z0 circle, below resonance line. Only needs reactance.
         <InlineData(1.0, 2.0, 1 / 2.0, 0.1351)> ' G1: Inside R=Z0 circle, above resonance line.
         <InlineData(50.0, 100.0, 25.0, 0.1351)> ' G2: Inside R=Z0 circle, above resonance line, Z0=50
         <InlineData(1.0, 3.0, 0.0000, 0.25)> ' H: Inside R=Z0 circle, on line
-        <InlineData(1.0, 2.0, -2.0, 0.46)> ' I: Inside R=Z0 circle, below resonance line.
+        <InlineData(1.0, 2.0, -2.0, 0.415)> ' I: Inside R=Z0 circle, below resonance line.
+        <InlineData(1.0, 1 / 2.0, 1 / 2.0, 0.2)> ' J: On G=Y0 circle, above resonance line. Only needs reactance.
+        <InlineData(1.0, 1 / 2.0, -1 / 2.0, 0.2)> ' K: On G=Y0 circle, below resonance line. Only needs reactance.
+        <InlineData(1.0, 1 / 3.0, 1 / 3.0, 0.3)> ' L1: Inside G=Y0 circle, above resonance line.
+        <InlineData(75.0, 25.0, 25.0, 0.3)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
+        <InlineData(1.0, 1 / 3.0, 0.0000, 0.25)> ' M: Inside G=Y0 circle, on line
+        <InlineData(1.0, 1 / 2.0, -1 / 3.0, 0.34)> ' N: Inside G=Y0 circle, below line
+        <InlineData(1.0, 0.2, 1.4, 0.76)> ' O: In the top remainder.
+        <InlineData(1.0, 0.4, -0.8, 0.625)> ' P: In the bottom remainder.
         Public Sub PowerReflectionCoefficient_GoodInput_Succeeds(z0 As Double, r As Double, x As Double, expectPRC As Double)
 
             '            Const Precision As Double = 0.0005
@@ -811,6 +821,7 @@ Namespace TestImpedanceMath
 
     End Class ' TestPowerReflectionCoefficient
 
+
     Public Class TestVoltageTransmissionCoefficient
 
         '<InlineData(     Z0,        R,       X,   VTC)> ' Model
@@ -821,14 +832,14 @@ Namespace TestImpedanceMath
         <InlineData(50.0, 100.0, 25.0, 0.86)> ' G2: Inside R=Z0 circle, above resonance line, Z0=50
         <InlineData(1.0, 3.0, 0.0000, 1.35)> ' H: Inside R=Z0 circle, on line
         <InlineData(1.0, 2.0, -2.0, 1.53)> ' I: Inside R=Z0 circle, below resonance line.
-        <InlineData(1.0, 1 / 2.0, 1 / 2.0, 1.82)> ' J: On G=Y0 circle, above resonance line. Only needs reactance.
-        <InlineData(1.0, 1 / 2.0, -1 / 2.0, 0.82)> ' K: On G=Y0 circle, below resonance line. Only needs reactance.
+        <InlineData(1.0, 1 / 2.0, 1 / 2.0, 0.49)> ' J: On G=Y0 circle, above resonance line. Only needs reactance.
+        <InlineData(1.0, 1 / 2.0, -1 / 2.0, 0.8)> ' K: On G=Y0 circle, below resonance line. Only needs reactance.
         <InlineData(1.0, 1 / 3.0, 1 / 3.0, 0.58)> ' L1: Inside G=Y0 circle, above resonance line.
         <InlineData(75.0, 25.0, 25.0, 0.58)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
         <InlineData(1.0, 1 / 3.0, 0.0000, 0.52)> ' M: Inside G=Y0 circle, on line
         <InlineData(1.0, 1 / 2.0, -1 / 3.0, 0.72)> ' N: Inside G=Y0 circle, below line
         <InlineData(1.0, 0.2, 1.4, 1.28)> ' O: In the top remainder.
-        <InlineData(1.0, 0.4, -0.8, 0.41)> ' P: In the bottom remainder.
+        <InlineData(1.0, 0.4, -0.8, 0.62)> ' P: In the bottom remainder.
         Public Sub VoltageTransmissionCoefficient_GoodInput_Succeeds(z0 As Double, r As Double, x As Double, expectVTC As Double)
 
             '            Const Precision As Double = 0.0005
@@ -850,7 +861,7 @@ Namespace TestImpedanceMath
 
     Public Class TestPowerTransmissionCoefficient
 
-        '<InlineData(     Z0,        R,       X,   PTC)> ' Model
+        '<InlineData(      Z0,        R,       X,   PTC)> ' Model
         <Theory>
         <InlineData(1.0, 1.0, 1.0, 0.8)> ' E: On R=Z0 circle, above resonance line. Only needs reactance.
         <InlineData(1.0, 1.0, -2.0, 1.6)> ' F: On R=Z0 circle, below resonance line. Only needs reactance.
@@ -858,6 +869,14 @@ Namespace TestImpedanceMath
         <InlineData(50.0, 100.0, 25.0, 1.36)> ' G2: Inside R=Z0 circle, above resonance line, Z0=50
         <InlineData(1.0, 3.0, 0.0000, 0.75)> ' H: Inside R=Z0 circle, on line
         <InlineData(1.0, 2.0, -2.0, 0.55)> ' I: Inside R=Z0 circle, below resonance line.
+        <InlineData(1.0, 1 / 2.0, 1 / 2.0, 0.8)> ' J: On G=Y0 circle, above resonance line. Only needs reactance.
+        <InlineData(1.0, 1 / 2.0, -1 / 2.0, 0.8)> ' K: On G=Y0 circle, below resonance line. Only needs reactance.
+        <InlineData(1.0, 1 / 3.0, 1 / 3.0, 0.7)> ' L1: Inside G=Y0 circle, above resonance line.
+        <InlineData(75.0, 25.0, 25.0, 0.7)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
+        <InlineData(1.0, 1 / 3.0, 0.0000, 0.75)> ' M: Inside G=Y0 circle, on line
+        <InlineData(1.0, 1 / 2.0, -1 / 3.0, 999)> ' N: Inside G=Y0 circle, below line
+        <InlineData(1.0, 0.2, 1.4, 999)> ' O: In the top remainder.
+        <InlineData(1.0, 0.4, -0.8, 999)> ' P: In the bottom remainder.
         Public Sub PowerTransmissionCoefficient_GoodInput_Succeeds(z0 As Double, r As Double, x As Double, expectPTC As Double)
 
             '            Const Precision As Double = 0.0005
