@@ -770,17 +770,11 @@ Namespace TestImpedanceMath
         <InlineData(1.0, 0.4, -0.8, 0.62)> ' P: In the bottom remainder.
         Public Sub VoltageReflectionCoefficient_GoodInput_Succeeds(z0 As Double, r As Double, x As Double, expectVRC As Double)
 
-            ' THE FORMULA THAT WAS USED IN VoltageReflectionCoefficient RETURNS A COMPLEX BUT THIS REQUIRED A CALL TO
-            ' Complex.Magnitude TO MATCH WHAT SHOWS ON A SMITH CHART.
-
             Const Precision As Double = 0.0005
 
             Dim Imp As New Impedance(r, x)
-            Dim AnsVRC As Numerics.Complex = Imp.VoltageReflectionCoefficient(z0)
-            Dim Mag As Double = AnsVRC.Magnitude
-
-            '            Assert.Equal(expectVRC, AnsVRC, Precision)
-            Assert.Equal(expectVRC, Mag, Precision)
+            Dim AnsVRC As Double = Imp.VoltageReflectionCoefficient(z0)
+            Assert.Equal(expectVRC, AnsVRC, Precision)
 
         End Sub
 
