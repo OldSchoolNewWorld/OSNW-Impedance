@@ -230,28 +230,13 @@ Partial Public Structure Impedance
 
 #Region "Voltage Transmission"
 
-
-
-    ' xxxxxxxxxx NO EXPECTED RESULTS KNOWN FOR THESE YET. xxxxxxxxxx
-    ' xxxxxxxxxx NO TEST SET UP FOR THESE YET. xxxxxxxxxx
-
-
-
-    ' xxxxxxxxxxxxxxxxxxxxxxxx
-    ' REF: Reflection and Transmission Coefficients Explained
-    ' https://www.rfwireless-world.com/terminology/reflection-and-transmission-coefficients
-    ' T = (2.0 * Zl) / (Zl + Zs)
-    'xxxxxxxxxxxxxxxxxxxxxxxx
-
-
-
     ''' <summary>
     ''' xxxxxxxxxx
     ''' </summary>
     ''' <param name="zSource">xxxxxxxxxx</param>
     ''' <param name="zLoad">xxxxxxxxxx</param>
     ''' <returns>xxxxxxxxxx</returns>
-    Public Shared Function VoltageTransmissionCoefficient(
+    Public Shared Function VoltageTransmissionComplexCoefficient(
         ByVal zSource As Impedance, ByVal zLoad As Impedance) _
         As System.Numerics.Complex
 
@@ -262,18 +247,18 @@ Partial Public Structure Impedance
         Dim SourceCplx As System.Numerics.Complex = zSource.ToComplex
         Return 2.0 * LoadCplx / (LoadCplx + SourceCplx)
 
-    End Function ' VoltageTransmissionCoefficient
+    End Function ' VoltageTransmissionComplexCoefficient
 
     ''' <summary>
     ''' xxxxxxxxxx
     ''' </summary>
     ''' <param name="zSource">xxxxxxxxxx</param>
     ''' <returns>xxxxxxxxxx</returns>
-    Public Function VoltageTransmissionCoefficient(ByVal zSource As Impedance) _
+    Public Function VoltageTransmissionComplexCoefficient(ByVal zSource As Impedance) _
         As System.Numerics.Complex
 
-        Return Impedance.VoltageTransmissionCoefficient(zSource, Me)
-    End Function ' VoltageTransmissionCoefficient
+        Return Impedance.VoltageTransmissionComplexCoefficient(zSource, Me)
+    End Function ' VoltageTransmissionComplexCoefficient
 
     ''' <summary>
     ''' xxxxxxxxxx
@@ -283,7 +268,7 @@ Partial Public Structure Impedance
     ''' <paramref name="z0"/> is not a positive, non-zero value or is
     ''' infinite.</exception>
     ''' <returns>xxxxxxxxxx</returns>
-    Public Function VoltageTransmissionCoefficient(ByVal z0 As System.Double) _
+    Public Function VoltageTransmissionComplexCoefficient(ByVal z0 As System.Double) _
         As System.Numerics.Complex
 
         ' Input checking.
@@ -297,39 +282,40 @@ Partial Public Structure Impedance
             Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHIV)
         End If
 
-        '        Return Impedance.VoltageTransmissionCoefficient(New Impedance(z0, 0.0), Me)
         Dim SourceImp As New Impedance(z0, 0.0)
-        Return Impedance.VoltageTransmissionCoefficient(SourceImp, Me)
+        Return Impedance.VoltageTransmissionComplexCoefficient(SourceImp, Me)
+
+    End Function ' VoltageTransmissionComplexCoefficient
+
+    ''' <summary>
+    ''' xxxxxxxxxx
+    ''' </summary>
+    ''' <param name="z0">xxxxxxxxxx</param>
+    ''' <exception cref="System.ArgumentOutOfRangeException">When
+    ''' <paramref name="z0"/> is not a positive, non-zero value or is
+    ''' infinite.</exception>
+    ''' <returns>xxxxxxxxxx</returns>
+    Public Function VoltageTransmissionCoefficient(ByVal z0 As System.Double) _
+        As System.Double
+
+        ' Input checking.
+        If z0 <= 0.0 Then
+            'Dim CaughtBy As System.Transmission.MethodBase =
+            '    System.Transmission.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGVMBGTZ)
+        ElseIf Double.IsInfinity(z0) Then
+            'Dim CaughtBy As System.Transmission.MethodBase =
+            '    System.Transmission.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHIV)
+        End If
+
+        Dim SourceImp As New Impedance(z0, 0.0)
+        Dim VTCC As System.Numerics.Complex =
+            Impedance.VoltageTransmissionComplexCoefficient(SourceImp, Me)
+        '        Return VTCC.Real
+        Return VTCC.Magnitude
 
     End Function ' VoltageTransmissionCoefficient
-
-    '''' <summary>
-    '''' xxxxxxxxxx
-    '''' </summary>
-    '''' <param name="z0">xxxxxxxxxx</param>
-    '''' <exception cref="System.ArgumentOutOfRangeException">When
-    '''' <paramref name="z0"/> is not a positive, non-zero value or is
-    '''' infinite.</exception>
-    '''' <returns>xxxxxxxxxx</returns>
-    'Public Function VoltageTransmissionCoefficient(ByVal z0 As System.Double) _
-    '    As System.Double
-
-    '    ' Input checking.
-    '    If z0 <= 0.0 Then
-    '        'Dim CaughtBy As System.Transmission.MethodBase =
-    '        '    System.Transmission.MethodBase.GetCurrentMethod
-    '        Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGVMBGTZ)
-    '    ElseIf Double.IsInfinity(z0) Then
-    '        'Dim CaughtBy As System.Transmission.MethodBase =
-    '        '    System.Transmission.MethodBase.GetCurrentMethod
-    '        Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHIV)
-    '    End If
-
-    '    '        Return Impedance.VoltageTransmissionCoefficient(New Impedance(z0, 0.0), Me)
-    '    Dim SourceImp As New Impedance(z0, 0.0)
-    '    Return Impedance.VoltageTransmissionCoefficient(SourceImp, Me).Real
-
-    'End Function ' VoltageTransmissionCoefficient
 
 #End Region ' "Voltage Transmission"
 
@@ -341,13 +327,6 @@ Partial Public Structure Impedance
     ' T = (2.0 * Zl) / (Zl + Zs)
     'xxxxxxxxxxxxxxxxxxxxxxxx
 
-    ' xxxxxxxxxx NO TEST SET UP FOR THIS YET. xxxxxxxxxx
-    ' xxxxxxxxxx NO EXPECTED RESULTS KNOWN FOR THIS YET. xxxxxxxxxx
-    '
-    '
-    '
-    '
-    '
 
 
 
@@ -357,18 +336,19 @@ Partial Public Structure Impedance
     ''' <param name="zSource">xxxxxxxxxx</param>
     ''' <param name="zLoad">xxxxxxxxxx</param>
     ''' <returns>xxxxxxxxxx</returns>
-    Public Shared Function PowerTransmissionCoefficient(
+    Public Shared Function PowerTransmissionComplexCoefficient(
         ByVal zSource As Impedance, ByVal zLoad As Impedance) _
         As System.Numerics.Complex
 
         ' REF: Reflection and Transmission Coefficients Explained
         ' https://www.rfwireless-world.com/terminology/reflection-and-transmission-coefficients
 
+        ' THIS IS JUST TRYING TO FIND A WAY TO GET THE ANSWERS TO MATCH AT THE BOTTOM LINE ON A SMITH CHART.
         Dim LoadCplx As System.Numerics.Complex = zLoad.ToComplex
         Dim SourceCplx As System.Numerics.Complex = zSource.ToComplex
         Return 2.0 * LoadCplx / (LoadCplx + SourceCplx)
 
-    End Function ' PowerTransmissionCoefficient
+    End Function ' PowerTransmissionComplexCoefficient
 
     ''' <summary>
     ''' xxxxxxxxxx
@@ -378,8 +358,8 @@ Partial Public Structure Impedance
     Public Function PowerTransmissionCoefficient(ByVal zSource As Impedance) _
         As System.Numerics.Complex
 
-        Return Impedance.PowerTransmissionCoefficient(zSource, Me)
-    End Function ' PowerTransmissionCoefficient
+        Return Impedance.PowerTransmissionComplexCoefficient(zSource, Me)
+    End Function ' PowerTransmissionComplexCoefficient
 
     ''' <summary>
     ''' xxxxxxxxxx
@@ -389,7 +369,7 @@ Partial Public Structure Impedance
     ''' <paramref name="z0"/> is not a positive, non-zero value or is
     ''' infinite.</exception>
     ''' <returns>xxxxxxxxxx</returns>
-    Public Function PowerTransmissionCoefficient(ByVal z0 As System.Double) _
+    Public Function PowerTransmissionComplexCoefficient(ByVal z0 As System.Double) _
         As System.Numerics.Complex
 
         ' Input checking.
@@ -405,7 +385,28 @@ Partial Public Structure Impedance
 
         '        Return Impedance.PowerTransmissionCoefficient(New Impedance(z0, 0.0), Me)
         Dim SourceImp As New Impedance(z0, 0.0)
-        Return Impedance.PowerTransmissionCoefficient(SourceImp, Me)
+        Return Impedance.PowerTransmissionComplexCoefficient(SourceImp, Me)
+
+    End Function ' PowerTransmissionComplexCoefficient
+
+    Public Function PowerTransmissionCoefficient(ByVal z0 As System.Double) _
+        As System.Double
+
+        ' Input checking.
+        If z0 <= 0.0 Then
+            'Dim CaughtBy As System.Transmission.MethodBase =
+            '    System.Transmission.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGVMBGTZ)
+        ElseIf Double.IsInfinity(z0) Then
+            'Dim CaughtBy As System.Transmission.MethodBase =
+            '    System.Transmission.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHIV)
+        End If
+
+        ' THIS IS JUST TRYING TO FIND A WAY TO GET THE ANSWERS TO MATCH AT THE BOTTOM LINE ON A SMITH CHART.
+        Dim SourceImp As New Impedance(z0, 0.0)
+        Dim PTCC As System.Numerics.Complex = Impedance.PowerTransmissionComplexCoefficient(SourceImp, Me)
+        Return PTCC.Magnitude
 
     End Function ' PowerTransmissionCoefficient
 

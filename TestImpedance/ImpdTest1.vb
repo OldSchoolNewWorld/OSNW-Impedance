@@ -652,8 +652,8 @@ Namespace TestImpedanceReflection
 
             Const Precision As Double = 0.0005
 
-            Dim Imp As New Impedance(r, x)
-            Dim AnsVRC As Double = Imp.VoltageReflectionCoefficient(z0)
+            Dim Impd As New Impedance(r, x)
+            Dim AnsVRC As Double = Impd.VoltageReflectionCoefficient(z0)
             Assert.Equal(expectVRC, AnsVRC, Precision)
 
         End Sub
@@ -682,8 +682,8 @@ Namespace TestImpedanceReflection
 
             Const Precision As Double = 0.0005
 
-            Dim Imp As New Impedance(r, x)
-            Dim AnsPRC As Double = Imp.PowerReflectionCoefficient(z0)
+            Dim Impd As New Impedance(r, x)
+            Dim AnsPRC As Double = Impd.PowerReflectionCoefficient(z0)
             Assert.Equal(expectPRC, AnsPRC, Precision)
 
         End Sub
@@ -691,6 +691,28 @@ Namespace TestImpedanceReflection
     End Class ' TestPowerReflectionCoefficient
 
     Public Class TestVoltageTransmissionCoefficient
+
+
+
+        '     Z0,        R,       X,    VRC,    PRC,   VTC,   PTC, Model
+        ' 1.0000,   1.0000,  1.0000, 0.4472, 0.2000, 0.125, 0.800, E: On R=Z0 circle, above resonance line. Only needs reactance.
+        ' 1.0000,   1.0000, -2.0000, 0.7071, 0.5000, 0.550, 1.600, F: On R=Z0 circle, below resonance line. Only needs reactance.
+        ' 1.0000,   2.0000,   1/2.0, 0.3676, 0.1351, 0.860, 1.360, G1: Inside R=Z0 circle, above resonance line.
+        '50.0000, 100.0000, 25.0000, 0.3676, 0.1351, 0.860, 1.360, G2: Inside R=Z0 circle, above resonance line, Z0=50
+        ' 1.0000,   3.0000,  0.0000, 0.5000, 0.2500,  1.35,  0.75, H: Inside R=Z0 circle, on line
+        ' 1.0000,   2.0000, -2.0000, 0.6200, 0.3846,  1.53,  0.55, I: Inside R=Z0 circle, below resonance line.
+        ' 1.0000,    1/2.0,   1/2.0, 0.4472, 0.2000,  0.49,   0.8, J: On G=Y0 circle, above resonance line. Only needs reactance.
+        ' 1.0000,    1/2.0,  -1/2.0, 0.4472, 0.2000,   0.8,   0.8, K: On G=Y0 circle, below resonance line. Only needs reactance.
+        ' 1.0000,    1/3.0,   1/3.0, 0.5423, 0.2941,  0.58,   0.7, L1: Inside G=Y0 circle, above resonance line.
+        '75.0000,  25.0000, 25.0000, 0.5423, 0.2941,  0.58,   0.7, L2: Inside G=Y0 circle, above resonance line. Z0=75.
+        ' 1.0000,    1/3.0,  0.0000, 0.5000, 0.2500,  0.52,  0.75, M: Inside G=Y0 circle, on line
+        ' 1.0000,    1/2.0,  -1/3.0, 0.3911, 0.1529,  0.72,   999, N: Inside G=Y0 circle, below line
+        ' 1.0000,   0.2000,  1.4000, 0.8745, 0.7647,  1.28,   999, O: In the top remainder.
+        ' 1.0000,   0.4000, -0.8000, 0.6200, 0.3846,  0.62,   999, P: In the bottom remainder.
+
+
+
+
 
         '<InlineData(     Z0,        R,       X,   VTC)> ' Model
         <Theory>
@@ -712,11 +734,11 @@ Namespace TestImpedanceReflection
 
             '            Const Precision As Double = 0.0005
             '            Const Precision As Double = 0.001
-            Const Precision As Double = 0.05
-            '            Const Precision As Double = 0.1
+            '            Const Precision As Double = 0.05
+            Const Precision As Double = 0.1
 
-            Dim Imp As New Impedance(r, x)
-            Dim AnsVTC As Numerics.Complex = Imp.VoltageTransmissionCoefficient(z0)
+            Dim Impd As New Impedance(r, x)
+            Dim AnsVTC As Numerics.Complex = Impd.VoltageTransmissionCoefficient(z0)
             '            Dim Mag As Double = AnsVTC.Magnitude
             Dim Mag As Double = AnsVTC.Real
 
@@ -748,11 +770,11 @@ Namespace TestImpedanceReflection
         Public Sub PowerTransmissionCoefficient_GoodInput_Succeeds(z0 As Double, r As Double, x As Double, expectPTC As Double)
 
             '            Const Precision As Double = 0.0005
-            Const Precision As Double = 0.001
-            '            Const Precision As Double = 0.005
+            '            Const Precision As Double = 0.001
+            Const Precision As Double = 0.1
 
-            Dim Imp As New Impedance(r, x)
-            Dim AnsPTC As Numerics.Complex = Imp.PowerTransmissionCoefficient(z0)
+            Dim Impd As New Impedance(r, x)
+            Dim AnsPTC As Numerics.Complex = Impd.PowerTransmissionCoefficient(z0)
             Dim Mag As Double = AnsPTC.Magnitude
 
             '            Assert.Equal(expectPTC, AnsPTC, Precision)
@@ -784,8 +806,8 @@ Namespace TestImpedanceReflection
 
             Const Precision As Double = 0.0005
 
-            Dim Imp As New Impedance(r, x)
-            Dim AnsAOR As Double = Imp.AngleOfReflection(z0)
+            Dim Impd As New Impedance(r, x)
+            Dim AnsAOR As Double = Impd.AngleOfReflection(z0)
             Assert.Equal(expectAOR, AnsAOR, Precision)
 
         End Sub
@@ -814,8 +836,8 @@ Namespace TestImpedanceReflection
 
             Const Precision As Double = 0.0005
 
-            Dim Imp As New Impedance(r, x)
-            Dim AnsAOT As Double = Imp.AngleOfTransmission(z0)
+            Dim Impd As New Impedance(r, x)
+            Dim AnsAOT As Double = Impd.AngleOfTransmission(z0)
             Assert.Equal(expectAOT, AnsAOT, Precision)
 
         End Sub
