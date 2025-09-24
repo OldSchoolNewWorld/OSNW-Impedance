@@ -243,6 +243,7 @@ Partial Public Structure Impedance
         ' REF: Reflection and Transmission Coefficients Explained
         ' https://www.rfwireless-world.com/terminology/reflection-and-transmission-coefficients
 
+        '        
         Dim LoadCplx As System.Numerics.Complex = zLoad.ToComplex
         Dim SourceCplx As System.Numerics.Complex = zSource.ToComplex
         Return 2.0 * LoadCplx / (LoadCplx + SourceCplx)
