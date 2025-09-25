@@ -31,10 +31,7 @@ Partial Public Structure Impedance
 
         Dim LoadCplx As System.Numerics.Complex = zLoad.ToComplex
         Dim SourceCplx As System.Numerics.Complex = zSource.ToComplex
-        Dim Num As System.Numerics.Complex = (LoadCplx - SourceCplx)
-        Dim Denom As System.Numerics.Complex = (LoadCplx + SourceCplx)
-        Dim Div As System.Numerics.Complex = Num / Denom
-        Return Div
+        Return (LoadCplx - SourceCplx) / (LoadCplx + SourceCplx)
 
     End Function ' VoltageReflectionComplexCoefficient
 
@@ -384,6 +381,8 @@ Partial Public Structure Impedance
 
     End Function ' PowerTransmissionComplexCoefficient
 
+    '' There were problems when trying to use the expected formula. Try an
+    '' alternative below.
     'Public Function PowerTransmissionCoefficient(ByVal z0 As System.Double) _
     '    As System.Double
 
@@ -399,7 +398,8 @@ Partial Public Structure Impedance
     '    End If
 
     '    Dim SourceImp As New Impedance(z0, 0.0)
-    '    Dim PTCC As System.Numerics.Complex = Impedance.PowerTransmissionComplexCoefficient(SourceImp, Me)
+    '    Dim PTCC As System.Numerics.Complex =
+    '        Impedance.PowerTransmissionComplexCoefficient(SourceImp, Me)
     '    Return PTCC.Magnitude
 
     'End Function ' PowerTransmissionCoefficient
