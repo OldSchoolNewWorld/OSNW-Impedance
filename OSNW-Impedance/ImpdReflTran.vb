@@ -31,7 +31,10 @@ Partial Public Structure Impedance
 
         Dim LoadCplx As System.Numerics.Complex = zLoad.ToComplex
         Dim SourceCplx As System.Numerics.Complex = zSource.ToComplex
-        Return (LoadCplx - SourceCplx) / (LoadCplx + SourceCplx)
+        Dim Num As System.Numerics.Complex = (LoadCplx - SourceCplx)
+        Dim Denom As System.Numerics.Complex = (LoadCplx + SourceCplx)
+        Dim Div As System.Numerics.Complex = Num / Denom
+        Return Div
 
     End Function ' VoltageReflectionComplexCoefficient
 
@@ -313,7 +316,6 @@ Partial Public Structure Impedance
         Dim SourceImp As New Impedance(z0, 0.0)
         Dim VTCC As System.Numerics.Complex =
             Impedance.VoltageTransmissionComplexCoefficient(SourceImp, Me)
-        '        Return VTCC.Real
         Return VTCC.Magnitude
 
     End Function ' VoltageTransmissionCoefficient
@@ -321,15 +323,6 @@ Partial Public Structure Impedance
 #End Region ' "Voltage Transmission"
 
 #Region "Power Transmission"
-
-    ' xxxxxxxxxxxxxxxxxxxxxxxx
-    ' REF: Reflection and Transmission Coefficients Explained
-    ' https://www.rfwireless-world.com/terminology/reflection-and-transmission-coefficients
-    ' T = (2.0 * Zl) / (Zl + Zs)
-    'xxxxxxxxxxxxxxxxxxxxxxxx
-
-
-
 
     ''' <summary>
     ''' xxxxxxxxxx
@@ -343,11 +336,12 @@ Partial Public Structure Impedance
 
         ' REF: Reflection and Transmission Coefficients Explained
         ' https://www.rfwireless-world.com/terminology/reflection-and-transmission-coefficients
+        ' T = (2.0 * Zl) / (Zl + Zs)
 
         ' THIS IS JUST TRYING TO FIND A WAY TO GET THE ANSWERS TO MATCH AT THE BOTTOM LINE ON A SMITH CHART.
         Dim LoadCplx As System.Numerics.Complex = zLoad.ToComplex
         Dim SourceCplx As System.Numerics.Complex = zSource.ToComplex
-        Return 2.0 * LoadCplx / (LoadCplx + SourceCplx)
+        Return (2.0 * LoadCplx) / (LoadCplx + SourceCplx)
 
     End Function ' PowerTransmissionComplexCoefficient
 
@@ -390,6 +384,26 @@ Partial Public Structure Impedance
 
     End Function ' PowerTransmissionComplexCoefficient
 
+    'Public Function PowerTransmissionCoefficient(ByVal z0 As System.Double) _
+    '    As System.Double
+
+    '    ' Input checking.
+    '    If z0 <= 0.0 Then
+    '        'Dim CaughtBy As System.Transmission.MethodBase =
+    '        '    System.Transmission.MethodBase.GetCurrentMethod
+    '        Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGVMBGTZ)
+    '    ElseIf Double.IsInfinity(z0) Then
+    '        'Dim CaughtBy As System.Transmission.MethodBase =
+    '        '    System.Transmission.MethodBase.GetCurrentMethod
+    '        Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHIV)
+    '    End If
+
+    '    Dim SourceImp As New Impedance(z0, 0.0)
+    '    Dim PTCC As System.Numerics.Complex = Impedance.PowerTransmissionComplexCoefficient(SourceImp, Me)
+    '    Return PTCC.Magnitude
+
+    'End Function ' PowerTransmissionCoefficient
+
     Public Function PowerTransmissionCoefficient(ByVal z0 As System.Double) _
         As System.Double
 
@@ -404,10 +418,10 @@ Partial Public Structure Impedance
             Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHIV)
         End If
 
-        ' THIS IS JUST TRYING TO FIND A WAY TO GET THE ANSWERS TO MATCH AT THE BOTTOM LINE ON A SMITH CHART.
-        Dim SourceImp As New Impedance(z0, 0.0)
-        Dim PTCC As System.Numerics.Complex = Impedance.PowerTransmissionComplexCoefficient(SourceImp, Me)
-        Return PTCC.Magnitude
+        ' There were problems when trying to use the expected formula. Try an
+        ' alternative. Expect whatever was not reflected to be transmitted.
+        Dim PRC As Double = Me.PowerReflectionCoefficient(z0)
+        Return 1.0 - PRC
 
     End Function ' PowerTransmissionCoefficient
 
