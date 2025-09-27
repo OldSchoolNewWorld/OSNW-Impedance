@@ -46,6 +46,18 @@ Imports System.Text.Json.Serialization
 ' REF: Formulas of Impedances in AC Circuits
 ' https://www.mathforengineers.com/AC-circuits/formulas-of-impedances-in-ac-circuits.html
 
+' REF: Advanced Accelerator Physics Course 2013
+' https://indico.cern.ch/event/216963/sessions/35851/attachments/347577/
+
+'   C1-Navigation_smith2.pdf
+'   https://indico.cern.ch/event/216963/sessions/35851/attachments/347577/484627/C1-Navigation_smith2.pdf
+
+'   C1-Smith_Chart_Aarhus_CAS_2010_caspers_version_20_September_2010.pdf
+'   https://indico.cern.ch/event/216963/sessions/35851/attachments/347577/484626/C1-Smith_Chart_Aarhus_CAS_2010_caspers_version_20_September_2010.pdf
+
+'   C1-S_Parameter_in_CAS_Ebeltoft_CASPERS_26.1.2011.pdf
+'   https://indico.cern.ch/event/216963/sessions/35851/attachments/347577/484630/C1-S_Parameter_in_CAS_Ebeltoft_CASPERS_26.1.2011.pdf
+
 ' FROM OLD YTT CODE AND .NET Source:
 '    <SerializableAttribute()>
 ''' <summary>

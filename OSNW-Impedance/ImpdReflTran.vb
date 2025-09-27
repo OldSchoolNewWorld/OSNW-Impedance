@@ -331,14 +331,35 @@ Partial Public Structure Impedance
         ByVal zSource As Impedance, ByVal zLoad As Impedance) _
         As System.Numerics.Complex
 
-        ' REF: Reflection and Transmission Coefficients Explained
-        ' https://www.rfwireless-world.com/terminology/reflection-and-transmission-coefficients
-        ' T = (2.0 * Zl) / (Zl + Zs)
 
-        ' THIS IS JUST TRYING TO FIND A WAY TO GET THE ANSWERS TO MATCH AT THE BOTTOM LINE ON A SMITH CHART.
-        Dim LoadCplx As System.Numerics.Complex = zLoad.ToComplex
-        Dim SourceCplx As System.Numerics.Complex = zSource.ToComplex
-        Return (2.0 * LoadCplx) / (LoadCplx + SourceCplx)
+        ' Expect whatever was not reflected to be transmitted.
+        Dim PRCC As System.Numerics.Complex =
+            PowerReflectionComplexCoefficient(zSource, zLoad)
+        Dim PTCC1 As System.Numerics.Complex = 1.0 - PRCC
+        '        Return PTCC1
+
+
+        ' Reported by Google AI with pattern:
+        '     impedance power transmission coefficient formula
+        ' T = 4Z₂Z₁ / (Z₁ + Z₂)²,
+        ' T = 4*Z2*Z1 / (Z1 + Z2)^2,
+        Dim CSource As System.Numerics.Complex = zSource.ToComplex
+        Dim CLoad As System.Numerics.Complex = zLoad.ToComplex
+        Dim Num As System.Numerics.Complex = 4 * CSource * CLoad
+        Dim Sum As System.Numerics.Complex = CSource + CLoad
+        Dim Denom As System.Numerics.Complex = Sum * Sum
+        Dim PTCC2 As System.Numerics.Complex = Num / Denom
+        '        Return PTCC2
+
+
+        ' This is to confirm during a trace that both get similar, if not exactly matching, results.
+        Dim Diff As System.Numerics.Complex = PTCC2 - PTCC1
+
+
+        Dim TaskInfo As String = $"{CLoad.Real},{CLoad.Imaginary},{PTCC2.Real},{PTCC2.Imaginary}"
+
+
+        Return PTCC2
 
     End Function ' PowerTransmissionComplexCoefficient
 
@@ -381,29 +402,9 @@ Partial Public Structure Impedance
 
     End Function ' PowerTransmissionComplexCoefficient
 
-    '' There were problems when trying to use the expected formula. Try an
-    '' alternative below.
-    'Public Function PowerTransmissionCoefficient(ByVal z0 As System.Double) _
-    '    As System.Double
-
-    '    ' Input checking.
-    '    If z0 <= 0.0 Then
-    '        'Dim CaughtBy As System.Transmission.MethodBase =
-    '        '    System.Transmission.MethodBase.GetCurrentMethod
-    '        Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGVMBGTZ)
-    '    ElseIf Double.IsInfinity(z0) Then
-    '        'Dim CaughtBy As System.Transmission.MethodBase =
-    '        '    System.Transmission.MethodBase.GetCurrentMethod
-    '        Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHIV)
-    '    End If
-
-    '    Dim SourceImp As New Impedance(z0, 0.0)
-    '    Dim PTCC As System.Numerics.Complex =
-    '        Impedance.PowerTransmissionComplexCoefficient(SourceImp, Me)
-    '    Return PTCC.Magnitude
-
-    'End Function ' PowerTransmissionCoefficient
-
+    ' Try to use a formula to calculate a result. There were problems when
+    ' trying to use the expected formula. An alternative approach is shown
+    ' below.
     Public Function PowerTransmissionCoefficient(ByVal z0 As System.Double) _
         As System.Double
 
@@ -418,12 +419,33 @@ Partial Public Structure Impedance
             Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHIV)
         End If
 
-        ' There were problems when trying to use the expected formula. Try an
-        ' alternative. Expect whatever was not reflected to be transmitted.
-        Dim PRC As Double = Me.PowerReflectionCoefficient(z0)
-        Return 1.0 - PRC
+        Dim SourceImp As New Impedance(z0, 0.0)
+        Dim PTCC As System.Numerics.Complex =
+            Impedance.PowerTransmissionComplexCoefficient(SourceImp, Me)
+        Return PTCC.Magnitude
 
     End Function ' PowerTransmissionCoefficient
+
+    'Public Function PowerTransmissionCoefficient(ByVal z0 As System.Double) _
+    '    As System.Double
+
+    '    ' Input checking.
+    '    If z0 <= 0.0 Then
+    '        'Dim CaughtBy As System.Transmission.MethodBase =
+    '        '    System.Transmission.MethodBase.GetCurrentMethod
+    '        Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGVMBGTZ)
+    '    ElseIf Double.IsInfinity(z0) Then
+    '        'Dim CaughtBy As System.Transmission.MethodBase =
+    '        '    System.Transmission.MethodBase.GetCurrentMethod
+    '        Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHIV)
+    '    End If
+
+    '    ' There were problems when trying to use the expected formula. Try an
+    '    ' alternative. Expect whatever was not reflected to be transmitted.
+    '    Dim PRC As Double = Me.PowerReflectionCoefficient(z0)
+    '    Return 1.0 - PRC
+
+    'End Function ' PowerTransmissionCoefficient
 
 #End Region ' "Power Transmission"
 
