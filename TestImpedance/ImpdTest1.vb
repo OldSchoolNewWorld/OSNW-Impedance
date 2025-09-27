@@ -738,32 +738,31 @@ Namespace TestImpedanceReflection
 
         Const INF As Double = Double.PositiveInfinity
 
+        '<InlineData(1.0, 0.0000, 1 / 2.0, 0.0000)> ' B: Anywhere else on the perimeter. R=0.0.
         '<InlineData(1.0, INF, 0.0000, 999)> ' C: At the open circuit point on the right.
+        '<InlineData(1.0, 1.0, 1.0, 0.8)> ' E: On R=Z0 circle, above resonance line. Only needs reactance.
+        '<InlineData(1.0, 1.0, -2.0, 0.5)> ' F: On R=Z0 circle, below resonance line. Only needs reactance.
+        '<InlineData(1.0, 2.0, 1 / 2.0, 0.8649)> ' G1: Inside R=Z0 circle, above resonance line.
+        '<InlineData(50.0, 100.0, 25.0, 0.8649)> ' G2: Inside R=Z0 circle, above resonance line, Z0=50
+        '<InlineData(1.0, 2.0, -2.0, 0.6154)> ' I: Inside R=Z0 circle, below resonance line.
+        '<InlineData(1.0, 1 / 2.0, 1 / 2.0, 0.8)> ' J: On G=Y0 circle, above resonance line. Only needs reactance.
+        '<InlineData(1.0, 1 / 2.0, -1 / 2.0, 0.8)> ' K: On G=Y0 circle, below resonance line. Only needs reactance.
+        '<InlineData(1.0, 1 / 3.0, 1 / 3.0, 0.7059)> ' L1: Inside G=Y0 circle, above resonance line.
+        '<InlineData(75.0, 25.0, 25.0, 0.7059)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
+        '<InlineData(1.0, 1 / 2.0, -1 / 3.0, 0.8471)> ' N: Inside G=Y0 circle, below line
+        '<InlineData(1.0, 0.2, 1.4, 0.2353)> ' O: In the top remainder.
+        '<InlineData(1.0, 0.4, -0.8, 0.6154)> ' P: In the bottom remainder.
         '<InlineData(1.0, 999, 999, 999)> ' Q: Outside of main circle. Invalid.
         '<InlineData(1.0, -2.0, 999, 999)> ' R: NormR<=0. Invalid.
         '<InlineData(     Z0,        R,       X,    PTC)> ' Model
         <Theory>
         <InlineData(1.0, 0.0000, 0.0000, 0.0000)> ' A: At the short circuit point. Omit - covered by B.
-        <InlineData(1.0, 0.0000, 1 / 2.0, 0.0000)> ' B: Anywhere else on the perimeter. R=0.0.
         <InlineData(1.0, 1.0, 0.0000, 1.0)> ' D: At the center.
-        <InlineData(1.0, 1.0, 1.0, 0.8)> ' E: On R=Z0 circle, above resonance line. Only needs reactance.
-        <InlineData(1.0, 1.0, -2.0, 0.5)> ' F: On R=Z0 circle, below resonance line. Only needs reactance.
-        <InlineData(1.0, 2.0, 1 / 2.0, 0.8649)> ' G1: Inside R=Z0 circle, above resonance line.
-        <InlineData(50.0, 100.0, 25.0, 0.8649)> ' G2: Inside R=Z0 circle, above resonance line, Z0=50
         <InlineData(1.0, 3.0, 0.0000, 0.75)> ' H: Inside R=Z0 circle, on line
-        <InlineData(1.0, 2.0, -2.0, 0.6154)> ' I: Inside R=Z0 circle, below resonance line.
-        <InlineData(1.0, 1 / 2.0, 1 / 2.0, 0.8)> ' J: On G=Y0 circle, above resonance line. Only needs reactance.
-        <InlineData(1.0, 1 / 2.0, -1 / 2.0, 0.8)> ' K: On G=Y0 circle, below resonance line. Only needs reactance.
-        <InlineData(1.0, 1 / 3.0, 1 / 3.0, 0.7059)> ' L1: Inside G=Y0 circle, above resonance line.
-        <InlineData(75.0, 25.0, 25.0, 0.7059)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
         <InlineData(1.0, 1 / 3.0, 0.0000, 0.75)> ' M: Inside G=Y0 circle, on line
-        <InlineData(1.0, 1 / 2.0, -1 / 3.0, 0.8471)> ' N: Inside G=Y0 circle, below line
-        <InlineData(1.0, 0.2, 1.4, 0.2353)> ' O: In the top remainder.
-        <InlineData(1.0, 0.4, -0.8, 0.6154)> ' P: In the bottom remainder.
         Public Sub PowerTransmissionCoefficient_GoodInput_Succeeds(z0 As Double, r As Double, x As Double, expectPTC As Double)
 
-            '            Const Precision As Double = 0.0005
-            Const Precision As Double = 0.05
+            Const Precision As Double = 0.0005
 
             Dim Impd As New Impedance(r, x)
             Dim AnsPTC As Double = Impd.PowerTransmissionCoefficient(z0)

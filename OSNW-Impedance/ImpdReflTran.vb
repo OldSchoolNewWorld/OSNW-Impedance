@@ -322,52 +322,69 @@ Partial Public Structure Impedance
 #Region "Power Transmission"
 
     ''' <summary>
-    ''' xxxxxxxxxx
+    ''' Returns the complex power transmission coefficient when
+    ''' <paramref name="zLoad"/> is connected to <paramref name="zSource"/>.
     ''' </summary>
-    ''' <param name="zSource">xxxxxxxxxx</param>
-    ''' <param name="zLoad">xxxxxxxxxx</param>
-    ''' <returns>xxxxxxxxxx</returns>
+    ''' <param name="zSource">Specifies the impedance of the source to which
+    ''' <paramref name="zLoad"/> is connected .</param>
+    ''' <param name="zLoad">Specifies the impedance of the load connected to
+    ''' <paramref name="zSource"/>.</param>
+    ''' <returns>
+    ''' The complex power transmission coefficient when
+    ''' <paramref name="zLoad"/> is connected to <paramref name="zSource"/>.
+    ''' </returns>
+    ''' <remarks>
+    ''' NOTE: This function only matches the "TRANSM.COEFF.P" ruler on a Smith
+    ''' Chart "for Zload= real, i.e. the case of a step in characteristic
+    ''' impedance of the coaxial line."
+    ''' </remarks>
     Public Shared Function PowerTransmissionComplexCoefficient(
         ByVal zSource As Impedance, ByVal zLoad As Impedance) _
         As System.Numerics.Complex
 
+        ' REF: C1-Navigation_smith2.pdf
+        ' https://indico.cern.ch/event/216963/sessions/35851/attachments/347577/484627/C1-Navigation_smith2.pdf
+        ' Slide 8 says "This ruler is only valid for Zload= real, i.e. the case
+        ' of a step in characteristic impedance of the coaxial line." That
+        ' appears to explain why the normal set of test cases had so many
+        ' failures when trying to match against the "TRANSM.COEFF.P" ruler on a
+        ' Smith Chart.
+        ' At least for now, it is being assumed that the formula itself is valid
+        ' for all impedances and that the restriction is only with regard the
+        ' the Smith Chart showing only a special case.
 
-        ' Expect whatever was not reflected to be transmitted.
-        Dim PRCC As System.Numerics.Complex =
-            PowerReflectionComplexCoefficient(zSource, zLoad)
-        Dim PTCC1 As System.Numerics.Complex = 1.0 - PRCC
-        '        Return PTCC1
-
-
-        ' Reported by Google AI with pattern:
+        ' REF: Google search AI results from search pattern:
         '     impedance power transmission coefficient formula
-        ' T = 4Z₂Z₁ / (Z₁ + Z₂)²,
-        ' T = 4*Z2*Z1 / (Z1 + Z2)^2,
+        ' T = 4*Z2*Z1 / (Z1 + Z2)^2
+
+        'Dim CSource As System.Numerics.Complex = zSource.ToComplex
+        'Dim CLoad As System.Numerics.Complex = zLoad.ToComplex
+        'Dim Sum As System.Numerics.Complex = CSource + CLoad
+        'Dim Num As System.Numerics.Complex = 4.0 * CSource * CLoad
+        'Dim Den As System.Numerics.Complex = Sum * Sum
+        'Dim PTCC As System.Numerics.Complex = Num / Den
+        'Return PTCC
+
         Dim CSource As System.Numerics.Complex = zSource.ToComplex
         Dim CLoad As System.Numerics.Complex = zLoad.ToComplex
-        Dim Num As System.Numerics.Complex = 4 * CSource * CLoad
         Dim Sum As System.Numerics.Complex = CSource + CLoad
-        Dim Denom As System.Numerics.Complex = Sum * Sum
-        Dim PTCC2 As System.Numerics.Complex = Num / Denom
-        '        Return PTCC2
-
-
-        ' This is to confirm during a trace that both get similar, if not exactly matching, results.
-        Dim Diff As System.Numerics.Complex = PTCC2 - PTCC1
-
-
-        Dim TaskInfo As String = $"{CLoad.Real},{CLoad.Imaginary},{PTCC2.Real},{PTCC2.Imaginary}"
-
-
-        Return PTCC2
+        Return 4.0 * CSource * CLoad / (Sum * Sum)
 
     End Function ' PowerTransmissionComplexCoefficient
 
     ''' <summary>
-    ''' xxxxxxxxxx
+    ''' Returns the complex power transmission coefficient when this instance is
+    ''' connected to <paramref name="zSource"/>.
     ''' </summary>
-    ''' <param name="zSource">xxxxxxxxxx</param>
-    ''' <returns>xxxxxxxxxx</returns>
+    ''' <param name="zSource">Specifies the impedance of the source to which
+    ''' this instance is connected .</param>
+    ''' <returns>
+    ''' The complex power transmission coefficient when this instance is
+    ''' connected to <paramref name="zSource"/>.
+    ''' </returns>
+    ''' <remarks>See
+    ''' <see cref="PowerTransmissionComplexCoefficient(Impedance, Impedance)"/>
+    ''' regarding comparison to Smith Chart results.</remarks>
     Public Function PowerTransmissionCoefficient(ByVal zSource As Impedance) _
         As System.Numerics.Complex
 
@@ -375,13 +392,22 @@ Partial Public Structure Impedance
     End Function ' PowerTransmissionComplexCoefficient
 
     ''' <summary>
-    ''' xxxxxxxxxx
+    ''' Returns the complex power transmission coefficient when this instance is
+    ''' connected to a source matching the specified characteristic impedance,
+    ''' <paramref name="z0"/>.
     ''' </summary>
-    ''' <param name="z0">xxxxxxxxxx</param>
+    ''' <param name="z0">Specifies the characteristic impedance source to which
+    ''' this instance is connected.</param>
     ''' <exception cref="System.ArgumentOutOfRangeException">When
     ''' <paramref name="z0"/> is not a positive, non-zero value or is
     ''' infinite.</exception>
-    ''' <returns>xxxxxxxxxx</returns>
+    ''' <returns>
+    ''' The complex power transmission coefficient when this instance is
+    ''' connected to a source matching the specified characteristic impedance
+    ''' </returns>
+    ''' <remarks>See
+    ''' <see cref="PowerTransmissionComplexCoefficient(Impedance, Impedance)"/>
+    ''' regarding comparison to Smith Chart results.</remarks>
     Public Function PowerTransmissionComplexCoefficient(ByVal z0 As System.Double) _
         As System.Numerics.Complex
 
@@ -396,15 +422,26 @@ Partial Public Structure Impedance
             Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHIV)
         End If
 
-        '        Return Impedance.PowerTransmissionCoefficient(New Impedance(z0, 0.0), Me)
-        Dim SourceImp As New Impedance(z0, 0.0)
-        Return Impedance.PowerTransmissionComplexCoefficient(SourceImp, Me)
+        Return Impedance.PowerTransmissionComplexCoefficient(
+            New Impedance(z0, 0.0), Me)
 
     End Function ' PowerTransmissionComplexCoefficient
 
-    ' Try to use a formula to calculate a result. There were problems when
-    ' trying to use the expected formula. An alternative approach is shown
-    ' below.
+    ''' <summary>
+    ''' Returns the magnitude of the complex power transmission coefficient when
+    ''' this instance is connected to a source matching the specified
+    ''' characteristic impedance, <paramref name="z0"/>.
+    ''' </summary>
+    ''' <param name="z0">Specifies the characteristic impedance to which this
+    ''' instance is connected.</param>
+    ''' <returns>
+    ''' The magnitude of the complex power transmission coefficient when
+    ''' this instance is connected to a source matching the specified
+    ''' characteristic impedance <paramref name="z0"/>.
+    ''' </returns>
+    ''' <remarks>See
+    ''' <see cref="PowerTransmissionComplexCoefficient(Impedance, Impedance)"/>
+    ''' regarding comparison to Smith Chart results.</remarks>
     Public Function PowerTransmissionCoefficient(ByVal z0 As System.Double) _
         As System.Double
 
@@ -425,27 +462,6 @@ Partial Public Structure Impedance
         Return PTCC.Magnitude
 
     End Function ' PowerTransmissionCoefficient
-
-    'Public Function PowerTransmissionCoefficient(ByVal z0 As System.Double) _
-    '    As System.Double
-
-    '    ' Input checking.
-    '    If z0 <= 0.0 Then
-    '        'Dim CaughtBy As System.Transmission.MethodBase =
-    '        '    System.Transmission.MethodBase.GetCurrentMethod
-    '        Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGVMBGTZ)
-    '    ElseIf Double.IsInfinity(z0) Then
-    '        'Dim CaughtBy As System.Transmission.MethodBase =
-    '        '    System.Transmission.MethodBase.GetCurrentMethod
-    '        Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHIV)
-    '    End If
-
-    '    ' There were problems when trying to use the expected formula. Try an
-    '    ' alternative. Expect whatever was not reflected to be transmitted.
-    '    Dim PRC As Double = Me.PowerReflectionCoefficient(z0)
-    '    Return 1.0 - PRC
-
-    'End Function ' PowerTransmissionCoefficient
 
 #End Region ' "Power Transmission"
 
