@@ -96,6 +96,7 @@ Public Structure Impedance
     Const MSGVMBGTE1 As System.String = "Must be greater than or equal to 1."
     Const MSGNOSTR As System.String = "Cannot be Null/Nothing."
     Const MSGIIC As System.String = "Invalid intersection count."
+    Const MSGFGPXPY As System.String = "Failure getting PlotX, PlotY."
 
 #Region "Fields and Properties"
 

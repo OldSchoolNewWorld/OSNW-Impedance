@@ -774,12 +774,20 @@ Namespace TestImpedanceReflection
 
     Public Class TestAngleOfReflection
 
-        '<InlineData(     Z0,        R,       X      AOR)> ' Model
+        Const INF As Double = Double.PositiveInfinity
+
+        '<InlineData(1.0, 0.0000, 0.0000, INF)> ' A: At the short circuit point. Omit - covered by B.
+        '<InlineData(1.0, 0.0000, 1 / 2.0, INF)> ' B: Anywhere else on the perimeter. R=0.0.
+        '<InlineData(1.0, INF, 0.0000, INF)> ' C: At the open circuit point on the right.
+        '<InlineData(1.0, -2.0, 999, 999)> ' R: NormR<=0. Invalid.
+        '<InlineData(1.0, 999, 999, 999)> ' Q: Outside of main circle. Invalid.
+        '<InlineData(     Z0,        R,       X,       AOR)> ' Model
         <Theory>
+        <InlineData(1.0, 1.0, 0.0000, 0.0000)> ' D: At the center.
         <InlineData(1.0, 1.0, 1.0, 63.4349)> ' E: On R=Z0 circle, above resonance line. Only needs reactance.
         <InlineData(1.0, 1.0, -2.0, -45.0)> ' F: On R=Z0 circle, below resonance line. Only needs reactance.
         <InlineData(1.0, 2.0, 1 / 2.0, 17.1027)> ' G1: Inside R=Z0 circle, above resonance line.
-        <InlineData(50.0, 100.0, 25.0, 17.1027)> ' G2: Inside R=Z0 circle, above resonance line, Z0=50
+        <InlineData(50.0, 100.0, 25.0, 17.1027)> ' G2: Inside R=Z0 circle, above resonance line. Z0=50
         <InlineData(1.0, 3.0, 0.0000, 0.0000)> ' H: Inside R=Z0 circle, on line
         <InlineData(1.0, 2.0, -2.0, -29.7449)> ' I: Inside R=Z0 circle, below resonance line.
         <InlineData(1.0, 1 / 2.0, 1 / 2.0, 116.5651)> ' J: On G=Y0 circle, above resonance line. Only needs reactance.

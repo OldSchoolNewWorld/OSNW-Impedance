@@ -2,6 +2,7 @@
 Option Strict On
 Option Compare Binary
 Option Infer Off
+Imports System.Data
 
 Partial Public Structure Impedance
 
@@ -468,14 +469,43 @@ Partial Public Structure Impedance
 #Region "Angle of Reflection"
 
     ' ARE THE AngleOfReflection AND AngleOfTransmission ROUTINES UNIQUE, OR
-    ' SHARED, FOR VOLTAGE AND POWER?
+    ' SHARED, FOR VOLTAGE AND POWER? CURRENT?
+    ' IS THERE A MATHEMATICAL FORMULA TO USE THAT MAY BE BETTER THAN DOING THE GEOMETRY?
 
     ''' <summary>
-    ''' xxxxxxxxxx
+    ''' Returns the angle of reflection, in radians, when this instance is
+    ''' connected to a source with the specified characteristic impedance.
     ''' </summary>
-    ''' <returns>xxxxxxxxxx</returns>
+    ''' <param name="z0">Specifies the characteristic impedance.</param>
+    ''' <returns>
+    ''' The angle of reflection, in radians, when this instance is
+    ''' connected to a source with the specified characteristic impedance.
+    ''' </returns>
+    ''' <exception cref="System.ArgumentOutOfRangeException">When
+    ''' <paramref name="z0"/> is not a positive, non-zero value or is
+    ''' infinite.</exception>
+    ''' <remarks>
+    ''' Results range from PI to almost -PI. Inductive reactances return
+    ''' positive values that rotate CCW, and capacitive reactances return
+    ''' negative values that rotate CW, from the open circuit point.
+    ''' A plot at the matched center point has no reflection, but returns 0.0.
+    ''' </remarks>
     Public Function AngleOfReflectionRadians(ByVal z0 As System.Double) _
         As System.Double
+
+        Const PI As System.Double = System.Double.Pi
+        Const HALFPI As System.Double = System.Double.Pi / 2.0
+
+        ' Input checking.
+        If z0 <= 0.0 Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGVMBGTZ)
+        ElseIf Double.IsInfinity(z0) Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHIV)
+        End If
 
         Dim MainCirc As New SmithMainCircle(4.0, 5.0, 4.0, z0) ' Test data.
         'Dim MainCirc As New SmithMainCircle(1.0, 1.0, 1.0, z0) ' Arbitrary.
@@ -484,7 +514,7 @@ Partial Public Structure Impedance
         Dim PlotY As System.Double
         If Not MainCirc.GetPlotXY(Me.Resistance, Me.Reactance,
                                   PlotX, PlotY) Then
-            Throw New ApplicationException("Failure getting PlotX, PlotY")
+            Throw New ApplicationException(MSGFGPXPY)
         End If
 
         Dim Opposite As System.Double = PlotY - MainCirc.GridCenterY
@@ -492,31 +522,30 @@ Partial Public Structure Impedance
         Dim TanAlpha As System.Double
         Dim RadAngle As System.Double
 
-        If PlotX < MainCirc.GridCenterX Then
-            ' Left side.
-            TanAlpha = Opposite / Adjacent
-            RadAngle = System.Math.Atan(TanAlpha)
-            If PlotY > MainCirc.GridCenterY Then
-                Return System.Math.PI + RadAngle
-            ElseIf PlotY < MainCirc.GridCenterY Then
-                Return -System.Math.PI + RadAngle
-            Else
-                ' On resonance line, left of center.
-                Return System.Math.PI
-            End If
-        ElseIf PlotX > MainCirc.GridCenterX Then
+        If PlotX > MainCirc.GridCenterX Then
             ' Right side.
             TanAlpha = Opposite / Adjacent
             RadAngle = System.Math.Atan(TanAlpha)
             Return RadAngle
+        ElseIf PlotX < MainCirc.GridCenterX Then
+            ' Left side.
+            TanAlpha = Opposite / Adjacent
+            RadAngle = System.Math.Atan(TanAlpha)
+            If Opposite < 0.0 Then
+                ' Below the resonance line.
+                Return RadAngle - PI
+            Else
+                ' On or above the resonance line.
+                Return PI + RadAngle
+            End If
         Else
             ' Vertical will have zero as the adjacent side.
             If PlotY > MainCirc.GridCenterY Then
                 ' Above the resonance line.
-                Return System.Math.PI / 2.0
+                Return HALFPI
             ElseIf PlotY < MainCirc.GridCenterY Then
                 ' Below the resonance line.
-                Return -System.Math.PI / 2.0
+                Return -HALFPI
             Else
                 ' On the resonance line, at the center.
                 ' MATCHED, SO NO REFLECTION. SHOULD THIS HAVE *ANY* VALUE? NOT
@@ -528,15 +557,40 @@ Partial Public Structure Impedance
     End Function ' AngleOfReflectionRadians
 
     ''' <summary>
-    ''' xxxxxxxxxx
+    ''' Returns the angle of reflection, in degrees, when this instance is
+    ''' connected to a source with the specified characteristic impedance.
     ''' </summary>
-    ''' <returns>xxxxxxxxxx</returns>
-    ''' <remarks>An original Smith Chart is marked with the angles shown in
-    ''' degrees.</remarks>
+    ''' <param name="z0">Specifies the characteristic impedance.</param>
+    ''' <returns>
+    ''' The angle of reflection, in degrees, when this instance is
+    ''' connected to a source with the specified characteristic impedance.
+    ''' </returns>
+    ''' <exception cref="System.ArgumentOutOfRangeException">When
+    ''' <paramref name="z0"/> is not a positive, non-zero value or is
+    ''' infinite.</exception>
+    ''' <remarks>
+    ''' Results range from 180 to almost -180. Inductive reactances return
+    ''' positive values that rotate CCW, and capacitive reactances return
+    ''' negative values that rotate CW, from the open circuit point.
+    ''' A plot at the matched center point has no reflection, but returns 0.0.
+    ''' A standard Smith Chart is marked with the angles shown in degrees.
+    ''' </remarks>
     Public Function AngleOfReflection(ByVal z0 As System.Double) _
         As System.Double
 
+        ' Input checking.
+        If z0 <= 0.0 Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGVMBGTZ)
+        ElseIf Double.IsInfinity(z0) Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHIV)
+        End If
+
         Return Me.AngleOfReflectionRadians(z0) * 180.0 / System.Math.PI
+
     End Function ' AngleOfReflection
 
 #End Region ' "Angle of Reflection"
@@ -544,7 +598,8 @@ Partial Public Structure Impedance
 #Region "Angle of Transmission"
 
     ' ARE THE AngleOfReflection AND AngleOfTransmission ROUTINES UNIQUE, OR
-    ' SHARED, FOR VOLTAGE AND POWER?
+    ' SHARED, FOR VOLTAGE AND POWER? CURRENT?
+    ' IS THERE A MATHEMATICAL FORMULA TO USE THAT MAY BE BETTER THAN DOING THE GEOMETRY?
 
     ''' <summary>
     ''' xxxxxxxxxx
@@ -559,7 +614,7 @@ Partial Public Structure Impedance
         Dim PlotY As System.Double
         If Not MainCirc.GetPlotXY(Me.Resistance, Me.Reactance,
                                   PlotX, PlotY) Then
-            Throw New ApplicationException("Failure getting PlotX, PlotY")
+            Throw New ApplicationException(MSGFGPXPY)
         End If
 
         Dim Opposite As System.Double = PlotY - MainCirc.GridCenterY
