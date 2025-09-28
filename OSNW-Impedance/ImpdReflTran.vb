@@ -472,6 +472,8 @@ Partial Public Structure Impedance
 
 #Region "Angle of Reflection"
 
+    ' NEED/WANT TO ADD MULTIPLE VERSIONS AS DONE WITH VoltageReflectionComplexCoefficient
+    ' AND PowerReflectionComplexCoefficient?
     ' ARE THE AngleOfReflection AND AngleOfTransmission ROUTINES UNIQUE, OR
     ' SHARED, FOR VOLTAGE AND POWER? CURRENT?
     ' IS THERE A MATHEMATICAL FORMULA TO USE THAT MAY BE BETTER THAN DOING THE GEOMETRY?
@@ -686,11 +688,46 @@ Partial Public Structure Impedance
 
 #Region "VSWR"
 
-    ' NEED/WANT TO ADD MULTIPLE VERSIONS AS DONE WITH VoltageReflectionComplexCoefficient
-    ' AND PowerReflectionComplexCoefficient?
     ''' <summary>
-    ''' Calculates the voltage standing wave ratio for this instance based on
-    ''' the specified characteristic impedance.
+    ''' Returns the complex voltage standing wave ratio when the specified
+    ''' <paramref name="zLoad"/> <c>Impedance</c> is connected to the specified
+    ''' <paramref name="zSource"/> <c>Impedance</c>.
+    ''' </summary>
+    ''' <param name="zSource">Specifies the impedance, in ohms, of the
+    ''' source.</param>
+    ''' <param name="zLoad">Specifies the impedance, in ohms, of the
+    ''' load.</param>
+    ''' <returns>The complex voltage standing wave ratio.</returns>
+    Public Shared Function VSWR(
+        ByVal zSource As Impedance, ByVal zLoad As Impedance) _
+        As System.Numerics.Complex
+
+        ' REF:
+        ' https://www.antenna-theory.com/definitions/vswr.php
+        ' https://www.antenna-theory.com/definitions/vswr-calculator.php
+        ' https://www.microwaves101.com/encyclopedias/voltage-standing-wave-ratio-vswr
+
+        Dim AbsGamma As System.Double = System.Numerics.Complex.Abs(
+            VoltageReflectionComplexCoefficient(zSource, zLoad))
+        Return (1.0 + AbsGamma) / (1.0 - AbsGamma)
+
+    End Function ' VSWR
+
+    ''' <summary>
+    ''' Returns the complex voltage standing wave ratio when this instance is
+    ''' connected to the specified <paramref name="zSource"/> <c>Impedance</c>.
+    ''' </summary>
+    ''' <param name="zSource">Specifies the impedance of the source.</param>
+    ''' <returns>The complex voltage standing wave ratio.</returns>
+    Public Function VSWR(ByVal zSource As Impedance) _
+        As System.Numerics.Complex
+
+        Return Impedance.VSWR(zSource, Me)
+    End Function ' VoltageReflectionComplexCoefficient
+
+    ''' <summary>
+    ''' Calculates the voltage standing wave ratio when this instance is
+    ''' connected to the specified characteristic impedance.
     ''' </summary>
     ''' <param name="z0">Specifies the characteristic impedance, in ohms.</param>
     ''' <returns>The voltage standing wave ratio for the current instance at the
@@ -711,16 +748,8 @@ Partial Public Structure Impedance
             Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHIV)
         End If
 
-        ' REF:
-        ' https://www.antenna-theory.com/definitions/vswr.php
-        ' https://www.antenna-theory.com/definitions/vswr-calculator.php
-        ' https://www.microwaves101.com/encyclopedias/voltage-standing-wave-ratio-vswr
-
-        'Dim Gamma As System.Numerics.Complex = Me.VoltageReflectionComplexCoefficient(z0)
-        'Dim AbsGamma As System.Double = System.Numerics.Complex.Abs(Gamma)
-        Dim AbsGamma As System.Double =
-            System.Numerics.Complex.Abs(Me.VoltageReflectionComplexCoefficient(z0))
-        Return (1.0 + AbsGamma) / (1.0 - AbsGamma)
+        Dim SourceImp As New Impedance(z0, 0.0)
+        Return VSWR(SourceImp, Me).Magnitude
 
     End Function ' VSWR
 

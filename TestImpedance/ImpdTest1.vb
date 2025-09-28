@@ -844,6 +844,9 @@ Namespace TestImpedanceReflection
 
         Const INF As Double = Double.PositiveInfinity
 
+        '<InlineData(1.0, INF, 0.0000, INF)> ' C: At the open circuit point on the right.
+        '<InlineData(1.0, 999, 999, 999)> ' Q: Outside of main circle. Invalid.
+        '<InlineData(1.0, -2.0, 999, 999)> ' R: NormR<=0. Invalid.
         '<InlineData(     Z0,        R,       X,    VSWR)> ' Model
         <Theory>
         <InlineData(1.0, 0.0000, 0.0000, INF)> ' A: At the short circuit point. Omit - covered by B.
@@ -852,14 +855,14 @@ Namespace TestImpedanceReflection
         <InlineData(1.0, 1.0, 1.0, 2.618)> ' E: On R=Z0 circle, above resonance line. Only needs reactance.
         <InlineData(1.0, 1.0, -2.0, 5.8284)> ' F: On R=Z0 circle, below resonance line. Only needs reactance.
         <InlineData(1.0, 2.0, 1 / 2.0, 2.1626)> ' G1: Inside R=Z0 circle, above resonance line.
-        <InlineData(50.0, 100.0, 25.0, 2.1626)> ' G2: Inside R=Z0 circle, above resonance line, Z0=50
+        <InlineData(50.0, 100.0, 25.0, 2.1626)> ' G2: Inside R=Z0 circle, above resonance line. Z0=50
         <InlineData(1.0, 3.0, 0.0000, 3.0)> ' H: Inside R=Z0 circle, on line
         <InlineData(1.0, 2.0, -2.0, 4.2656)> ' I: Inside R=Z0 circle, below resonance line.
         <InlineData(1.0, 1 / 2.0, 1 / 2.0, 2.618)> ' J: On G=Y0 circle, above resonance line. Only needs reactance.
         <InlineData(1.0, 1 / 2.0, -1 / 2.0, 2.618)> ' K: On G=Y0 circle, below resonance line. Only needs reactance.
-        <InlineData(1.0, 1 / 3.0, 0.0000, 3.0)> ' M: Inside G=Y0 circle, on line
         <InlineData(1.0, 1 / 3.0, 1 / 3.0, 3.3699)> ' L1: Inside G=Y0 circle, above resonance line.
         <InlineData(75.0, 25.0, 25.0, 3.3699)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
+        <InlineData(1.0, 1 / 3.0, 0.0000, 3.0)> ' M: Inside G=Y0 circle, on line
         <InlineData(1.0, 1 / 2.0, -1 / 3.0, 2.2845)> ' N: Inside G=Y0 circle, below line
         <InlineData(1.0, 0.2, 1.4, 14.933)> ' O: In the top remainder.
         <InlineData(1.0, 0.4, -0.8, 4.2656)> ' P: In the bottom remainder.
