@@ -266,10 +266,10 @@ Partial Public Structure Impedance
     ''' xxxxxxxxxx
     ''' </summary>
     ''' <param name="z0">xxxxxxxxxx</param>
+    ''' <returns>xxxxxxxxxx</returns>
     ''' <exception cref="System.ArgumentOutOfRangeException">When
     ''' <paramref name="z0"/> is not a positive, non-zero value or is
     ''' infinite.</exception>
-    ''' <returns>xxxxxxxxxx</returns>
     Public Function VoltageTransmissionComplexCoefficient(ByVal z0 As System.Double) _
         As System.Numerics.Complex
 
@@ -293,10 +293,10 @@ Partial Public Structure Impedance
     ''' xxxxxxxxxx
     ''' </summary>
     ''' <param name="z0">xxxxxxxxxx</param>
+    ''' <returns>xxxxxxxxxx</returns>
     ''' <exception cref="System.ArgumentOutOfRangeException">When
     ''' <paramref name="z0"/> is not a positive, non-zero value or is
     ''' infinite.</exception>
-    ''' <returns>xxxxxxxxxx</returns>
     Public Function VoltageTransmissionCoefficient(ByVal z0 As System.Double) _
         As System.Double
 
@@ -399,10 +399,11 @@ Partial Public Structure Impedance
     ''' </summary>
     ''' <param name="z0">Specifies the characteristic impedance source to which
     ''' this instance is connected.</param>
+    ''' xxxx
+    ''' <returns>
     ''' <exception cref="System.ArgumentOutOfRangeException">When
     ''' <paramref name="z0"/> is not a positive, non-zero value or is
     ''' infinite.</exception>
-    ''' <returns>
     ''' The complex power transmission coefficient when this instance is
     ''' connected to a source matching the specified characteristic impedance
     ''' </returns>
@@ -440,6 +441,9 @@ Partial Public Structure Impedance
     ''' this instance is connected to a source matching the specified
     ''' characteristic impedance <paramref name="z0"/>.
     ''' </returns>
+    ''' <exception cref="System.ArgumentOutOfRangeException">When
+    ''' <paramref name="z0"/> is not a positive, non-zero value or is
+    ''' infinite.</exception>
     ''' <remarks>See
     ''' <see cref="PowerTransmissionComplexCoefficient(Impedance, Impedance)"/>
     ''' regarding comparison to Smith Chart results.</remarks>
@@ -605,7 +609,21 @@ Partial Public Structure Impedance
     ''' xxxxxxxxxx
     ''' </summary>
     ''' <returns>xxxxxxxxxx</returns>
+    ''' <exception cref="System.ArgumentOutOfRangeException">When
+    ''' <paramref name="z0"/> is not a positive, non-zero value or is
+    ''' infinite.</exception>
     Public Function AngleOfTransmissionRadians(ByVal z0 As System.Double) As System.Double
+
+        ' Input checking.
+        If z0 <= 0.0 Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGVMBGTZ)
+        ElseIf Double.IsInfinity(z0) Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHIV)
+        End If
 
         Dim MainCirc As New SmithMainCircle(4.0, 5.0, 4.0, z0) ' Test data.
         'Dim MainCirc As New SmithMainCircle(1.0, 1.0, 1.0, z0) ' Arbitrary.
@@ -642,23 +660,33 @@ Partial Public Structure Impedance
     ''' xxxxxxxxxx
     ''' </summary>
     ''' <returns>xxxxxxxxxx</returns>
+    ''' <exception cref="System.ArgumentOutOfRangeException">When
+    ''' <paramref name="z0"/> is not a positive, non-zero value or is
+    ''' infinite.</exception>
     ''' <remarks>An original Smith Chart is marked with the angles shown in
     ''' degrees.</remarks>
     Public Function AngleOfTransmission(ByVal z0 As System.Double) As System.Double
+
+        ' Input checking.
+        If z0 <= 0.0 Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGVMBGTZ)
+        ElseIf Double.IsInfinity(z0) Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHIV)
+        End If
+
         Return Me.AngleOfTransmissionRadians(z0) * 180.0 / System.Math.PI
+
     End Function ' AngleOfTransmission
 
 #End Region ' "Angle of Transmission"
 
+#Region "VSWR"
 
-
-
-
-
-
-
-
-    ' NEED/WANT ADD MULTIPLE VERSIONS AS DONE WITH VoltageReflectionComplexCoefficient
+    ' NEED/WANT TO ADD MULTIPLE VERSIONS AS DONE WITH VoltageReflectionComplexCoefficient
     ' AND PowerReflectionComplexCoefficient?
     ''' <summary>
     ''' Calculates the voltage standing wave ratio for this instance based on
@@ -695,5 +723,7 @@ Partial Public Structure Impedance
         Return (1.0 + AbsGamma) / (1.0 - AbsGamma)
 
     End Function ' VSWR
+
+#End Region ' "VSWR"
 
 End Structure ' Impedance
