@@ -16,8 +16,7 @@ Partial Public Structure Impedance
     ''' <param name="zSource">Specifies the impedance of the source.</param>
     ''' <param name="zLoad">Specifies the impedance of the load.</param>
     ''' <returns>The complex voltage reflection coefficient.</returns>
-    ''' <remarks>The voltage reflection coefficient (Gamma) is a scalar value
-    ''' with no dimension.</remarks>
+    ''' <remarks>The coefficient is a scalar value with no dimension.</remarks>
     Public Shared Function VoltageReflectionComplexCoefficient(
         ByVal zSource As Impedance, ByVal zLoad As Impedance) _
         As System.Numerics.Complex
@@ -43,8 +42,7 @@ Partial Public Structure Impedance
     ''' </summary>
     ''' <param name="zSource">Specifies the impedance of the source.</param>
     ''' <returns>The complex voltage reflection coefficient.</returns>
-    ''' <remarks>The voltage reflection coefficient (Gamma) is a scalar value
-    ''' with no dimension.</remarks>
+    ''' <remarks>The coefficient is a scalar value with no dimension.</remarks>
     Public Function VoltageReflectionComplexCoefficient(ByVal zSource As Impedance) _
         As System.Numerics.Complex
 
@@ -61,8 +59,7 @@ Partial Public Structure Impedance
     ''' <exception cref="System.ArgumentOutOfRangeException">When
     ''' <paramref name="z0"/> is not a positive, non-zero value or is
     ''' infinite.</exception>
-    ''' <remarks>The voltage reflection coefficient (Gamma) is a scalar value
-    ''' with no dimension.</remarks>
+    ''' <remarks>The coefficient is a scalar value with no dimension.</remarks>
     Public Function VoltageReflectionComplexCoefficient(ByVal z0 As System.Double) _
         As System.Numerics.Complex
 
@@ -92,8 +89,7 @@ Partial Public Structure Impedance
     ''' <exception cref="System.ArgumentOutOfRangeException">When
     ''' <paramref name="z0"/> is not a positive, non-zero value or is
     ''' infinite.</exception>
-    ''' <remarks>The voltage reflection coefficient (Gamma) is a scalar value
-    ''' with no dimension.</remarks>
+    ''' <remarks>The coefficient is a scalar value with no dimension.</remarks>
     Public Function VoltageReflectionCoefficient(ByVal z0 As System.Double) _
         As System.Double
 
@@ -131,8 +127,7 @@ Partial Public Structure Impedance
     ''' <param name="zSource">Specifies the impedance of the source.</param>
     ''' <param name="zLoad">Specifies the impedance of the load.</param>
     ''' <returns>The complex power reflection coefficient.</returns>
-    ''' <remarks>The power reflection coefficient is a scalar value with no
-    ''' dimension.</remarks>
+    ''' <remarks>The coefficient is a scalar value with no dimension.</remarks>
     Public Shared Function PowerReflectionComplexCoefficient(
         ByVal zSource As Impedance, ByVal zLoad As Impedance) _
         As System.Numerics.Complex
@@ -149,8 +144,7 @@ Partial Public Structure Impedance
     ''' </summary>
     ''' <param name="zSource">Specifies the impedance of the source.</param>
     ''' <returns>The complex power reflection coefficient.</returns>
-    ''' <remarks>The power reflection coefficient is a scalar value with no
-    ''' dimension.</remarks>
+    ''' <remarks>The coefficient is a scalar value with no dimension.</remarks>
     Public Function PowerReflectionComplexCoefficient(ByVal zSource As Impedance) _
         As System.Numerics.Complex
 
@@ -169,8 +163,7 @@ Partial Public Structure Impedance
     ''' <exception cref="System.ArgumentOutOfRangeException">When
     ''' <paramref name="z0"/> is not a positive, non-zero value or is
     ''' infinite.</exception>
-    ''' <remarks>The power reflection coefficient is a scalar value with no
-    ''' dimension.</remarks>
+    ''' <remarks>The coefficient is a scalar value with no dimension.</remarks>
     Public Function PowerReflectionComplexCoefficient(ByVal z0 As System.Double) _
         As System.Numerics.Complex
 
@@ -201,8 +194,7 @@ Partial Public Structure Impedance
     ''' <exception cref="System.ArgumentOutOfRangeException">When
     ''' <paramref name="z0"/> is not a positive, non-zero value or is
     ''' infinite.</exception>
-    ''' <remarks>The power reflection coefficient is a scalar value with no
-    ''' dimension.</remarks>
+    ''' <remarks>The coefficient is a scalar value with no dimension.</remarks>
     Public Function PowerReflectionCoefficient(ByVal z0 As System.Double) _
         As System.Double
 
@@ -232,11 +224,14 @@ Partial Public Structure Impedance
 #Region "Voltage Transmission"
 
     ''' <summary>
-    ''' xxxxxxxxxx
+    ''' Returns the complex voltage transmission coefficient
+    ''' when the specified <paramref name="zLoad"/> <c>Impedance</c> is
+    ''' connected to the specified <paramref name="zSource"/> <c>Impedance</c>.
     ''' </summary>
-    ''' <param name="zSource">xxxxxxxxxx</param>
-    ''' <param name="zLoad">xxxxxxxxxx</param>
-    ''' <returns>xxxxxxxxxx</returns>
+    ''' <param name="zSource">Specifies the impedance of the source.</param>
+    ''' <param name="zLoad">Specifies the impedance of the load.</param>
+    ''' <returns>The complex voltage transmission coefficient</returns>
+    ''' <remarks>The coefficient is a scalar value with no dimension.</remarks>
     Public Shared Function VoltageTransmissionComplexCoefficient(
         ByVal zSource As Impedance, ByVal zLoad As Impedance) _
         As System.Numerics.Complex
@@ -244,7 +239,6 @@ Partial Public Structure Impedance
         ' REF: Reflection and Transmission Coefficients Explained
         ' https://www.rfwireless-world.com/terminology/reflection-and-transmission-coefficients
 
-        '        
         Dim LoadCplx As System.Numerics.Complex = zLoad.ToComplex
         Dim SourceCplx As System.Numerics.Complex = zSource.ToComplex
         Return 2.0 * LoadCplx / (LoadCplx + SourceCplx)
@@ -252,10 +246,13 @@ Partial Public Structure Impedance
     End Function ' VoltageTransmissionComplexCoefficient
 
     ''' <summary>
-    ''' xxxxxxxxxx
+    ''' Returns the complex voltage transmission coefficient when this instance
+    ''' is connected to the specified <paramref name="zSource"/>
+    ''' <c>Impedance</c>.
     ''' </summary>
-    ''' <param name="zSource">xxxxxxxxxx</param>
-    ''' <returns>xxxxxxxxxx</returns>
+    ''' <param name="zSource">Specifies the impedance of the source.</param>
+    ''' <returns>The complex voltage transmission coefficient</returns>
+    ''' <remarks>The coefficient is a scalar value with no dimension.</remarks>
     Public Function VoltageTransmissionComplexCoefficient(ByVal zSource As Impedance) _
         As System.Numerics.Complex
 
@@ -263,15 +260,18 @@ Partial Public Structure Impedance
     End Function ' VoltageTransmissionComplexCoefficient
 
     ''' <summary>
-    ''' xxxxxxxxxx
+    ''' Returns the complex voltage transmission coefficient when this instance
+    ''' is connected to the specified characteristic impedance.
     ''' </summary>
-    ''' <param name="z0">xxxxxxxxxx</param>
-    ''' <returns>xxxxxxxxxx</returns>
+    ''' <param name="z0">Specifies the characteristic impedance, in
+    ''' ohms.</param>
+    ''' <returns>The complex voltage transmission coefficient.</returns>
     ''' <exception cref="System.ArgumentOutOfRangeException">When
     ''' <paramref name="z0"/> is not a positive, non-zero value or is
     ''' infinite.</exception>
-    Public Function VoltageTransmissionComplexCoefficient(ByVal z0 As System.Double) _
-        As System.Numerics.Complex
+    ''' <remarks>The coefficient is a scalar value with no dimension.</remarks>
+    Public Function VoltageTransmissionComplexCoefficient(
+        ByVal z0 As System.Double) As System.Numerics.Complex
 
         ' Input checking.
         If z0 <= 0.0 Then
@@ -290,15 +290,22 @@ Partial Public Structure Impedance
     End Function ' VoltageTransmissionComplexCoefficient
 
     ''' <summary>
-    ''' xxxxxxxxxx
+    ''' Returns the voltage transmission coefficient when this instance is
+    ''' connected to the specified characteristic impedance.
     ''' </summary>
-    ''' <param name="z0">xxxxxxxxxx</param>
-    ''' <returns>xxxxxxxxxx</returns>
+    ''' <param name="z0">Specifies the characteristic impedance, in
+    ''' ohms.</param>
+    ''' <returns>The voltage transmission coefficient.</returns>
     ''' <exception cref="System.ArgumentOutOfRangeException">When
     ''' <paramref name="z0"/> is not a positive, non-zero value or is
     ''' infinite.</exception>
+    ''' <remarks>The coefficient is a scalar value with no dimension.</remarks>
     Public Function VoltageTransmissionCoefficient(ByVal z0 As System.Double) _
         As System.Double
+
+        ' The underlying formula that was used here returns a Complex. This
+        ' routine uses Complex.Magnitude() to return a Double, to match what is
+        ' shown at the bottom of a Smith Chart.
 
         ' Input checking.
         If z0 <= 0.0 Then
@@ -338,6 +345,7 @@ Partial Public Structure Impedance
     ''' NOTE: This function only matches the "TRANSM.COEFF.P" ruler on a Smith
     ''' Chart "for Zload= real, i.e. the case of a step in characteristic
     ''' impedance of the coaxial line."
+    ''' The coefficient is a scalar value with no dimension.
     ''' </remarks>
     Public Shared Function PowerTransmissionComplexCoefficient(
         ByVal zSource As Impedance, ByVal zLoad As Impedance) _
@@ -385,7 +393,8 @@ Partial Public Structure Impedance
     ''' </returns>
     ''' <remarks>See
     ''' <see cref="PowerTransmissionComplexCoefficient(Impedance, Impedance)"/>
-    ''' regarding comparison to Smith Chart results.</remarks>
+    ''' regarding comparison to Smith Chart results.
+    ''' The coefficient is a scalar value with no dimension.</remarks>
     Public Function PowerTransmissionCoefficient(ByVal zSource As Impedance) _
         As System.Numerics.Complex
 
@@ -409,7 +418,8 @@ Partial Public Structure Impedance
     ''' </returns>
     ''' <remarks>See
     ''' <see cref="PowerTransmissionComplexCoefficient(Impedance, Impedance)"/>
-    ''' regarding comparison to Smith Chart results.</remarks>
+    ''' regarding comparison to Smith Chart results.
+    ''' The coefficient is a scalar value with no dimension.</remarks>
     Public Function PowerTransmissionComplexCoefficient(ByVal z0 As System.Double) _
         As System.Numerics.Complex
 
@@ -446,9 +456,14 @@ Partial Public Structure Impedance
     ''' infinite.</exception>
     ''' <remarks>See
     ''' <see cref="PowerTransmissionComplexCoefficient(Impedance, Impedance)"/>
-    ''' regarding comparison to Smith Chart results.</remarks>
+    ''' regarding comparison to Smith Chart results.
+    ''' The coefficient is a scalar value with no dimension.</remarks>
     Public Function PowerTransmissionCoefficient(ByVal z0 As System.Double) _
         As System.Double
+
+        ' The underlying formula that was used here returns a Complex. This
+        ' routine uses Complex.Magnitude() to return a Double, to match what is
+        ' shown at the bottom of a Smith Chart.
 
         ' Input checking.
         If z0 <= 0.0 Then
@@ -495,7 +510,7 @@ Partial Public Structure Impedance
     ''' positive values that rotate CCW, and capacitive reactances return
     ''' negative values that rotate CW, from the open circuit point.
     ''' A plot at the matched center point has no reflection, but returns 0.0.
-    ''' </remarks>
+    ''' The coefficient is a scalar value with no dimension.</remarks>
     Public Function AngleOfReflectionRadians(ByVal z0 As System.Double) _
         As System.Double
 
@@ -580,7 +595,7 @@ Partial Public Structure Impedance
     ''' negative values that rotate CW, from the open circuit point.
     ''' A plot at the matched center point has no reflection, but returns 0.0.
     ''' A standard Smith Chart is marked with the angles shown in degrees.
-    ''' </remarks>
+    ''' The coefficient is a scalar value with no dimension.</remarks>
     Public Function AngleOfReflection(ByVal z0 As System.Double) _
         As System.Double
 
@@ -603,6 +618,11 @@ Partial Public Structure Impedance
 
 #Region "Angle of Transmission"
 
+
+    ' XXXXX FILL IN MORE COMMENTS. XXXXX
+
+    ' NEED/WANT TO ADD MULTIPLE VERSIONS AS DONE WITH VoltageReflectionComplexCoefficient
+
     ' ARE THE AngleOfReflection AND AngleOfTransmission ROUTINES UNIQUE, OR
     ' SHARED, FOR VOLTAGE AND POWER? CURRENT?
     ' IS THERE A MATHEMATICAL FORMULA TO USE THAT MAY BE BETTER THAN DOING THE GEOMETRY?
@@ -614,6 +634,7 @@ Partial Public Structure Impedance
     ''' <exception cref="System.ArgumentOutOfRangeException">When
     ''' <paramref name="z0"/> is not a positive, non-zero value or is
     ''' infinite.</exception>
+    ''' <remarks>The coefficient is a scalar value with no dimension.</remarks>
     Public Function AngleOfTransmissionRadians(ByVal z0 As System.Double) As System.Double
 
         ' Input checking.
@@ -666,7 +687,7 @@ Partial Public Structure Impedance
     ''' <paramref name="z0"/> is not a positive, non-zero value or is
     ''' infinite.</exception>
     ''' <remarks>An original Smith Chart is marked with the angles shown in
-    ''' degrees.</remarks>
+    ''' degrees.The coefficient is a scalar value with no dimension.</remarks>
     Public Function AngleOfTransmission(ByVal z0 As System.Double) As System.Double
 
         ' Input checking.
@@ -698,6 +719,7 @@ Partial Public Structure Impedance
     ''' <param name="zLoad">Specifies the impedance, in ohms, of the
     ''' load.</param>
     ''' <returns>The complex voltage standing wave ratio.</returns>
+    ''' <remarks>The coefficient is a scalar value with no dimension.</remarks>
     Public Shared Function VSWR(
         ByVal zSource As Impedance, ByVal zLoad As Impedance) _
         As System.Numerics.Complex
@@ -719,6 +741,7 @@ Partial Public Structure Impedance
     ''' </summary>
     ''' <param name="zSource">Specifies the impedance of the source.</param>
     ''' <returns>The complex voltage standing wave ratio.</returns>
+    ''' <remarks>The coefficient is a scalar value with no dimension.</remarks>
     Public Function VSWR(ByVal zSource As Impedance) _
         As System.Numerics.Complex
 
@@ -735,7 +758,12 @@ Partial Public Structure Impedance
     ''' <exception cref="System.ArgumentOutOfRangeException">
     ''' When <paramref name="z0"/> is not a positive, non-zero value.
     ''' </exception>
+    ''' <remarks>The coefficient is a scalar value with no dimension.</remarks>
     Public Function VSWR(ByVal z0 As System.Double) As System.Double
+
+        ' The underlying formula that was used here returns a Complex. This
+        ' routine uses Complex.Magnitude() to return a Double, to match what is
+        ' shown at the bottom of a Smith Chart.
 
         ' Input checking.
         If z0 <= 0.0 Then
