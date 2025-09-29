@@ -89,6 +89,9 @@ Public Structure Impedance
     ' inherited. Given that, Impedance is created as a structure which uses
     ' familiar terminology but relies on Complex for most of its work.
 
+    Const PI As System.Double = System.Double.Pi
+    Const HALFPI As System.Double = System.Double.Pi / 2.0
+
     Const MSGCHNV As System.String = "Cannot have a negative value."
     Const MSGCHZV As System.String = "Cannot have a zero value."
     Const MSGCHIV As System.String = "Cannot have an infinite value."

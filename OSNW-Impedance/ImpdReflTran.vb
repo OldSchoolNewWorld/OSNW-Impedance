@@ -4,17 +4,26 @@ Option Compare Binary
 Option Infer Off
 Imports System.Data
 
+
+
+
+'calculates to returns
+'    specify units or scalar
+' z0 gets input checks
+' messages have constants
+
 Partial Public Structure Impedance
 
 #Region "Voltage Reflection"
 
     ''' <summary>
-    ''' Calculates the complex voltage reflection coefficient (Gamma) when the
+    ''' Returns the complex voltage reflection coefficient (Gamma) when the
     ''' specified <paramref name="zLoad"/> <c>Impedance</c> is connected to the
     ''' specified <paramref name="zSource"/> <c>Impedance</c>.
     ''' </summary>
     ''' <param name="zSource">Specifies the impedance of the source.</param>
-    ''' <param name="zLoad">Specifies the impedance of the load.</param>
+    ''' <param name="zLoad">Specifies the impedance of the load, in
+    ''' ohms.</param>
     ''' <returns>The complex voltage reflection coefficient.</returns>
     ''' <remarks>The coefficient is a scalar value with no dimension.</remarks>
     Public Shared Function VoltageReflectionComplexCoefficient(
@@ -125,7 +134,8 @@ Partial Public Structure Impedance
     ''' connected to the specified <paramref name="zSource"/> <c>Impedance</c>.
     ''' </summary>
     ''' <param name="zSource">Specifies the impedance of the source.</param>
-    ''' <param name="zLoad">Specifies the impedance of the load.</param>
+    ''' <param name="zLoad">Specifies the impedance of the load, in
+    ''' ohms.</param>
     ''' <returns>The complex power reflection coefficient.</returns>
     ''' <remarks>The coefficient is a scalar value with no dimension.</remarks>
     Public Shared Function PowerReflectionComplexCoefficient(
@@ -229,7 +239,7 @@ Partial Public Structure Impedance
     ''' connected to the specified <paramref name="zSource"/> <c>Impedance</c>.
     ''' </summary>
     ''' <param name="zSource">Specifies the impedance of the source.</param>
-    ''' <param name="zLoad">Specifies the impedance of the load.</param>
+    ''' <param name="zLoad">Specifies the impedance of the load, in ohms.</param>
     ''' <returns>The complex voltage transmission coefficient</returns>
     ''' <remarks>The coefficient is a scalar value with no dimension.</remarks>
     Public Shared Function VoltageTransmissionComplexCoefficient(
@@ -487,11 +497,88 @@ Partial Public Structure Impedance
 
 #Region "Angle of Reflection"
 
-    ' NEED/WANT TO ADD MULTIPLE VERSIONS AS DONE WITH VoltageReflectionComplexCoefficient
-    ' AND PowerReflectionComplexCoefficient?
     ' ARE THE AngleOfReflection AND AngleOfTransmission ROUTINES UNIQUE, OR
     ' SHARED, FOR VOLTAGE AND POWER? CURRENT?
-    ' IS THERE A MATHEMATICAL FORMULA TO USE THAT MAY BE BETTER THAN DOING THE GEOMETRY?
+    ' IS THERE A MATHEMATICAL FORMULA TO USE THAT MAY BE BETTER THAN DOING THE
+    ' GEOMETRY?
+
+    ''' <summary>
+    ''' Returns the angle of reflection, in radians, when the specified
+    ''' <paramref name="zLoad"/> <c>Impedance</c> is connected to the specified
+    ''' characteristic impedance.
+    ''' </summary>
+    ''' <param name="z0">Specifies the characteristic impedance, in
+    ''' ohms.</param>
+    ''' <param name="zLoad">Specifies the impedance of the load, in ohms.</param>
+    ''' <returns>The angle of reflection, in radians.</returns>
+    ''' Results range from PI to almost -PI. Inductive reactances return
+    ''' positive values that rotate CCW, and capacitive reactances return
+    ''' negative values that rotate CW, from the open circuit point.
+    ''' A plot at the matched center point has no reflection, but returns 0.0.
+    ''' The coefficient is a scalar value with no dimension.
+    Public Shared Function AngleOfReflectionRadians(
+        ByVal z0 As System.Double, ByVal zLoad As Impedance) _
+        As System.Double
+
+        ' Input checking.
+        If z0 <= 0.0 Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGVMBGTZ)
+        ElseIf Double.IsInfinity(z0) Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHIV)
+        End If
+
+        Dim MainCirc As New SmithMainCircle(4.0, 5.0, 4.0, z0) ' Test data.
+        'Dim MainCirc As New SmithMainCircle(1.0, 1.0, 1.0, z0) ' Arbitrary.
+
+        ' Determine where zLoad will be plotted.
+        Dim PlotX As System.Double
+        Dim PlotY As System.Double
+        If Not MainCirc.GetPlotXY(zLoad.Resistance, zLoad.Reactance,
+                                  PlotX, PlotY) Then
+            Throw New ApplicationException(MSGFGPXPY)
+        End If
+
+        ' Check a special case - horizontal center.
+        If PlotX = MainCirc.GridCenterX Then
+            ' Vertical would have zero as the adjacent side (below).
+            If PlotY > MainCirc.GridCenterY Then
+                ' Above the resonance line.
+                Return HALFPI
+            ElseIf PlotY < MainCirc.GridCenterY Then
+                ' Below the resonance line.
+                Return -HALFPI
+            Else
+                ' At the center.
+                ' MATCHED, SO NO REFLECTION. SHOULD THIS HAVE *ANY* VALUE? NOT
+                ' 90 OR -90 DEGREES, SO USE ZERO FOR NOW.
+                Return 0.0
+            End If
+
+        End If
+
+        Dim Opposite As System.Double = PlotY - MainCirc.GridCenterY
+        Dim Adjacent As System.Double = PlotX - MainCirc.GridCenterX
+        Dim TanAlpha As System.Double = Opposite / Adjacent
+        Dim RadAngle As System.Double = System.Math.Atan(TanAlpha)
+        If PlotX > MainCirc.GridCenterX Then
+            ' Right side.
+            Return RadAngle
+        Else
+            ' Left side.
+            If Opposite < 0.0 Then
+                ' Below the resonance line.
+                Return RadAngle - PI
+            Else
+                ' On or above the resonance line.
+                Return PI + RadAngle
+            End If
+        End If
+
+    End Function ' AngleOfReflectionRadians
 
     ''' <summary>
     ''' Returns the angle of reflection, in radians, when this instance is
@@ -510,12 +597,10 @@ Partial Public Structure Impedance
     ''' positive values that rotate CCW, and capacitive reactances return
     ''' negative values that rotate CW, from the open circuit point.
     ''' A plot at the matched center point has no reflection, but returns 0.0.
-    ''' The coefficient is a scalar value with no dimension.</remarks>
+    ''' The coefficient is a scalar value with no dimension.
+    ''' </remarks>
     Public Function AngleOfReflectionRadians(ByVal z0 As System.Double) _
         As System.Double
-
-        Const PI As System.Double = System.Double.Pi
-        Const HALFPI As System.Double = System.Double.Pi / 2.0
 
         ' Input checking.
         If z0 <= 0.0 Then
@@ -528,54 +613,44 @@ Partial Public Structure Impedance
             Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHIV)
         End If
 
-        Dim MainCirc As New SmithMainCircle(4.0, 5.0, 4.0, z0) ' Test data.
-        'Dim MainCirc As New SmithMainCircle(1.0, 1.0, 1.0, z0) ' Arbitrary.
-
-        Dim PlotX As System.Double
-        Dim PlotY As System.Double
-        If Not MainCirc.GetPlotXY(Me.Resistance, Me.Reactance,
-                                  PlotX, PlotY) Then
-            Throw New ApplicationException(MSGFGPXPY)
-        End If
-
-        Dim Opposite As System.Double = PlotY - MainCirc.GridCenterY
-        Dim Adjacent As System.Double = PlotX - MainCirc.GridCenterX
-        Dim TanAlpha As System.Double
-        Dim RadAngle As System.Double
-
-        If PlotX > MainCirc.GridCenterX Then
-            ' Right side.
-            TanAlpha = Opposite / Adjacent
-            RadAngle = System.Math.Atan(TanAlpha)
-            Return RadAngle
-        ElseIf PlotX < MainCirc.GridCenterX Then
-            ' Left side.
-            TanAlpha = Opposite / Adjacent
-            RadAngle = System.Math.Atan(TanAlpha)
-            If Opposite < 0.0 Then
-                ' Below the resonance line.
-                Return RadAngle - PI
-            Else
-                ' On or above the resonance line.
-                Return PI + RadAngle
-            End If
-        Else
-            ' Vertical will have zero as the adjacent side.
-            If PlotY > MainCirc.GridCenterY Then
-                ' Above the resonance line.
-                Return HALFPI
-            ElseIf PlotY < MainCirc.GridCenterY Then
-                ' Below the resonance line.
-                Return -HALFPI
-            Else
-                ' On the resonance line, at the center.
-                ' MATCHED, SO NO REFLECTION. SHOULD THIS HAVE *ANY* VALUE? NOT
-                ' 90 OR -90 DEGREES, SO USE ZERO FOR NOW.
-                Return 0.0
-            End If
-        End If
+        Dim AnsCplx As System.Numerics.Complex = AngleOfReflectionRadians(z0, Me)
+        Return AngleOfReflectionRadians(z0, Me)
 
     End Function ' AngleOfReflectionRadians
+
+    ''' <summary>
+    ''' Returns the angle of reflection, in degrees, when the specified
+    ''' <paramref name="zLoad"/> <c>Impedance</c> is connected to the specified
+    ''' characteristic impedance.
+    ''' </summary>
+    ''' <param name="z0">Specifies the characteristic impedance, in
+    ''' ohms.</param>
+    ''' <param name="zLoad">Specifies the impedance of the load, in
+    ''' ohms.</param>
+    ''' <returns>The angle of reflection, in radians.</returns>
+    ''' Results range from PI to almost -PI. Inductive reactances return
+    ''' positive values that rotate CCW, and capacitive reactances return
+    ''' negative values that rotate CW, from the open circuit point.
+    ''' A plot at the matched center point has no reflection, but returns 0.0.
+    ''' The coefficient is a scalar value with no dimension.
+    Public Shared Function AngleOfReflection(
+        ByVal z0 As System.Double, ByVal zLoad As Impedance) _
+        As System.Double
+
+        ' Input checking.
+        If z0 <= 0.0 Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGVMBGTZ)
+        ElseIf Double.IsInfinity(z0) Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHIV)
+        End If
+
+        Return AngleOfReflectionRadians(z0, zLoad) * 180.0 / PI
+
+    End Function ' AngleOfReflection
 
     ''' <summary>
     ''' Returns the angle of reflection, in degrees, when this instance is
@@ -610,7 +685,7 @@ Partial Public Structure Impedance
             Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHIV)
         End If
 
-        Return Me.AngleOfReflectionRadians(z0) * 180.0 / System.Math.PI
+        Return Me.AngleOfReflectionRadians(z0) * 180.0 / PI
 
     End Function ' AngleOfReflection
 
@@ -619,9 +694,10 @@ Partial Public Structure Impedance
 #Region "Angle of Transmission"
 
 
-    ' XXXXX FILL IN MORE COMMENTS. XXXXX
+    '    XXXXX FILL In MORE COMMENTS. XXXXX
 
-    ' NEED/WANT TO ADD MULTIPLE VERSIONS AS DONE WITH VoltageReflectionComplexCoefficient
+    'NEED/WANT TO ADD MULTIPLE VERSIONS AS DONE WITH VoltageReflectionComplexCoefficient
+    'And PowerReflectionComplexCoefficient?
 
     ' ARE THE AngleOfReflection AND AngleOfTransmission ROUTINES UNIQUE, OR
     ' SHARED, FOR VOLTAGE AND POWER? CURRENT?
@@ -701,7 +777,7 @@ Partial Public Structure Impedance
             Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHIV)
         End If
 
-        Return Me.AngleOfTransmissionRadians(z0) * 180.0 / System.Math.PI
+        Return Me.AngleOfTransmissionRadians(z0) * 180.0 / PI
 
     End Function ' AngleOfTransmission
 

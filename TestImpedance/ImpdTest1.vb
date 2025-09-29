@@ -628,7 +628,7 @@ Namespace TestImpedanceMath
 
 End Namespace ' TestImpedanceMath
 
-Namespace TestImpedanceReflection
+Namespace ImpedanceReflectionTests
 
     Public Class TestVoltageReflectionCoefficient
 
@@ -907,4 +907,4 @@ Namespace TestImpedanceReflection
 
     End Class ' TestVSWR
 
-End Namespace ' Namespace TestImpedanceReflection
+End Namespace ' ImpedanceReflectionTests
