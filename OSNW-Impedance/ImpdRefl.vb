@@ -2,15 +2,6 @@
 Option Strict On
 Option Compare Binary
 Option Infer Off
-Imports System.Data
-
-
-
-
-'calculates to returns
-'    specify units or scalar
-' z0 gets input checks
-' messages have constants
 
 Partial Public Structure Impedance
 
@@ -21,7 +12,8 @@ Partial Public Structure Impedance
     ''' specified <paramref name="zLoad"/> <c>Impedance</c> is connected to the
     ''' specified <paramref name="zSource"/> <c>Impedance</c>.
     ''' </summary>
-    ''' <param name="zSource">Specifies the impedance of the source.</param>
+    ''' <param name="zSource">Specifies the impedance of the source, in
+    ''' ohms.</param>
     ''' <param name="zLoad">Specifies the impedance of the load, in
     ''' ohms.</param>
     ''' <returns>The complex voltage reflection coefficient.</returns>
@@ -45,32 +37,34 @@ Partial Public Structure Impedance
     End Function ' VoltageReflectionComplexCoefficient
 
     ''' <summary>
-    ''' Calculates the complex voltage reflection coefficient (Gamma) when this
+    ''' Returns the complex voltage reflection coefficient (Gamma) when this
     ''' instance is connected to the specified
     ''' <paramref name="zSource"/> <c>Impedance</c>.
     ''' </summary>
-    ''' <param name="zSource">Specifies the impedance of the source.</param>
+    ''' <param name="zSource">Specifies the impedance of the source, in
+    ''' ohms.</param>
     ''' <returns>The complex voltage reflection coefficient.</returns>
     ''' <remarks>The coefficient is a scalar value with no dimension.</remarks>
-    Public Function VoltageReflectionComplexCoefficient(ByVal zSource As Impedance) _
-        As System.Numerics.Complex
+    Public Function VoltageReflectionComplexCoefficient(
+        ByVal zSource As Impedance) As System.Numerics.Complex
 
         Return Impedance.VoltageReflectionComplexCoefficient(zSource, Me)
     End Function ' VoltageReflectionComplexCoefficient
 
     ''' <summary>
-    ''' Calculates the complex voltage reflection coefficient (Gamma) when this
+    ''' Returns the complex voltage reflection coefficient (Gamma) when this
     ''' instance is connected to the specified characteristic impedance.
     ''' </summary>
-    ''' <param name="z0">Specifies the characteristic impedance, in ohms.</param>
+    ''' <param name="z0">Specifies the characteristic impedance, in
+    ''' ohms.</param>
     ''' <returns>The complex voltage reflection coefficient for the current
     ''' instance, based on the specified characteristic impedance.</returns>
     ''' <exception cref="System.ArgumentOutOfRangeException">When
     ''' <paramref name="z0"/> is not a positive, non-zero value or is
     ''' infinite.</exception>
     ''' <remarks>The coefficient is a scalar value with no dimension.</remarks>
-    Public Function VoltageReflectionComplexCoefficient(ByVal z0 As System.Double) _
-        As System.Numerics.Complex
+    Public Function VoltageReflectionComplexCoefficient(
+        ByVal z0 As System.Double) As System.Numerics.Complex
 
         ' Input checking.
         If z0 <= 0.0 Then
@@ -89,12 +83,13 @@ Partial Public Structure Impedance
     End Function ' VoltageReflectionComplexCoefficient
 
     ''' <summary>
-    ''' Calculates the voltage reflection coefficient (Gamma) when this instance
-    ''' is connected to the specified characteristic impedance.
+    ''' Returns the voltage reflection coefficient (Gamma) when this instance is
+    ''' connected to the specified characteristic impedance.
     ''' </summary>
-    ''' <param name="z0">Specifies the characteristic impedance, in ohms.</param>
-    ''' <returns>The voltage reflection coefficient for the current instance based
-    ''' on the specified characteristic impedance.</returns>
+    ''' <param name="z0">Specifies the characteristic impedance, in
+    ''' ohms.</param>
+    ''' <returns>The voltage reflection coefficient for the current instance
+    ''' based on the specified characteristic impedance.</returns>
     ''' <exception cref="System.ArgumentOutOfRangeException">When
     ''' <paramref name="z0"/> is not a positive, non-zero value or is
     ''' infinite.</exception>
@@ -129,11 +124,12 @@ Partial Public Structure Impedance
 #Region "Power Reflection"
 
     ''' <summary>
-    ''' Calculates the complex power reflection coefficient (COMMON NAME???)
+    ''' Returns the complex power reflection coefficient (COMMON NAME???)
     ''' when the specified <paramref name="zLoad"/> <c>Impedance</c> is
     ''' connected to the specified <paramref name="zSource"/> <c>Impedance</c>.
     ''' </summary>
-    ''' <param name="zSource">Specifies the impedance of the source.</param>
+    ''' <param name="zSource">Specifies the impedance of the source, in
+    ''' ohms.</param>
     ''' <param name="zLoad">Specifies the impedance of the load, in
     ''' ohms.</param>
     ''' <returns>The complex power reflection coefficient.</returns>
@@ -148,15 +144,16 @@ Partial Public Structure Impedance
     End Function ' PowerReflectionComplexCoefficient
 
     ''' <summary>
-    ''' Calculates the complex power reflection coefficient when this instance
-    ''' is connected to the specified <paramref name="zSource"/>
+    ''' Returns the complex power reflection coefficient when this instance is
+    ''' connected to the specified <paramref name="zSource"/>
     ''' <c>Impedance</c>.
     ''' </summary>
-    ''' <param name="zSource">Specifies the impedance of the source.</param>
+    ''' <param name="zSource">Specifies the impedance of the source, in
+    ''' ohms.</param>
     ''' <returns>The complex power reflection coefficient.</returns>
     ''' <remarks>The coefficient is a scalar value with no dimension.</remarks>
-    Public Function PowerReflectionComplexCoefficient(ByVal zSource As Impedance) _
-        As System.Numerics.Complex
+    Public Function PowerReflectionComplexCoefficient(
+        ByVal zSource As Impedance) As System.Numerics.Complex
 
         Dim Gamma As System.Numerics.Complex =
             Me.VoltageReflectionComplexCoefficient(zSource)
@@ -164,18 +161,19 @@ Partial Public Structure Impedance
     End Function ' PowerReflectionComplexCoefficient
 
     ''' <summary>
-    ''' Calculates the complex power reflection coefficient when this instance
-    ''' is connected to the specified characteristic impedance.
+    ''' Returns the complex power reflection coefficient when this instance is
+    ''' connected to the specified characteristic impedance.
     ''' </summary>
-    ''' <param name="z0">Specifies the characteristic impedance, in ohms.</param>
+    ''' <param name="z0">Specifies the characteristic impedance, in
+    ''' ohms.</param>
     ''' <returns>The complex power reflection coefficient for the current
     ''' instance, based on the specified characteristic impedance.</returns>
     ''' <exception cref="System.ArgumentOutOfRangeException">When
     ''' <paramref name="z0"/> is not a positive, non-zero value or is
     ''' infinite.</exception>
     ''' <remarks>The coefficient is a scalar value with no dimension.</remarks>
-    Public Function PowerReflectionComplexCoefficient(ByVal z0 As System.Double) _
-        As System.Numerics.Complex
+    Public Function PowerReflectionComplexCoefficient(
+        ByVal z0 As System.Double) As System.Numerics.Complex
 
         ' Input checking.
         If z0 <= 0.0 Then
@@ -195,10 +193,11 @@ Partial Public Structure Impedance
     End Function ' PowerReflectionComplexCoefficient
 
     ''' <summary>
-    ''' Calculates the power reflection coefficient when this instance is
+    ''' Returns the power reflection coefficient when this instance is
     ''' connected to the specified characteristic impedance.
     ''' </summary>
-    ''' <param name="z0">Specifies the characteristic impedance, in ohms.</param>
+    ''' <param name="z0">Specifies the characteristic impedance, in
+    ''' ohms.</param>
     ''' <returns>The complex power reflection coefficient for the current
     ''' instance, based on the specified characteristic impedance.</returns>
     ''' <exception cref="System.ArgumentOutOfRangeException">When
@@ -238,8 +237,10 @@ Partial Public Structure Impedance
     ''' when the specified <paramref name="zLoad"/> <c>Impedance</c> is
     ''' connected to the specified <paramref name="zSource"/> <c>Impedance</c>.
     ''' </summary>
-    ''' <param name="zSource">Specifies the impedance of the source.</param>
-    ''' <param name="zLoad">Specifies the impedance of the load, in ohms.</param>
+    ''' <param name="zSource">Specifies the impedance of the source, in
+    ''' ohms.</param>
+    ''' <param name="zLoad">Specifies the impedance of the load, in
+    ''' ohms.</param>
     ''' <returns>The complex voltage transmission coefficient</returns>
     ''' <remarks>The coefficient is a scalar value with no dimension.</remarks>
     Public Shared Function VoltageTransmissionComplexCoefficient(
@@ -260,11 +261,12 @@ Partial Public Structure Impedance
     ''' is connected to the specified <paramref name="zSource"/>
     ''' <c>Impedance</c>.
     ''' </summary>
-    ''' <param name="zSource">Specifies the impedance of the source.</param>
+    ''' <param name="zSource">Specifies the impedance of the source, in
+    ''' ohms.</param>
     ''' <returns>The complex voltage transmission coefficient</returns>
     ''' <remarks>The coefficient is a scalar value with no dimension.</remarks>
-    Public Function VoltageTransmissionComplexCoefficient(ByVal zSource As Impedance) _
-        As System.Numerics.Complex
+    Public Function VoltageTransmissionComplexCoefficient(
+        ByVal zSource As Impedance) As System.Numerics.Complex
 
         Return Impedance.VoltageTransmissionComplexCoefficient(zSource, Me)
     End Function ' VoltageTransmissionComplexCoefficient
@@ -343,10 +345,10 @@ Partial Public Structure Impedance
     ''' Returns the complex power transmission coefficient when
     ''' <paramref name="zLoad"/> is connected to <paramref name="zSource"/>.
     ''' </summary>
-    ''' <param name="zSource">Specifies the impedance of the source to which
-    ''' <paramref name="zLoad"/> is connected .</param>
-    ''' <param name="zLoad">Specifies the impedance of the load connected to
-    ''' <paramref name="zSource"/>.</param>
+    ''' <param name="zSource">Specifies the impedance of the source, in ohms,
+    ''' to which <paramref name="zLoad"/> is connected .</param>
+    ''' <param name="zLoad">Specifies the impedance of the load, in ohms,
+    ''' connected to <paramref name="zSource"/>.</param>
     ''' <returns>
     ''' The complex power transmission coefficient when
     ''' <paramref name="zLoad"/> is connected to <paramref name="zSource"/>.
@@ -395,8 +397,8 @@ Partial Public Structure Impedance
     ''' Returns the complex power transmission coefficient when this instance is
     ''' connected to <paramref name="zSource"/>.
     ''' </summary>
-    ''' <param name="zSource">Specifies the impedance of the source to which
-    ''' this instance is connected .</param>
+    ''' <param name="zSource">Specifies the impedance of the source, in ohms, to
+    ''' which this instance is connected .</param>
     ''' <returns>
     ''' The complex power transmission coefficient when this instance is
     ''' connected to <paramref name="zSource"/>.
@@ -416,16 +418,15 @@ Partial Public Structure Impedance
     ''' connected to a source matching the specified characteristic impedance,
     ''' <paramref name="z0"/>.
     ''' </summary>
-    ''' <param name="z0">Specifies the characteristic impedance source to which
-    ''' this instance is connected.</param>
-    ''' xxxx
+    ''' <param name="z0">Specifies the characteristic impedance source, in ohms,
+    ''' to which this instance is connected.</param>
     ''' <returns>
-    ''' <exception cref="System.ArgumentOutOfRangeException">When
-    ''' <paramref name="z0"/> is not a positive, non-zero value or is
-    ''' infinite.</exception>
     ''' The complex power transmission coefficient when this instance is
     ''' connected to a source matching the specified characteristic impedance
     ''' </returns>
+    ''' <exception cref="System.ArgumentOutOfRangeException">When
+    ''' <paramref name="z0"/> is not a positive, non-zero value or is
+    ''' infinite.</exception>
     ''' <remarks>See
     ''' <see cref="PowerTransmissionComplexCoefficient(Impedance, Impedance)"/>
     ''' regarding comparison to Smith Chart results.
@@ -454,8 +455,8 @@ Partial Public Structure Impedance
     ''' this instance is connected to a source matching the specified
     ''' characteristic impedance, <paramref name="z0"/>.
     ''' </summary>
-    ''' <param name="z0">Specifies the characteristic impedance to which this
-    ''' instance is connected.</param>
+    ''' <param name="z0">Specifies the characteristic impedance, in ohms, to
+    ''' which this instance is connected.</param>
     ''' <returns>
     ''' The magnitude of the complex power transmission coefficient when
     ''' this instance is connected to a source matching the specified
@@ -510,12 +511,17 @@ Partial Public Structure Impedance
     ''' <param name="z0">Specifies the characteristic impedance, in
     ''' ohms.</param>
     ''' <param name="zLoad">Specifies the impedance of the load, in ohms.</param>
-    ''' <returns>The angle of reflection, in radians.</returns>
+    ''' <returns>The angle of reflection, in radians. </returns>
+    ''' <exception cref="System.ArgumentOutOfRangeException">When
+    ''' <paramref name="z0"/> is not a positive, non-zero value or is
+    ''' infinite.</exception>
+    ''' <remarks>
     ''' Results range from PI to almost -PI. Inductive reactances return
     ''' positive values that rotate CCW, and capacitive reactances return
     ''' negative values that rotate CW, from the open circuit point.
     ''' A plot at the matched center point has no reflection, but returns 0.0.
     ''' The coefficient is a scalar value with no dimension.
+    ''' </remarks>
     Public Shared Function AngleOfReflectionRadians(
         ByVal z0 As System.Double, ByVal zLoad As Impedance) _
         As System.Double
@@ -584,7 +590,8 @@ Partial Public Structure Impedance
     ''' Returns the angle of reflection, in radians, when this instance is
     ''' connected to a source with the specified characteristic impedance.
     ''' </summary>
-    ''' <param name="z0">Specifies the characteristic impedance.</param>
+    ''' <param name="z0">Specifies the characteristic impedance, in
+    ''' ohms.</param>
     ''' <returns>
     ''' The angle of reflection, in radians, when this instance is
     ''' connected to a source with the specified characteristic impedance.
@@ -628,11 +635,16 @@ Partial Public Structure Impedance
     ''' <param name="zLoad">Specifies the impedance of the load, in
     ''' ohms.</param>
     ''' <returns>The angle of reflection, in radians.</returns>
+    ''' <exception cref="System.ArgumentOutOfRangeException">When
+    ''' <paramref name="z0"/> is not a positive, non-zero value or is
+    ''' infinite.</exception>
+    ''' <remarks>
     ''' Results range from PI to almost -PI. Inductive reactances return
     ''' positive values that rotate CCW, and capacitive reactances return
     ''' negative values that rotate CW, from the open circuit point.
     ''' A plot at the matched center point has no reflection, but returns 0.0.
     ''' The coefficient is a scalar value with no dimension.
+    ''' </remarks>
     Public Shared Function AngleOfReflection(
         ByVal z0 As System.Double, ByVal zLoad As Impedance) _
         As System.Double
@@ -656,7 +668,8 @@ Partial Public Structure Impedance
     ''' Returns the angle of reflection, in degrees, when this instance is
     ''' connected to a source with the specified characteristic impedance.
     ''' </summary>
-    ''' <param name="z0">Specifies the characteristic impedance.</param>
+    ''' <param name="z0">Specifies the characteristic impedance, in
+    ''' ohms.</param>
     ''' <returns>
     ''' The angle of reflection, in degrees, when this instance is
     ''' connected to a source with the specified characteristic impedance.
@@ -670,7 +683,8 @@ Partial Public Structure Impedance
     ''' negative values that rotate CW, from the open circuit point.
     ''' A plot at the matched center point has no reflection, but returns 0.0.
     ''' A standard Smith Chart is marked with the angles shown in degrees.
-    ''' The coefficient is a scalar value with no dimension.</remarks>
+    ''' The coefficient is a scalar value with no dimension.
+    ''' </remarks>
     Public Function AngleOfReflection(ByVal z0 As System.Double) _
         As System.Double
 
@@ -702,7 +716,8 @@ Partial Public Structure Impedance
     ''' <paramref name="zLoad"/> <c>Impedance</c> is connected to the specified
     ''' characteristic impedance.
     ''' </summary>
-    ''' <param name="z0">Specifies the characteristic impedance.</param>
+    ''' <param name="z0">Specifies the characteristic impedance, in
+    ''' ohms.</param>
     ''' <param name="zLoad">Specifies the impedance of the load, in
     ''' ohms.</param>
     ''' <returns>The angle of transmission.</returns>
@@ -759,7 +774,8 @@ Partial Public Structure Impedance
     ''' Returns the angle of transmission, in radians, when this instance is
     ''' connected to a source with the specified characteristic impedance.
     ''' </summary>
-    ''' <param name="z0">Specifies the characteristic impedance.</param>
+    ''' <param name="z0">Specifies the characteristic impedance, in
+    ''' ohms.</param>
     ''' <returns>The angle of transmission.</returns>
     ''' <exception cref="System.ArgumentOutOfRangeException">When
     ''' <paramref name="z0"/> is not a positive, non-zero value or is
@@ -788,7 +804,8 @@ Partial Public Structure Impedance
     ''' <paramref name="zLoad"/> <c>Impedance</c> is connected to the specified
     ''' characteristic impedance.
     ''' </summary>
-    ''' <param name="z0">Specifies the characteristic impedance.</param>
+    ''' <param name="z0">Specifies the characteristic impedance, in
+    ''' ohms.</param>
     ''' <param name="zLoad">Specifies the impedance of the load, in
     ''' ohms.</param>
     ''' <returns>The angle of transmission.</returns>
@@ -818,7 +835,8 @@ Partial Public Structure Impedance
     ''' Returns the angle of transmission, in degrees, when this instance is
     ''' connected to a source with the specified characteristic impedance.
     ''' </summary>
-    ''' <param name="z0">Specifies the characteristic impedance.</param>
+    ''' <param name="z0">Specifies the characteristic impedance, in
+    ''' ohms.</param>
     ''' <returns>The angle of transmission.</returns>
     ''' <exception cref="System.ArgumentOutOfRangeException">When
     ''' <paramref name="z0"/> is not a positive, non-zero value or is
@@ -876,7 +894,8 @@ Partial Public Structure Impedance
     ''' Returns the complex voltage standing wave ratio when this instance is
     ''' connected to the specified <paramref name="zSource"/> <c>Impedance</c>.
     ''' </summary>
-    ''' <param name="zSource">Specifies the impedance of the source.</param>
+    ''' <param name="zSource">Specifies the impedance of the source, in
+    ''' ohms.</param>
     ''' <returns>The complex voltage standing wave ratio.</returns>
     ''' <remarks>The coefficient is a scalar value with no dimension.</remarks>
     Public Function VSWR(ByVal zSource As Impedance) _
@@ -886,10 +905,11 @@ Partial Public Structure Impedance
     End Function ' VoltageReflectionComplexCoefficient
 
     ''' <summary>
-    ''' Calculates the voltage standing wave ratio when this instance is
+    ''' Returns the voltage standing wave ratio when this instance is
     ''' connected to the specified characteristic impedance.
     ''' </summary>
-    ''' <param name="z0">Specifies the characteristic impedance, in ohms.</param>
+    ''' <param name="z0">Specifies the characteristic impedance, in
+    ''' ohms.</param>
     ''' <returns>The voltage standing wave ratio for the current instance at the
     ''' specified characteristic impedance.</returns>
     ''' <exception cref="System.ArgumentOutOfRangeException">
