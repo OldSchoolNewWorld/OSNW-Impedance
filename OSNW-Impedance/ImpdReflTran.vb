@@ -693,25 +693,25 @@ Partial Public Structure Impedance
 
 #Region "Angle of Transmission"
 
-
-    '    XXXXX FILL In MORE COMMENTS. XXXXX
-
-    'NEED/WANT TO ADD MULTIPLE VERSIONS AS DONE WITH VoltageReflectionComplexCoefficient
-    'And PowerReflectionComplexCoefficient?
-
     ' ARE THE AngleOfReflection AND AngleOfTransmission ROUTINES UNIQUE, OR
     ' SHARED, FOR VOLTAGE AND POWER? CURRENT?
     ' IS THERE A MATHEMATICAL FORMULA TO USE THAT MAY BE BETTER THAN DOING THE GEOMETRY?
 
     ''' <summary>
-    ''' xxxxxxxxxx
+    ''' Returns the angle of transmission, in radians, when the specified
+    ''' <paramref name="zLoad"/> <c>Impedance</c> is connected to the specified
+    ''' characteristic impedance.
     ''' </summary>
-    ''' <returns>xxxxxxxxxx</returns>
+    ''' <param name="z0">Specifies the characteristic impedance.</param>
+    ''' <param name="zLoad">Specifies the impedance of the load, in
+    ''' ohms.</param>
+    ''' <returns>The angle of transmission.</returns>
     ''' <exception cref="System.ArgumentOutOfRangeException">When
     ''' <paramref name="z0"/> is not a positive, non-zero value or is
     ''' infinite.</exception>
     ''' <remarks>The coefficient is a scalar value with no dimension.</remarks>
-    Public Function AngleOfTransmissionRadians(ByVal z0 As System.Double) As System.Double
+    Public Shared Function AngleOfTransmissionRadians(
+        ByVal z0 As System.Double, ByVal zLoad As Impedance) As System.Double
 
         ' Input checking.
         If z0 <= 0.0 Then
@@ -729,7 +729,7 @@ Partial Public Structure Impedance
 
         Dim PlotX As System.Double
         Dim PlotY As System.Double
-        If Not MainCirc.GetPlotXY(Me.Resistance, Me.Reactance,
+        If Not MainCirc.GetPlotXY(zLoad.Resistance, zLoad.Reactance,
                                   PlotX, PlotY) Then
             Throw New ApplicationException(MSGFGPXPY)
         End If
@@ -756,15 +756,17 @@ Partial Public Structure Impedance
     End Function ' AngleOfTransmissionRadians
 
     ''' <summary>
-    ''' xxxxxxxxxx
+    ''' Returns the angle of transmission, in radians, when this instance is
+    ''' connected to a source with the specified characteristic impedance.
     ''' </summary>
-    ''' <returns>xxxxxxxxxx</returns>
+    ''' <param name="z0">Specifies the characteristic impedance.</param>
+    ''' <returns>The angle of transmission.</returns>
     ''' <exception cref="System.ArgumentOutOfRangeException">When
     ''' <paramref name="z0"/> is not a positive, non-zero value or is
     ''' infinite.</exception>
-    ''' <remarks>An original Smith Chart is marked with the angles shown in
-    ''' degrees.The coefficient is a scalar value with no dimension.</remarks>
-    Public Function AngleOfTransmission(ByVal z0 As System.Double) As System.Double
+    ''' <remarks>The coefficient is a scalar value with no dimension.</remarks>
+    Public Function AngleOfTransmissionRadians(ByVal z0 As System.Double) _
+        As System.Double
 
         ' Input checking.
         If z0 <= 0.0 Then
@@ -777,7 +779,66 @@ Partial Public Structure Impedance
             Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHIV)
         End If
 
-        Return Me.AngleOfTransmissionRadians(z0) * 180.0 / PI
+        Return AngleOfTransmissionRadians(z0, Me)
+
+    End Function ' AngleOfTransmissionRadians
+
+    ''' <summary>
+    ''' Returns the angle of transmission, in degrees, when the specified
+    ''' <paramref name="zLoad"/> <c>Impedance</c> is connected to the specified
+    ''' characteristic impedance.
+    ''' </summary>
+    ''' <param name="z0">Specifies the characteristic impedance.</param>
+    ''' <param name="zLoad">Specifies the impedance of the load, in
+    ''' ohms.</param>
+    ''' <returns>The angle of transmission.</returns>
+    ''' <exception cref="System.ArgumentOutOfRangeException">When
+    ''' <paramref name="z0"/> is not a positive, non-zero value or is
+    ''' infinite.</exception>
+    ''' <remarks>The coefficient is a scalar value with no dimension.</remarks>
+    Public Shared Function AngleOfTransmission(
+        ByVal z0 As System.Double, ByVal zLoad As Impedance) As System.Double
+
+        ' Input checking.
+        If z0 <= 0.0 Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGVMBGTZ)
+        ElseIf Double.IsInfinity(z0) Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHIV)
+        End If
+
+        Return AngleOfTransmissionRadians(z0, zLoad) * 180.0 / PI
+
+    End Function ' AngleOfTransmission
+
+    ''' <summary>
+    ''' Returns the angle of transmission, in degrees, when this instance is
+    ''' connected to a source with the specified characteristic impedance.
+    ''' </summary>
+    ''' <param name="z0">Specifies the characteristic impedance.</param>
+    ''' <returns>The angle of transmission.</returns>
+    ''' <exception cref="System.ArgumentOutOfRangeException">When
+    ''' <paramref name="z0"/> is not a positive, non-zero value or is
+    ''' infinite.</exception>
+    ''' <remarks>The coefficient is a scalar value with no dimension.</remarks>
+    Public Function AngleOfTransmission(ByVal z0 As System.Double) _
+        As System.Double
+
+        ' Input checking.
+        If z0 <= 0.0 Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGVMBGTZ)
+        ElseIf Double.IsInfinity(z0) Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHIV)
+        End If
+
+        Return AngleOfTransmissionRadians(z0, Me) * 180.0 / PI
 
     End Function ' AngleOfTransmission
 
