@@ -3,6 +3,10 @@ Option Strict On
 Option Compare Binary
 Option Infer Off
 
+' This document contains extensions to the System.Numerics.Complex structure.
+' The items here are related to parsing strings that have the standard form(s)
+' used for complex numbers.
+
 Partial Public Module ComplexExtensions
 
 #Region "Parsing Utils"

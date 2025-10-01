@@ -3,6 +3,8 @@ Option Strict On
 Option Compare Binary
 Option Infer Off
 
+' This document contains items related to reflections.
+
 Partial Public Structure Impedance
 
 #Region "Voltage Reflection"

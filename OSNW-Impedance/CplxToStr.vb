@@ -3,6 +3,10 @@ Option Strict On
 Option Compare Binary
 Option Infer Off
 
+' This document contains extensions to the System.Numerics.Complex structure.
+' The items here are related to alternative implemenations of ToString() that
+' produce output in standard form(s) used for complex numbers.
+
 Imports System.Diagnostics.CodeAnalysis
 Imports System.Runtime.CompilerServices
 

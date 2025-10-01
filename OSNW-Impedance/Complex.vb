@@ -3,6 +3,10 @@ Option Strict On
 Option Compare Binary
 Option Infer Off
 
+' This document contains extensions to the System.Numerics.Complex structure.
+' The items here provide support for generating and reading complex numbers, as
+' standard form strings.
+
 Imports System.Globalization
 
 ' REF: System.Numerics.Complex struct
@@ -33,7 +37,7 @@ Imports System.Globalization
 ''' <summary>
 ''' This module contains extension methods for the
 ''' <see cref="System.Numerics.Complex"/> structure, providing additional
-''' functionality such as parsing and standard form string representation.
+''' functionality such as standard form string representation and parsing.
 ''' </summary>
 ''' <remarks>
 ''' The module is designed to extend the <see cref="System.Numerics.Complex"/>
@@ -64,7 +68,8 @@ Public Module ComplexExtensions
     ''' This character is used in some cultures, such as French, as a thousands
     ''' separator. It is defined as Unicode character U+202F.
     ''' </remarks>
-    Public Const CHARNNBSP As String = ChrW(&H202F)
+    Public Const CHARNNBSP As String =
+        Microsoft.VisualBasic.Strings.ChrW(&H202F)
 
     ' This is set as Public to allow for access by unit tests.
     ' REF: Decimal separator
@@ -77,7 +82,8 @@ Public Module ComplexExtensions
     ''' This character is used in some cultures, such as Arabic and Persian, as
     ''' a decimal separator. It is defined as Unicode character U+066B.
     ''' </remarks>
-    Public Const CHARARABCOMMA66B As String = ChrW(&H66B)
+    Public Const CHARARABCOMMA66B As String =
+        Microsoft.VisualBasic.Strings.ChrW(&H66B)
 
     '' This is set as Public to allow for access by unit tests.
     '' CHARARABCOMMA66C failed in tests, but CHARARABCOMMA66B worked.
@@ -89,7 +95,8 @@ Public Module ComplexExtensions
     '''' This character is used in some cultures, such as Arabic and Persian, as
     '''' a decimal separator. It is defined as Unicode character U+066C.
     '''' </remarks>
-    'Public Const CHARARABCOMMA66C As String = ChrW(&H66C)
+    'Public Const CHARARABCOMMA66C As String =
+    '    Microsoft.VisualBasic.Strings.ChrW(&H66C)
 
     ' private const NumberStyles DefaultNumberStyle = NumberStyles.Float | NumberStyles.AllowThousands;
     ''' <summary>
@@ -112,7 +119,8 @@ Public Module ComplexExtensions
     '        StandardizationStyles.EnforceSpacing
     'Private Const InvalidStandardizationStyles As StandardizationStyles = Not ValidStandardizationStyles
 
-    Private Const InvalidStandardizationStyles As StandardizationStyles = Not (
+    Private Const InvalidStandardizationStyles _
+        As ComplexExtensions.StandardizationStyles = Not (
         StandardizationStyles.AiB Or StandardizationStyles.Open Or
         StandardizationStyles.EnforceSequence Or
         StandardizationStyles.EnforceSpacing)

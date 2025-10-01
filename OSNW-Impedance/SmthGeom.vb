@@ -2,7 +2,8 @@
 Option Strict On
 Option Compare Binary
 Option Infer Off
-Imports System.Security.Cryptography.X509Certificates
+
+' This document contains items related to the geometry of a Smith Chart.
 
 ' REF: Mathematical Construction and Properties of the Smith Chart
 ' https://www.allaboutcircuits.com/technical-articles/mathematical-construction-and-properties-of-the-smith-chart/
