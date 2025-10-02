@@ -26,21 +26,19 @@ Namespace ReflectionTests
         <InlineData(1.0, 1 / 2.0, -1 / 3.0, 0.3911)> ' N: Inside G=Y0 circle, below line
         <InlineData(1.0, 0.2, 1.4, 0.8745)> ' O: In the top remainder.
         <InlineData(1.0, 0.4, -0.8, 0.62)> ' P: In the bottom remainder.
-        <InlineData(1.0, 999, 999, 1.0)> ' Q: Outside of main circle. Invalid.
         Public Sub VoltageReflectionCoefficient_GoodInput_Succeeds(z0 As Double, r As Double, x As Double, expectVRC As Double)
 
-            '            Const Precision As Double = 0.0005
-            Const Precision As Double = 0.005
+            Const Precision As Double = 0.0005
 
             Dim Impd As New Impedance(r, x)
             Dim AnsVRC As Double = Impd.VoltageReflectionCoefficient(z0)
             Assert.Equal(expectVRC, AnsVRC, Precision)
-
         End Sub
 
         '<InlineData(     Z0,        R,       X,    VRC)> ' Model
         <Theory>
         <InlineData(1.0, INF, 0.0000, 1.0)> ' C: At the open circuit point on the right.
+        <InlineData(1.0, -0.0345, 0.4138, 1.0)> ' Q: Outside of main circle. Invalid.
         <InlineData(1.0, -2.0, 999, 999)> ' R: NormR<=0. Invalid.
         Public Sub VoltageReflectionCoefficient_BadInput_Fails1(z0 As Double, r As Double, x As Double, expectVRC As Double)
             Const Precision As Double = 0.0005
@@ -55,6 +53,7 @@ Namespace ReflectionTests
         '<InlineData(     Z0,        R,       X,    VRC)> ' Model
         <Theory>
         <InlineData(1.0, INF, 0.0000, 1.0)> ' C: At the open circuit point on the right.
+        <InlineData(1.0, -0.0345, 0.4138, 1.0)> ' Q: Outside of main circle. Invalid.
         <InlineData(1.0, -2.0, 999, 999)> ' R: NormR<=0. Invalid.
         Public Sub VoltageReflectionCoefficient_BadInput_Fails2(z0 As Double, r As Double, x As Double, expectVRC As Double)
             Const Precision As Double = 0.0005

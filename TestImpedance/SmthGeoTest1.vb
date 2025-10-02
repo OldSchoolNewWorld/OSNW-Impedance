@@ -509,6 +509,11 @@ Namespace GeometryTests
 
     Public Class TestGetZFromPlot
 
+        Const INF As Double = Double.PositiveInfinity
+
+        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 0.0000, 2.0, 5.0)> ' A: At the short circuit point. Omit - covered by B.
+        '<InlineData(4.0, 5.0, 2.0, 1.0, -0.0345, 0.4138, 2.5, 6.5)> ' Q: Outside of main circle. Invalid.
+        '<InlineData(4.0, 5.0, 2.0, 1.0, INF, 0.0000, 6.0, 5.0)> ' C: At the open circuit point on the right.
         '<InlineData(ChartX, ChartY, ChartRad,      Z0,        R,       X,  PlotX,  PlotY)> ' Model
         <Theory>
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 1 / 2.0, 2.8, 6.6)> ' B: Anywhere else on the perimeter. R=0.0.
@@ -516,7 +521,7 @@ Namespace GeometryTests
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 1.0, 4.4, 5.8)> ' E: On R=Z0 circle, above resonance line. Only needs reactance.
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, -2.0, 5.0, 4.0)> ' F: On R=Z0 circle, below resonance line. Only needs reactance.
         <InlineData(4.0, 5.0, 2.0, 1.0, 2.0, 1 / 2.0, 4.7027, 5.2162)> ' G1: Inside R=Z0 circle, above resonance line.
-        <InlineData(4.0, 5.0, 2.0, 50.0, 100.0, 25.0, 4.7027, 5.2162)> ' G2: Inside R=Z0 circle, above resonance line, Z0=50
+        <InlineData(4.0, 5.0, 2.0, 50.0, 100.0, 25.0, 4.7027, 5.2162)> ' G2: Inside R=Z0 circle, above resonance line. Z0=50
         <InlineData(4.0, 5.0, 2.0, 1.0, 3.0, 0.0000, 5.0, 5.0)> ' H: Inside R=Z0 circle, on line
         <InlineData(4.0, 5.0, 2.0, 1.0, 2.0, -2.0, 5.077, 4.3846)> ' I: Inside R=Z0 circle, below resonance line.
         <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, 1 / 2.0, 3.6, 5.8)> ' J: On G=Y0 circle, above resonance line. Only needs reactance.

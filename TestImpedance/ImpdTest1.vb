@@ -50,7 +50,7 @@ End Class
 '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/2.0,  -1/3.0, 1.3846,  0.9231, 3.4588, 4.4353,   4.0/3,  6.0000,  0.8387,  2.2500,  0.7822)> ' N: Inside G=Y0 circle, below line
 '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.2000,  1.4000, 0.1000, -0.7000, 4.5882, 6.6471,   5.0/3,  1.4286,  1.8182,  2.8571,  1.7489)> ' O: In the top remainder.
 '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.4000, -0.8000, 0.5000,  1.0000, 3.8462, 3.7692,  1.4286,  2.5000,   4.0/3,  2.0000,  1.2404)> ' P: In the bottom remainder.
-'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,      999,     999,    999,     999,    2.5,    6.5, RadiusR, RadiusX, RadiusG, RadiusB, RadiusV)> ' Q: Outside of main circle. Invalid.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,  -0.0345,  0.4138,    999,     999,    2.5,    6.5, RadiusR, RadiusX, RadiusG, RadiusB, RadiusV)> ' Q: Outside of main circle. Invalid.
 '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,  -2.0000,     999,    999,     999,  GridX,  GridY, RadiusR, RadiusX, RadiusG, RadiusB, RadiusV)> ' R: NormR<=0. Invalid.
 
 '<InlineData(ChartX, ChartY, ChartRad,      Z0,        R,       X,    VRC,    PRC,    VTC,    PTC,       AOR,      AOT,    VSWR)> ' Model
