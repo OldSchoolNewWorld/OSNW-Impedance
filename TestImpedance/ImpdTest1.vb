@@ -56,10 +56,10 @@ End Class
 '<InlineData(ChartX, ChartY, ChartRad,      Z0,        R,       X,    VRC,    PRC,    VTC,    PTC,       AOR,      AOT,    VSWR)> ' Model
 '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,        R,       X,    VRC,    PRC,    VTC,    PTC,       AOR,      AOT,    VSWR)> ' Base circle
 '<Theory>
-'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.0000,  0.0000,    999, 1.0000, 0.0000, 0.0000,       INF,   2.0000,     INF)> ' A: At the short circuit point. Omit - covered by B.
-'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.0000,   1/2.0,    999, 1.0000, 0.8944, 0.0000,       INF,      2.8,     INF)> ' B: Anywhere else on the perimeter. R=0.0.
-'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,      INF,  0.0000,    999,    999,    999,    999,       INF,   6.0000,     INF)> ' C: At the open circuit point on the right.
-'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   1.0000,  0.0000, 1.0000, 0.0000, 1.0000, 1.0000,    0.0000,   0.0000,  1.0000)> ' D: At the center.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.0000,  0.0000, 1.0000, 1.0000, 0.0000, 0.0000,       INF,   2.0000,     INF)> ' A: At the short circuit point. Omit - covered by B.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.0000,   1/2.0, 1.0000, 1.0000, 0.8944, 0.0000,       INF,      2.8,     INF)> ' B: Anywhere else on the perimeter. R=0.0.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,      INF,  0.0000, 1.0000,    999,    999,    999,       INF,   6.0000,     INF)> ' C: At the open circuit point on the right.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   1.0000,  0.0000, 0.0000, 0.0000, 1.0000, 1.0000,    0.0000,   0.0000,  1.0000)> ' D: At the center.
 '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   1.0000,  1.0000, 0.4472, 0.2000, 1.2649,  0.800,   63.4349,  18.4350,  2.6180)> ' E: On R=Z0 circle, above resonance line. Only needs reactance.
 '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   1.0000, -2.0000, 0.7071, 0.5000, 1.5811, 0.5000,  -45.0000, -18.4350,  5.8284)> ' F: On R=Z0 circle, below resonance line. Only needs reactance.
 '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   2.0000,   1/2.0, 0.3676, 0.1351, 1.3557, 0.8649,   17.1027,   4.5739,  2.1626)> ' G1: Inside R=Z0 circle, above resonance line.
@@ -74,7 +74,7 @@ End Class
 '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/2.0,  -1/3.0, 0.3911, 0.1529, 0.7822, 0.8471, -133.7811, -21.1613,  2.2845)> ' N: Inside G=Y0 circle, below line
 '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.2000,  1.4000, 0.8745, 0.7647, 1.5340, 0.2353,  70.34617,  32.4712, 14.9330)> ' O: In the top remainder.
 '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.4000, -0.8000, 0.6200, 0.3846, 1.1094, 0.6154,  -97.1250, -33.6901,  4.2656)> ' P: In the bottom remainder.
-'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,      999,     999,    999,    999,    999,    999,       999,      2.5,     999)> ' Q: Outside of main circle. Invalid.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,      999,     999, 1.0000,    999,    999,    999,       999,      2.5,     999)> ' Q: Outside of main circle. Invalid.
 '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,  -2.0000,     999,    999,    999,    999,    999,       999,    GridX,     999)> ' R: NormR<=0. Invalid.
 
 #End Region ' "Test Data"

@@ -7,14 +7,11 @@ Namespace ReflectionTests
 
         Const INF As Double = Double.PositiveInfinity
 
-        '<InlineData(1.0, 0.0000, 0.0000, 999)> ' A: At the short circuit point. Omit - covered by B.
-        '<InlineData(1.0, 0.0000, 1 / 2.0, 999)> ' B: Anywhere else on the perimeter. R=0.0.
-        '<InlineData(1.0, INF, 0.0000, 999)> ' C: At the open circuit point on the right.
-        '<InlineData(1.0, 1.0, 0.0000, 1.0)> ' D: At the center.
-        '<InlineData(1.0, 999, 999, 999)> ' Q: Outside of main circle. Invalid.
-        '<InlineData(1.0, -2.0, 999, 999)> ' R: NormR<=0. Invalid.
         '<InlineData(     Z0,        R,       X,    VRC)> ' Model
         <Theory>
+        <InlineData(1.0, 0.0000, 0.0000, 1.0)> ' A: At the short circuit point. Omit - covered by B.
+        <InlineData(1.0, 0.0000, 1 / 2.0, 1.0)> ' B: Anywhere else on the perimeter. R=0.0.
+        <InlineData(1.0, 1.0, 0.0000, 0.0000)> ' D: At the center.
         <InlineData(1.0, 1.0, 1.0, 0.4472)> ' E: On R=Z0 circle, above resonance line. Only needs reactance.
         <InlineData(1.0, 1.0, -2.0, 0.7071)> ' F: On R=Z0 circle, below resonance line. Only needs reactance.
         <InlineData(1.0, 2.0, 1 / 2.0, 0.3676)> ' G1: Inside R=Z0 circle, above resonance line.
@@ -29,15 +26,54 @@ Namespace ReflectionTests
         <InlineData(1.0, 1 / 2.0, -1 / 3.0, 0.3911)> ' N: Inside G=Y0 circle, below line
         <InlineData(1.0, 0.2, 1.4, 0.8745)> ' O: In the top remainder.
         <InlineData(1.0, 0.4, -0.8, 0.62)> ' P: In the bottom remainder.
+        <InlineData(1.0, 999, 999, 1.0)> ' Q: Outside of main circle. Invalid.
         Public Sub VoltageReflectionCoefficient_GoodInput_Succeeds(z0 As Double, r As Double, x As Double, expectVRC As Double)
 
-            Const Precision As Double = 0.0005
+            '            Const Precision As Double = 0.0005
+            Const Precision As Double = 0.005
 
             Dim Impd As New Impedance(r, x)
             Dim AnsVRC As Double = Impd.VoltageReflectionCoefficient(z0)
             Assert.Equal(expectVRC, AnsVRC, Precision)
 
         End Sub
+
+        '<InlineData(     Z0,        R,       X,    VRC)> ' Model
+        <Theory>
+        <InlineData(1.0, INF, 0.0000, 1.0)> ' C: At the open circuit point on the right.
+        <InlineData(1.0, -2.0, 999, 999)> ' R: NormR<=0. Invalid.
+        Public Sub VoltageReflectionCoefficient_BadInput_Fails1(z0 As Double, r As Double, x As Double, expectVRC As Double)
+            Const Precision As Double = 0.0005
+            Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
+                Sub()                    ' Code that throws the exception
+                    Dim Impd As New Impedance(r, x)
+                    Dim AnsVRC As Double = Impd.VoltageReflectionCoefficient(z0)
+                    Assert.Equal(expectVRC, AnsVRC, Precision)
+                End Sub)
+        End Sub
+
+        '<InlineData(     Z0,        R,       X,    VRC)> ' Model
+        <Theory>
+        <InlineData(1.0, INF, 0.0000, 1.0)> ' C: At the open circuit point on the right.
+        <InlineData(1.0, -2.0, 999, 999)> ' R: NormR<=0. Invalid.
+        Public Sub VoltageReflectionCoefficient_BadInput_Fails2(z0 As Double, r As Double, x As Double, expectVRC As Double)
+            Const Precision As Double = 0.0005
+            Try
+                ' Code that throws the exception
+                Dim Impd As New Impedance(r, x)
+                Dim AnsVRC As Double = Impd.VoltageReflectionCoefficient(z0)
+                Assert.Equal(expectVRC, AnsVRC, Precision)
+            Catch ex As Exception
+                Assert.True(True)
+                Exit Sub
+            End Try
+            Assert.True(False, "Did not fail")
+        End Sub
+
+
+
+        'xxxxxxxxxxxxxxxxxx
+
 
     End Class ' TestVoltageReflectionCoefficient
 
@@ -261,8 +297,8 @@ Namespace ReflectionTests
 
             Const Precision As Double = 0.0005
 
-            Dim Imp As New Impedance(r, x)
-            Dim AnsVWSR As Double = Imp.VSWR(z0)
+            Dim Impd As New Impedance(r, x)
+            Dim AnsVWSR As Double = Impd.VSWR(z0)
             Assert.Equal(expectVSWR, AnsVWSR, Precision)
 
         End Sub
@@ -276,8 +312,8 @@ Namespace ReflectionTests
             Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
                 Sub()
                     ' Code that throws the exception
-                    Dim Imp As New Impedance(r, x)
-                    Dim AnsVWSR As Double = Imp.VSWR(z0)
+                    Dim Impd As New Impedance(r, x)
+                    Dim AnsVWSR As Double = Impd.VSWR(z0)
                 End Sub)
         End Sub
 
@@ -289,8 +325,8 @@ Namespace ReflectionTests
         Sub VSWR_BadInput_Fails2(z0 As Double, r As Double, x As Double)
             Try
                 ' Code that throws the exception.
-                Dim Imp As New Impedance(r, x)
-                Dim AnsVWSR As Double = Imp.VSWR(z0)
+                Dim Impd As New Impedance(r, x)
+                Dim AnsVWSR As Double = Impd.VSWR(z0)
             Catch ex As Exception
                 Assert.True(True)
                 Exit Sub

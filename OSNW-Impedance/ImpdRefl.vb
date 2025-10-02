@@ -33,8 +33,8 @@ Partial Public Structure Impedance
         ' https://www.allaboutcircuits.com/technical-articles/mathematical-construction-and-properties-of-the-smith-chart/
         ' has mostly the same but with the numerator shown as "Zsource - Zload".
 
-        Dim LoadCplx As System.Numerics.Complex = zLoad.ToComplex
         Dim SourceCplx As System.Numerics.Complex = zSource.ToComplex
+        Dim LoadCplx As System.Numerics.Complex = zLoad.ToComplex
         Return (LoadCplx - SourceCplx) / (LoadCplx + SourceCplx)
 
     End Function ' VoltageReflectionComplexCoefficient
