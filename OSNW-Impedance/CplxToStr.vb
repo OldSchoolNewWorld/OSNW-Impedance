@@ -113,8 +113,8 @@ Partial Public Module ComplexExtensions
         ByVal complex As System.Numerics.Complex,
         ByVal standardizationStyle As StandardizationStyles,
         <StringSyntax(
-            System.Diagnostics.CodeAnalysis.StringSyntaxAttribute.NumericFormat)>
-            ByVal format As System.String,
+          System.Diagnostics.CodeAnalysis.StringSyntaxAttribute.NumericFormat)>
+          ByVal format As System.String,
         ByVal provider As System.IFormatProvider) _
         As System.String
 

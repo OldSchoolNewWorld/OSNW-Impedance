@@ -338,13 +338,13 @@ Partial Public Structure Impedance
             FixupZ = New Impedance(0.0, aTransformation.Value2)
             WorkZ = Impedance.AddSeriesImpedance(WorkZ, FixupZ)
 
-            Dim NearlyZero As System.Double = z0 * 0.000001
             If Not Impedance.EqualEnough(WorkZ.Resistance, z0) Then
                 'Dim CaughtBy As System.Reflection.MethodBase =
                 '    System.Reflection.MethodBase.GetCurrentMethod
                 Throw New System.ApplicationException(
                     "Resistance did not reach target.")
             End If
+            Dim NearlyZero As System.Double = z0 * 0.000001
             If Not Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero) Then
                 'Dim CaughtBy As System.Reflection.MethodBase =
                 '    System.Reflection.MethodBase.GetCurrentMethod

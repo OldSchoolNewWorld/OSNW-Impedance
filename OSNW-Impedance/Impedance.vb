@@ -1,14 +1,5 @@
 ﻿'TODO:
-' Add routines for VoltageTransmissionCoefficient.
-' Can a tuning design be selected based solely on an impedance, without consideration
-' of capacitance, inductance, or frequency?
-'   It would not find capacitance/inductance values but maybe it would have the
-'   ability to determine the reactance values needed, which could then be used
-'   to select the component values for a specified frequency.
 ' Reject infinity for admittance and susceptance?
-' Finish AddShuntImpedance() and AddParallelAdmittance() when Admittance is
-'   accessible.
-' Add AddSeriesAdmittance() when Admittance is accessible?????
 ' Add De/Serialization to Admittance?????
 '   "the strings should be generated and parsed by using the conventions of the invariant culture."
 '   REF: Serialize and deserialize numeric data
@@ -17,7 +8,7 @@
 ' Allow both i and j to match the .NET result? Add tests for both i and j.
 '   Wait, where does .NET indicate anything about allowing "j" for Complex aside from "Format a complex
 '     number"? Complex only has ToString() and TryFormat() - nothing about standard form.
-' Provide for conversion to arbtitrary impedances (Rtarget, Xtarget) vs. only characteristic impedances?
+' Provide for matching to arbtitrary impedances (Rtarget, Xtarget) vs. only characteristic impedances?
 
 Option Explicit On
 Option Strict On
@@ -89,17 +80,20 @@ Public Structure Impedance
     ' inherited. Given that, Impedance is created as a structure which uses
     ' familiar terminology but relies on Complex for most of its work.
 
-    Const PI As System.Double = System.Double.Pi
-    Const HALFPI As System.Double = System.Double.Pi / 2.0
+    Public Const PI As System.Double = System.Double.Pi
+    Public Const HALFPI As System.Double = System.Double.Pi / 2.0
 
-    Const MSGCHNV As System.String = "Cannot have a negative value."
-    Const MSGCHZV As System.String = "Cannot have a zero value."
-    Const MSGCHIV As System.String = "Cannot have an infinite value."
-    Const MSGVMBGTZ As System.String = "Must be a positive, non-zero value."
-    Const MSGVMBGTE1 As System.String = "Must be greater than or equal to 1."
-    Const MSGNOSTR As System.String = "Cannot be Null/Nothing."
-    Const MSGIIC As System.String = "Invalid intersection count."
-    Const MSGFGPXPY As System.String = "Failure getting PlotX, PlotY."
+    Public Const MSGCHNV As System.String = "Cannot have a negative value."
+    Public Const MSGCHZV As System.String = "Cannot have a zero value."
+    Public Const MSGCHIV As System.String = "Cannot have an infinite value."
+    Public Const MSGVMBGTZ As System.String =
+        "Must be a positive, non-zero value."
+    Public Const MSGVMBGTE1 As System.String =
+        "Must be greater than or equal to 1."
+    Public Const MSGNOSTR As System.String = "Cannot be Null/Nothing."
+    Public Const MSGIIC As System.String = "Invalid intersection count."
+    Public Const MSGFGPXPY As System.String = "Failure getting PlotX, PlotY."
+    Public Const MSGUEEZ As System.String = MSGCHZV & " Use EqualEnoughZero()."
 
 #Region "Fields and Properties"
 
@@ -107,11 +101,6 @@ Public Structure Impedance
     ''' Gets the resistance (R) component, in ohms, of the current instance.
     ''' </summary>
     Private ReadOnly m_Resistance As System.Double
-
-    ''' <summary>
-    ''' Gets the reactance (X) component, in ohms, of the current instance.
-    ''' </summary>
-    Private ReadOnly m_Reactance As System.Double
 
     ''' <summary>
     ''' Gets the resistance (R) component, in ohms, of the current instance.
@@ -122,6 +111,11 @@ Public Structure Impedance
             Return Me.m_Resistance
         End Get
     End Property
+
+    ''' <summary>
+    ''' Gets the reactance (X) component, in ohms, of the current instance.
+    ''' </summary>
+    Private ReadOnly m_Reactance As System.Double
 
     ''' <summary>
     ''' Gets the reactance (X) component, in ohms, of the current instance.
@@ -209,20 +203,17 @@ Public Structure Impedance
         Const DIFFFACTOR As System.Double = 0.001
 
         ' Input checking.
-        Const ZeroMessage As System.String = MSGCHZV & " Use EqualEnoughZero()."
         If refVal.Equals(0.0) Then
             'Dim CaughtBy As System.Reflection.MethodBase =
             '    System.Reflection.MethodBase.GetCurrentMethod
             Throw New System.ArgumentOutOfRangeException(
-                NameOf(refVal), ZeroMessage)
-
+                NameOf(refVal), MSGUEEZ)
         End If
         If otherVal.Equals(0.0) Then
             'Dim CaughtBy As System.Reflection.MethodBase =
             '    System.Reflection.MethodBase.GetCurrentMethod
             Throw New System.ArgumentOutOfRangeException(
-                NameOf(otherVal), ZeroMessage)
-
+                NameOf(otherVal), MSGUEEZ)
         End If
 
         Return System.Math.Abs(otherVal - refVal) <
@@ -893,10 +884,10 @@ Public Structure Impedance
         ' considering whether special cases may exist where some of the
         ' rejections may need to be allowed. Work with pure reactances would
         ' need to allow for R=0.
-        If resistance <0.0 OrElse Double.IsInfinity(resistance) Then
+        If resistance < 0.0 OrElse Double.IsInfinity(resistance) Then
             'Dim CaughtBy As System.Reflection.MethodBase =
-                '    System.Reflection.MethodBase.GetCurrentMethod
-                Throw New System.ArgumentOutOfRangeException(NameOf(resistance))
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(NameOf(resistance))
         End If
         'If resistance < 0.0 Then
         '    Dim CaughtBy As System.Reflection.MethodBase =

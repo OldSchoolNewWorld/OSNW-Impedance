@@ -10,9 +10,10 @@ Partial Public Structure Impedance
 #Region "Voltage Reflection"
 
     ''' <summary>
-    ''' Returns the complex voltage reflection coefficient (Gamma) when the
+    ''' Calculates the complex voltage reflection coefficient (Gamma) when the
     ''' specified <paramref name="zLoad"/> <c>Impedance</c> is connected to the
-    ''' specified <paramref name="zSource"/> <c>Impedance</c>.
+    ''' specified <paramref name="zSource"/> <c>Impedance</c> and returns the
+    ''' result.
     ''' </summary>
     ''' <param name="zSource">Specifies the impedance of the source, in
     ''' ohms.</param>
@@ -39,9 +40,9 @@ Partial Public Structure Impedance
     End Function ' VoltageReflectionComplexCoefficient
 
     ''' <summary>
-    ''' Returns the complex voltage reflection coefficient (Gamma) when this
+    ''' Calculates the complex voltage reflection coefficient (Gamma) when this
     ''' instance is connected to the specified
-    ''' <paramref name="zSource"/> <c>Impedance</c>.
+    ''' <paramref name="zSource"/> <c>Impedance</c> and returns the result.
     ''' </summary>
     ''' <param name="zSource">Specifies the impedance of the source, in
     ''' ohms.</param>
@@ -54,8 +55,9 @@ Partial Public Structure Impedance
     End Function ' VoltageReflectionComplexCoefficient
 
     ''' <summary>
-    ''' Returns the complex voltage reflection coefficient (Gamma) when this
-    ''' instance is connected to the specified characteristic impedance.
+    ''' Calculates the complex voltage reflection coefficient (Gamma) when this
+    ''' instance is connected to the specified characteristic impedance and
+    ''' returns the result.
     ''' </summary>
     ''' <param name="z0">Specifies the characteristic impedance, in
     ''' ohms.</param>
@@ -85,8 +87,9 @@ Partial Public Structure Impedance
     End Function ' VoltageReflectionComplexCoefficient
 
     ''' <summary>
-    ''' Returns the voltage reflection coefficient (Gamma) when this instance is
-    ''' connected to the specified characteristic impedance.
+    ''' Calculates the voltage reflection coefficient (Gamma) when this instance
+    ''' is connected to the specified characteristic impedance and returns the
+    ''' result.
     ''' </summary>
     ''' <param name="z0">Specifies the characteristic impedance, in
     ''' ohms.</param>
@@ -126,9 +129,10 @@ Partial Public Structure Impedance
 #Region "Power Reflection"
 
     ''' <summary>
-    ''' Returns the complex power reflection coefficient (COMMON NAME???)
+    ''' Calculates the complex power reflection coefficient (COMMON NAME???)
     ''' when the specified <paramref name="zLoad"/> <c>Impedance</c> is
-    ''' connected to the specified <paramref name="zSource"/> <c>Impedance</c>.
+    ''' connected to the specified <paramref name="zSource"/> <c>Impedance</c>
+    ''' and returns the result.
     ''' </summary>
     ''' <param name="zSource">Specifies the impedance of the source, in
     ''' ohms.</param>
@@ -146,9 +150,9 @@ Partial Public Structure Impedance
     End Function ' PowerReflectionComplexCoefficient
 
     ''' <summary>
-    ''' Returns the complex power reflection coefficient when this instance is
-    ''' connected to the specified <paramref name="zSource"/>
-    ''' <c>Impedance</c>.
+    ''' Calculates the complex power reflection coefficient when this instance
+    ''' is connected to the specified <paramref name="zSource"/>
+    ''' <c>Impedance</c> and returns the result.
     ''' </summary>
     ''' <param name="zSource">Specifies the impedance of the source, in
     ''' ohms.</param>
@@ -163,8 +167,9 @@ Partial Public Structure Impedance
     End Function ' PowerReflectionComplexCoefficient
 
     ''' <summary>
-    ''' Returns the complex power reflection coefficient when this instance is
-    ''' connected to the specified characteristic impedance.
+    ''' Calculates the complex power reflection coefficient when this instance
+    ''' is connected to the specified characteristic impedance and returns the
+    ''' result.
     ''' </summary>
     ''' <param name="z0">Specifies the characteristic impedance, in
     ''' ohms.</param>
@@ -195,8 +200,9 @@ Partial Public Structure Impedance
     End Function ' PowerReflectionComplexCoefficient
 
     ''' <summary>
-    ''' Returns the power reflection coefficient when this instance is
-    ''' connected to the specified characteristic impedance.
+    ''' Calculates the power reflection coefficient when this instance is
+    ''' connected to the specified characteristic impedance and returns the
+    ''' result.
     ''' </summary>
     ''' <param name="z0">Specifies the characteristic impedance, in
     ''' ohms.</param>
@@ -235,9 +241,10 @@ Partial Public Structure Impedance
 #Region "Voltage Transmission"
 
     ''' <summary>
-    ''' Returns the complex voltage transmission coefficient
-    ''' when the specified <paramref name="zLoad"/> <c>Impedance</c> is
-    ''' connected to the specified <paramref name="zSource"/> <c>Impedance</c>.
+    ''' Calculates the complex voltage transmission coefficient when the
+    ''' specified <paramref name="zLoad"/> <c>Impedance</c> is connected to the
+    ''' specified <paramref name="zSource"/> <c>Impedance</c> and returns the
+    ''' result.
     ''' </summary>
     ''' <param name="zSource">Specifies the impedance of the source, in
     ''' ohms.</param>
@@ -259,9 +266,9 @@ Partial Public Structure Impedance
     End Function ' VoltageTransmissionComplexCoefficient
 
     ''' <summary>
-    ''' Returns the complex voltage transmission coefficient when this instance
-    ''' is connected to the specified <paramref name="zSource"/>
-    ''' <c>Impedance</c>.
+    ''' Calculates the complex voltage transmission coefficient when this
+    ''' instance is connected to the specified <paramref name="zSource"/>
+    ''' <c>Impedance</c> and returns the result.
     ''' </summary>
     ''' <param name="zSource">Specifies the impedance of the source, in
     ''' ohms.</param>
@@ -274,8 +281,9 @@ Partial Public Structure Impedance
     End Function ' VoltageTransmissionComplexCoefficient
 
     ''' <summary>
-    ''' Returns the complex voltage transmission coefficient when this instance
-    ''' is connected to the specified characteristic impedance.
+    ''' Calculates the complex voltage transmission coefficient when this
+    ''' instance is connected to the specified characteristic impedance and
+    ''' returns the result.
     ''' </summary>
     ''' <param name="z0">Specifies the characteristic impedance, in
     ''' ohms.</param>
@@ -304,8 +312,9 @@ Partial Public Structure Impedance
     End Function ' VoltageTransmissionComplexCoefficient
 
     ''' <summary>
-    ''' Returns the voltage transmission coefficient when this instance is
-    ''' connected to the specified characteristic impedance.
+    ''' Calculates the voltage transmission coefficient when this instance is
+    ''' connected to the specified characteristic impedance and returns the
+    ''' result.
     ''' </summary>
     ''' <param name="z0">Specifies the characteristic impedance, in
     ''' ohms.</param>
@@ -344,8 +353,9 @@ Partial Public Structure Impedance
 #Region "Power Transmission"
 
     ''' <summary>
-    ''' Returns the complex power transmission coefficient when
-    ''' <paramref name="zLoad"/> is connected to <paramref name="zSource"/>.
+    ''' Calculates the complex power transmission coefficient when
+    ''' <paramref name="zLoad"/> is connected to <paramref name="zSource"/> and
+    ''' returns the result.
     ''' </summary>
     ''' <param name="zSource">Specifies the impedance of the source, in ohms,
     ''' to which <paramref name="zLoad"/> is connected .</param>
@@ -396,8 +406,8 @@ Partial Public Structure Impedance
     End Function ' PowerTransmissionComplexCoefficient
 
     ''' <summary>
-    ''' Returns the complex power transmission coefficient when this instance is
-    ''' connected to <paramref name="zSource"/>.
+    ''' Calculates the complex power transmission coefficient when this instance
+    ''' is connected to <paramref name="zSource"/> and returns the result.
     ''' </summary>
     ''' <param name="zSource">Specifies the impedance of the source, in ohms, to
     ''' which this instance is connected .</param>
@@ -416,9 +426,9 @@ Partial Public Structure Impedance
     End Function ' PowerTransmissionComplexCoefficient
 
     ''' <summary>
-    ''' Returns the complex power transmission coefficient when this instance is
-    ''' connected to a source matching the specified characteristic impedance,
-    ''' <paramref name="z0"/>.
+    ''' Calculates the complex power transmission coefficient when this instance
+    ''' is connected to a source matching the specified characteristic
+    ''' impedance, <paramref name="z0"/> and returns the result.
     ''' </summary>
     ''' <param name="z0">Specifies the characteristic impedance source, in ohms,
     ''' to which this instance is connected.</param>
@@ -433,8 +443,8 @@ Partial Public Structure Impedance
     ''' <see cref="PowerTransmissionComplexCoefficient(Impedance, Impedance)"/>
     ''' regarding comparison to Smith Chart results.
     ''' The coefficient is a scalar value with no dimension.</remarks>
-    Public Function PowerTransmissionComplexCoefficient(ByVal z0 As System.Double) _
-        As System.Numerics.Complex
+    Public Function PowerTransmissionComplexCoefficient(
+        ByVal z0 As System.Double) As System.Numerics.Complex
 
         ' Input checking.
         If z0 <= 0.0 Then
@@ -453,9 +463,9 @@ Partial Public Structure Impedance
     End Function ' PowerTransmissionComplexCoefficient
 
     ''' <summary>
-    ''' Returns the magnitude of the complex power transmission coefficient when
-    ''' this instance is connected to a source matching the specified
-    ''' characteristic impedance, <paramref name="z0"/>.
+    ''' Calculates the magnitude of the complex power transmission coefficient
+    ''' when this instance is connected to a source matching the specified
+    ''' characteristic impedance, <paramref name="z0"/> and returns the result.
     ''' </summary>
     ''' <param name="z0">Specifies the characteristic impedance, in ohms, to
     ''' which this instance is connected.</param>
@@ -506,9 +516,9 @@ Partial Public Structure Impedance
     ' GEOMETRY?
 
     ''' <summary>
-    ''' Returns the angle of reflection, in radians, when the specified
+    ''' Calculates the angle of reflection, in radians, when the specified
     ''' <paramref name="zLoad"/> <c>Impedance</c> is connected to the specified
-    ''' characteristic impedance.
+    ''' characteristic impedance and returns the result.
     ''' </summary>
     ''' <param name="z0">Specifies the characteristic impedance, in
     ''' ohms.</param>
@@ -589,8 +599,9 @@ Partial Public Structure Impedance
     End Function ' AngleOfReflectionRadians
 
     ''' <summary>
-    ''' Returns the angle of reflection, in radians, when this instance is
-    ''' connected to a source with the specified characteristic impedance.
+    ''' Calculates the angle of reflection, in radians, when this instance is
+    ''' connected to a source with the specified characteristic impedance and
+    ''' returns the result.
     ''' </summary>
     ''' <param name="z0">Specifies the characteristic impedance, in
     ''' ohms.</param>
@@ -628,9 +639,9 @@ Partial Public Structure Impedance
     End Function ' AngleOfReflectionRadians
 
     ''' <summary>
-    ''' Returns the angle of reflection, in degrees, when the specified
+    ''' Calculates the angle of reflection, in degrees, when the specified
     ''' <paramref name="zLoad"/> <c>Impedance</c> is connected to the specified
-    ''' characteristic impedance.
+    ''' characteristic impedance and returns the result.
     ''' </summary>
     ''' <param name="z0">Specifies the characteristic impedance, in
     ''' ohms.</param>
@@ -667,8 +678,9 @@ Partial Public Structure Impedance
     End Function ' AngleOfReflection
 
     ''' <summary>
-    ''' Returns the angle of reflection, in degrees, when this instance is
-    ''' connected to a source with the specified characteristic impedance.
+    ''' Calculates the angle of reflection, in degrees, when this instance is
+    ''' connected to a source with the specified characteristic impedance and
+    ''' returns the result.
     ''' </summary>
     ''' <param name="z0">Specifies the characteristic impedance, in
     ''' ohms.</param>
@@ -711,12 +723,13 @@ Partial Public Structure Impedance
 
     ' ARE THE AngleOfReflection AND AngleOfTransmission ROUTINES UNIQUE, OR
     ' SHARED, FOR VOLTAGE AND POWER? CURRENT?
-    ' IS THERE A MATHEMATICAL FORMULA TO USE THAT MAY BE BETTER THAN DOING THE GEOMETRY?
+    ' IS THERE A MATHEMATICAL FORMULA TO USE THAT MAY BE BETTER THAN DOING THE
+    ' GEOMETRY?
 
     ''' <summary>
-    ''' Returns the angle of transmission, in radians, when the specified
+    ''' Calculates the angle of transmission, in radians, when the specified
     ''' <paramref name="zLoad"/> <c>Impedance</c> is connected to the specified
-    ''' characteristic impedance.
+    ''' characteristic impedance and returns the result.
     ''' </summary>
     ''' <param name="z0">Specifies the characteristic impedance, in
     ''' ohms.</param>
@@ -773,8 +786,9 @@ Partial Public Structure Impedance
     End Function ' AngleOfTransmissionRadians
 
     ''' <summary>
-    ''' Returns the angle of transmission, in radians, when this instance is
-    ''' connected to a source with the specified characteristic impedance.
+    ''' Calculates the angle of transmission, in radians, when this instance is
+    ''' connected to a source with the specified characteristic impedance and
+    ''' returns the result.
     ''' </summary>
     ''' <param name="z0">Specifies the characteristic impedance, in
     ''' ohms.</param>
@@ -802,9 +816,9 @@ Partial Public Structure Impedance
     End Function ' AngleOfTransmissionRadians
 
     ''' <summary>
-    ''' Returns the angle of transmission, in degrees, when the specified
+    ''' Calculates the angle of transmission, in degrees, when the specified
     ''' <paramref name="zLoad"/> <c>Impedance</c> is connected to the specified
-    ''' characteristic impedance.
+    ''' characteristic impedance and returns the result.
     ''' </summary>
     ''' <param name="z0">Specifies the characteristic impedance, in
     ''' ohms.</param>
@@ -834,8 +848,9 @@ Partial Public Structure Impedance
     End Function ' AngleOfTransmission
 
     ''' <summary>
-    ''' Returns the angle of transmission, in degrees, when this instance is
-    ''' connected to a source with the specified characteristic impedance.
+    ''' Calculates the angle of transmission, in degrees, when this instance is
+    ''' connected to a source with the specified characteristic impedance and
+    ''' returns the result.
     ''' </summary>
     ''' <param name="z0">Specifies the characteristic impedance, in
     ''' ohms.</param>
@@ -867,9 +882,9 @@ Partial Public Structure Impedance
 #Region "VSWR"
 
     ''' <summary>
-    ''' Returns the complex voltage standing wave ratio when the specified
+    ''' Calculates the complex voltage standing wave ratio when the specified
     ''' <paramref name="zLoad"/> <c>Impedance</c> is connected to the specified
-    ''' <paramref name="zSource"/> <c>Impedance</c>.
+    ''' <paramref name="zSource"/> <c>Impedance</c> and returns the result.
     ''' </summary>
     ''' <param name="zSource">Specifies the impedance, in ohms, of the
     ''' source.</param>
@@ -893,8 +908,9 @@ Partial Public Structure Impedance
     End Function ' VSWR
 
     ''' <summary>
-    ''' Returns the complex voltage standing wave ratio when this instance is
-    ''' connected to the specified <paramref name="zSource"/> <c>Impedance</c>.
+    ''' Calculates the complex voltage standing wave ratio when this instance is
+    ''' connected to the specified <paramref name="zSource"/> <c>Impedance</c>
+    ''' and returns the result.
     ''' </summary>
     ''' <param name="zSource">Specifies the impedance of the source, in
     ''' ohms.</param>
@@ -907,8 +923,9 @@ Partial Public Structure Impedance
     End Function ' VoltageReflectionComplexCoefficient
 
     ''' <summary>
-    ''' Returns the voltage standing wave ratio when this instance is
-    ''' connected to the specified characteristic impedance.
+    ''' Calculates the voltage standing wave ratio when this instance is
+    ''' connected to the specified characteristic impedance and returns the
+    ''' result.
     ''' </summary>
     ''' <param name="z0">Specifies the characteristic impedance, in
     ''' ohms.</param>

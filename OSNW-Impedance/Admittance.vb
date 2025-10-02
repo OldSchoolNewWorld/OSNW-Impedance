@@ -33,11 +33,6 @@ Public Structure Admittance
     Private ReadOnly m_Conductance As System.Double
 
     ''' <summary>
-    ''' Gets the susceptance (B) component, in siemens, of the current instance.
-    ''' </summary>
-    Private ReadOnly m_Susceptance As System.Double
-
-    ''' <summary>
     ''' Gets the conductance (G) component, in siemens, of the current instance.
     ''' </summary>
     Public ReadOnly Property Conductance As System.Double
@@ -46,6 +41,11 @@ Public Structure Admittance
             Return Me.m_Conductance
         End Get
     End Property
+
+    ''' <summary>
+    ''' Gets the susceptance (B) component, in siemens, of the current instance.
+    ''' </summary>
+    Private ReadOnly m_Susceptance As System.Double
 
     ''' <summary>
     ''' Gets the susceptance (B) component, in siemens, of the current instance.
