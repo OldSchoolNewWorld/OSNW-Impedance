@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <RootNamespace>AdmittanceTest</RootNamespace>
+    <RootNamespace>AdmtTest</RootNamespace>
     <TargetFramework>net8.0</TargetFramework>
 
     <IsPackable>false</IsPackable>

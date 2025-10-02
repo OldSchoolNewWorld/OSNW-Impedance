@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <RootNamespace>ComplexTest</RootNamespace>
+    <RootNamespace>CplxTest</RootNamespace>
     <TargetFramework>net8.0</TargetFramework>
 
     <IsPackable>false</IsPackable>

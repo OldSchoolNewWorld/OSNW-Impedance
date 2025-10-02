@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <RootNamespace>ImpedanceTest</RootNamespace>
+    <RootNamespace>ImpdTest</RootNamespace>
     <TargetFramework>net8.0</TargetFramework>
 
     <IsPackable>false</IsPackable>
