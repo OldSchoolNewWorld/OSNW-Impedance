@@ -147,11 +147,9 @@ Namespace ReflectionTests
 
     Public Class TestVoltageTransmissionCoefficient
 
+        Const Precision As Double = 0.0005
         Const INF As Double = Double.PositiveInfinity
 
-        '<InlineData(1.0, INF, 0.0000, 999)> ' C: At the open circuit point on the right.
-        '<InlineData(1.0, 999, 999, 999)> ' Q: Outside of main circle. Invalid.
-        '<InlineData(1.0, -2.0, 999, 999)> ' R: NormR<=0. Invalid.
         '<InlineData(     Z0,        R,       X,    VTC)> ' Model
         <Theory>
         <InlineData(1.0, 0.0000, 0.0000, 0.0000)> ' A: At the short circuit point. Omit - covered by B.
@@ -171,15 +169,50 @@ Namespace ReflectionTests
         <InlineData(1.0, 1 / 2.0, -1 / 3.0, 0.7822)> ' N: Inside G=Y0 circle, below line
         <InlineData(1.0, 0.2, 1.4, 1.534)> ' O: In the top remainder.
         <InlineData(1.0, 0.4, -0.8, 1.1094)> ' P: In the bottom remainder.
-        Public Sub VoltageTransmissionCoefficient_GoodInput_Succeeds(z0 As Double, r As Double, x As Double, expectVTC As Double)
-
-            Const Precision As Double = 0.0005
+        Public Sub VoltageTransmissionCoefficient_GoodInput_Succeeds(
+            z0 As Double, r As Double, x As Double, expectVTC As Double)
 
             Dim Impd As New Impedance(r, x)
             Dim AnsVTC As Double = Impd.VoltageTransmissionCoefficient(z0)
             Assert.Equal(expectVTC, AnsVTC, Precision)
-
         End Sub
+
+        '<InlineData(     Z0,        R,       X,    VTC)> ' Model
+        <Theory>
+        <InlineData(1.0, INF, 0.0000, 999)> ' C: At the open circuit point on the right.
+        <InlineData(1.0, -0.0345, 0.4138, 999)> ' Q: Outside of main circle. Invalid.
+        <InlineData(1.0, -2.0, 999, 999)> ' R: NormR<=0. Invalid.
+        Public Sub VoltageTransmissionCoefficient_BadInput_Fails1(
+            z0 As Double, r As Double, x As Double, expectVTC As Double)
+
+            Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
+                Sub()
+                    ' Code that throws the exception.
+                    Dim Impd As New Impedance(r, x)
+                    Dim AnsVTC As Double = Impd.VoltageTransmissionCoefficient(z0)
+                    Assert.Equal(expectVTC, AnsVTC, Precision)
+                End Sub)
+        End Sub
+
+        ''<InlineData(     Z0,        R,       X,    VTC)> ' Model
+        '<Theory>
+        '<InlineData(1.0, INF, 0.0000, 999)> ' C: At the open circuit point on the right.
+        '<InlineData(1.0, -0.0345, 0.4138, 999)> ' Q: Outside of main circle. Invalid.
+        '<InlineData(1.0, -2.0, 999, 999)> ' R: NormR<=0. Invalid.
+        'Public Sub VoltageTransmissionCoefficient_BadInput_Fails2(
+        '    z0 As Double, r As Double, x As Double, expectVTC As Double)
+
+        '    Try
+        '        ' Code that throws the exception.
+        '        Dim Impd As New Impedance(r, x)
+        '        Dim AnsVTC As Double = Impd.VoltageTransmissionCoefficient(z0)
+        '        Assert.Equal(expectVTC, AnsVTC, Precision)
+        '    Catch ex As Exception
+        '        Assert.True(True)
+        '        Exit Sub
+        '    End Try
+        '    Assert.True(False, "Did not fail")
+        'End Sub
 
     End Class ' TestVoltageTransmissionCoefficient
 
