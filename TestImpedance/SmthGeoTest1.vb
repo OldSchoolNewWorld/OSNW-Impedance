@@ -40,6 +40,7 @@ Namespace GeometryTests
             Assert.Equal(expectRadR, RadiusAns, Precision)
         End Sub
 
+        '<InlineData(ChartX, ChartY, ChartRad,      Z0,        R)> ' Model
         '<InlineData(4.0, 5.0, 2.0, 1.0, 999)> ' Outside of main circle
         <Theory>
         <InlineData(4.0, 5.0, 2.0, 1.0, -2.0)> ' NormR<=0
@@ -57,6 +58,7 @@ Namespace GeometryTests
         End Sub
 
         '<InlineData(4.0, 5.0, 2.0, 1.0, 999)> ' Outside of main circle
+        '<InlineData(ChartX, ChartY, ChartRad,      Z0,        R)> ' Model
         <Theory>
         <InlineData(4.0, 5.0, 2.0, 1.0, -2.0)> ' NormR<=0
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000)> ' A: At the short circuit point. Omit - covered by B.
