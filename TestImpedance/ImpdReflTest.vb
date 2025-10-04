@@ -220,7 +220,7 @@ Namespace ReflectionTests
 
         ' NOTE: There are no tests of bad inputs. See
         ' PowerTransmissionComplexCoefficient(Impedance, Impedance) regarding
-        ' comparison to Smith Chart results.
+        ' comparison to Smith Chart results. This only tests the data sets that conform.
 
         Const Precision As Double = 0.0005
         Const INF As Double = Double.PositiveInfinity
@@ -241,6 +241,7 @@ Namespace ReflectionTests
         '<InlineData(1.0, 0.4, -0.8, 0.6154)> ' P: In the bottom remainder.
         '<InlineData(1.0, -0.0345, 0.4138, 999)> ' Q: Outside of main circle. Invalid.
         '<InlineData(1.0, -2.0, 999, 999)> ' R: NormR<=0. Invalid.
+
         '<InlineData(     Z0,        R,       X,    PTC)> ' Model
         <Theory>
         <InlineData(1.0, 0.0000, 0.0000, 0.0000)> ' A: At the short circuit point. Omit - covered by B.
@@ -262,6 +263,7 @@ Namespace ReflectionTests
         Const Precision As Double = 0.0005
         Const INF As Double = Double.PositiveInfinity
 
+        '<InlineData(     Z0,        R,       X,       AOR)> ' Model
         <Theory>
         <InlineData(1.0, 1.0, 0.0000, 0.0000)> ' D: At the center.
         <InlineData(1.0, 1.0, 1.0, 63.4349)> ' E: On R=Z0 circle, above resonance line. Only needs reactance.
@@ -334,6 +336,7 @@ Namespace ReflectionTests
         Const Precision As Double = 0.0005
         Const INF As Double = Double.PositiveInfinity
 
+        '<InlineData(     Z0,        R,       X,      AOT)> ' Model
         <Theory>
         <InlineData(1.0, 1.0, 0.0000, 0.0000)> ' D: At the center.
         <InlineData(1.0, 1.0, 1.0, 18.435)> ' E: On R=Z0 circle, above resonance line. Only needs reactance.
@@ -401,15 +404,12 @@ Namespace ReflectionTests
         'End Sub
 
     End Class ' TestAngleOfTransmission
-    'xxxx
 
     Public Class TestVSWR
 
+        Const Precision As Double = 0.0005
         Const INF As Double = Double.PositiveInfinity
 
-        '<InlineData(1.0, INF, 0.0000, INF)> ' C: At the open circuit point on the right.
-        '<InlineData(1.0, 999, 999, 999)> ' Q: Outside of main circle. Invalid.
-        '<InlineData(1.0, -2.0, 999, 999)> ' R: NormR<=0. Invalid.
         '<InlineData(     Z0,        R,       X,    VSWR)> ' Model
         <Theory>
         <InlineData(1.0, 0.0000, 0.0000, INF)> ' A: At the short circuit point. Omit - covered by B.
@@ -429,46 +429,48 @@ Namespace ReflectionTests
         <InlineData(1.0, 1 / 2.0, -1 / 3.0, 2.2845)> ' N: Inside G=Y0 circle, below line
         <InlineData(1.0, 0.2, 1.4, 14.933)> ' O: In the top remainder.
         <InlineData(1.0, 0.4, -0.8, 4.2656)> ' P: In the bottom remainder.
-        Public Sub VSWR_GoodInput_Succeeds(z0 As Double, r As Double, x As Double, expectVSWR As Double)
-
-            Const Precision As Double = 0.0005
+        Public Sub VSWR_GoodInput_Succeeds(
+            z0 As Double, r As Double, x As Double, expectVSWR As Double)
 
             Dim Impd As New Impedance(r, x)
             Dim AnsVWSR As Double = Impd.VSWR(z0)
             Assert.Equal(expectVSWR, AnsVWSR, Precision)
-
         End Sub
 
-        '<InlineData(1.0, 999, 999)> ' Q: Outside of main circle. Invalid.
-        '<InlineData(     Z0,        R,       X)> ' Model
+        '<InlineData(     Z0,        R,       X,    VSWR)> ' Model
         <Theory>
-        <InlineData(1.0, INF, 0.0000)> ' C: At the open circuit point on the right.
-        <InlineData(1.0, -2.0, 999)> ' R: NormR<=0. Invalid.
-        Sub VSWR_BadInput_Fails1(z0 As Double, r As Double, x As Double)
+        <InlineData(1.0, INF, 0.0000, INF)> ' C: At the open circuit point on the right.
+        <InlineData(1.0, -0.0345, 0.4138, 999)> ' Q: Outside of main circle. Invalid.
+        <InlineData(1.0, -2.0, 999, 999)> ' R: NormR<=0. Invalid.
+        Sub VSWR_BadInput_Fails1(
+            z0 As Double, r As Double, x As Double, expectVSWR As Double)
             Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
                 Sub()
                     ' Code that throws the exception.
                     Dim Impd As New Impedance(r, x)
                     Dim AnsVWSR As Double = Impd.VSWR(z0)
+                    Assert.Equal(expectVSWR, AnsVWSR, Precision)
                 End Sub)
         End Sub
 
-        '<InlineData(1.0, 999, 999)> ' Q: Outside of main circle. Invalid.
-        '<InlineData(     Z0,        R,       X)> ' Model
-        <Theory>
-        <InlineData(1.0, INF, 0.0000)> ' C: At the open circuit point on the right.
-        <InlineData(1.0, -2.0, 999)> ' R: NormR<=0. Invalid.
-        Sub VSWR_BadInput_Fails2(z0 As Double, r As Double, x As Double)
-            Try
-                ' Code that throws the exception.
-                Dim Impd As New Impedance(r, x)
-                Dim AnsVWSR As Double = Impd.VSWR(z0)
-            Catch ex As Exception
-                Assert.True(True)
-                Exit Sub
-            End Try
-            Assert.True(False, "Did not fail")
-        End Sub
+        ''<InlineData(     Z0,        R,       X,    VSWR)> ' Model
+        '<Theory>
+        '<InlineData(1.0, INF, 0.0000, INF)> ' C: At the open circuit point on the right.
+        '<InlineData(1.0, -0.0345, 0.4138, 999)> ' Q: Outside of main circle. Invalid.
+        '<InlineData(1.0, -2.0, 999, 999)> ' R: NormR<=0. Invalid.
+        'Sub VSWR_BadInput_Fails2(
+        '    z0 As Double, r As Double, x As Double, expectVSWR As Double)
+        '    Try
+        '        ' Code that throws the exception.
+        '        Dim Impd As New Impedance(r, x)
+        '        Dim AnsVWSR As Double = Impd.VSWR(z0)
+        '        Assert.Equal(expectVSWR, AnsVWSR, Precision)
+        '    Catch ex As Exception
+        '        Assert.True(True)
+        '        Exit Sub
+        '    End Try
+        '    Assert.True(False, "Did not fail")
+        'End Sub
 
     End Class ' TestVSWR
 
