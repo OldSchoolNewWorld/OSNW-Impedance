@@ -18,15 +18,17 @@ Public Class CultureTestVals
 End Class
 
 ' These are common test data points for Impedance and Smith Chart tests. They
-' include special cases and a mix of +/-, left/right, above/below/on, etc.
+' include special cases and a mix of left/right, +/-, above/below/on, etc.
 ' ChartX, ChartY, ChartRad, PlotX, PlotY, RadiusR, RadiusX, RadiusG, and RadiusB
-' are in generic "units" relative to the Cartesian plane on which a Smith Chart
+' are in generic "units" relative to a Cartesian plane on which a Smith Chart
 ' can be drawn.
+
 ' Copy an entire list, then delete unused columns as needed to match the process
 ' under test. After unused columns are stripped, some remaining tests may be
 ' redundant. Any rows that cause EXPECTED errors can be used as tests of bad
 ' data.
 
+' Const Precision As Double = 0.0005
 ' Const INF As Double = Double.PositiveInfinity
 
 '<InlineData(ChartX, ChartY, ChartRad,      Z0,        R,       X,      G,       B,  PlotX,  PlotY, RadiusR, RadiusX, RadiusG, RadiusB, RadiusV)> ' Model

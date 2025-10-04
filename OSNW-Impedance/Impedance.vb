@@ -1,5 +1,6 @@
 ﻿'TODO:
-' Reject infinity for admittance and susceptance?
+' Should infinity be rejected for admittance and susceptance inputs?
+' Can RadiusG and RadiusB be improved to get more consistent results for test points G1 and G2?
 ' Add De/Serialization to Admittance?????
 '   "the strings should be generated and parsed by using the conventions of the invariant culture."
 '   REF: Serialize and deserialize numeric data

@@ -499,7 +499,7 @@ Public Class SmithMainCircle
         'Return AnsRadius
 
         'Return (1 / ((resistance / Me.Z0) + 1)) * Me.GridRadius
-        Return Me.GridRadius / ((resistance / Me.Z0) + 1)
+        Return Me.GridRadius / ((resistance / Me.Z0) + 1.0)
 
     End Function ' GetRadiusR
 
@@ -548,7 +548,7 @@ Public Class SmithMainCircle
         End If
 
         ' Derived like GetRadiusR.
-        Return Me.GridRadius / ((conductance / Me.Y0) + 1)
+        Return Me.GridRadius / ((conductance / Me.Y0) + 1.0)
 
     End Function ' GetRadiusG
 
