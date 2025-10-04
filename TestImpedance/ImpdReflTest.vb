@@ -256,18 +256,12 @@ Namespace ReflectionTests
         End Sub
 
     End Class ' TestPowerTransmissionCoefficient
-    'xxxx
 
     Public Class TestAngleOfReflection
 
+        Const Precision As Double = 0.0005
         Const INF As Double = Double.PositiveInfinity
 
-        '<InlineData(1.0, 0.0000, 0.0000, INF)> ' A: At the short circuit point. Omit - covered by B.
-        '<InlineData(1.0, 0.0000, 1 / 2.0, INF)> ' B: Anywhere else on the perimeter. R=0.0.
-        '<InlineData(1.0, INF, 0.0000, INF)> ' C: At the open circuit point on the right.
-        '<InlineData(1.0, 999, 999, 999)> ' Q: Outside of main circle. Invalid.
-        '<InlineData(1.0, -2.0, 999, 999)> ' R: NormR<=0. Invalid.
-        '<InlineData(     Z0,        R,       X,       AOR)> ' Model
         <Theory>
         <InlineData(1.0, 1.0, 0.0000, 0.0000)> ' D: At the center.
         <InlineData(1.0, 1.0, 1.0, 63.4349)> ' E: On R=Z0 circle, above resonance line. Only needs reactance.
@@ -284,28 +278,62 @@ Namespace ReflectionTests
         <InlineData(1.0, 1 / 2.0, -1 / 3.0, -133.7811)> ' N: Inside G=Y0 circle, below line
         <InlineData(1.0, 0.2, 1.4, 70.34617)> ' O: In the top remainder.
         <InlineData(1.0, 0.4, -0.8, -97.125)> ' P: In the bottom remainder.
-        Public Sub AngleOfReflection_GoodInput_Succeeds(z0 As Double, r As Double, x As Double, expectAOR As Double)
-
-            Const Precision As Double = 0.0005
+        Public Sub AngleOfReflection_GoodInput_Succeeds(
+            z0 As Double, r As Double, x As Double, expectAOR As Double)
 
             Dim Impd As New Impedance(r, x)
             Dim AnsAOR As Double = Impd.AngleOfReflection(z0)
             Assert.Equal(expectAOR, AnsAOR, Precision)
-
         End Sub
+
+        '<InlineData(     Z0,        R,       X,       AOR)> ' Model
+        <Theory>
+        <InlineData(1.0, 0.0000, 0.0000, INF)> ' A: At the short circuit point. Omit - covered by B.
+        <InlineData(1.0, 0.0000, 1 / 2.0, INF)> ' B: Anywhere else on the perimeter. R=0.0.
+        <InlineData(1.0, INF, 0.0000, INF)> ' C: At the open circuit point on the right.
+        <InlineData(1.0, -0.0345, 0.4138, 999)> ' Q: Outside of main circle. Invalid.
+        <InlineData(1.0, -2.0, 999, 999)> ' R: NormR<=0. Invalid.
+        Public Sub AngleOfReflection_BadInput_Fails1(
+            z0 As Double, r As Double, x As Double, expectAOR As Double)
+
+            Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
+                Sub()
+                    ' Code that throws the exception.
+                    Dim Impd As New Impedance(r, x)
+                    Dim AnsAOR As Double = Impd.AngleOfReflection(z0)
+                    Assert.Equal(expectAOR, AnsAOR, Precision)
+                End Sub)
+        End Sub
+
+        ''<InlineData(     Z0,        R,       X,       AOR)> ' Model
+        '<Theory>
+        '<InlineData(1.0, 0.0000, 0.0000, INF)> ' A: At the short circuit point. Omit - covered by B.
+        '<InlineData(1.0, 0.0000, 1 / 2.0, INF)> ' B: Anywhere else on the perimeter. R=0.0.
+        '<InlineData(1.0, INF, 0.0000, INF)> ' C: At the open circuit point on the right.
+        '<InlineData(1.0, -0.0345, 0.4138, 999)> ' Q: Outside of main circle. Invalid.
+        '<InlineData(1.0, -2.0, 999, 999)> ' R: NormR<=0. Invalid.
+        'Public Sub AngleOfReflection_BadInput_Fails2(
+        '    z0 As Double, r As Double, x As Double, expectAOR As Double)
+
+        '    Try
+        '        ' Code that throws the exception.
+        '        Dim Impd As New Impedance(r, x)
+        '        Dim AnsAOR As Double = Impd.AngleOfReflection(z0)
+        '        Assert.Equal(expectAOR, AnsAOR, Precision)
+        '    Catch ex As Exception
+        '        Assert.True(True)
+        '        Exit Sub
+        '    End Try
+        '    Assert.True(False, "Did not fail")
+        'End Sub
 
     End Class ' TestAngleOfReflection
 
     Public Class TestAngleOfTransmission
 
+        Const Precision As Double = 0.0005
         Const INF As Double = Double.PositiveInfinity
 
-        '<InlineData(1.0, 0.0000, 0.0000, 2.0)> ' A: At the short circuit point. Omit - covered by B.
-        '<InlineData(1.0, 0.0000, 1 / 2.0, 2.8)> ' B: Anywhere else on the perimeter. R=0.0.
-        '<InlineData(1.0, INF, 0.0000, 6.0)> ' C: At the open circuit point on the right.
-        '<InlineData(1.0, 999, 999, 2.5)> ' Q: Outside of main circle. Invalid.
-        '<InlineData(1.0, -2.0, 999, GridX)> ' R: NormR<=0. Invalid.
-        '<InlineData(     Z0,        R,       X,      AOT)> ' Model
         <Theory>
         <InlineData(1.0, 1.0, 0.0000, 0.0000)> ' D: At the center.
         <InlineData(1.0, 1.0, 1.0, 18.435)> ' E: On R=Z0 circle, above resonance line. Only needs reactance.
@@ -322,17 +350,58 @@ Namespace ReflectionTests
         <InlineData(1.0, 1 / 2.0, -1 / 3.0, -21.1613)> ' N: Inside G=Y0 circle, below line
         <InlineData(1.0, 0.2, 1.4, 32.4712)> ' O: In the top remainder.
         <InlineData(1.0, 0.4, -0.8, -33.6901)> ' P: In the bottom remainder.
-        Public Sub AngleOfTransmission_GoodInput_Succeeds(z0 As Double, r As Double, x As Double, expectAOT As Double)
-
-            Const Precision As Double = 0.0005
+        Public Sub AngleOfTransmission_GoodInput_Succeeds(
+            z0 As Double, r As Double, x As Double, expectAOT As Double)
 
             Dim Impd As New Impedance(r, x)
             Dim AnsAOT As Double = Impd.AngleOfTransmission(z0)
             Assert.Equal(expectAOT, AnsAOT, Precision)
+        End Sub
+
+        '<InlineData(     Z0,        R,       X,      AOT)> ' Model
+        <Theory>
+        <InlineData(1.0, 0.0000, 0.0000, 2.0)> ' A: At the short circuit point. Omit - covered by B.
+        <InlineData(1.0, 0.0000, 1 / 2.0, 2.8)> ' B: Anywhere else on the perimeter. R=0.0.
+        <InlineData(1.0, INF, 0.0000, 6.0)> ' C: At the open circuit point on the right.
+        <InlineData(1.0, -0.0345, 0.4138, 2.5)> ' Q: Outside of main circle. Invalid.
+        <InlineData(1.0, -2.0, 999, 999)> ' R: NormR<=0. Invalid.
+        Public Sub AngleOfTransmission_BadInput_Fails1(
+         z0 As Double, r As Double, x As Double, expectAOT As Double)
+
+            Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
+                Sub()
+                    ' Code that throws the exception.
+                    Dim Impd As New Impedance(r, x)
+                    Dim AnsAOT As Double = Impd.AngleOfTransmission(z0)
+                    Assert.Equal(expectAOT, AnsAOT, Precision)
+                End Sub)
 
         End Sub
 
+        ''<InlineData(     Z0,        R,       X,      AOT)> ' Model
+        '<Theory>
+        '<InlineData(1.0, 0.0000, 0.0000, 2.0)> ' A: At the short circuit point. Omit - covered by B.
+        '<InlineData(1.0, 0.0000, 1 / 2.0, 2.8)> ' B: Anywhere else on the perimeter. R=0.0.
+        '<InlineData(1.0, INF, 0.0000, 6.0)> ' C: At the open circuit point on the right.
+        '<InlineData(1.0, -0.0345, 0.4138, 2.5)> ' Q: Outside of main circle. Invalid.
+        '<InlineData(1.0, -2.0, 999, 999)> ' R: NormR<=0. Invalid.
+        'Public Sub AngleOfTransmission_BadInput_Fails2(
+        ' z0 As Double, r As Double, x As Double, expectAOT As Double)
+
+        '    Try
+        '        ' Code that throws the exception.
+        '        Dim Impd As New Impedance(r, x)
+        '        Dim AnsAOT As Double = Impd.AngleOfTransmission(z0)
+        '        Assert.Equal(expectAOT, AnsAOT, Precision)
+        '    Catch ex As Exception
+        '        Assert.True(True)
+        '        Exit Sub
+        '    End Try
+        '    Assert.True(False, "Did not fail")
+        'End Sub
+
     End Class ' TestAngleOfTransmission
+    'xxxx
 
     Public Class TestVSWR
 
