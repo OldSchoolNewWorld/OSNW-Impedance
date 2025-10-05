@@ -31,29 +31,29 @@ End Class
 ' Const Precision As Double = 0.0005
 ' Const INF As Double = Double.PositiveInfinity
 
-'<InlineData(ChartX, ChartY, ChartRad,      Z0,        R,       X,      G,       B,  PlotX,  PlotY, RadiusR, RadiusX, RadiusG, RadiusB, RadiusV)> ' Model
-'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,        R,       X,      G,       B,  PlotX,  PlotY, RadiusR, RadiusX, RadiusG, RadiusB, RadiusV)> ' Base circle
+'<InlineData(ChartX, ChartY, ChartRad,      Z0,        R,       X,       G,        B,  PlotX,  PlotY, RadiusR, RadiusX, RadiusG, RadiusB, RadiusV)> ' Model
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,        R,       X,       G,        B,  PlotX,  PlotY, RadiusR, RadiusX, RadiusG, RadiusB, RadiusV)> ' Base circle
 '<Theory>
-'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.0000,  0.0000, 0.0000,  0.0000, 2.0000, 5.0000,  2.0000,     INF,  0.0000,     INF,  2.0000)> ' A: At the short circuit point. Omit - covered by B.
-'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.0000,   1/2.0, 0.0000, -2.0000,    2.8,    6.6,  2.0000,  4.0000,     INF,   1.000,  2.0000)> ' B: Anywhere else on the perimeter. R=0.0.
-'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,      INF,  0.0000, 0.0000,  0.0000, 6.0000, 5.0000,  0.0000,     INF,  2.0000,     INF,  2.0000)> ' C: At the open circuit point on the right.
-'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   1.0000,  0.0000, 1.0000,  0.0000, 4.0000, 5.0000,  1.0000,     INF,  1.0000,     INF,  0.0000)> ' D: At the center.
-'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   1.0000,  1.0000, 0.5000, -0.5000, 4.4000, 5.8000,  1.0000,  2.0000,   4.0/3,  4.0000,  0.8944)> ' E: On R=Z0 circle, above resonance line. Only needs reactance.
-'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   1.0000, -2.0000, 0.2000,  0.4000, 5.0000, 4.0000,  1.0000,  1.0000,   5.0/3,  5.0000,  1.4142)> ' F: On R=Z0 circle, below resonance line. Only needs reactance.
-'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   2.0000,   1/2.0, 0.4706, -0.1176, 4.7027, 5.2162,   2.0/3,  4.0000,  1.3600, 17.0000,  0.7352)> ' G1: Inside R=Z0 circle, above resonance line.
-'<InlineData(4.0000, 5.0000,   2.0000, 50.0000, 100.0000, 25.0000, 0.0094, -0.0024, 4.7027, 5.2162,   2.0/3,  4.0000,  1.3605, 16.6667,  0.7352)> ' G2: Inside R=Z0 circle, above resonance line. Z0=50
-'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   3.0000,  0.0000,  1.0/3,  0.0000, 5.0000, 5.0000,  0.5000,     INF,  1.5000,     INF,  1.0000)> ' H: Inside R=Z0 circle, on line
-'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   2.0000, -2.0000, 0.2500,  0.2500, 5.0770, 4.3846,   2.0/3,  1.0000,  1.6000,  8.0000,  1.2404)> ' I: Inside R=Z0 circle, below resonance line.
-'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/2.0,   1/2.0, 1.0000, -1.0000, 3.6000, 5.8000,   4.0/3,  4.0000,  1.0000,  2.0000,  0.8944)> ' J: On G=Y0 circle, above resonance line. Only needs reactance.
-'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/2.0,  -1/2.0, 1.0000,  1.0000, 3.6000, 4.2000,   4.0/3,  4.0000,  1.0000,  2.0000,  0.8944)> ' K: On G=Y0 circle, below resonance line. Only needs reactance.
-'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/3.0,   1/3.0, 1.5000, -1.5000, 3.1765, 5.7059,  1.5000,  6.0000,  0.8000,  1.3333,  1.0846)> ' L1: Inside G=Y0 circle, above resonance line.
-'<InlineData(4.0000, 5.0000,   2.0000, 75.0000,  25.0000, 25.0000, 0.0200, -0.0200, 3.1765, 5.7059,  1.5000,  6.0000,  0.8000,  1.3333,  1.0846)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
-'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/3.0,  0.0000, 3.0000,  0.0000, 3.0000, 5.0000,  1.5000,     INF,  0.5000,     INF,  1.0000)> ' M: Inside G=Y0 circle, on line
-'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/2.0,  -1/3.0, 1.3846,  0.9231, 3.4588, 4.4353,   4.0/3,  6.0000,  0.8387,  2.2500,  0.7822)> ' N: Inside G=Y0 circle, below line
-'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.2000,  1.4000, 0.1000, -0.7000, 4.5882, 6.6471,   5.0/3,  1.4286,  1.8182,  2.8571,  1.7489)> ' O: In the top remainder.
-'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.4000, -0.8000, 0.5000,  1.0000, 3.8462, 3.7692,  1.4286,  2.5000,   4.0/3,  2.0000,  1.2404)> ' P: In the bottom remainder.
-'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,  -0.0345,  0.4138,    999,     999,    2.5,    6.5, RadiusR, RadiusX, RadiusG, RadiusB, RadiusV)> ' Q: Outside of main circle. Invalid.
-'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,  -2.0000,     999,    999,     999,  GridX,  GridY, RadiusR, RadiusX, RadiusG, RadiusB, RadiusV)> ' R: NormR<=0. Invalid.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.0000,  0.0000,  0.0000,   0.0000, 2.0000, 5.0000,  2.0000,     INF,  0.0000,     INF,  2.0000)> ' A: At the short circuit point. Omit - covered by B.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.0000,   1/2.0,  0.0000,  -2.0000,    2.8,    6.6,  2.0000,  4.0000,     INF,   1.000,  2.0000)> ' B: Anywhere else on the perimeter. R=0.0.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,      INF,  0.0000,  0.0000,   0.0000, 6.0000, 5.0000,  0.0000,     INF,  2.0000,     INF,  2.0000)> ' C: At the open circuit point on the right.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   1.0000,  0.0000,  1.0000,   0.0000, 4.0000, 5.0000,  1.0000,     INF,  1.0000,     INF,  0.0000)> ' D: At the center.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   1.0000,  1.0000,  0.5000,  -0.5000, 4.4000, 5.8000,  1.0000,  2.0000,   4.0/3,  4.0000,  0.8944)> ' E: On R=Z0 circle, above resonance line. Only needs reactance.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   1.0000, -2.0000,  0.2000,   0.4000, 5.0000, 4.0000,  1.0000,  1.0000,   5.0/3,  5.0000,  1.4142)> ' F: On R=Z0 circle, below resonance line. Only needs reactance.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   2.0000,   1/2.0,  8/17.0,  -2/17.0, 4.7027, 5.2162,   2.0/3,  4.0000,  1.3600, 17.0000,  0.7352)> ' G1: Inside R=Z0 circle, above resonance line.
+'<InlineData(4.0000, 5.0000,   2.0000, 50.0000, 100.0000, 25.0000, 4/425.0, -1/425.0, 4.7027, 5.2162,   2.0/3,  4.0000,  1.3600, 17.0000,  0.7352)> ' G2: Inside R=Z0 circle, above resonance line. Z0=50
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   3.0000,  0.0000,   1.0/3,   0.0000, 5.0000, 5.0000,  0.5000,     INF,  1.5000,     INF,  1.0000)> ' H: Inside R=Z0 circle, on line
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   2.0000, -2.0000,  0.2500,   0.2500, 5.0770, 4.3846,   2.0/3,  1.0000,  1.6000,  8.0000,  1.2404)> ' I: Inside R=Z0 circle, below resonance line.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/2.0,   1/2.0,  1.0000,  -1.0000, 3.6000, 5.8000,   4.0/3,  4.0000,  1.0000,  2.0000,  0.8944)> ' J: On G=Y0 circle, above resonance line. Only needs reactance.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/2.0,  -1/2.0,  1.0000,   1.0000, 3.6000, 4.2000,   4.0/3,  4.0000,  1.0000,  2.0000,  0.8944)> ' K: On G=Y0 circle, below resonance line. Only needs reactance.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/3.0,   1/3.0,  1.5000,  -1.5000, 3.1765, 5.7059,  1.5000,  6.0000,  0.8000,  1.3333,  1.0846)> ' L1: Inside G=Y0 circle, above resonance line.
+'<InlineData(4.0000, 5.0000,   2.0000, 75.0000,  25.0000, 25.0000,  0.0200,  -0.0200, 3.1765, 5.7059,  1.5000,  6.0000,  0.8000,  1.3333,  1.0846)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/3.0,  0.0000,  3.0000,   0.0000, 3.0000, 5.0000,  1.5000,     INF,  0.5000,     INF,  1.0000)> ' M: Inside G=Y0 circle, on line
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/2.0,  -1/3.0, 18/13.0,  12/13.0, 3.4588, 4.4353,   4.0/3,  6.0000,  0.8387,  2.1666,  0.7822)> ' N: Inside G=Y0 circle, below line
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.2000,  1.4000,  0.1000,  -0.7000, 4.5882, 6.6471,   5.0/3,  1.4286,  1.8182,  2.8571,  1.7489)> ' O: In the top remainder.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.4000, -0.8000,  0.5000,   1.0000, 3.8462, 3.7692,  1.4286,  2.5000,   4.0/3,  2.0000,  1.2404)> ' P: In the bottom remainder.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,  -0.0345,  0.4138,     999,      999,    2.5,    6.5, RadiusR, RadiusX, RadiusG, RadiusB, RadiusV)> ' Q: Outside of main circle. Invalid.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0000,  -2.0000,     999,     999,      999,  GridX,  GridY, RadiusR, RadiusX, RadiusG, RadiusB, RadiusV)> ' R: NormR<=0. Invalid.
 
 '<InlineData(ChartX, ChartY, ChartRad,      Z0,        R,       X,    VRC,    PRC,    VTC,    PTC,       AOR,      AOT,    VSWR)> ' Model
 '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,        R,       X,    VRC,    PRC,    VTC,    PTC,       AOR,      AOT,    VSWR)> ' Base circle
@@ -481,6 +481,68 @@ Namespace MathTests
 
     End Class ' TestEqualsOther
 
+    Public Class TestToAdmittance
+
+        Const INF As Double = Double.PositiveInfinity
+        Const Precision As Double = 0.0005
+
+        '<InlineData(       R,       X,      G,       B)> ' Model
+        <Theory>
+        <InlineData(0.0000, 0.0000, 0.0000, 0.0000)> ' A: At the short circuit point. Omit - covered by B.
+        <InlineData(0.0000, 1 / 2.0, 0.0000, -2.0)> ' B: Anywhere else on the perimeter. R=0.0.
+        <InlineData(1.0, 0.0000, 1.0, 0.0000)> ' D: At the center.
+        <InlineData(1.0, 1.0, 0.5, -0.5)> ' E: On R=Z0 circle, above resonance line. Only needs reactance.
+        <InlineData(1.0, -2.0, 0.2, 0.4)> ' F: On R=Z0 circle, below resonance line. Only needs reactance.
+        <InlineData(2.0, 1 / 2.0, 8 / 17.0, -2 / 17.0)> ' G1: Inside R=Z0 circle, above resonance line.
+        <InlineData(100.0, 25.0, 4 / 425.0, -1 / 425.0)> ' G2: Inside R=Z0 circle, above resonance line, Z0=50
+        <InlineData(3.0, 0.0000, 1.0 / 3, 0.0000)> ' H: Inside R=Z0 circle, on line
+        <InlineData(2.0, -2.0, 0.25, 0.25)> ' I: Inside R=Z0 circle, below resonance line.
+        <InlineData(1 / 2.0, 1 / 2.0, 1.0, -1.0)> ' J: On G=Y0 circle, above resonance line. Only needs reactance.
+        <InlineData(1 / 2.0, -1 / 2.0, 1.0, 1.0)> ' K: On G=Y0 circle, below resonance line. Only needs reactance.
+        <InlineData(1 / 3.0, 0.0000, 3.0, 0.0000)> ' M: Inside G=Y0 circle, on line
+        <InlineData(1 / 3.0, 1 / 3.0, 1.5, -1.5)> ' L1: Inside G=Y0 circle, above resonance line.
+        <InlineData(25.0, 25.0, 0.02, -0.02)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
+        <InlineData(1 / 2.0, -1 / 3.0, 18 / 13.0, 12 / 13.0)> ' N: Inside G=Y0 circle, below line
+        <InlineData(0.2, 1.4, 0.1, -0.7)> ' O: In the top remainder.
+        <InlineData(0.4, -0.8, 0.5, 1.0)> ' P: In the bottom remainder.
+        Sub ToAdmittance_GoodInput_Succeeds(r As Double, x As Double, expectG As Double, expectB As Double)
+            Dim Imp As New Impedance(r, x)
+            Dim Y As Admittance = Imp.ToAdmittance()
+            Assert.Equal(expectG, Y.Conductance, Precision)
+            Assert.Equal(expectB, Y.Susceptance, Precision)
+        End Sub
+
+        '<InlineData(999, 999)> ' Outside of main circle
+        <Theory>
+        <InlineData(-2.0, 999)> ' NormR<=0
+        <InlineData(INF, 0.0000)> ' C: At the open circuit point on the right.
+        Sub ToAdmittance_BadInput_Fails1(r As Double, x As Double)
+            Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
+                Sub()
+                    ' Code that throws the exception
+                    Dim Imp As New Impedance(r, x)
+                    Dim Y As Admittance = Imp.ToAdmittance()
+                End Sub)
+        End Sub
+
+        '<InlineData(999, 999)> ' Outside of main circle
+        <Theory>
+        <InlineData(-2.0, 999)> ' NormR<=0
+        <InlineData(INF, 0.0000)> ' C: At the open circuit point on the right.
+        Sub ToAdmittance_BadInput_Fails2(r As Double, x As Double)
+            Try
+                ' Code that throws the exception.
+                Dim Imp As New Impedance(r, x)
+                Dim Y As Admittance = Imp.ToAdmittance()
+            Catch ex As Exception
+                Assert.True(True)
+                Exit Sub
+            End Try
+            Assert.True(False, "Did not fail")
+        End Sub
+
+    End Class ' TestToAdmittance()
+
 End Namespace ' MathTests
 
 Namespace SerializationTests
@@ -563,69 +625,3 @@ Namespace SerializationTests
     End Class ' TestSerialization
 
 End Namespace ' SerializationTests
-
-Namespace TestImpedanceMath
-
-    Public Class TestToAdmittance
-
-        Const INF As Double = Double.PositiveInfinity
-        Const Precision As Double = 0.0005
-
-        '<InlineData(       R,       X,      G,       B)> ' Model
-        <Theory>
-        <InlineData(0.0000, 0.0000, 0.0000, 0.0000)> ' A: At the short circuit point. Omit - covered by B.
-        <InlineData(0.0000, 1 / 2.0, 0.0000, -2.0)> ' B: Anywhere else on the perimeter. R=0.0.
-        <InlineData(1.0, 0.0000, 1.0, 0.0000)> ' D: At the center.
-        <InlineData(1.0, 1.0, 0.5, -0.5)> ' E: On R=Z0 circle, above resonance line. Only needs reactance.
-        <InlineData(1.0, -2.0, 0.2, 0.4)> ' F: On R=Z0 circle, below resonance line. Only needs reactance.
-        <InlineData(2.0, 1 / 2.0, 0.4706, -0.1176)> ' G1: Inside R=Z0 circle, above resonance line.
-        <InlineData(100.0, 25.0, 0.0094, -0.0024)> ' G2: Inside R=Z0 circle, above resonance line, Z0=50
-        <InlineData(3.0, 0.0000, 1.0 / 3, 0.0000)> ' H: Inside R=Z0 circle, on line
-        <InlineData(2.0, -2.0, 0.25, 0.25)> ' I: Inside R=Z0 circle, below resonance line.
-        <InlineData(1 / 2.0, 1 / 2.0, 1.0, -1.0)> ' J: On G=Y0 circle, above resonance line. Only needs reactance.
-        <InlineData(1 / 2.0, -1 / 2.0, 1.0, 1.0)> ' K: On G=Y0 circle, below resonance line. Only needs reactance.
-        <InlineData(1 / 3.0, 0.0000, 3.0, 0.0000)> ' M: Inside G=Y0 circle, on line
-        <InlineData(1 / 3.0, 1 / 3.0, 1.5, -1.5)> ' L1: Inside G=Y0 circle, above resonance line.
-        <InlineData(25.0, 25.0, 0.02, -0.02)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
-        <InlineData(1 / 2.0, -1 / 3.0, 1.3846, 0.9231)> ' N: Inside G=Y0 circle, below line
-        <InlineData(0.2, 1.4, 0.1, -0.7)> ' O: In the top remainder.
-        <InlineData(0.4, -0.8, 0.5, 1.0)> ' P: In the bottom remainder.
-        Sub ToAdmittance_GoodInput_Succeeds(r As Double, x As Double, expectG As Double, expectB As Double)
-            Dim Imp As New Impedance(r, x)
-            Dim Y As Admittance = Imp.ToAdmittance()
-            Assert.Equal(expectG, Y.Conductance, Precision)
-            Assert.Equal(expectB, Y.Susceptance, Precision)
-        End Sub
-
-        '<InlineData(999, 999)> ' Outside of main circle
-        <Theory>
-        <InlineData(-2.0, 999)> ' NormR<=0
-        <InlineData(INF, 0.0000)> ' C: At the open circuit point on the right.
-        Sub ToAdmittance_BadInput_Fails1(r As Double, x As Double)
-            Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
-                Sub()
-                    ' Code that throws the exception
-                    Dim Imp As New Impedance(r, x)
-                    Dim Y As Admittance = Imp.ToAdmittance()
-                End Sub)
-        End Sub
-
-        '<InlineData(999, 999)> ' Outside of main circle
-        <Theory>
-        <InlineData(-2.0, 999)> ' NormR<=0
-        <InlineData(INF, 0.0000)> ' C: At the open circuit point on the right.
-        Sub ToAdmittance_BadInput_Fails2(r As Double, x As Double)
-            Try
-                ' Code that throws the exception.
-                Dim Imp As New Impedance(r, x)
-                Dim Y As Admittance = Imp.ToAdmittance()
-            Catch ex As Exception
-                Assert.True(True)
-                Exit Sub
-            End Try
-            Assert.True(False, "Did not fail")
-        End Sub
-
-    End Class ' TestToAdmittance()
-
-End Namespace ' TestImpedanceMath
