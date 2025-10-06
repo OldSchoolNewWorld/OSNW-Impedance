@@ -225,6 +225,8 @@ Namespace ReflectionTests
         Const Precision As Double = 0.0005
         Const INF As Double = Double.PositiveInfinity
 
+        ' These are not excluded because they all result in errors. They are not tested due to the note above.
+
         '<InlineData(1.0, INF, 0.0000, 999)> ' C: At the open circuit point on the right.
         '<InlineData(1.0, 0.0000, 1 / 2.0, 0.0000)> ' B: Anywhere else on the perimeter. R=0.0.
         '<InlineData(1.0, 1.0, 1.0, 0.8)> ' E: On R=Z0 circle, above resonance line. Only needs reactance.
