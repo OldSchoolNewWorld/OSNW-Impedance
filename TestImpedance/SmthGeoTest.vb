@@ -430,46 +430,47 @@ Namespace GeometryTests
             End Sub)
         End Sub
 
-        '<InlineData(ChartX, ChartY, ChartRad,      Z0,        R,       X,  PlotX,  PlotY)> ' Model
-        <Theory>
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 0.0000, 2.0, 5.0)> ' A: At the short circuit point. Omit - covered by B.
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 1 / 2.0, 2.8, 6.6)> ' B: Anywhere else on the perimeter. R=0.0.
-        <InlineData(4.0, 5.0, 2.0, 1.0, -0.0345, 0.4138, 2.5, 6.5)> ' Q: Outside of main circle. Invalid.
-        <InlineData(4.0, 5.0, 2.0, 1.0, -2.0, 999, 999, 999)> ' R: NormR<=0. Invalid.
-        Public Sub TryGetPlotXY_BadInput_Fails2(
-            gridCenterX As Double, gridCenterY As Double, gridRadius As Double, z0 As Double,
-            testR As Double, testX As Double, expectPlotX As Double, expectPlotY As Double)
+        ''<InlineData(ChartX, ChartY, ChartRad,      Z0,        R,       X,  PlotX,  PlotY)> ' Model
+        '<Theory>
+        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 0.0000, 2.0, 5.0)> ' A: At the short circuit point. Omit - covered by B.
+        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 1 / 2.0, 2.8, 6.6)> ' B: Anywhere else on the perimeter. R=0.0.
+        '<InlineData(4.0, 5.0, 2.0, 1.0, -0.0345, 0.4138, 2.5, 6.5)> ' Q: Outside of main circle. Invalid.
+        '<InlineData(4.0, 5.0, 2.0, 1.0, -2.0, 999, 999, 999)> ' R: NormR<=0. Invalid.
+        'Public Sub TryGetPlotXY_BadInput_Fails2(
+        '    gridCenterX As Double, gridCenterY As Double, gridRadius As Double, z0 As Double,
+        '    testR As Double, testX As Double, expectPlotX As Double, expectPlotY As Double)
 
-            Try
-                ' Code that throws the exception
+        '    Try
+        '        ' Code that throws the exception
 
-                Dim GridX, GridY As Double
-                Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridRadius * 2.0, z0)
+        '        Dim GridX, GridY As Double
+        '        Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridRadius * 2.0, z0)
 
-                If Not SmithCirc.GetPlotXY(testR, testX, GridX, GridY) Then
-                    Assert.True(False)
-                End If
+        '        If Not SmithCirc.GetPlotXY(testR, testX, GridX, GridY) Then
+        '            Assert.True(False)
+        '        End If
 
-                Assert.Equal(expectPlotX, GridX, Precision)
-                Assert.Equal(expectPlotY, GridY, Precision)
+        '        Assert.Equal(expectPlotX, GridX, Precision)
+        '        Assert.Equal(expectPlotY, GridY, Precision)
 
-                Assert.True(False, "Did not fail")
+        '        Assert.True(False, "Did not fail")
 
-            Catch ex As Exception
-                Assert.True(True)
-                Exit Sub
-            End Try
-            Assert.True(False, "Did not fail")
-        End Sub
+        '    Catch ex As Exception
+        '        Assert.True(True)
+        '        Exit Sub
+        '    End Try
+        '    Assert.True(False, "Did not fail")
+        'End Sub
 
     End Class ' TestGetPlotXY
 
     Public Class TestGetZFromPlot
 
-        ' The reduced precision here is due to the use of floating point values and the number of calculations in GetZFromPlot.
+        ' The reduced precision here is due to the use of floating point values
+        ' and the number of calculations in GetZFromPlot.
         '        Const Precision As Double = 0.0005
+        '        Const Precision As Double = 0.001
         Const Precision As Double = 0.005
-
         Const INF As Double = Double.PositiveInfinity
 
         '<InlineData(ChartX, ChartY, ChartRad,      Z0,        R,       X,  PlotX,  PlotY)> ' Model
@@ -551,9 +552,7 @@ Namespace GeometryTests
 
     Public Class TestGetYFromPlot
 
-        ' The reduced precision here is due to the use of floating point values and the number of calculations in GetZFromPlot.
-        '        Const Precision As Double = 0.0005
-        Const Precision As Double = 0.1
+        Const Precision As Double = 0.0005
 
         '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 0.0000, 2.0, 5.0)> ' A: At the short circuit point. Omit - covered by B.
         '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 0.0000, 6.0, 5.0)> ' C: At the open circuit point on the right.
