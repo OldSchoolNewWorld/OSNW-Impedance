@@ -4,6 +4,10 @@ Option Compare Binary
 Option Infer Off
 
 ' This document contains items related to the geometry of a Smith Chart.
+' These geometry items may seem better suited to being included in a Smith Chart
+' project. They are located here so that the calculations could be used used by
+' a different Smith Chart project than the one for which they were originally
+' created.
 
 ' REF: Mathematical Construction and Properties of the Smith Chart
 ' https://www.allaboutcircuits.com/technical-articles/mathematical-construction-and-properties-of-the-smith-chart/
