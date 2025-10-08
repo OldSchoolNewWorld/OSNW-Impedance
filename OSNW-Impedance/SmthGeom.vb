@@ -262,9 +262,11 @@ Public Class PlotDetails
     Private ReadOnly m_PlotX As System.Double
     ''' <summary>
     ''' Represents the X-coordinate of the impedance plot, on a Cartesian grid.
-    ''' Dimensions are in generic "units".
+    ''' Dimensions are in generic "units" relative to the grid on which
+    ''' <see cref="MainCircle"/> is located, not to <see cref="MainCircle"/>
+    ''' itself.
     ''' </summary>
-    Public ReadOnly Property GridX As System.Double
+    Public ReadOnly Property PlotX As System.Double
         Get
             Return Me.m_PlotX
         End Get
@@ -273,19 +275,15 @@ Public Class PlotDetails
     Private ReadOnly m_PlotY As System.Double
     ''' <summary>
     ''' Represents the Y-coordinate of the impedance plot, on a Cartesian grid.
-    ''' Dimensions are in generic "units".
+    ''' Dimensions are in generic "units" relative to the grid on which
+    ''' <see cref="MainCircle"/> is located, not to <see cref="MainCircle"/>
+    ''' itself.
     ''' </summary>
-    Public ReadOnly Property GridY As System.Double
+    Public ReadOnly Property PlotY As System.Double
         Get
             Return Me.m_PlotY
         End Get
     End Property
-
-    '    ''' <summary>
-    '    ''' A required reference for some of the calculations. The characteristic
-    '    ''' impedance, in ohms.
-    '    ''' </summary>
-    '    Private ReadOnly m_z0 As System.Double
 
     Private ReadOnly m_Impedance As Impedance
     ''' <summary>
@@ -302,10 +300,10 @@ Public Class PlotDetails
     ''' Returns the admittance, in siemens, represented by the grid location.
     ''' </summary>
     ''' <returns>The admittance.</returns>
-    ''' <remarks>The coefficient is a scalar value with no dimension.</remarks>
+    ''' <remarks>The coefficient is a scalar value; it has no dimension.</remarks>
     Public ReadOnly Property Admittance As Admittance
         Get
-            Return Me.m_Impedance.ToAdmittance()
+            Return Me.Impedance.ToAdmittance()
         End Get
     End Property
 
@@ -314,12 +312,12 @@ Public Class PlotDetails
     ''' by the grid location.
     ''' </summary>
     ''' <returns>The voltage reflection coefficient.</returns>
-    ''' <remarks>The coefficient is a scalar value with no dimension.</remarks>
+    ''' <remarks>The coefficient is a scalar value; it has no dimension.</remarks>
     Public ReadOnly Property VoltageReflectionCoefficient _
         As System.Numerics.Complex
 
         Get
-            Return Me.m_Impedance.VoltageReflectionCoefficient(Me.MainCircle.Z0)
+            Return Me.Impedance.VoltageReflectionCoefficient(Me.MainCircle.Z0)
         End Get
     End Property
 
@@ -328,13 +326,13 @@ Public Class PlotDetails
     ''' by the grid location.
     ''' </summary>
     ''' <returns>The power reflection coefficient.</returns>
-    ''' <remarks>The coefficient is a scalar value with no dimension.</remarks>
+    ''' <remarks>The coefficient is a scalar value; it has no dimension.</remarks>
     Public ReadOnly Property PowerReflectionCoefficient _
         As System.Numerics.Complex
 
         Get
             Dim Coefficient As System.Numerics.Complex =
-                Me.m_Impedance.VoltageReflectionCoefficient(Me.MainCircle.Z0)
+                Me.Impedance.VoltageReflectionCoefficient(Me.MainCircle.Z0)
             Return Coefficient * Coefficient
         End Get
     End Property
@@ -344,10 +342,10 @@ Public Class PlotDetails
     ''' the grid location.
     ''' </summary>
     ''' <returns>The voltage standing wave ratio.</returns>
-    ''' <remarks>The ratio is a scalar value with no dimension.</remarks>
+    ''' <remarks>The ratio is a scalar value; it has no dimension.</remarks>
     Public ReadOnly Property VSWR As Double
         Get
-            Return Me.m_Impedance.VSWR(Me.MainCircle.Z0)
+            Return Me.Impedance.VSWR(Me.MainCircle.Z0)
         End Get
     End Property
 
@@ -358,7 +356,7 @@ Public Class PlotDetails
     ''' <returns>The angle of reflection.</returns>
     Public ReadOnly Property AngleOfReflection As System.Double
         Get
-            Return Me.m_Impedance.AngleOfReflection(Me.MainCircle.Z0)
+            Return Me.Impedance.AngleOfReflection(Me.MainCircle.Z0)
         End Get
     End Property
 
@@ -369,7 +367,7 @@ Public Class PlotDetails
     ''' <returns>The angle of transmission.</returns>
     Public ReadOnly Property AngleOfTransmission As System.Double
         Get
-            Return Me.m_Impedance.AngleOfTransmission(Me.MainCircle.Z0)
+            Return Me.Impedance.AngleOfTransmission(Me.MainCircle.Z0)
         End Get
     End Property
 
@@ -392,7 +390,7 @@ Public Class PlotDetails
 
 End Class ' PlotDetails
 
-' xxxxxxxxxxxxxxxxxxx ALMOSTDONETOHERE
+' xxxxxxxxxxxxx DONE_TO_HERE
 
 ''' <summary>
 ''' A class that represents the geometry of the outer circle of a Smith Chart,
