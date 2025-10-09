@@ -263,7 +263,7 @@ Public Class PlotDetails
     ''' <summary>
     ''' Represents the X-coordinate of the impedance plot, on a Cartesian grid.
     ''' Dimensions are in generic "units" relative to the grid on which
-    ''' <see cref="MainCircle"/> is located, not to <see cref="MainCircle"/>
+    ''' <see cref="MainCircle"/> is located, not the <see cref="MainCircle"/>
     ''' itself.
     ''' </summary>
     Public ReadOnly Property PlotX As System.Double
@@ -390,8 +390,6 @@ Public Class PlotDetails
 
 End Class ' PlotDetails
 
-' xxxxxxxxxxxxx DONE_TO_HERE
-
 ''' <summary>
 ''' A class that represents the geometry of the outer circle of a Smith Chart,
 ''' with a center, diameter, and characteristic impedance, for use on a
@@ -504,7 +502,8 @@ Public Class SmithMainCircle
     ''' The radius is measured from the center of the R-circle to any point on
     ''' its circumference.
     ''' </remarks>
-    Public Function GetRadiusR(ByVal resistance As System.Double) As System.Double
+    Public Function GetRadiusR(ByVal resistance As System.Double) _
+        As System.Double
 
         If resistance <= 0.0 Then
             'Dim CaughtBy As System.Reflection.MethodBase =
@@ -561,7 +560,8 @@ Public Class SmithMainCircle
     ''' <exception cref="ArgumentOutOfRangeException">when
     ''' <paramref name="conductance"/> is less than or equal to
     ''' zero.</exception>
-    Public Function GetRadiusG(ByVal conductance As System.Double) As System.Double
+    Public Function GetRadiusG(ByVal conductance As System.Double) _
+        As System.Double
 
         If conductance <= 0.0 Then
             'Dim CaughtBy As System.Reflection.MethodBase =
@@ -618,9 +618,9 @@ Public Class SmithMainCircle
 
         If Double.IsInfinity(vswr) Then
             ' By observation, a geometry solution
-            '     The rightmost edge of the VSWR-circle is tangent to the leftmost
-            '     edge of the R-circle whose resistance magnitude matches the VSWR
-            '     magnitude.
+            '     The rightmost edge of the VSWR-circle is tangent to the
+            '     leftmost edge of the R-circle whose resistance magnitude
+            '     matches the VSWR magnitude.
             Return Me.GridRadius - (Me.GetRadiusR(vswr) * 2.0)
         Else
             ' Alternate form.
@@ -703,6 +703,9 @@ Public Class SmithMainCircle
     ''' <summary>
     ''' Calculates the impedance represented by a point on the Smith Chart
     ''' defined by its Cartesian coordinates.
+    ''' Dimensions are in generic "units" relative to the grid on which the
+    ''' <see cref="SmithMainCircle"/> is located, not the
+    ''' <see cref="SmithMainCircle"/> itself.
     ''' </summary>
     ''' <param name="plotX">Specifies the X-coordinate of the point on the
     ''' Smith Chart in generic "units".</param>
@@ -822,11 +825,22 @@ Public Class SmithMainCircle
     End Function ' GetZFromPlot
 
     ''' <summary>
-    ''' xxxxxxxxxx
+    ''' Calculates the admittance represented by a point on the Smith Chart
+    ''' defined by its Cartesian coordinates.
+    ''' Dimensions are in generic "units" relative to the grid on which the
+    ''' <see cref="SmithMainCircle"/> is located, not the
+    ''' <see cref="SmithMainCircle"/> itself.
     ''' </summary>
-    ''' <param name="PlotX">xxxxxxxxxx</param>
-    ''' <param name="PlotY">xxxxxxxxxx</param>
-    ''' <returns>xxxxxxxxxx</returns>
+    ''' <param name="plotX">Specifies the X-coordinate of the point on the
+    ''' Smith Chart in generic "units".</param>
+    ''' <param name="plotY">Specifies the Y-coordinate of the point on the
+    ''' Smith Chart in generic "units".</param>
+    ''' <returns>
+    ''' The admittance represented by the point on the Smith Chart.
+    ''' </returns>
+    ''' <exception cref="ArgumentOutOfRangeException">when the point defined by
+    ''' <paramref name="plotX"/> and <paramref name="plotY"/> is outside the
+    ''' main circle of the Smith Chart.</exception>
     Public Function GetYFromPlot(
         PlotX As System.Double, PlotY As System.Double) As Admittance
 
@@ -835,11 +849,17 @@ Public Class SmithMainCircle
     End Function ' GetYFromPlot
 
     ''' <summary>
-    ''' xxxxxxxxxx
+    ''' Returns a <see cref="PlotDetails"/> object that contains details about
+    ''' the impedance associated with the specified (<paramref name="plotX"/>,
+    ''' <paramref name="plotY"/>) point, on a grid that contains a
+    ''' <see cref="SmithMainCircle"/>.
+    ''' Dimensions are in generic "units" relative to the grid on which the
+    ''' <see cref="SmithMainCircle"/> is located, not the
+    ''' <see cref="SmithMainCircle"/> itself.
     ''' </summary>
-    ''' <param name="plotX">xxxxxxxxxx</param>
-    ''' <param name="plotY">xxxxxxxxxx</param>
-    ''' <returns>xxxxxxxxxx</returns>
+    ''' <param name="plotX">Specifies the X-coordinate of the point.</param>
+    ''' <param name="plotY">Specifies the Y-coordinate of the point.</param>
+    ''' <returns>The <see cref="PlotDetails"/> object.</returns>
     Public Function GetDetailsFromPlot(
         ByVal plotX As System.Double, ByVal plotY As System.Double) _
         As PlotDetails
@@ -851,7 +871,8 @@ Public Class SmithMainCircle
     ''' <summary>
     ''' Creates a new instance of the <c>SmithMainCircle</c> class with the
     ''' specified center coordinates, diameter, and characteristic impedance.
-    ''' Dimensions are in generic "units".
+    ''' Dimensions are in generic "units" relative to the grid on which the
+    ''' <c>SmithMainCircle</c>is located.
     ''' </summary>
     ''' <param name="gridCenterX">Specifies the X-coordinate of the center of
     ''' the circle in generic "units".</param>
@@ -892,7 +913,10 @@ End Class ' SmithMainCircle
 
 ''' <summary>
 ''' A class that represents the geometry of a constant resistance circle on a
-''' Smith Chart. Dimensions are in generic "units".
+''' Smith Chart.
+''' Dimensions are in generic "units" relative to the grid on which the
+''' <see cref="SmithMainCircle"/> is located, not the
+''' <see cref="SmithMainCircle"/> itself.
 ''' </summary>
 Public Class RCircle
     Inherits GenericCircle
@@ -922,6 +946,9 @@ Public Class RCircle
     ''' <summary>
     ''' Attempts to generate a set of values describing the geometry of the
     ''' <c>RCircle</c>, on the associated <see cref="SmithMainCircle"/>.
+    ''' Dimensions are in generic "units" relative to the grid on which the
+    ''' <see cref="SmithMainCircle"/> is located, not the
+    ''' <see cref="SmithMainCircle"/> itself.
     ''' </summary>
     ''' <returns>Returns <c>True</c> if the process succeeds; otherwise,
     ''' <c>False</c>. Also returns a set of values describing the R
@@ -946,6 +973,9 @@ Public Class RCircle
     ''' Sets the Cartesian coordinates and radius of the <c>RCircle</c> based on
     ''' its conductance and the values in the associated
     ''' <see cref="SmithMainCircle"/>.
+    ''' Dimensions are in generic "units" relative to the grid on which the
+    ''' <see cref="SmithMainCircle"/> is located, not the
+    ''' <see cref="SmithMainCircle"/> itself.
     ''' </summary>
     ''' <remarks>
     ''' This method is intended to be called after the circle has been
@@ -994,7 +1024,10 @@ End Class ' RCircle
 
 ''' <summary>
 ''' A class that represents the geometry of a constant reactance circle on a
-''' Smith Chart. Dimensions are in generic "units".
+''' Smith Chart.
+''' Dimensions are in generic "units" relative to the grid on which the
+''' <see cref="SmithMainCircle"/> is located, not the
+''' <see cref="SmithMainCircle"/> itself.
 ''' </summary>
 Public Class XCircle
     Inherits GenericCircle
@@ -1024,6 +1057,9 @@ Public Class XCircle
     ''' <summary>
     ''' Attempts to generate a set of values describing the geometry of the
     ''' <c>XCircle</c>, on the associated <see cref="SmithMainCircle"/>.
+    ''' Dimensions are in generic "units" relative to the grid on which the
+    ''' <see cref="SmithMainCircle"/> is located, not the
+    ''' <see cref="SmithMainCircle"/> itself.
     ''' </summary>
     ''' <returns>Returns <c>True</c> if the process succeeds; otherwise,
     ''' <c>False</c>. Also returns a set of values describing the X
@@ -1052,6 +1088,9 @@ Public Class XCircle
     ''' Sets the Cartesian coordinates and radius of the <c>XCircle</c> based on
     ''' its reactance and the values in the associated
     ''' <see cref="SmithMainCircle"/>.
+    ''' Dimensions are in generic "units" relative to the grid on which the
+    ''' <see cref="SmithMainCircle"/> is located, not the
+    ''' <see cref="SmithMainCircle"/> itself.
     ''' </summary>
     ''' <remarks>
     ''' This method is intended to be called after the circle has been
@@ -1089,7 +1128,10 @@ End Class ' XCircle
 
 ''' <summary>
 ''' A class that represents the geometry of a constant conductance circle on a
-''' Smith Chart. Dimensions are in generic "units".
+''' Smith Chart.
+''' Dimensions are in generic "units" relative to the grid on which the
+''' <see cref="SmithMainCircle"/> is located, not the
+''' <see cref="SmithMainCircle"/> itself.
 ''' </summary>
 Public Class GCircle
     Inherits GenericCircle
@@ -1119,6 +1161,9 @@ Public Class GCircle
     ''' <summary>
     ''' Attempts to generate a set of values describing the geometry of the
     ''' <c>GCircle</c>, on the associated <see cref="SmithMainCircle"/>.
+    ''' Dimensions are in generic "units" relative to the grid on which the
+    ''' <see cref="SmithMainCircle"/> is located, not the
+    ''' <see cref="SmithMainCircle"/> itself.
     ''' </summary>
     ''' <returns>Returns <c>True</c> if the process succeeds; otherwise,
     ''' <c>False</c>. Also returns a set of values describing the G
@@ -1143,6 +1188,9 @@ Public Class GCircle
     ''' Sets the Cartesian coordinates and radius of the <c>GCircle</c> based on
     ''' its conductance and the values in the associated
     ''' <see cref="SmithMainCircle"/>.
+    ''' Dimensions are in generic "units" relative to the grid on which the
+    ''' <see cref="SmithMainCircle"/> is located, not the
+    ''' <see cref="SmithMainCircle"/> itself.
     ''' </summary>
     ''' <remarks>
     ''' This method is intended to be called after the circle has been
@@ -1190,7 +1238,10 @@ End Class ' GCircle
 
 ''' <summary>
 ''' A class that represents the geometry of a constant susceptance circle on a
-''' Smith Chart. Dimensions are in generic "units".
+''' Smith Chart.
+''' Dimensions are in generic "units" relative to the grid on which the
+''' <see cref="SmithMainCircle"/> is located, not the
+''' <see cref="SmithMainCircle"/> itself.
 ''' </summary>
 Public Class BCircle
     Inherits GenericCircle
@@ -1220,6 +1271,9 @@ Public Class BCircle
     ''' <summary>
     ''' Attempts to generate a set of values describing the geometry of the
     ''' <c>GCircle</c>, on the associated <see cref="SmithMainCircle"/>.
+    ''' Dimensions are in generic "units" relative to the grid on which the
+    ''' <see cref="SmithMainCircle"/> is located, not the
+    ''' <see cref="SmithMainCircle"/> itself.
     ''' </summary>
     ''' <returns>Returns <c>True</c> if the process succeeds; otherwise,
     ''' <c>False</c>. Also returns a set of values describing the G
@@ -1248,6 +1302,9 @@ Public Class BCircle
     ''' Sets the Cartesian coordinates and radius of the <c>BCircle</c> based on
     ''' its susceptance and the values in the associated
     ''' <see cref="SmithMainCircle"/>.
+    ''' Dimensions are in generic "units" relative to the grid on which the
+    ''' <see cref="SmithMainCircle"/> is located, not the
+    ''' <see cref="SmithMainCircle"/> itself.
     ''' </summary>
     ''' <remarks>
     ''' This method is intended to be called after the circle has been
@@ -1294,7 +1351,10 @@ End Class ' BCircle
 
 ''' <summary>
 ''' A class that represents the geometry of a constant VSWR circle on a Smith
-''' Chart. Dimensions are in generic "units".
+''' Chart.
+''' Dimensions are in generic "units" relative to the grid on which the
+''' <see cref="SmithMainCircle"/> is located, not the
+''' <see cref="SmithMainCircle"/> itself.
 ''' </summary>
 Public Class VCircle
     Inherits GenericCircle
@@ -1324,6 +1384,9 @@ Public Class VCircle
     ''' <summary>
     ''' Attempts to generate a set of values describing the geometry of the
     ''' <c>VCircle</c>, on the associated <see cref="SmithMainCircle"/>.
+    ''' Dimensions are in generic "units" relative to the grid on which the
+    ''' <see cref="SmithMainCircle"/> is located, not the
+    ''' <see cref="SmithMainCircle"/> itself.
     ''' </summary>
     ''' <returns>Returns <c>True</c> if the process succeeds; otherwise,
     ''' <c>False</c>. Also returns a set of values describing the VSWR
@@ -1359,6 +1422,9 @@ Public Class VCircle
     ''' Sets the Cartesian coordinates and radius of the <c>VCircle</c> based on
     ''' its VWSR and the values in the associated
     ''' <see cref="SmithMainCircle"/>.
+    ''' Dimensions are in generic "units" relative to the grid on which the
+    ''' <see cref="SmithMainCircle"/> is located, not the
+    ''' <see cref="SmithMainCircle"/> itself.
     ''' </summary>
     ''' <remarks>
     ''' This method is intended to be called after the circle has been
@@ -1416,7 +1482,9 @@ End Class ' VCircle
 
 ''' <summary>
 ''' A class that represents the geometry of an impedance plotted on a Smith Chart.
-''' Dimensions are in generic "units".
+''' Dimensions are in generic "units" relative to the grid on which the
+''' <see cref="SmithMainCircle"/> is located, not the
+''' <see cref="SmithMainCircle"/> itself.
 ''' </summary>
 Public Class ZPlot
 
@@ -1434,7 +1502,9 @@ Public Class ZPlot
     Private m_GridCenterX As System.Double
     ''' <summary>
     ''' Represents the X-coordinate of the <c>ZPlot</c>, on a Cartesian grid.
-    ''' Dimensions are in generic "units".
+    ''' Dimensions are in generic "units" relative to the grid on which the
+    ''' <see cref="SmithMainCircle"/> is located, not the
+    ''' <see cref="SmithMainCircle"/> itself.
     ''' </summary>
     Public Property GridCenterX As System.Double
         Get
@@ -1448,7 +1518,9 @@ Public Class ZPlot
     Private m_GridCenterY As System.Double
     ''' <summary>
     ''' Represents the Y-coordinate of the <c>ZPlot</c>, on a Cartesian grid.
-    ''' Dimensions are in generic "units".
+    ''' Dimensions are in generic "units" relative to the grid on which the
+    ''' <see cref="SmithMainCircle"/> is located, not the
+    ''' <see cref="SmithMainCircle"/> itself.
     ''' </summary>
     Public Property GridCenterY As System.Double
         Get
@@ -1484,6 +1556,9 @@ Public Class ZPlot
     ''' <summary>
     ''' Attempts to generate and apply a set of values describing the geometry
     ''' of the <c>ZPlot</c>, on the associated <see cref="SmithMainCircle"/>.
+    ''' Dimensions are in generic "units" relative to the grid on which the
+    ''' <see cref="SmithMainCircle"/> is located, not the
+    ''' <see cref="SmithMainCircle"/> itself.
     ''' </summary>
     ''' <returns>Returns <c>True</c> if the process succeeds; otherwise,
     ''' <c>False</c>.</returns>
@@ -1505,6 +1580,9 @@ Public Class ZPlot
     ''' Sets the Cartesian coordinates of the <c>ZPlot</c>, based on its
     ''' resistance and reactance values, in the associated
     ''' <see cref="SmithMainCircle"/>.
+    ''' Dimensions are in generic "units" relative to the grid on which the
+    ''' <see cref="SmithMainCircle"/> is located, not the
+    ''' <see cref="SmithMainCircle"/> itself.
     ''' </summary>
     ''' <remarks>
     ''' This method is intended to be called after the circle has been
