@@ -279,7 +279,6 @@ Namespace TrySelectTuningLayoutTests
 
     Public Class TestTrySelectTuningX
         ' Chart location cases:
-        ' LMN: Inside the G=Y0 circle. Two choices: CW or CCW on the R-circle.
         ' O: In the top remainder.
         ' P: In the bottom remainder.
 

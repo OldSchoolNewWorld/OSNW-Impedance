@@ -1,12 +1,10 @@
 ﻿'TODO:
 ' Should infinity be rejected for admittance and susceptance inputs?
-' Can RadiusG and RadiusB be improved to get more consistent results for test points G1 and G2?
 ' Add De/Serialization to Admittance?????
 '   "the strings should be generated and parsed by using the conventions of the invariant culture."
 '   REF: Serialize and deserialize numeric data
 '   https://learn.microsoft.com/en-us/dotnet/fundamentals/runtime-libraries/system-globalization-numberformatinfo#serialize-and-deserialize-numeric-data
-' Add tests of failures for bad inputs.
-' Allow both i and j to match the .NET result? Add tests for both i and j.
+' Allow both "i" and "j" to match the .NET result? Add tests for both i and j.
 '   Wait, where does .NET indicate anything about allowing "j" for Complex aside from "Format a complex
 '     number"? Complex only has ToString() and TryFormat() - nothing about standard form.
 ' Provide for matching to arbtitrary impedances (Rtarget, Xtarget) vs. only characteristic impedances?
