@@ -159,7 +159,7 @@ Public Structure Impedance
     ''' <summary>
     ''' Check for reasonable equality to zero when using floating point values.
     ''' </summary>
-    ''' <param name="value">xxxxxxxxxxxxx</param>
+    ''' <param name="value">Specifies the value to be compared to zero.</param>
     ''' <param name="zeroTolerance">Specifies an acceptable offset from
     ''' zero.</param>
     ''' <returns><c>True</c> if <paramref name="value"/> is reasonably close to

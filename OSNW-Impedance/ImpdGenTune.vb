@@ -178,7 +178,9 @@ Partial Public Structure Impedance
     ''' </summary>
     ''' <param name="z0">Specifies the characteristic impedance to which the
     ''' current instance should be matched.</param>
-    ''' <param name="transformations">xxxxxxxxxx</param>
+    ''' <param name="transformations">Specifies an array of
+    ''' <see cref="Transformation"/></param>s that can be used to tune a load
+    ''' impedance to match a source impedance.
     ''' <returns>
     ''' Returns <c>True</c> if the process succeeds; otherwise,
     ''' <c>False</c>. Also returns, by reference in
@@ -255,12 +257,29 @@ Partial Public Structure Impedance
         End If
     End Function ' OnREqualsZ0
 
-    '''' <summary>
-    '''' G: On the G=Y0 circle.
-    '''' </summary>
-    '''' <param name="z0">xxxxxxxxxx</param>
-    '''' <param name="transformations">xxxxxxxxxx</param>
-    '''' <returns>xxxxxxxxxx</returns>
+    ''' <summary>
+    ''' Attempts to obtain a conjugate match from the current instance (load
+    ''' impedance) to the source characteristic impedance specified by
+    ''' <paramref name="z0"/>, when the current instance appears directly on the
+    ''' G=Y0 circle.
+    ''' </summary>
+    ''' <param name="z0">Specifies the characteristic impedance to which the
+    ''' current instance should be matched.</param>
+    ''' <param name="transformations">Specifies an array of
+    ''' <see cref="Transformation"/></param>s that can be used to tune a load
+    ''' impedance to match a source impedance.
+    ''' <returns>
+    ''' Returns <c>True</c> if the process succeeds; otherwise,
+    ''' <c>False</c>. Also returns, by reference in
+    ''' <paramref name="transformations"/>, the components to construct the
+    ''' match.</returns>
+    ''' <remarks>
+    ''' <paramref name="z0"/> is the characteristic impedance to which the
+    ''' current instance should be matched. It should have a practical value
+    ''' with regard to the impedance values involved.
+    ''' A succcessful process might result in an empty
+    ''' <paramref name="transformations"/>.
+    ''' </remarks>
     Private Function OnGEqualsY0(ByVal z0 As System.Double,
         ByRef transformations As Transformation()) _
         As System.Boolean
@@ -315,12 +334,18 @@ Partial Public Structure Impedance
     End Function ' OnGEqualsY0
 
     ''' <summary>
-    ''' xxxxxxxxxxxxxxxxxx
-    ''' Worker for routines below.
+    ''' Confirms that the specified transformation produces the expected result.
+    ''' This is a worker for routines below.
     ''' </summary>
-    ''' <param name="z0">xxxxxxxxxxxxxxxxxx</param>
-    ''' <param name="aTransformation">xxxxxxxxxxxxxxxxxx</param>
-    ''' <returns>xxxxxxxxxxxxxxxxxx</returns>
+    ''' <param name="z0">Specifies the characteristic impedance to which the
+    ''' current instance should be matched, using the specified
+    ''' <paramref name="aTransformation"/>. It should have a practical value
+    ''' with regard to the impedance values involved.</param>
+    ''' <param name="aTransformation">Specifies the <see cref="Transformation"/>
+    ''' to be used to perform the tuning.</param>
+    ''' <returns><c>True</c> if the proposed <see cref="Transformation"/>
+    ''' results in a conjugate match for the current instance; otherwise,
+    ''' <c>False</c>.</returns>
     Private Function ValidateTransformation(ByVal z0 As System.Double,
         ByVal aTransformation As Transformation) As System.Boolean
 
@@ -495,12 +520,29 @@ Partial Public Structure Impedance
 
     End Function ' InsideREqualsZ0
 
-    '''' <summary>
-    '''' GHI: Inside the R=Z0 circle. Two choices: CW or CCW on the G-circle.
-    '''' </summary>
-    '''' <param name="z0">xxxxxxxxxx</param>
-    '''' <param name="transformations">xxxxxxxxxx</param>
-    '''' <returns>xxxxxxxxxx</returns>
+    ''' <summary>
+    ''' Attempts to obtain a conjugate match from the current instance (load
+    ''' impedance) to the source characteristic impedance specified by
+    ''' <paramref name="z0"/>, when the current instance appears inside the
+    ''' R=Z0 circle.
+    ''' </summary>
+    ''' <param name="z0">Specifies the characteristic impedance to which the
+    ''' current instance should be matched.</param>
+    ''' <param name="transformations">Specifies an array of
+    ''' <see cref="Transformation"/></param>s that can be used to tune a load
+    ''' impedance to match a source impedance.
+    ''' <returns>
+    ''' Returns <c>True</c> if the process succeeds; otherwise,
+    ''' <c>False</c>. Also returns, by reference in
+    ''' <paramref name="transformations"/>, the components to construct the
+    ''' match.</returns>
+    ''' <remarks>
+    ''' <paramref name="z0"/> is the characteristic impedance to which the
+    ''' current instance should be matched. It should have a practical value
+    ''' with regard to the impedance values involved.
+    ''' A succcessful process might result in an empty
+    ''' <paramref name="transformations"/>.
+    ''' </remarks>
     Private Function InsideREqualsZ0(ByVal z0 As System.Double,
         ByRef transformations As Transformation()) _
         As System.Boolean
@@ -684,12 +726,29 @@ Partial Public Structure Impedance
 
     End Function ' InsideGEqualsY0
 
-    '''' <summary>
-    '''' LMN: Inside the G=Y0 circle. Two choices: CW or CCW on the R-circle.
-    '''' </summary>
-    '''' <param name="z0">xxxxxxxxxx</param>
-    '''' <param name="transformations">xxxxxxxxxx</param>
-    '''' <returns>xxxxxxxxxx</returns>
+    ''' <summary>
+    ''' Attempts to obtain a conjugate match from the current instance (load
+    ''' impedance) to the source characteristic impedance specified by
+    ''' <paramref name="z0"/>, when the current instance appears inside the
+    ''' G=Y0 circle.
+    ''' </summary>
+    ''' <param name="z0">Specifies the characteristic impedance to which the
+    ''' current instance should be matched.</param>
+    ''' <param name="transformations">Specifies an array of
+    ''' <see cref="Transformation"/></param>s that can be used to tune a load
+    ''' impedance to match a source impedance.
+    ''' <returns>
+    ''' Returns <c>True</c> if the process succeeds; otherwise,
+    ''' <c>False</c>. Also returns, by reference in
+    ''' <paramref name="transformations"/>, the components to construct the
+    ''' match.</returns>
+    ''' <remarks>
+    ''' <paramref name="z0"/> is the characteristic impedance to which the
+    ''' current instance should be matched. It should have a practical value
+    ''' with regard to the impedance values involved.
+    ''' A succcessful process might result in an empty
+    ''' <paramref name="transformations"/>.
+    ''' </remarks>
     Private Function InsideGEqualsY0(ByVal z0 As System.Double,
         ByRef transformations As Transformation()) _
         As System.Boolean
