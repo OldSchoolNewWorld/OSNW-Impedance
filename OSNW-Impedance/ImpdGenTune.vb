@@ -860,6 +860,10 @@ Partial Public Structure Impedance
     ''' <returns><c>True</c> if a conjugate match solution is found and also
     ''' returns the components to construct the match; otherwise, <c>False</c>.
     ''' </returns>
+    ''' <remarks>
+    ''' An already-matched impedance returns <c>True</c>, with
+    ''' <c>Nothing</c>/<c>Null</c> for <paramref name="transformations"/>.
+    ''' </remarks>
     Public Function TrySelectTuningLayout(ByVal z0 As System.Double,
         ByRef transformations As Transformation()) _
         As System.Boolean
@@ -885,7 +889,7 @@ Partial Public Structure Impedance
         '     Omit: On the resonance line. Already either A or D.
         '     J: On G=Y0 circle, above resonance line. Only needs reactance.
         '     K: On G=Y0 circle, below resonance line. Only needs reactance.
-        ' LMN: Inside the G=Y0 circle. Two choices: CW or CCW on the R-circle.
+        ' Inside the G=Y0 circle. Two choices: CW or CCW on the R-circle.
         '     L1: Inside G=Y0 circle, above resonance line.
         '     L2: Inside G=Y0 circle, above resonance line. Z0=75.
         '     M: Inside G=Y0 circle, on line
@@ -905,28 +909,52 @@ Partial Public Structure Impedance
         ' LEAVE THIS HERE FOR NOW.
         ' OPEN OR SHORT SHOULD HAVE BEEN REJECTED IN NEW() AND THIS SHOULD NOT
         ' BE NEEDED UNLESS SOME REASON IS DISCOVERED THAT REQUIRES EXTREMES TO
-        ' BE ALLOWED. MAYBE THAT WILL HAVE TO BE ALLOWED. THAT MIGHT HAPPEN IF
-        ' AN IMAGE IMPEDANCE HAS EXTREME VALUES THAT CANCEL OR FOR SOME OTHER
-        ' INTERIM STATE. MAYBE IF A MATCH IS BEING MADE TO AN IMAGE IMPEDANCE OR
-        ' A SITUATION INVOLVING ACTIVE COMPONENTS THAT CAN HAVE A NEGATIVE
-        ' RESITANCE.    
+        ' BE ALLOWED. THAT MIGHT HAPPEN IF AN IMAGE IMPEDANCE HAS EXTREME VALUES
+        ' THAT CANCEL OR FOR SOME OTHER INTERIM STATE. MAYBE IF A MATCH IS BEING
+        ' MADE TO AN IMAGE IMPEDANCE OR A SITUATION INVOLVING ACTIVE COMPONENTS
+        ' THAT CAN EFFECTIVELY HAVE A NEGATIVE RESITANCE VALUE.
         ' Check for a short- or open-circuit.
         If NormR.Equals(0.0) OrElse System.Double.IsInfinity(NormR) Then
-            ' A: At the short circuit point. Omit; Covered by B.
-            ' B: Anywhere else on the outer circle. R=0.0
+            ' A: At the short circuit point. Omit - covered by B.
+            ' B: Anywhere else on the perimeter. R=0.0.
             ' C: At the open circuit point on the right.
             transformations = Nothing
             Return False
         End If
 
+        If Me.Resistance.Equals(z0) AndAlso Me.Reactance.Equals(0.0) Then
+            ' D: At the center.
+            ' Leave transformations as an empty array.
+            Return True
+        End If
+        REWORKED_TO_HERE
+
         If NormR >= 1.0 Then
+            ' On the R=Z0 circle.
+            '     Omit: On the resonance line. Already covered by C or D.
+            '     E: On R=Z0 circle, above resonance line. Only needs reactance.
+            '     F: On R=Z0 circle, below resonance line. Only needs reactance.
+            ' Inside the R=Z0 circle. Two choices: CW or CCW on the G-circle.
+            '     G1: Inside R=Z0 circle, above resonance line.
+            '     G2: Inside R=Z0 circle, above resonance line. Z0=50
+            '     H: Inside R=Z0 circle, on line
+            '     I: Inside R=Z0 circle, below resonance line.
             Return If(NormR.Equals(z0),
-                Me.OnREqualsZ0(z0, transformations),
-                Me.InsideREqualsZ0(z0, transformations))
+                Me.OnREqualsZ0(z0, transformations), ' E, F.
+                Me.InsideREqualsZ0(z0, transformations)) 'G, H, I.
         ElseIf NormG >= 1.0 Then
+            ' On the G=Y0 circle.
+            '     Omit: On the resonance line. Already covered by A or D.
+            '     J: On G=Y0 circle, above resonance line. Only needs reactance.
+            '     K: On G=Y0 circle, below resonance line. Only needs reactance.
+            ' Inside the G=Y0 circle. Two choices: CW or CCW on the R-circle.
+            '     L1: Inside G=Y0 circle, above resonance line.
+            '     L2: Inside G=Y0 circle, above resonance line. Z0=75.
+            '     M: Inside G=Y0 circle, on line
+            '     N: Inside G=Y0 circle, below line
             Return If(NormG.Equals(Y0),
-                Me.OnGEqualsY0(z0, transformations),
-                Me.InsideGEqualsY0(z0, transformations))
+                Me.OnGEqualsY0(z0, transformations), ' J, K.
+                Me.InsideGEqualsY0(z0, transformations)) ' L, M, N.
         End If
 
         ' DELETE THIS AFTER TESTING CONFIRMS THAT IT IS NOT HIT BY ANY TEST CASES.
@@ -935,14 +963,17 @@ Partial Public Structure Impedance
         If NormX.Equals(0.0) Then
             ' Z is ON the resonance line.
 
-            ' Would this case have been caught above? Yes, it would be in or
-            ' on the R or G-circle or at the center.
+            ' Should this case have been caught above? Yes, it would be in or
+            ' on the R- or G-circle, or at the center.
             Dim CaughtBy As System.Reflection.MethodBase =
                     System.Reflection.MethodBase.GetCurrentMethod
             Throw New ApplicationException(
                     """NormX.Equals(0.0)"" should never be matched in " &
                     NameOf(TrySelectTuningLayout))
-        ElseIf NormX > 0.0 Then
+        End If
+
+        ' READY_FOR_BELOW
+        If NormX > 0.0 Then
             ' Z is ABOVE the resonance line, between the G=Y0 and R=Z0 circles.
 
             '

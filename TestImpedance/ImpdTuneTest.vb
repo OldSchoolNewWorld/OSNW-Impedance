@@ -98,8 +98,7 @@ Namespace TrySelectTuningLayoutTests
             Dim transformations As Transformation() = Array.Empty(Of Transformation)
 
             Assert.True(Z.TrySelectTuningLayout(z0, transformations), Messages.TF)
-            Assert.True(transformations.Length = 1, Messages.ITC)
-            Assert.True(transformations(0).Style.Equals(TransformationStyles.None), Messages.ITS)
+            Assert.True(transformations.Length = 0, Messages.ITC)
 
         End Sub
 
