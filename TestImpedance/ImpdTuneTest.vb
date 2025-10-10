@@ -20,7 +20,7 @@ Imports Xunit
 ' Inside the R=Z0 circle. Two choices: CW or CCW on the G-circle.
 ' G1: Inside R=Z0 circle, above resonance line.
 ' G2: Inside R=Z0 circle, above resonance line, Z0=50
-' H: Inside R=Z0 circle, on line
+' H: Inside R=Z0 circle, on line.
 ' I: Inside R=Z0 circle, below resonance line.
 ' On the G=Y0 circle.
 ' On G=Y0 circle, on resonance line. Omit - already either A or D.
@@ -29,8 +29,8 @@ Imports Xunit
 ' Inside the G=Y0 circle. Two choices: CW or CCW on the R-circle.
 ' L1: Inside G=Y0 circle, above resonance line.
 ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
-' M: Inside G=Y0 circle, on line
-' N: Inside G=Y0 circle, below line
+' M: Inside G=Y0 circle, on line.
+' N: Inside G=Y0 circle, below line.
 ' O: In the top remainder.
 ' P: In the bottom remainder.
 ' Q: Outside of main circle. Invalid.
@@ -217,7 +217,7 @@ Namespace TrySelectTuningLayoutTests
         <Theory>
         <InlineData(1.0, 2.0, 1 / 2.0)> ' G1: Inside R=Z0 circle, above resonance line.
         <InlineData(50.0, 100.0, 25.0)> ' G2: Inside R=Z0 circle, above resonance line, Z0=50
-        <InlineData(1.0, 3.0, 0.0000)> ' H: Inside R=Z0 circle, on line
+        <InlineData(1.0, 3.0, 0.0000)> ' H: Inside R=Z0 circle, on line.
         <InlineData(1.0, 2.0, -2.0)> ' I: Inside R=Z0 circle, below resonance line.
         Public Sub TrySelectTuning_PositionGHI_Succeeds(z0 As Double, r As Double, x As Double)
 
@@ -250,8 +250,8 @@ Namespace TrySelectTuningLayoutTests
         <Theory>
         <InlineData(1.0, 1 / 3.0, 1 / 3.0)> ' L1: Inside G=Y0 circle, above resonance line.
         <InlineData(75.0, 25.0, 25.0)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
-        <InlineData(1.0, 1 / 3.0, 0.0000)> ' M: Inside G=Y0 circle, on line
-        <InlineData(1.0, 1 / 2.0, -1 / 3.0)> ' N: Inside G=Y0 circle, below line
+        <InlineData(1.0, 1 / 3.0, 0.0000)> ' M: Inside G=Y0 circle, on line.
+        <InlineData(1.0, 1 / 2.0, -1 / 3.0)> ' N: Inside G=Y0 circle, below line.
         Public Sub TrySelectTuning_PositionLMN_Succeeds(z0 As Double, r As Double, x As Double)
 
             Dim TestZ As New OSNW.Numerics.Impedance(r, x)

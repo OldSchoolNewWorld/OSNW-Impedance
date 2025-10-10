@@ -882,8 +882,8 @@ Partial Public Structure Impedance
         '     F: On R=Z0 circle, below resonance line. Only needs reactance.
         ' Inside the R=Z0 circle. Two choices: CW or CCW on the G-circle.
         '     G1: Inside R=Z0 circle, above resonance line.
-        '     G2: Inside R=Z0 circle, above resonance line. Z0=50
-        '     H: Inside R=Z0 circle, on line
+        '     G2: Inside R=Z0 circle, above resonance line. Z0=50.
+        '     H: Inside R=Z0 circle, on line.
         '     I: Inside R=Z0 circle, below resonance line.
         ' On the G=Y0 circle.
         '     Omit: On the resonance line. Already either A or D.
@@ -892,8 +892,8 @@ Partial Public Structure Impedance
         ' Inside the G=Y0 circle. Two choices: CW or CCW on the R-circle.
         '     L1: Inside G=Y0 circle, above resonance line.
         '     L2: Inside G=Y0 circle, above resonance line. Z0=75.
-        '     M: Inside G=Y0 circle, on line
-        '     N: Inside G=Y0 circle, below line
+        '     M: Inside G=Y0 circle, on line.
+        '     N: Inside G=Y0 circle, below line.
         ' O: In the top remainder.
         ' P: In the bottom remainder.
         ' Q: Outside of main circle. Invalid.
@@ -924,10 +924,9 @@ Partial Public Structure Impedance
 
         If Me.Resistance.Equals(z0) AndAlso Me.Reactance.Equals(0.0) Then
             ' D: At the center.
-            ' Leave transformations as an empty array.
+            ' Leave transformations as the incoming empty array.
             Return True
         End If
-        REWORKED_TO_HERE
 
         If NormR >= 1.0 Then
             ' On the R=Z0 circle.
@@ -936,8 +935,8 @@ Partial Public Structure Impedance
             '     F: On R=Z0 circle, below resonance line. Only needs reactance.
             ' Inside the R=Z0 circle. Two choices: CW or CCW on the G-circle.
             '     G1: Inside R=Z0 circle, above resonance line.
-            '     G2: Inside R=Z0 circle, above resonance line. Z0=50
-            '     H: Inside R=Z0 circle, on line
+            '     G2: Inside R=Z0 circle, above resonance line. Z0=50.
+            '     H: Inside R=Z0 circle, on line.
             '     I: Inside R=Z0 circle, below resonance line.
             Return If(NormR.Equals(z0),
                 Me.OnREqualsZ0(z0, transformations), ' E, F.
@@ -950,14 +949,14 @@ Partial Public Structure Impedance
             ' Inside the G=Y0 circle. Two choices: CW or CCW on the R-circle.
             '     L1: Inside G=Y0 circle, above resonance line.
             '     L2: Inside G=Y0 circle, above resonance line. Z0=75.
-            '     M: Inside G=Y0 circle, on line
-            '     N: Inside G=Y0 circle, below line
+            '     M: Inside G=Y0 circle, on line.
+            '     N: Inside G=Y0 circle, below line.
             Return If(NormG.Equals(Y0),
                 Me.OnGEqualsY0(z0, transformations), ' J, K.
                 Me.InsideGEqualsY0(z0, transformations)) ' L, M, N.
         End If
 
-        ' DELETE THIS AFTER TESTING CONFIRMS THAT IT IS NOT HIT BY ANY TEST CASES.
+        ' DELETE THIS AFTER TESTING CONFIRMS THAT IT IS NEVER HIT BY ANY TEST CASES.
         ' On getting this far, the impedance will, usually, fall into either
         ' the top or bottom center section.
         If NormX.Equals(0.0) Then
@@ -972,7 +971,7 @@ Partial Public Structure Impedance
                     NameOf(TrySelectTuningLayout))
         End If
 
-        ' READY_FOR_BELOW
+        ' xxxxxxxxxxxxxxxxx        READY_FOR_BELOW
         If NormX > 0.0 Then
             ' Z is ABOVE the resonance line, between the G=Y0 and R=Z0 circles.
 
