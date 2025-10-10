@@ -868,7 +868,7 @@ Partial Public Structure Impedance
         ' Chart.
 
         ' Chart location cases:
-        ' A: At the short circuit point. Omit; Covered by B.
+        ' A: At the short circuit point. Omit - covered by B.
         ' B: Anywhere else on the perimeter. R=0.0.
         ' C: At the open circuit point on the right.
         ' D: At the center.
@@ -878,7 +878,7 @@ Partial Public Structure Impedance
         '     F: On R=Z0 circle, below resonance line. Only needs reactance.
         ' Inside the R=Z0 circle. Two choices: CW or CCW on the G-circle.
         '     G1: Inside R=Z0 circle, above resonance line.
-        '     G2: Inside R=Z0 circle, above resonance line, Z0=50
+        '     G2: Inside R=Z0 circle, above resonance line. Z0=50
         '     H: Inside R=Z0 circle, on line
         '     I: Inside R=Z0 circle, below resonance line.
         ' On the G=Y0 circle.
@@ -886,8 +886,14 @@ Partial Public Structure Impedance
         '     J: On G=Y0 circle, above resonance line. Only needs reactance.
         '     K: On G=Y0 circle, below resonance line. Only needs reactance.
         ' LMN: Inside the G=Y0 circle. Two choices: CW or CCW on the R-circle.
+        '     L1: Inside G=Y0 circle, above resonance line.
+        '     L2: Inside G=Y0 circle, above resonance line. Z0=75.
+        '     M: Inside G=Y0 circle, on line
+        '     N: Inside G=Y0 circle, below line
         ' O: In the top remainder.
         ' P: In the bottom remainder.
+        ' Q: Outside of main circle. Invalid.
+        ' R: NormR<=0. Invalid.
 
         Dim NormR As System.Double = Me.Resistance / z0
         Dim NormX As System.Double = Me.Reactance / z0
