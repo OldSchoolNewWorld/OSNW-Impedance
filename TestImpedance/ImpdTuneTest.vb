@@ -37,14 +37,14 @@ Imports Xunit
 ' R: NormR<=0. Invalid.
 
 Class Messages
-    Public Const TF As String = "Tuning failed."
+    Public Const TF As String = "Matching failed."
     Public Const ITC As String = "Incorrect transformation count."
     Public Const ITS As String = "Incorrect transformation style"
 End Class ' Messages
 
-Namespace TrySelectTuningLayoutTests
+Namespace TrySelectMatchLayoutTests
 
-    Public Class TestTrySelectTuningLayoutB
+    Public Class TestTrySelectMatchLayoutB
         ' A: At the short circuit point. Omit; Covered by B.
         ' B: Anywhere else on the perimeter. R=0.0.
 
@@ -52,21 +52,21 @@ Namespace TrySelectTuningLayoutTests
         <Theory>
         <InlineData(1.0, 0.0000, 0.0000)> ' A: At the short circuit point. Omit - covered by B.
         <InlineData(1.0, 0.0000, 1 / 2.0)> ' B: Anywhere else on the perimeter. R=0.0.
-        Public Sub TrySelectTuning_PositionBZeroR_Fails(z0 As Double, r As Double, x As Double)
+        Public Sub TrySelectMatch_PositionBZeroR_Fails(z0 As Double, r As Double, x As Double)
 
             Dim Z As New OSNW.Numerics.Impedance(r, x)
             Dim transformations As Transformation() = Array.Empty(Of Transformation)
 
             ' This version, with R=0, does not throw an exception when R=0 is
-            ' allowed by Impedance.New(), but it does fail to tune.
-            Assert.False(Z.TrySelectTuningLayout(z0, transformations))
+            ' allowed by Impedance.New(), but it does fail to match.
+            Assert.False(Z.TrySelectMatchLayout(z0, transformations))
             Assert.True(transformations Is Nothing)
 
         End Sub
 
-    End Class ' TestTrySelectTuningLayoutB
+    End Class ' TestTrySelectMatchLayoutB
 
-    Public Class TestTrySelectTuningLayoutC
+    Public Class TestTrySelectMatchLayoutC
         ' C: At the open circuit point on the right.
 
         Const INF As Double = Double.PositiveInfinity
@@ -74,37 +74,37 @@ Namespace TrySelectTuningLayoutTests
         '<InlineData(    Z0,        R,       X)> ' Model
         <Theory>
         <InlineData(1.0, INF, 0.0000)> ' C: At the open circuit point on the right.
-        Public Sub TrySelectTuning_PositionC_Fails(z0 As Double, r As Double, x As Double)
+        Public Sub TrySelectMatch_PositionC_Fails(z0 As Double, r As Double, x As Double)
             Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
                 Sub()
                     ' Code that throws the exception.
                     Dim Z As New OSNW.Numerics.Impedance(r, x)
                     Dim transformations As Transformation() = Array.Empty(Of Transformation)
-                    Assert.False(Z.TrySelectTuningLayout(z0, transformations))
+                    Assert.False(Z.TrySelectMatchLayout(z0, transformations))
                 End Sub)
         End Sub
 
-    End Class ' TestTrySelectTuningLayoutC
+    End Class ' TestTrySelectMatchLayoutC
 
-    Public Class TestTrySelectTuningLayoutD
+    Public Class TestTrySelectMatchLayoutD
         ' D: At the center.
 
         '<InlineData(    Z0,        R,       X)> ' Model
         <Theory>
         <InlineData(1.0, 1.0, 0.0000)> ' D: At the center.
-        Public Sub TestTrySelectTuningLayoutD(z0 As Double, r As Double, x As Double)
+        Public Sub TestTrySelectMatchLayoutD(z0 As Double, r As Double, x As Double)
 
             Dim Z As New OSNW.Numerics.Impedance(r, x)
             Dim transformations As Transformation() = Array.Empty(Of Transformation)
 
-            Assert.True(Z.TrySelectTuningLayout(z0, transformations), Messages.TF)
+            Assert.True(Z.TrySelectMatchLayout(z0, transformations), Messages.TF)
             Assert.True(transformations.Length = 0, Messages.ITC)
 
         End Sub
 
-    End Class ' TestTrySelectTuningLayoutD
+    End Class ' TestTrySelectMatchLayoutD
 
-    Public Class TestTrySelectTuningLayoutEF
+    Public Class TestTrySelectMatchLayoutEF
         ' On the R=Z0 circle.
         ' On R=Z0 circle, on the resonance line. Already covered by C or D.
         ' E: On R=Z0 circle, above resonance line. Only needs reactance.
@@ -113,13 +113,13 @@ Namespace TrySelectTuningLayoutTests
         '<InlineData(    Z0,        R,       X)> ' Model
         <Theory>
         <InlineData(1.0, 1.0, 1.0)> ' E: On R=Z0 circle, above resonance line. Only needs reactance.
-        Public Sub TrySelectTuning_PositionE_Succeeds(z0 As Double, r As Double, x As Double)
+        Public Sub TrySelectMatch_PositionE_Succeeds(z0 As Double, r As Double, x As Double)
 
             Dim TestZ As New OSNW.Numerics.Impedance(r, x)
 
             Dim TargetZ As New Impedance(z0, 0.0)
             Dim transformations As Transformation() = Array.Empty(Of Transformation)
-            If Not TestZ.TrySelectTuningLayout(z0, transformations) Then
+            If Not TestZ.TrySelectMatchLayout(z0, transformations) Then
                 Assert.True(False, Messages.TF)
             End If
             Dim AddZ As New Impedance(0.0, transformations(0).Value1)
@@ -135,13 +135,13 @@ Namespace TrySelectTuningLayoutTests
         '<InlineData(    Z0,        R,       X)> ' Model
         <Theory>
         <InlineData(1.0, 1.0, -2.0)> ' F: On R=Z0 circle, below resonance line. Only needs reactance.
-        Public Sub TrySelectTuning_PositionF_Succeeds(z0 As Double, r As Double, x As Double)
+        Public Sub TrySelectMatch_PositionF_Succeeds(z0 As Double, r As Double, x As Double)
 
             Dim TestZ As New OSNW.Numerics.Impedance(r, x)
 
             Dim TargetZ As New Impedance(z0, 0.0)
             Dim transformations As Transformation() = Array.Empty(Of Transformation)
-            If Not TestZ.TrySelectTuningLayout(z0, transformations) Then
+            If Not TestZ.TrySelectMatchLayout(z0, transformations) Then
                 Assert.True(False, Messages.TF)
             End If
             Dim AddZ As New Impedance(0.0, transformations(0).Value1)
@@ -154,9 +154,9 @@ Namespace TrySelectTuningLayoutTests
 
         End Sub
 
-    End Class ' TestTrySelectTuningLayoutEF
+    End Class ' TestTrySelectMatchLayoutEF
 
-    Public Class TestTrySelectTuningLayoutJK
+    Public Class TestTrySelectMatchLayoutJK
         ' On the G=Y0 circle.
         ' On G=Y0 circle, on resonance line. Omit - already either A or D.
         ' J: On G=Y0 circle, above resonance line. Only needs reactance.
@@ -165,14 +165,14 @@ Namespace TrySelectTuningLayoutTests
         '<InlineData(    Z0,      G,       B)> ' Model
         <Theory>
         <InlineData(1.0, 1.0, -1.0)> ' J: On G=Y0 circle, above resonance line. Only needs reactance.
-        Public Sub TrySelectTuning_PositionJ_Succeeds(z0 As Double, g As Double, b As Double)
+        Public Sub TrySelectMatch_PositionJ_Succeeds(z0 As Double, g As Double, b As Double)
 
             Dim TestY As New OSNW.Numerics.Admittance(g, b)
             Dim TestZ As OSNW.Numerics.Impedance = TestY.ToImpedance
 
             Dim TargetZ As New Impedance(z0, 0.0)
             Dim transformations As Transformation() = Array.Empty(Of Transformation)
-            If Not TestZ.TrySelectTuningLayout(z0, transformations) Then
+            If Not TestZ.TrySelectMatchLayout(z0, transformations) Then
                 Assert.True(False, Messages.TF)
             End If
             Dim AddZ As New Impedance(0.0, transformations(0).Value1)
@@ -188,14 +188,14 @@ Namespace TrySelectTuningLayoutTests
         '<InlineData(    Z0,      G,       B)> ' Model
         <Theory>
         <InlineData(1.0, 1.0, 1.0)> ' K: On G=Y0 circle, below resonance line. Only needs reactance.
-        Public Sub TrySelectTuning_PositionK_Succeeds(z0 As Double, g As Double, b As Double)
+        Public Sub TrySelectMatch_PositionK_Succeeds(z0 As Double, g As Double, b As Double)
 
             Dim TestY As New OSNW.Numerics.Admittance(g, b)
             Dim TestZ As OSNW.Numerics.Impedance = TestY.ToImpedance
 
             Dim TargetZ As New Impedance(z0, 0.0)
             Dim transformations As Transformation() = Array.Empty(Of Transformation)
-            If Not TestZ.TrySelectTuningLayout(z0, transformations) Then
+            If Not TestZ.TrySelectMatchLayout(z0, transformations) Then
                 Assert.True(False, Messages.TF)
             End If
             Dim AddZ As New Impedance(0.0, transformations(0).Value1)
@@ -208,9 +208,9 @@ Namespace TrySelectTuningLayoutTests
 
         End Sub
 
-    End Class ' TestTrySelectTuningLayoutJK
+    End Class ' TestTrySelectMatchLayoutJK
 
-    Public Class TestTrySelectTuningLayoutGHI
+    Public Class TestTrySelectMatchLayoutGHI
         ' GHI: Inside the R=Z0 circle.
 
         '<InlineData(     Z0,        R,       X)> ' Model
@@ -219,13 +219,13 @@ Namespace TrySelectTuningLayoutTests
         <InlineData(50.0, 100.0, 25.0)> ' G2: Inside R=Z0 circle, above resonance line, Z0=50
         <InlineData(1.0, 3.0, 0.0000)> ' H: Inside R=Z0 circle, on line.
         <InlineData(1.0, 2.0, -2.0)> ' I: Inside R=Z0 circle, below resonance line.
-        Public Sub TrySelectTuning_PositionGHI_Succeeds(z0 As Double, r As Double, x As Double)
+        Public Sub TrySelectMatch_PositionGHI_Succeeds(z0 As Double, r As Double, x As Double)
 
             Dim TestZ As New OSNW.Numerics.Impedance(r, x)
 
             Dim TargetZ As New Impedance(z0, 0.0)
             Dim transformations As Transformation() = Array.Empty(Of Transformation)
-            If Not TestZ.TrySelectTuningLayout(z0, transformations) Then
+            If Not TestZ.TrySelectMatchLayout(z0, transformations) Then
                 Assert.True(False, Messages.TF)
             End If
             Assert.True(True)
@@ -233,7 +233,7 @@ Namespace TrySelectTuningLayoutTests
         End Sub
 
         '<Theory>
-        'Public Sub TrySelectTuning_PositionGHI_Fails()
+        'Public Sub TrySelectMatch_PositionGHI_Fails()
         '    '
         '    '
         '    '
@@ -241,9 +241,9 @@ Namespace TrySelectTuningLayoutTests
         '    '
         'End Sub
 
-    End Class ' TestTrySelectTuningLayoutGHI
+    End Class ' TestTrySelectMatchLayoutGHI
 
-    Public Class TestTrySelectTuningLayoutLMN
+    Public Class TestTrySelectMatchLayoutLMN
         ' LMN: Inside the G=Y0 circle.
 
         '<InlineData(     Z0,        R,       X)> ' Model
@@ -252,13 +252,13 @@ Namespace TrySelectTuningLayoutTests
         <InlineData(75.0, 25.0, 25.0)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
         <InlineData(1.0, 1 / 3.0, 0.0000)> ' M: Inside G=Y0 circle, on line.
         <InlineData(1.0, 1 / 2.0, -1 / 3.0)> ' N: Inside G=Y0 circle, below line.
-        Public Sub TrySelectTuning_PositionLMN_Succeeds(z0 As Double, r As Double, x As Double)
+        Public Sub TrySelectMatch_PositionLMN_Succeeds(z0 As Double, r As Double, x As Double)
 
             Dim TestZ As New OSNW.Numerics.Impedance(r, x)
 
             Dim TargetZ As New Impedance(z0, 0.0)
             Dim transformations As Transformation() = Array.Empty(Of Transformation)
-            If Not TestZ.TrySelectTuningLayout(z0, transformations) Then
+            If Not TestZ.TrySelectMatchLayout(z0, transformations) Then
                 Assert.True(False, Messages.TF)
             End If
             Assert.True(True)
@@ -266,7 +266,7 @@ Namespace TrySelectTuningLayoutTests
         End Sub
 
         '<Theory>
-        'Public Sub TrySelectTuning_PositionLMN_Fails()
+        'Public Sub TrySelectMatch_PositionLMN_Fails()
         '    '
         '    '
         '    '
@@ -274,48 +274,48 @@ Namespace TrySelectTuningLayoutTests
         '    '
         'End Sub
 
-    End Class ' TestTrySelectTuningLayoutLMN
+    End Class ' TestTrySelectMatchLayoutLMN
 
-    Public Class TestTrySelectTuningO
+    Public Class TestTrySelectMatchO
         ' O: In the top center.
 
         '<InlineData(     Z0,        R,       X)> ' Model
         <Theory>
         <InlineData(1.0, 0.2, 1.4)> ' O: In the top center.
-        Public Sub TestTrySelectTuningLayoutO(z0 As Double, r As Double, x As Double)
+        Public Sub TestTrySelectMatchLayoutO(z0 As Double, r As Double, x As Double)
 
             Dim TestZ As New OSNW.Numerics.Impedance(r, x)
 
             Dim TargetZ As New Impedance(z0, 0.0)
             Dim transformations As Transformation() = Array.Empty(Of Transformation)
-            If Not TestZ.TrySelectTuningLayout(z0, transformations) Then
+            If Not TestZ.TrySelectMatchLayout(z0, transformations) Then
                 Assert.True(False, Messages.TF)
             End If
             Assert.True(True)
 
         End Sub
 
-    End Class ' TestTrySelectTuningO
+    End Class ' TestTrySelectMatchO
 
-    Public Class TestTrySelectTuningP
+    Public Class TestTrySelectMatchP
         ' P: In the bottom center.
 
         '<InlineData(     Z0,        R,       X)> ' Model
         <Theory>
         <InlineData(1.0, 0.4, -0.8)> ' P: In the bottom center.
-        Public Sub TestTrySelectTuningLayoutP(z0 As Double, r As Double, x As Double)
+        Public Sub TestTrySelectMatchLayoutP(z0 As Double, r As Double, x As Double)
 
             Dim TestZ As New OSNW.Numerics.Impedance(r, x)
 
             Dim TargetZ As New Impedance(z0, 0.0)
             Dim transformations As Transformation() = Array.Empty(Of Transformation)
-            If Not TestZ.TrySelectTuningLayout(z0, transformations) Then
+            If Not TestZ.TrySelectMatchLayout(z0, transformations) Then
                 Assert.True(False, Messages.TF)
             End If
             Assert.True(True)
 
         End Sub
 
-    End Class ' TestTrySelectTuningP
+    End Class ' TestTrySelectMatchP
 
-End Namespace ' TrySelectTuningLayoutTests
+End Namespace ' TrySelectMatchLayoutTests

@@ -3,11 +3,11 @@ Option Strict On
 Option Compare Binary
 Option Infer Off
 
-' The generic tuning process is intended to be able to select a method to obtain
-' a conjugate match for a load impedance to a source characteristic impedance.
-' It is not intended to select specific capacitance or inductance values. The
-' goal is to be able to lay out an L-section and select a reactance value for
-' each component. Those reactance values could then be used to select
+' The generic matching process is intended to be able to select a method to
+' obtain a conjugate match for a load impedance to a source characteristic
+' impedance. It is not intended to select specific capacitance or inductance
+' values. The goal is to be able to lay out an L-section and select a reactance
+' value for each component. Those reactance values could then be used to select
 ' appropriate component values based on frequency.
 
 ' The comments here relate to solving conjugate matches on a Smith Chart that
@@ -179,7 +179,7 @@ Partial Public Structure Impedance
     ''' <param name="z0">Specifies the characteristic impedance to which the
     ''' current instance should be matched.</param>
     ''' <param name="transformations">Specifies an array of
-    ''' <see cref="Transformation"/></param>s that can be used to tune a load
+    ''' <see cref="Transformation"/></param>s that can be used to match a load
     ''' impedance to match a source impedance.
     ''' <returns>
     ''' Returns <c>True</c> if the process succeeds; otherwise,
@@ -236,7 +236,7 @@ Partial Public Structure Impedance
                 ' Consider alternative approaches.
                 ' CW on an R-circle would need a series inductor, increasing
                 ' the inductance of an already inductive load. NO.
-                ' What about tuning the equivalent admittance?
+                ' What about matching the equivalent admittance?
                 ' CCW on a G-circle would need a shunt inductor, reducing
                 ' but not canceling the reactance. NO.
                 ' CW on a G-circle would need a shunt capacitor. For Z=1+j3,
@@ -266,7 +266,7 @@ Partial Public Structure Impedance
     ''' <param name="z0">Specifies the characteristic impedance to which the
     ''' current instance should be matched.</param>
     ''' <param name="transformations">Specifies an array of
-    ''' <see cref="Transformation"/></param>s that can be used to tune a load
+    ''' <see cref="Transformation"/></param>s that can be used to match a load
     ''' impedance to match a source impedance.
     ''' <returns>
     ''' Returns <c>True</c> if the process succeeds; otherwise,
@@ -342,7 +342,7 @@ Partial Public Structure Impedance
     ''' <paramref name="aTransformation"/>. It should have a practical value
     ''' with regard to the impedance values involved.</param>
     ''' <param name="aTransformation">Specifies the <see cref="Transformation"/>
-    ''' to be used to perform the tuning.</param>
+    ''' to be used to perform the matching.</param>
     ''' <returns><c>True</c> if the proposed <see cref="Transformation"/>
     ''' results in a conjugate match for the current instance; otherwise,
     ''' <c>False</c>.</returns>
@@ -529,7 +529,7 @@ Partial Public Structure Impedance
     ''' <param name="z0">Specifies the characteristic impedance to which the
     ''' current instance should be matched.</param>
     ''' <param name="transformations">Specifies an array of
-    ''' <see cref="Transformation"/></param>s that can be used to tune a load
+    ''' <see cref="Transformation"/></param>s that can be used to match a load
     ''' impedance to match a source impedance.
     ''' <returns>
     ''' Returns <c>True</c> if the process succeeds; otherwise,
@@ -629,7 +629,7 @@ Partial Public Structure Impedance
 
         '' THESE CHECKS CAN BE DELETED/COMMENTED AFTER THE Transformation
         '' RESULTS ARE KNOWN TO BE CORRECT.
-        '' There should now be two valid solutions the tune to Z=Z0+j0.0.
+        '' There should now be two valid solutions the match to Z=Z0+j0.0.
         '' Check first solution.
         'If Not ValidateTransformation(z0, Transformation0) Then
         '    Return False
@@ -735,7 +735,7 @@ Partial Public Structure Impedance
     ''' <param name="z0">Specifies the characteristic impedance to which the
     ''' current instance should be matched.</param>
     ''' <param name="transformations">Specifies an array of
-    ''' <see cref="Transformation"/></param>s that can be used to tune a load
+    ''' <see cref="Transformation"/></param>s that can be used to match a load
     ''' impedance to match a source impedance.
     ''' <returns>
     ''' Returns <c>True</c> if the process succeeds; otherwise,
@@ -835,7 +835,7 @@ Partial Public Structure Impedance
 
         ' THESE CHECKS CAN BE DELETED/COMMENTED AFTER THE Transformation
         ' RESULTS ARE KNOWN TO BE CORRECT.
-        ' There should now be two valid solutions the tune to Z=Z0+j0.0.
+        ' There should now be two valid solutions the match to Z=Z0+j0.0.
         ' Check first solution.
         If Not ValidateTransformation(z0, Transformation0) Then
             Return False
@@ -964,7 +964,7 @@ Partial Public Structure Impedance
     ''' An already-matched impedance returns <c>True</c>, with
     ''' <c>Nothing</c>/<c>Null</c> for <paramref name="transformations"/>.
     ''' </remarks>
-    Public Function TrySelectTuningLayout(ByVal z0 As System.Double,
+    Public Function TrySelectMatchLayout(ByVal z0 As System.Double,
         ByRef transformations As Transformation()) _
         As System.Boolean
 
@@ -1068,7 +1068,7 @@ Partial Public Structure Impedance
                     System.Reflection.MethodBase.GetCurrentMethod
             Throw New ApplicationException(
                     """NormX.Equals(0.0)"" should never be matched in " &
-                    NameOf(TrySelectTuningLayout))
+                    NameOf(TrySelectMatchLayout))
         End If
 
         If NormX > 0.0 Then
@@ -1082,6 +1082,6 @@ Partial Public Structure Impedance
         ' GETTING HERE MEANS THAT NO CASES MATCHED.
         Return False ' DEFAULT UNTIL IMPLEMENTED.
 
-    End Function ' TrySelectTuningLayout
+    End Function ' TrySelectMatchLayout
 
 End Structure ' Impedance
