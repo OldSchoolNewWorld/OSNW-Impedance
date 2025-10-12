@@ -31,8 +31,8 @@ Imports Xunit
 ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
 ' M: Inside G=Y0 circle, on line.
 ' N: Inside G=Y0 circle, below line.
-' O: In the top remainder.
-' P: In the bottom remainder.
+' O: In the top center.
+' P: In the bottom center.
 ' Q: Outside of main circle. Invalid.
 ' R: NormR<=0. Invalid.
 
@@ -276,20 +276,46 @@ Namespace TrySelectTuningLayoutTests
 
     End Class ' TestTrySelectTuningLayoutLMN
 
-    Public Class TestTrySelectTuningX
-        ' Chart location cases:
-        ' O: In the top remainder.
-        ' P: In the bottom remainder.
+    Public Class TestTrySelectTuningO
+        ' O: In the top center.
 
-        <Fact>
-        Public Sub TestTrySelectTuningLayoutAmris23()
-            'Dim Z As New OSNW.Numerics.Impedance(0.2, 0.2)
-            'Dim transformations As Transformation() = Array.Empty(Of Transformation)
-            'Assert.True(Z.TrySelectTuningLayout(1.0, transformations), Messages.TF)
-            'Assert.True(transformations.Length = 1, Messages.ITC)
-            'Assert.True(transformations(0).Style.Equals(TransformationStyles.None), Messages.ITS)
+        '<InlineData(     Z0,        R,       X)> ' Model
+        <Theory>
+        <InlineData(1.0, 0.2, 1.4)> ' O: In the top center.
+        Public Sub TestTrySelectTuningLayoutO(z0 As Double, r As Double, x As Double)
+
+            Dim TestZ As New OSNW.Numerics.Impedance(r, x)
+
+            Dim TargetZ As New Impedance(z0, 0.0)
+            Dim transformations As Transformation() = Array.Empty(Of Transformation)
+            If Not TestZ.TrySelectTuningLayout(z0, transformations) Then
+                Assert.True(False, Messages.TF)
+            End If
+            Assert.True(True)
+
         End Sub
 
-    End Class ' TestTrySelectTuningX
+    End Class ' TestTrySelectTuningO
+
+    Public Class TestTrySelectTuningP
+        ' P: In the bottom center.
+
+        '<InlineData(     Z0,        R,       X)> ' Model
+        <Theory>
+        <InlineData(1.0, 0.4, -0.8)> ' P: In the bottom center.
+        Public Sub TestTrySelectTuningLayoutP(z0 As Double, r As Double, x As Double)
+
+            Dim TestZ As New OSNW.Numerics.Impedance(r, x)
+
+            Dim TargetZ As New Impedance(z0, 0.0)
+            Dim transformations As Transformation() = Array.Empty(Of Transformation)
+            If Not TestZ.TrySelectTuningLayout(z0, transformations) Then
+                Assert.True(False, Messages.TF)
+            End If
+            Assert.True(True)
+
+        End Sub
+
+    End Class ' TestTrySelectTuningP
 
 End Namespace ' TrySelectTuningLayoutTests

@@ -1,4 +1,5 @@
 ﻿'TODO:
+' Change terminology from "tune" to "match"?
 ' Should infinity be rejected for admittance and susceptance inputs?
 ' Add De/Serialization to Admittance?????
 '   "the strings should be generated and parsed by using the conventions of the invariant culture."
