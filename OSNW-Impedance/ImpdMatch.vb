@@ -856,6 +856,94 @@ Partial Public Structure Impedance
     ''' Attempts to obtain a conjugate match from the current instance (load
     ''' impedance) to the source characteristic impedance specified by
     ''' <paramref name="z0"/>, when the current instance appears in the top
+    ''' central area. This is to have the first move go CW.
+    ''' </summary>
+    ''' <param name="z0">Specifies the characteristic impedance to which the
+    ''' current instance should be matched.</param>
+    ''' <param name="transformations">Specifies an array of
+    ''' <see cref="Transformation"/>s that can be used to match a load impedance
+    ''' to match a source impedance.</param>
+    ''' <returns>
+    ''' Returns <c>True</c> if the process succeeds; otherwise,
+    ''' <c>False</c>. Also returns, by reference in
+    ''' <paramref name="transformations"/>, the components to construct the
+    ''' match.</returns>
+    ''' <remarks>
+    ''' <paramref name="z0"/> is the characteristic impedance to which the
+    ''' current instance should be matched. It should have a practical value
+    ''' with regard to the impedance values involved.
+    ''' A succcessful process might result in an empty
+    ''' <paramref name="transformations"/>.
+    ''' </remarks>
+    Private Function InTopCenterCW(ByVal z0 As System.Double,
+        ByRef transformations As Transformation()) _
+        As System.Boolean
+
+        'Dim NormR As System.Double = Me.Resistance / z0
+        'Dim NormX As System.Double = Me.Reactance / z0
+        'Dim Y0 As System.Double = 1.0 / z0
+        'Dim Y As Admittance = Me.ToAdmittance()
+        'Dim NormG As System.Double = Y.Conductance / Y0
+        'Dim NormB As System.Double = Y.Susceptance / Y0
+
+        ' XXXXX WHAT NEXT? XXXXX
+        ' Move CW on the G-circle to reach the R=Z0 circle. Use a shunt
+        ' capacitor. Two choices where to end.
+        ' Would there ever be a case to prefer the first or second
+        ' intersection? Maybe to favor high- or low-pass?
+
+        Return False ' DEFAULT UNTIL IMPLEMENTED.
+
+    End Function ' InTopCenterCW
+
+    ''' <summary>
+    ''' Attempts to obtain a conjugate match from the current instance (load
+    ''' impedance) to the source characteristic impedance specified by
+    ''' <paramref name="z0"/>, when the current instance appears in the top
+    ''' central area. This is to have the first move go CCW.
+    ''' </summary>
+    ''' <param name="z0">Specifies the characteristic impedance to which the
+    ''' current instance should be matched.</param>
+    ''' <param name="transformations">Specifies an array of
+    ''' <see cref="Transformation"/>s that can be used to match a load impedance
+    ''' to match a source impedance.</param>
+    ''' <returns>
+    ''' Returns <c>True</c> if the process succeeds; otherwise,
+    ''' <c>False</c>. Also returns, by reference in
+    ''' <paramref name="transformations"/>, the components to construct the
+    ''' match.</returns>
+    ''' <remarks>
+    ''' <paramref name="z0"/> is the characteristic impedance to which the
+    ''' current instance should be matched. It should have a practical value
+    ''' with regard to the impedance values involved.
+    ''' A succcessful process might result in an empty
+    ''' <paramref name="transformations"/>.
+    ''' </remarks>
+    Private Function InTopCenterCCW(ByVal z0 As System.Double,
+        ByRef transformations As Transformation()) _
+        As System.Boolean
+
+        'Dim NormR As System.Double = Me.Resistance / z0
+        'Dim NormX As System.Double = Me.Reactance / z0
+        'Dim Y0 As System.Double = 1.0 / z0
+        'Dim Y As Admittance = Me.ToAdmittance()
+        'Dim NormG As System.Double = Y.Conductance / Y0
+        'Dim NormB As System.Double = Y.Susceptance / Y0
+
+        ' XXXXX WHAT NEXT? XXXXX
+        ' Move CCW on the R-circle to reach the G=Y0 circle. Use a
+        ' series capacitor. Two choices where to end.
+        ' Would there ever be a case to prefer the first or second
+        ' intersection? Maybe to favor high- or low-pass?
+
+        Return False ' DEFAULT UNTIL IMPLEMENTED.
+
+    End Function ' InTopCenterCW
+
+    ''' <summary>
+    ''' Attempts to obtain a conjugate match from the current instance (load
+    ''' impedance) to the source characteristic impedance specified by
+    ''' <paramref name="z0"/>, when the current instance appears in the top
     ''' central area.
     ''' </summary>
     ''' <param name="z0">Specifies the characteristic impedance to which the
@@ -891,7 +979,104 @@ Partial Public Structure Impedance
         ' capacitor. Two choices where to end.
         ' Would there ever be a case to prefer the first or second
         ' intersection? Maybe to favor high- or low-pass?
+        If Not Me.InTopCenterCW(z0, transformations) Then
+            Return False
+        End If
+
         '          or
+
+        ' Move CCW on the R-circle to reach the G=Y0 circle. Use a
+        ' series capacitor. Two choices where to end.
+        ' Would there ever be a case to prefer the first or second
+        ' intersection? Maybe to favor high- or low-pass?
+        If Not Me.InTopCenterCCW(z0, transformations) Then
+            Return False
+        End If
+
+        ' On getting this far,
+        Return True
+
+    End Function ' InTopCenter
+
+    ''' <summary>
+    ''' Attempts to obtain a conjugate match from the current instance (load
+    ''' impedance) to the source characteristic impedance specified by
+    ''' <paramref name="z0"/>, when the current instance appears in the bottom
+    ''' central area. This is to have the first move go CW.
+    ''' </summary>
+    ''' <param name="z0">Specifies the characteristic impedance to which the
+    ''' current instance should be matched.</param>
+    ''' <param name="transformations">Specifies an array of
+    ''' <see cref="Transformation"/>s that can be used to match a load impedance
+    ''' to match a source impedance.</param>
+    ''' <returns>
+    ''' Returns <c>True</c> if the process succeeds; otherwise,
+    ''' <c>False</c>. Also returns, by reference in
+    ''' <paramref name="transformations"/>, the components to construct the
+    ''' match.</returns>
+    ''' <remarks>
+    ''' <paramref name="z0"/> is the characteristic impedance to which the
+    ''' current instance should be matched. It should have a practical value
+    ''' with regard to the impedance values involved.
+    ''' A succcessful process might result in an empty
+    ''' <paramref name="transformations"/>.
+    ''' </remarks>
+    Private Function InBottomCenterCW(ByVal z0 As System.Double,
+        ByRef transformations As Transformation()) _
+        As System.Boolean
+
+        'Dim NormR As System.Double = Me.Resistance / z0
+        'Dim NormX As System.Double = Me.Reactance / z0
+        'Dim Y0 As System.Double = 1.0 / z0
+        'Dim Y As Admittance = Me.ToAdmittance()
+        'Dim NormG As System.Double = Y.Conductance / Y0
+        'Dim NormB As System.Double = Y.Susceptance / Y0
+
+        ' XXXXX WHAT NEXT? XXXXX
+        ' Move CW on the G-circle to reach the R=Z0 circle. Use a shunt
+        ' capacitor. Two choices where to end.
+        ' Would there ever be a case to prefer the first or second
+        ' intersection? Maybe to favor high- or low-pass?
+
+        Return False ' DEFAULT UNTIL IMPLEMENTED.
+
+    End Function ' InBottomCenterCW
+
+    ''' <summary>
+    ''' Attempts to obtain a conjugate match from the current instance (load
+    ''' impedance) to the source characteristic impedance specified by
+    ''' <paramref name="z0"/>, when the current instance appears in the bottom
+    ''' central area. This is to have the first move go CW.
+    ''' </summary>
+    ''' <param name="z0">Specifies the characteristic impedance to which the
+    ''' current instance should be matched.</param>
+    ''' <param name="transformations">Specifies an array of
+    ''' <see cref="Transformation"/>s that can be used to match a load impedance
+    ''' to match a source impedance.</param>
+    ''' <returns>
+    ''' Returns <c>True</c> if the process succeeds; otherwise,
+    ''' <c>False</c>. Also returns, by reference in
+    ''' <paramref name="transformations"/>, the components to construct the
+    ''' match.</returns>
+    ''' <remarks>
+    ''' <paramref name="z0"/> is the characteristic impedance to which the
+    ''' current instance should be matched. It should have a practical value
+    ''' with regard to the impedance values involved.
+    ''' A succcessful process might result in an empty
+    ''' <paramref name="transformations"/>.
+    ''' </remarks>
+    Private Function InBottomCenterCCW(ByVal z0 As System.Double,
+        ByRef transformations As Transformation()) _
+        As System.Boolean
+
+        'Dim NormR As System.Double = Me.Resistance / z0
+        'Dim NormX As System.Double = Me.Reactance / z0
+        'Dim Y0 As System.Double = 1.0 / z0
+        'Dim Y As Admittance = Me.ToAdmittance()
+        'Dim NormG As System.Double = Y.Conductance / Y0
+        'Dim NormB As System.Double = Y.Susceptance / Y0
+
+        ' XXXXX WHAT NEXT? XXXXX
         ' Move CCW on the R-circle to reach the G=Y0 circle. Use a
         ' series capacitor. Two choices where to end.
         ' Would there ever be a case to prefer the first or second
@@ -899,8 +1084,7 @@ Partial Public Structure Impedance
 
         Return False ' DEFAULT UNTIL IMPLEMENTED.
 
-    End Function ' InTopCenter
-    'xxxx
+    End Function ' InBottomCenterCCW
 
     ''' <summary>
     ''' Attempts to obtain a conjugate match from the current instance (load
@@ -936,18 +1120,26 @@ Partial Public Structure Impedance
         'Dim NormG As System.Double = Y.Conductance / Y0
         'Dim NormB As System.Double = Y.Susceptance / Y0
 
-        ' XXXXX WHAT NEXT? XXXXX
         ' Move CCW on the G-circle to reach the R=Z0 circle. Use a shunt
         ' inductor.
         ' Would there ever be a case to prefer the first or second
         ' intersection? Maybe to favor high- or low-pass?
+        If Not Me.InBottomCenterCW(z0, transformations) Then
+            Return False
+        End If
+
         '          or
+
         ' Move CW on the R-circle to reach the G=Y0 circle. Use a
         ' series inductor.
         ' Would there ever be a case to prefer the first or second
         ' intersection? Maybe to favor high- or low-pass?
+        If Not Me.InBottomCenterCCW(z0, transformations) Then
+            Return False
+        End If
 
-        Return False ' DEFAULT UNTIL IMPLEMENTED.
+        ' On getting this far,
+        Return True
 
     End Function ' InBottomCenter
     'xxxx
