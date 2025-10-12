@@ -179,8 +179,8 @@ Partial Public Structure Impedance
     ''' <param name="z0">Specifies the characteristic impedance to which the
     ''' current instance should be matched.</param>
     ''' <param name="transformations">Specifies an array of
-    ''' <see cref="Transformation"/></param>s that can be used to match a load
-    ''' impedance to match a source impedance.
+    ''' <see cref="Transformation"/>s that can be used to match a load impedance
+    ''' to match a source impedance.</param>
     ''' <returns>
     ''' Returns <c>True</c> if the process succeeds; otherwise,
     ''' <c>False</c>. Also returns, by reference in
@@ -266,8 +266,8 @@ Partial Public Structure Impedance
     ''' <param name="z0">Specifies the characteristic impedance to which the
     ''' current instance should be matched.</param>
     ''' <param name="transformations">Specifies an array of
-    ''' <see cref="Transformation"/></param>s that can be used to match a load
-    ''' impedance to match a source impedance.
+    ''' <see cref="Transformation"/>s that can be used to match a load impedance
+    ''' to match a source impedance.</param>
     ''' <returns>
     ''' Returns <c>True</c> if the process succeeds; otherwise,
     ''' <c>False</c>. Also returns, by reference in
@@ -438,19 +438,20 @@ Partial Public Structure Impedance
 
     End Function ' ValidateTransformation
 
-    ''' <summary>
-    '''  Processes one intersection found in
-    '''  <see cref="M:InsideREqualsZ0(z0, transformations)"/>".>
-    ''' </summary>
-    ''' <param name="mainCirc">Specifies an arbitrary
-    ''' <see cref="SmithMainCircle"/> reference for calculations.</param>
-    ''' <param name="intersection">Specifies the Cartesian coordinates of one
-    ''' intersection of R- and G-circles.</param>
-    ''' <param name="transformation">Specifies the proposed
-    ''' <see cref="Transformation"/> to be checked.</param>
-    ''' <returns><c>True</c> if the proposed <see cref="Transformation"/>
-    ''' results in a conjugate match for the current instance; otherwise,
-    ''' <c>False</c>.</returns>
+    '''' <summary>
+    ''''  Processes one intersection found in
+    ''''  <see cref="M:InsideREqualsZ0(z0, transformations)"/>".>
+    '''' </summary>
+    '''' <param name="mainCirc">Specifies an arbitrary
+    '''' <see cref="SmithMainCircle"/> reference for calculations.</param>
+    '''' <param name="intersection">Specifies the Cartesian coordinates of one
+    '''' intersection of R- and G-circles.</param>
+    '''' <param name="transformation"> Returns a <see cref="Transformation"/>
+    '''' that can be used to match a load impedance, located at the specified
+    '''' <paramref name="intersection"/>, to match a source impedance.</param>
+    '''' <returns><c>True</c> if the proposed <see cref="Transformation"/>
+    '''' results in a conjugate match for the current instance; otherwise,
+    '''' <c>False</c>.</returns>
     Private Function InsideREqualsZ0(ByVal mainCirc As SmithMainCircle,
         ByVal intersection As System.Drawing.PointF,
         ByRef transformation As Transformation) As System.Boolean
@@ -529,8 +530,8 @@ Partial Public Structure Impedance
     ''' <param name="z0">Specifies the characteristic impedance to which the
     ''' current instance should be matched.</param>
     ''' <param name="transformations">Specifies an array of
-    ''' <see cref="Transformation"/></param>s that can be used to match a load
-    ''' impedance to match a source impedance.
+    ''' <see cref="Transformation"/>s that can be used to match a load impedance
+    ''' to match a source impedance.</param>
     ''' <returns>
     ''' Returns <c>True</c> if the process succeeds; otherwise,
     ''' <c>False</c>. Also returns, by reference in
@@ -652,8 +653,9 @@ Partial Public Structure Impedance
     '''' <see cref="SmithMainCircle"/> reference for calculations.</param>
     '''' <param name="intersection">Specifies the Cartesian coordinates of one
     '''' intersection of R- and G-circles.</param>
-    '''' <param name="transformation">Specifies the proposed
-    '''' <see cref="Transformation"/> to be checked.</param>
+    '''' <param name="transformation"> Returns a <see cref="Transformation"/>
+    '''' that can be used to match a load impedance, located at the specified
+    '''' <paramref name="intersection"/>, to match a source impedance.</param>
     '''' <returns><c>True</c> if the proposed <see cref="Transformation"/>
     '''' results in a conjugate match for the current instance; otherwise,
     '''' <c>False</c>.</returns>
@@ -735,8 +737,8 @@ Partial Public Structure Impedance
     ''' <param name="z0">Specifies the characteristic impedance to which the
     ''' current instance should be matched.</param>
     ''' <param name="transformations">Specifies an array of
-    ''' <see cref="Transformation"/></param>s that can be used to match a load
-    ''' impedance to match a source impedance.
+    ''' <see cref="Transformation"/>s that can be used to match a load impedance
+    ''' to match a source impedance.</param>
     ''' <returns>
     ''' Returns <c>True</c> if the process succeeds; otherwise,
     ''' <c>False</c>. Also returns, by reference in
@@ -859,8 +861,8 @@ Partial Public Structure Impedance
     ''' <param name="z0">Specifies the characteristic impedance to which the
     ''' current instance should be matched.</param>
     ''' <param name="transformations">Specifies an array of
-    ''' <see cref="Transformation"/></param>s that can be used to match a load
-    ''' impedance to a source impedance.
+    ''' <see cref="Transformation"/>s that can be used to match a load impedance
+    ''' to match a source impedance.</param>
     ''' <returns>
     ''' Returns <c>True</c> if the process succeeds; otherwise,
     ''' <c>False</c>. Also returns, by reference in
@@ -909,8 +911,8 @@ Partial Public Structure Impedance
     ''' <param name="z0">Specifies the characteristic impedance to which the
     ''' current instance should be matched.</param>
     ''' <param name="transformations">Specifies an array of
-    ''' <see cref="Transformation"/></param>s that can be used to match a load
-    ''' impedance to a source impedance.
+    ''' <see cref="Transformation"/>s that can be used to match a load impedance
+    ''' to match a source impedance.</param>
     ''' <returns>
     ''' Returns <c>True</c> if the process succeeds; otherwise,
     ''' <c>False</c>. Also returns, by reference in
@@ -956,7 +958,9 @@ Partial Public Structure Impedance
     ''' </summary>
     ''' <param name="z0">Specifies the characteristic impedance to which the
     ''' current instance should be matched.</param>
-    ''' <param name="transformations"></param>
+    ''' <param name="transformations">Specifies an array of
+    ''' <see cref="Transformation"/>s that can be used to match a load impedance
+    ''' to match a source impedance.</param>
     ''' <returns><c>True</c> if a conjugate match solution is found and also
     ''' returns the components to construct the match; otherwise, <c>False</c>.
     ''' </returns>
