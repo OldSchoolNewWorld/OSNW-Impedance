@@ -875,7 +875,10 @@ Partial Public Structure Impedance
     ''' A succcessful process might result in an empty
     ''' <paramref name="transformations"/>.
     ''' </remarks>
-    Private Function InTopCenterCW(ByVal z0 As System.Double,
+    Private Function InTopCenterCW(ByVal mainCirc As SmithMainCircle,
+        ByVal circR As RCircle, ByVal circG As GCircle,
+        intersections As _
+            System.Collections.Generic.List(Of System.Drawing.PointF),
         ByRef transformations As Transformation()) _
         As System.Boolean
 
@@ -895,6 +898,7 @@ Partial Public Structure Impedance
         Return False ' DEFAULT UNTIL IMPLEMENTED.
 
     End Function ' InTopCenterCW
+    'xxxx
 
     ''' <summary>
     ''' Attempts to obtain a conjugate match from the current instance (load
@@ -919,7 +923,10 @@ Partial Public Structure Impedance
     ''' A succcessful process might result in an empty
     ''' <paramref name="transformations"/>.
     ''' </remarks>
-    Private Function InTopCenterCCW(ByVal z0 As System.Double,
+    Private Function InTopCenterCCW(ByVal mainCirc As SmithMainCircle,
+        ByVal circR As RCircle, ByVal circG As GCircle,
+        intersections As _
+            System.Collections.Generic.List(Of System.Drawing.PointF),
         ByRef transformations As Transformation()) _
         As System.Boolean
 
@@ -938,7 +945,8 @@ Partial Public Structure Impedance
 
         Return False ' DEFAULT UNTIL IMPLEMENTED.
 
-    End Function ' InTopCenterCW
+    End Function ' InTopCenterCCW
+    'xxxx
 
     ''' <summary>
     ''' Attempts to obtain a conjugate match from the current instance (load
@@ -963,10 +971,14 @@ Partial Public Structure Impedance
     ''' A succcessful process might result in an empty
     ''' <paramref name="transformations"/>.
     ''' </remarks>
-    Private Function InTopCenter(ByVal z0 As System.Double,
+    Private Function InTopCenter(ByVal mainCirc As SmithMainCircle,
+        ByVal circR As RCircle, ByVal circG As GCircle,
+        intersections As _
+            System.Collections.Generic.List(Of System.Drawing.PointF),
         ByRef transformations As Transformation()) _
         As System.Boolean
 
+        Dim Z0 As System.Double = mainCirc.Z0
         'Dim NormR As System.Double = Me.Resistance / z0
         'Dim NormX As System.Double = Me.Reactance / z0
         'Dim Y0 As System.Double = 1.0 / z0
@@ -974,12 +986,12 @@ Partial Public Structure Impedance
         'Dim NormG As System.Double = Y.Conductance / Y0
         'Dim NormB As System.Double = Y.Susceptance / Y0
 
-        ' XXXXX WHAT NEXT? XXXXX
         ' Move CW on the G-circle to reach the R=Z0 circle. Use a shunt
         ' capacitor. Two choices where to end.
         ' Would there ever be a case to prefer the first or second
         ' intersection? Maybe to favor high- or low-pass?
-        If Not Me.InTopCenterCW(z0, transformations) Then
+        If Not Me.InTopCenterCW(
+            mainCirc, circR, circG, intersections, transformations) Then
             Return False
         End If
 
@@ -989,7 +1001,8 @@ Partial Public Structure Impedance
         ' series capacitor. Two choices where to end.
         ' Would there ever be a case to prefer the first or second
         ' intersection? Maybe to favor high- or low-pass?
-        If Not Me.InTopCenterCCW(z0, transformations) Then
+        If Not Me.InTopCenterCCW(
+            mainCirc, circR, circG, intersections, transformations) Then
             Return False
         End If
 
@@ -1021,7 +1034,10 @@ Partial Public Structure Impedance
     ''' A succcessful process might result in an empty
     ''' <paramref name="transformations"/>.
     ''' </remarks>
-    Private Function InBottomCenterCW(ByVal z0 As System.Double,
+    Private Function InBottomCenterCW(ByVal mainCirc As SmithMainCircle,
+        ByVal circR As RCircle, ByVal circG As GCircle,
+        intersections As _
+            System.Collections.Generic.List(Of System.Drawing.PointF),
         ByRef transformations As Transformation()) _
         As System.Boolean
 
@@ -1041,6 +1057,7 @@ Partial Public Structure Impedance
         Return False ' DEFAULT UNTIL IMPLEMENTED.
 
     End Function ' InBottomCenterCW
+    'xxxx
 
     ''' <summary>
     ''' Attempts to obtain a conjugate match from the current instance (load
@@ -1065,7 +1082,10 @@ Partial Public Structure Impedance
     ''' A succcessful process might result in an empty
     ''' <paramref name="transformations"/>.
     ''' </remarks>
-    Private Function InBottomCenterCCW(ByVal z0 As System.Double,
+    Private Function InBottomCenterCCW(ByVal mainCirc As SmithMainCircle,
+        ByVal circR As RCircle, ByVal circG As GCircle,
+        intersections As _
+            System.Collections.Generic.List(Of System.Drawing.PointF),
         ByRef transformations As Transformation()) _
         As System.Boolean
 
@@ -1085,6 +1105,7 @@ Partial Public Structure Impedance
         Return False ' DEFAULT UNTIL IMPLEMENTED.
 
     End Function ' InBottomCenterCCW
+    'xxxx
 
     ''' <summary>
     ''' Attempts to obtain a conjugate match from the current instance (load
@@ -1109,10 +1130,14 @@ Partial Public Structure Impedance
     ''' A succcessful process might result in an empty
     ''' <paramref name="transformations"/>.
     ''' </remarks>
-    Private Function InBottomCenter(ByVal z0 As System.Double,
+    Private Function InBottomCenter(ByVal mainCirc As SmithMainCircle,
+        ByVal circR As RCircle, ByVal circG As GCircle,
+        intersections As _
+            System.Collections.Generic.List(Of System.Drawing.PointF),
         ByRef transformations As Transformation()) _
         As System.Boolean
 
+        Dim Z0 As System.Double = mainCirc.Z0
         'Dim NormR As System.Double = Me.Resistance / z0
         'Dim NormX As System.Double = Me.Reactance / z0
         'Dim Y0 As System.Double = 1.0 / z0
@@ -1124,17 +1149,15 @@ Partial Public Structure Impedance
         ' inductor.
         ' Would there ever be a case to prefer the first or second
         ' intersection? Maybe to favor high- or low-pass?
-        If Not Me.InBottomCenterCW(z0, transformations) Then
+        If Not Me.InBottomCenterCW(
+            mainCirc, circR, circG, intersections, transformations) Then
             Return False
         End If
 
         '          or
 
-        ' Move CW on the R-circle to reach the G=Y0 circle. Use a
-        ' series inductor.
-        ' Would there ever be a case to prefer the first or second
-        ' intersection? Maybe to favor high- or low-pass?
-        If Not Me.InBottomCenterCCW(z0, transformations) Then
+        If Not Me.InBottomCenterCCW(
+            mainCirc, circR, circG, intersections, transformations) Then
             Return False
         End If
 
@@ -1143,6 +1166,64 @@ Partial Public Structure Impedance
 
     End Function ' InBottomCenter
     'xxxx
+
+    ''' <summary>
+    ''' Attempts to obtain a conjugate match from the current instance (load
+    ''' impedance) to the source characteristic impedance specified by
+    ''' <paramref name="z0"/>, when the current instance appears in the top or
+    ''' bottom central area.
+    ''' </summary>
+    ''' <param name="z0">Specifies the characteristic impedance to which the
+    ''' current instance should be matched.</param>
+    ''' <param name="transformations">Specifies an array of
+    ''' <see cref="Transformation"/>s that can be used to match a load impedance
+    ''' to match a source impedance.</param>
+    ''' <returns>
+    ''' Returns <c>True</c> if the process succeeds; otherwise,
+    ''' <c>False</c>. Also returns, by reference in
+    ''' <paramref name="transformations"/>, the components to construct the
+    ''' match.</returns>
+    ''' <remarks>
+    ''' <paramref name="z0"/> is the characteristic impedance to which the
+    ''' current instance should be matched. It should have a practical value
+    ''' with regard to the impedance values involved.
+    ''' A succcessful process might result in an empty
+    ''' <paramref name="transformations"/>.
+    ''' </remarks>
+    Private Function InRemainder(ByVal z0 As System.Double,
+        ByRef transformations As Transformation()) _
+        As System.Boolean
+
+        'Dim NormR As System.Double = Me.Resistance / z0
+        Dim NormX As System.Double = Me.Reactance / z0
+        Dim Y0 As System.Double = 1.0 / z0
+        'Dim Y As Admittance = Me.ToAdmittance()
+        'Dim NormG As System.Double = Y.Conductance / Y0
+        'Dim NormB As System.Double = Y.Susceptance / Y0
+
+        ' Determine the circles and their intersections.
+        Dim MainCirc As New SmithMainCircle(4.0, 5.0, 4.0, z0) ' Test data.
+        'Dim MainCirc As New SmithMainCircle(1.0, 1.0, 1.0, z0) ' Arbitrary.
+        Dim CircG As New GCircle(MainCirc, Y0)
+        Dim CircR As New RCircle(MainCirc, Me.Resistance)
+        Dim Intersections _
+            As System.Collections.Generic.List(Of System.Drawing.PointF) =
+                GenericCircle.GetIntersections(CircR, CircG)
+
+        ' Try to solve in the appropriate space.
+        If NormX > 0.0 Then
+            ' Z is ABOVE the resonance line, between the G=Y0 and R=Z0 circles.
+            Return Me.InTopCenter(
+                MainCirc, CircR, CircG, Intersections, transformations) ' O.
+        ElseIf NormX < 0.0 Then
+            ' Z is BELOW the resonance line, between the G=Y0 and R=Z0 circles.
+            Return Me.InBottomCenter(
+                MainCirc, CircR, CircG, Intersections, transformations) ' P.
+        End If
+
+        Return False ' DEFAULT UNTIL IMPLEMENTED.
+
+    End Function ' InRemainder
 
     ''' <summary>
     ''' Attempts to obtain a conjugate match from the current load instance to
@@ -1267,13 +1348,14 @@ Partial Public Structure Impedance
                     NameOf(TrySelectMatchLayout))
         End If
 
-        If NormX > 0.0 Then
-            ' Z is ABOVE the resonance line, between the G=Y0 and R=Z0 circles.
-            Return Me.InTopCenter(z0, transformations) ' O.
-        ElseIf NormX < 0.0 Then
-            ' Z is BELOW the resonance line, between the G=Y0 and R=Z0 circles.
-            Return Me.InBottomCenter(z0, transformations) ' P.
-        End If
+        '        If NormX > 0.0 Then
+        '            ' Z is ABOVE the resonance line, between the G=Y0 and R=Z0 circles.
+        '            Return Me.InTopCenter(z0, transformations) ' O.
+        '        ElseIf NormX < 0.0 Then
+        '            ' Z is BELOW the resonance line, between the G=Y0 and R=Z0 circles.
+        '            Return Me.InBottomCenter(z0, transformations) ' P.
+        '        End If
+        Return Me.InRemainder(z0, transformations)
 
         ' GETTING HERE MEANS THAT NO CASES MATCHED.
         Return False ' DEFAULT UNTIL IMPLEMENTED.
