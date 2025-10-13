@@ -876,7 +876,6 @@ Partial Public Structure Impedance
     ''' <paramref name="transformations"/>.
     ''' </remarks>
     Private Function InTopCenterCW(ByVal mainCirc As SmithMainCircle,
-        ByVal circR As RCircle, ByVal circG As GCircle,
         intersections As _
             System.Collections.Generic.List(Of System.Drawing.PointF),
         ByRef transformations As Transformation()) _
@@ -889,16 +888,57 @@ Partial Public Structure Impedance
         'Dim NormG As System.Double = Y.Conductance / Y0
         'Dim NormB As System.Double = Y.Susceptance / Y0
 
-        ' XXXXX WHAT NEXT? XXXXX
         ' Move CW on the G-circle to reach the R=Z0 circle. Use a shunt
         ' capacitor. Two choices where to end.
         ' Would there ever be a case to prefer the first or second
         ' intersection? Maybe to favor high- or low-pass?
+        For Each OneIntersection As System.Drawing.PointF In intersections
+
+            ' Determine the changes to take place.
+            Dim ImageY As Admittance =
+                mainCirc.GetYFromPlot(OneIntersection.X, OneIntersection.Y)
+            Dim DeltaB As System.Double =
+                ImageY.Susceptance - Me.ToAdmittance.Susceptance
+            Dim ImageZ As Impedance =
+                mainCirc.GetZFromPlot(OneIntersection.X, OneIntersection.Y)
+            Dim DeltaX As System.Double =
+                ImageZ.Reactance - Me.Reactance
+
+            ' Set up the transformation.
+            Dim Trans As New Transformation
+            If OneIntersection.Y > mainCirc.GridCenterY Then
+                ' The short first move. Now CCW or R-Circle.
+                Trans.Style = TransformationStyles.ShuntCapSeriesCap
+            Else
+                ' The long first move. Now CW or R-Circle.
+                Trans.Style = TransformationStyles.ShuntCapSeriesInd
+            End If
+            With Trans
+                .Value1 = DeltaB
+                .Value2 = DeltaX
+            End With
+
+            Dim CurrCount As Integer = transformations.Length
+            ReDim Preserve transformations(CurrCount)
+            transformations(CurrCount) = Trans
+
+
+
+            ' MAYBE CONFIRM THE OUTCOME FOR ONE HERE.
+
+
+
+        Next
+
+
+
+        ' MAYBE CONFIRM THE OUTCOME FOR BOTH HERE.
+
 
         Return False ' DEFAULT UNTIL IMPLEMENTED.
 
     End Function ' InTopCenterCW
-    'xxxx
+    xxxx
 
     ''' <summary>
     ''' Attempts to obtain a conjugate match from the current instance (load
@@ -924,7 +964,6 @@ Partial Public Structure Impedance
     ''' <paramref name="transformations"/>.
     ''' </remarks>
     Private Function InTopCenterCCW(ByVal mainCirc As SmithMainCircle,
-        ByVal circR As RCircle, ByVal circG As GCircle,
         intersections As _
             System.Collections.Generic.List(Of System.Drawing.PointF),
         ByRef transformations As Transformation()) _
@@ -937,11 +976,17 @@ Partial Public Structure Impedance
         'Dim NormG As System.Double = Y.Conductance / Y0
         'Dim NormB As System.Double = Y.Susceptance / Y0
 
-        ' XXXXX WHAT NEXT? XXXXX
         ' Move CCW on the R-circle to reach the G=Y0 circle. Use a
         ' series capacitor. Two choices where to end.
         ' Would there ever be a case to prefer the first or second
         ' intersection? Maybe to favor high- or low-pass?
+        For Each OneIntersection As System.Drawing.PointF In intersections
+            If OneIntersection.Y > 0.0 Then
+                ' The short first move.
+            Else
+                ' The long first move.
+            End If
+        Next
 
         Return False ' DEFAULT UNTIL IMPLEMENTED.
 
@@ -991,7 +1036,8 @@ Partial Public Structure Impedance
         ' Would there ever be a case to prefer the first or second
         ' intersection? Maybe to favor high- or low-pass?
         If Not Me.InTopCenterCW(
-            mainCirc, circR, circG, intersections, transformations) Then
+            mainCirc, intersections, transformations) Then
+
             Return False
         End If
 
@@ -1002,7 +1048,8 @@ Partial Public Structure Impedance
         ' Would there ever be a case to prefer the first or second
         ' intersection? Maybe to favor high- or low-pass?
         If Not Me.InTopCenterCCW(
-            mainCirc, circR, circG, intersections, transformations) Then
+            mainCirc, intersections, transformations) Then
+
             Return False
         End If
 
@@ -1035,7 +1082,6 @@ Partial Public Structure Impedance
     ''' <paramref name="transformations"/>.
     ''' </remarks>
     Private Function InBottomCenterCW(ByVal mainCirc As SmithMainCircle,
-        ByVal circR As RCircle, ByVal circG As GCircle,
         intersections As _
             System.Collections.Generic.List(Of System.Drawing.PointF),
         ByRef transformations As Transformation()) _
@@ -1048,11 +1094,17 @@ Partial Public Structure Impedance
         'Dim NormG As System.Double = Y.Conductance / Y0
         'Dim NormB As System.Double = Y.Susceptance / Y0
 
-        ' XXXXX WHAT NEXT? XXXXX
         ' Move CW on the G-circle to reach the R=Z0 circle. Use a shunt
         ' capacitor. Two choices where to end.
         ' Would there ever be a case to prefer the first or second
         ' intersection? Maybe to favor high- or low-pass?
+        For Each OneIntersection As System.Drawing.PointF In intersections
+            If OneIntersection.Y < 0.0 Then
+                ' The short first move.
+            Else
+                ' The long first move.
+            End If
+        Next
 
         Return False ' DEFAULT UNTIL IMPLEMENTED.
 
@@ -1083,7 +1135,6 @@ Partial Public Structure Impedance
     ''' <paramref name="transformations"/>.
     ''' </remarks>
     Private Function InBottomCenterCCW(ByVal mainCirc As SmithMainCircle,
-        ByVal circR As RCircle, ByVal circG As GCircle,
         intersections As _
             System.Collections.Generic.List(Of System.Drawing.PointF),
         ByRef transformations As Transformation()) _
@@ -1096,11 +1147,17 @@ Partial Public Structure Impedance
         'Dim NormG As System.Double = Y.Conductance / Y0
         'Dim NormB As System.Double = Y.Susceptance / Y0
 
-        ' XXXXX WHAT NEXT? XXXXX
         ' Move CCW on the R-circle to reach the G=Y0 circle. Use a
         ' series capacitor. Two choices where to end.
         ' Would there ever be a case to prefer the first or second
         ' intersection? Maybe to favor high- or low-pass?
+        For Each OneIntersection As System.Drawing.PointF In intersections
+            If OneIntersection.Y < 0.0 Then
+                ' The short first move.
+            Else
+                ' The long first move.
+            End If
+        Next
 
         Return False ' DEFAULT UNTIL IMPLEMENTED.
 
@@ -1150,14 +1207,16 @@ Partial Public Structure Impedance
         ' Would there ever be a case to prefer the first or second
         ' intersection? Maybe to favor high- or low-pass?
         If Not Me.InBottomCenterCW(
-            mainCirc, circR, circG, intersections, transformations) Then
+            mainCirc, intersections, transformations) Then
+
             Return False
         End If
 
         '          or
 
         If Not Me.InBottomCenterCCW(
-            mainCirc, circR, circG, intersections, transformations) Then
+            mainCirc, intersections, transformations) Then
+
             Return False
         End If
 
