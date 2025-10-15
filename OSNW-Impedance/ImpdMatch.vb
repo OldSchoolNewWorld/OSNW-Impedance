@@ -171,6 +171,130 @@ End Structure ' Transformation
 Partial Public Structure Impedance
 
     ''' <summary>
+    ''' Confirms that the specified transformation produces the expected result.
+    ''' This is a worker for routines below.
+    ''' </summary>
+    ''' <param name="z0">Specifies the characteristic impedance to which the
+    ''' current instance should be matched, using the specified
+    ''' <paramref name="aTransformation"/>. It should have a practical value
+    ''' with regard to the impedance values involved.</param>
+    ''' <param name="aTransformation">Specifies the <see cref="Transformation"/>
+    ''' to be used to perform the matching.</param>
+    ''' <returns><c>True</c> if the proposed <see cref="Transformation"/>
+    ''' results in a conjugate match for the current instance; otherwise,
+    ''' <c>False</c>.</returns>
+    Private Function ValidateTransformation(ByVal z0 As System.Double,
+        ByVal aTransformation As Transformation) As System.Boolean
+
+        Dim TargetZ As New Impedance(z0, 0.0)
+        Dim WorkZ As Impedance
+        Dim FixupY As Admittance
+        Dim FixupZ As Impedance
+
+        If aTransformation.Style = TransformationStyles.ShuntCapSeriesInd Then
+
+            FixupY = New Admittance(0.0, aTransformation.Value1)
+            FixupZ = FixupY.ToImpedance
+            WorkZ = Impedance.AddShuntImpedance(Me, FixupZ)
+
+            FixupZ = New Impedance(0.0, aTransformation.Value2)
+            WorkZ = Impedance.AddSeriesImpedance(WorkZ, FixupZ)
+
+            If Not Impedance.EqualEnough(WorkZ.Resistance, z0) Then
+                'Dim CaughtBy As System.Reflection.MethodBase =
+                '    System.Reflection.MethodBase.GetCurrentMethod
+                Throw New System.ApplicationException(
+                    "Resistance did not reach target.")
+            End If
+            Dim NearlyZero As System.Double = z0 * 0.000001
+            If Not Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero) Then
+                'Dim CaughtBy As System.Reflection.MethodBase =
+                '    System.Reflection.MethodBase.GetCurrentMethod
+                Throw New System.ApplicationException(
+                    "Reactance did not reach target.")
+            End If
+
+        ElseIf aTransformation.Style = TransformationStyles.ShuntIndSeriesCap Then
+
+            FixupY = New Admittance(0.0, aTransformation.Value1)
+            FixupZ = FixupY.ToImpedance
+            WorkZ = Impedance.AddShuntImpedance(Me, FixupZ)
+
+            FixupZ = New Impedance(0.0, aTransformation.Value2)
+            WorkZ = Impedance.AddSeriesImpedance(WorkZ, FixupZ)
+
+            Dim NearlyZero As System.Double = z0 * 0.000001
+            If Not Impedance.EqualEnough(WorkZ.Resistance, z0) OrElse
+                Not Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero) Then
+                'Dim CaughtBy As System.Reflection.MethodBase =
+                '    System.Reflection.MethodBase.GetCurrentMethod
+                Throw New System.ApplicationException("Transformation did not reach target.")
+            End If
+
+        ElseIf aTransformation.Style = TransformationStyles.SeriesIndShuntCap Then
+
+            FixupZ = New Impedance(0.0, aTransformation.Value1)
+            WorkZ = Impedance.AddSeriesImpedance(Me, FixupZ)
+
+            FixupY = New Admittance(0.0, aTransformation.Value2)
+            FixupZ = FixupY.ToImpedance
+            WorkZ = Impedance.AddShuntImpedance(WorkZ, FixupZ)
+
+            Dim NearlyZero As System.Double = z0 * 0.000001
+            If Not Impedance.EqualEnough(WorkZ.Resistance, z0) OrElse
+                Not Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero) Then
+                'Dim CaughtBy As System.Reflection.MethodBase =
+                '    System.Reflection.MethodBase.GetCurrentMethod
+                Throw New System.ApplicationException("Transformation did not reach target.")
+            End If
+
+        ElseIf aTransformation.Style = TransformationStyles.SeriesCapShuntInd Then
+
+            FixupZ = New Impedance(0.0, aTransformation.Value1)
+            WorkZ = Impedance.AddSeriesImpedance(Me, FixupZ)
+
+            FixupY = New Admittance(0.0, aTransformation.Value2)
+            FixupZ = FixupY.ToImpedance
+            WorkZ = Impedance.AddShuntImpedance(WorkZ, FixupZ)
+
+            Dim NearlyZero As System.Double = z0 * 0.000001
+            If Not Impedance.EqualEnough(WorkZ.Resistance, z0) OrElse
+                Not Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero) Then
+                'Dim CaughtBy As System.Reflection.MethodBase =
+                '    System.Reflection.MethodBase.GetCurrentMethod
+                Throw New System.ApplicationException("Transformation did not reach target.")
+            End If
+
+        ElseIf aTransformation.Style = TransformationStyles.ShuntCapSeriesCap Then
+
+            FixupY = New Admittance(0.0, aTransformation.Value1)
+            FixupZ = FixupY.ToImpedance
+            WorkZ = Impedance.AddShuntImpedance(Me, FixupZ)
+
+            FixupZ = New Impedance(0.0, aTransformation.Value2)
+            WorkZ = Impedance.AddSeriesImpedance(WorkZ, FixupZ)
+
+            Dim NearlyZero As System.Double = z0 * 0.000001
+            If Not Impedance.EqualEnough(WorkZ.Resistance, z0) OrElse
+                Not Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero) Then
+                'Dim CaughtBy As System.Reflection.MethodBase =
+                '    System.Reflection.MethodBase.GetCurrentMethod
+                Throw New System.ApplicationException("Transformation did not reach target.")
+            End If
+
+            ' On getting this far,
+            Return True
+        Else
+            ' Invalid transformation style.
+            Return False
+        End If
+
+        ' On getting this far,
+        Return True
+
+    End Function ' ValidateTransformation
+
+    ''' <summary>
     ''' Attempts to obtain a conjugate match from the current instance (load
     ''' impedance) to the source characteristic impedance specified by
     ''' <paramref name="z0"/>, when the current instance appears directly on the
@@ -332,111 +456,6 @@ Partial Public Structure Impedance
         End If
 
     End Function ' OnGEqualsY0
-
-    ''' <summary>
-    ''' Confirms that the specified transformation produces the expected result.
-    ''' This is a worker for routines below.
-    ''' </summary>
-    ''' <param name="z0">Specifies the characteristic impedance to which the
-    ''' current instance should be matched, using the specified
-    ''' <paramref name="aTransformation"/>. It should have a practical value
-    ''' with regard to the impedance values involved.</param>
-    ''' <param name="aTransformation">Specifies the <see cref="Transformation"/>
-    ''' to be used to perform the matching.</param>
-    ''' <returns><c>True</c> if the proposed <see cref="Transformation"/>
-    ''' results in a conjugate match for the current instance; otherwise,
-    ''' <c>False</c>.</returns>
-    Private Function ValidateTransformation(ByVal z0 As System.Double,
-        ByVal aTransformation As Transformation) As System.Boolean
-
-        Dim TargetZ As New Impedance(z0, 0.0)
-        Dim WorkZ As Impedance
-        Dim FixupY As Admittance
-        Dim FixupZ As Impedance
-
-        If aTransformation.Style = TransformationStyles.ShuntCapSeriesInd Then
-
-            FixupY = New Admittance(0.0, aTransformation.Value1)
-            FixupZ = FixupY.ToImpedance
-            WorkZ = Impedance.AddShuntImpedance(Me, FixupZ)
-
-            FixupZ = New Impedance(0.0, aTransformation.Value2)
-            WorkZ = Impedance.AddSeriesImpedance(WorkZ, FixupZ)
-
-            If Not Impedance.EqualEnough(WorkZ.Resistance, z0) Then
-                'Dim CaughtBy As System.Reflection.MethodBase =
-                '    System.Reflection.MethodBase.GetCurrentMethod
-                Throw New System.ApplicationException(
-                    "Resistance did not reach target.")
-            End If
-            Dim NearlyZero As System.Double = z0 * 0.000001
-            If Not Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero) Then
-                'Dim CaughtBy As System.Reflection.MethodBase =
-                '    System.Reflection.MethodBase.GetCurrentMethod
-                Throw New System.ApplicationException(
-                    "Reactance did not reach target.")
-            End If
-
-        ElseIf aTransformation.Style = TransformationStyles.ShuntIndSeriesCap Then
-
-            FixupY = New Admittance(0.0, aTransformation.Value1)
-            FixupZ = FixupY.ToImpedance
-            WorkZ = Impedance.AddShuntImpedance(Me, FixupZ)
-
-            FixupZ = New Impedance(0.0, aTransformation.Value2)
-            WorkZ = Impedance.AddSeriesImpedance(WorkZ, FixupZ)
-
-            Dim NearlyZero As System.Double = z0 * 0.000001
-            If Not Impedance.EqualEnough(WorkZ.Resistance, z0) OrElse
-                Not Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero) Then
-                'Dim CaughtBy As System.Reflection.MethodBase =
-                '    System.Reflection.MethodBase.GetCurrentMethod
-                Throw New System.ApplicationException("Transformation did not reach target.")
-            End If
-
-        ElseIf aTransformation.Style = TransformationStyles.SeriesIndShuntCap Then
-
-            FixupZ = New Impedance(0.0, aTransformation.Value1)
-            WorkZ = Impedance.AddSeriesImpedance(Me, FixupZ)
-
-            FixupY = New Admittance(0.0, aTransformation.Value2)
-            FixupZ = FixupY.ToImpedance
-            WorkZ = Impedance.AddShuntImpedance(WorkZ, FixupZ)
-
-            Dim NearlyZero As System.Double = z0 * 0.000001
-            If Not Impedance.EqualEnough(WorkZ.Resistance, z0) OrElse
-                Not Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero) Then
-                'Dim CaughtBy As System.Reflection.MethodBase =
-                '    System.Reflection.MethodBase.GetCurrentMethod
-                Throw New System.ApplicationException("Transformation did not reach target.")
-            End If
-
-        ElseIf aTransformation.Style = TransformationStyles.SeriesCapShuntInd Then
-
-            FixupZ = New Impedance(0.0, aTransformation.Value1)
-            WorkZ = Impedance.AddSeriesImpedance(Me, FixupZ)
-
-            FixupY = New Admittance(0.0, aTransformation.Value2)
-            FixupZ = FixupY.ToImpedance
-            WorkZ = Impedance.AddShuntImpedance(WorkZ, FixupZ)
-
-            Dim NearlyZero As System.Double = z0 * 0.000001
-            If Not Impedance.EqualEnough(WorkZ.Resistance, z0) OrElse
-                Not Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero) Then
-                'Dim CaughtBy As System.Reflection.MethodBase =
-                '    System.Reflection.MethodBase.GetCurrentMethod
-                Throw New System.ApplicationException("Transformation did not reach target.")
-            End If
-
-        Else
-            ' Invalid transformation style.
-            Return False
-        End If
-
-        ' On getting this far,
-        Return True
-
-    End Function ' ValidateTransformation
 
     '''' <summary>
     ''''  Processes one intersection found in
@@ -630,7 +649,7 @@ Partial Public Structure Impedance
 
         '' THESE CHECKS CAN BE DELETED/COMMENTED AFTER THE Transformation
         '' RESULTS ARE KNOWN TO BE CORRECT.
-        '' There should now be two valid solutions the match to Z=Z0+j0.0.
+        '' There should now be two valid solutions that match to Z=Z0+j0.0.
         '' Check first solution.
         'If Not ValidateTransformation(z0, Transformation0) Then
         '    Return False
@@ -837,7 +856,7 @@ Partial Public Structure Impedance
 
         ' THESE CHECKS CAN BE DELETED/COMMENTED AFTER THE Transformation
         ' RESULTS ARE KNOWN TO BE CORRECT.
-        ' There should now be two valid solutions the match to Z=Z0+j0.0.
+        ' There should now be two valid solutions that match to Z=Z0+j0.0.
         ' Check first solution.
         If Not ValidateTransformation(z0, Transformation0) Then
             Return False
@@ -852,39 +871,47 @@ Partial Public Structure Impedance
 
     End Function ' InsideGEqualsY0
 
+    '''' <summary>
+    '''' Attempts to obtain a conjugate match from the current instance (load
+    '''' impedance) to the source characteristic impedance specified by
+    '''' <paramref name="z0"/>, when the current instance appears in the top
+    '''' central area. This is to have the first move go CW.
+    '''' </summary>
+    '''' <param name="z0">Specifies the characteristic impedance to which the
+    '''' current instance should be matched.</param>
+    '''' <param name="transformations">Specifies an array of
+    '''' <see cref="Transformation"/>s that can be used to match a load impedance
+    '''' to match a source impedance.</param>
+    '''' <returns>
+    '''' Returns <c>True</c> if the process succeeds; otherwise,
+    '''' <c>False</c>. Also returns, by reference in
+    '''' <paramref name="transformations"/>, the components to construct the
+    '''' match.</returns>
+    '''' <remarks>
+    '''' <paramref name="z0"/> is the characteristic impedance to which the
+    '''' current instance should be matched. It should have a practical value
+    '''' with regard to the impedance values involved.
+    '''' A succcessful process might result in an empty
+    '''' <paramref name="transformations"/>.
+    '''' </remarks>
     ''' <summary>
-    ''' Attempts to obtain a conjugate match from the current instance (load
-    ''' impedance) to the source characteristic impedance specified by
-    ''' <paramref name="z0"/>, when the current instance appears in the top
-    ''' central area. This is to have the first move go CW.
+    ''' xxxxxxxxxx
     ''' </summary>
-    ''' <param name="z0">Specifies the characteristic impedance to which the
-    ''' current instance should be matched.</param>
-    ''' <param name="transformations">Specifies an array of
-    ''' <see cref="Transformation"/>s that can be used to match a load impedance
-    ''' to match a source impedance.</param>
-    ''' <returns>
-    ''' Returns <c>True</c> if the process succeeds; otherwise,
-    ''' <c>False</c>. Also returns, by reference in
-    ''' <paramref name="transformations"/>, the components to construct the
-    ''' match.</returns>
-    ''' <remarks>
-    ''' <paramref name="z0"/> is the characteristic impedance to which the
-    ''' current instance should be matched. It should have a practical value
-    ''' with regard to the impedance values involved.
-    ''' A succcessful process might result in an empty
-    ''' <paramref name="transformations"/>.
-    ''' </remarks>
+    ''' <param name="mainCirc">xxxxxxxxxx</param>
+    ''' <param name="intersections">xxxxxxxxxx</param>
+    ''' <param name="transformations">xxxxxxxxxx</param>
+    ''' <returns>xxxxxxxxxx</returns>
     Private Function InTopCenterCW(ByVal mainCirc As SmithMainCircle,
         intersections As _
             System.Collections.Generic.List(Of System.Drawing.PointF),
         ByRef transformations As Transformation()) _
         As System.Boolean
 
-        'Dim NormR As System.Double = Me.Resistance / z0
+        Dim Z0 As System.Double = mainCirc.Z0
+        'Dim NormR As System.Double = Me.Resistance / Z0
         'Dim NormX As System.Double = Me.Reactance / z0
-        'Dim Y0 As System.Double = 1.0 / z0
-        'Dim Y As Admittance = Me.ToAdmittance()
+        'Dim Y0 As System.Double = 1.0 / Z0
+        Dim Y As Admittance = Me.ToAdmittance()
         'Dim NormG As System.Double = Y.Conductance / Y0
         'Dim NormB As System.Double = Y.Susceptance / Y0
 
@@ -898,19 +925,18 @@ Partial Public Structure Impedance
             Dim ImageY As Admittance =
                 mainCirc.GetYFromPlot(OneIntersection.X, OneIntersection.Y)
             Dim DeltaB As System.Double =
-                ImageY.Susceptance - Me.ToAdmittance.Susceptance
+                ImageY.Susceptance - Y.Susceptance
             Dim ImageZ As Impedance =
                 mainCirc.GetZFromPlot(OneIntersection.X, OneIntersection.Y)
-            Dim DeltaX As System.Double =
-                ImageZ.Reactance - Me.Reactance
+            Dim DeltaX As System.Double = -ImageZ.Reactance
 
             ' Set up the transformation.
             Dim Trans As New Transformation
             If OneIntersection.Y > mainCirc.GridCenterY Then
-                ' The short first move. Now CCW or R-Circle.
+                ' The short first move. Now CCW on R-Circle.
                 Trans.Style = TransformationStyles.ShuntCapSeriesCap
             Else
-                ' The long first move. Now CW or R-Circle.
+                ' The long first move. Now CW on R-Circle.
                 Trans.Style = TransformationStyles.ShuntCapSeriesInd
             End If
             With Trans
@@ -918,27 +944,24 @@ Partial Public Structure Impedance
                 .Value2 = DeltaX
             End With
 
-            Dim CurrCount As Integer = transformations.Length
-            ReDim Preserve transformations(CurrCount)
-            transformations(CurrCount) = Trans
+            ' THIS CHECK CAN BE DELETED/COMMENTED AFTER THE Transformation
+            ' RESULTS ARE KNOWN TO BE CORRECT.
+            ' There should now be a valid solution that matches to Z=Z0+j0.0.
+            If Not ValidateTransformation(Z0, Trans) Then
+                Return False
+            End If
 
-
-
-            ' MAYBE CONFIRM THE OUTCOME FOR ONE HERE.
-
-
+            Dim CurrTransCount As System.Int32 = transformations.Length
+            ReDim Preserve transformations(CurrTransCount)
+            transformations(CurrTransCount) = Trans
 
         Next
 
-
-
-        ' MAYBE CONFIRM THE OUTCOME FOR BOTH HERE.
-
-
-        Return False ' DEFAULT UNTIL IMPLEMENTED.
+        ' On getting this far,
+        Return True
 
     End Function ' InTopCenterCW
-    xxxx
+    'xxxx
 
     ''' <summary>
     ''' Attempts to obtain a conjugate match from the current instance (load
@@ -1016,18 +1039,15 @@ Partial Public Structure Impedance
     ''' A succcessful process might result in an empty
     ''' <paramref name="transformations"/>.
     ''' </remarks>
-    Private Function InTopCenter(ByVal mainCirc As SmithMainCircle,
-        ByVal circR As RCircle, ByVal circG As GCircle,
-        intersections As _
-            System.Collections.Generic.List(Of System.Drawing.PointF),
+    Private Function InTopCenter(ByVal z0 As System.Double,
+        ByRef MainCirc As SmithMainCircle,
         ByRef transformations As Transformation()) _
         As System.Boolean
 
-        Dim Z0 As System.Double = mainCirc.Z0
         'Dim NormR As System.Double = Me.Resistance / z0
         'Dim NormX As System.Double = Me.Reactance / z0
         'Dim Y0 As System.Double = 1.0 / z0
-        'Dim Y As Admittance = Me.ToAdmittance()
+        Dim Y As Admittance = Me.ToAdmittance()
         'Dim NormG As System.Double = Y.Conductance / Y0
         'Dim NormB As System.Double = Y.Susceptance / Y0
 
@@ -1035,8 +1055,16 @@ Partial Public Structure Impedance
         ' capacitor. Two choices where to end.
         ' Would there ever be a case to prefer the first or second
         ' intersection? Maybe to favor high- or low-pass?
+
+        ' Determine the circle intersections.
+        Dim CircG As New GCircle(MainCirc, Y.Conductance)
+        Dim CircR As New RCircle(MainCirc, MainCirc.Z0)
+        Dim Intersections _
+            As System.Collections.Generic.List(Of System.Drawing.PointF) =
+                GenericCircle.GetIntersections(CircR, CircG)
+
         If Not Me.InTopCenterCW(
-            mainCirc, intersections, transformations) Then
+            MainCirc, Intersections, transformations) Then
 
             Return False
         End If
@@ -1048,7 +1076,7 @@ Partial Public Structure Impedance
         ' Would there ever be a case to prefer the first or second
         ' intersection? Maybe to favor high- or low-pass?
         If Not Me.InTopCenterCCW(
-            mainCirc, intersections, transformations) Then
+            MainCirc, Intersections, transformations) Then
 
             Return False
         End If
@@ -1187,14 +1215,11 @@ Partial Public Structure Impedance
     ''' A succcessful process might result in an empty
     ''' <paramref name="transformations"/>.
     ''' </remarks>
-    Private Function InBottomCenter(ByVal mainCirc As SmithMainCircle,
-        ByVal circR As RCircle, ByVal circG As GCircle,
-        intersections As _
-            System.Collections.Generic.List(Of System.Drawing.PointF),
+    Private Function InBottomCenter(ByVal z0 As System.Double,
+        ByRef MainCirc As SmithMainCircle,
         ByRef transformations As Transformation()) _
         As System.Boolean
 
-        Dim Z0 As System.Double = mainCirc.Z0
         'Dim NormR As System.Double = Me.Resistance / z0
         'Dim NormX As System.Double = Me.Reactance / z0
         'Dim Y0 As System.Double = 1.0 / z0
@@ -1206,8 +1231,22 @@ Partial Public Structure Impedance
         ' inductor.
         ' Would there ever be a case to prefer the first or second
         ' intersection? Maybe to favor high- or low-pass?
+
+        ' Determine the circle intersections.
+        Dim CircR As New RCircle(MainCirc, Me.Resistance)
+        Dim CircG As New GCircle(MainCirc, MainCirc.Y0)
+        Dim Intersections _
+            As System.Collections.Generic.List(Of System.Drawing.PointF) =
+                GenericCircle.GetIntersections(CircR, CircG)
+
+
+
+
+
+
+
         If Not Me.InBottomCenterCW(
-            mainCirc, intersections, transformations) Then
+            MainCirc, Intersections, transformations) Then
 
             Return False
         End If
@@ -1215,7 +1254,7 @@ Partial Public Structure Impedance
         '          or
 
         If Not Me.InBottomCenterCCW(
-            mainCirc, intersections, transformations) Then
+            MainCirc, Intersections, transformations) Then
 
             Return False
         End If
@@ -1254,30 +1293,23 @@ Partial Public Structure Impedance
         As System.Boolean
 
         'Dim NormR As System.Double = Me.Resistance / z0
-        Dim NormX As System.Double = Me.Reactance / z0
-        Dim Y0 As System.Double = 1.0 / z0
+        'Dim NormX As System.Double = Me.Reactance / z0
+        'Dim Y0 As System.Double = 1.0 / z0
         'Dim Y As Admittance = Me.ToAdmittance()
         'Dim NormG As System.Double = Y.Conductance / Y0
         'Dim NormB As System.Double = Y.Susceptance / Y0
 
-        ' Determine the circles and their intersections.
+        ' Assign the outer circle.
         Dim MainCirc As New SmithMainCircle(4.0, 5.0, 4.0, z0) ' Test data.
         'Dim MainCirc As New SmithMainCircle(1.0, 1.0, 1.0, z0) ' Arbitrary.
-        Dim CircG As New GCircle(MainCirc, Y0)
-        Dim CircR As New RCircle(MainCirc, Me.Resistance)
-        Dim Intersections _
-            As System.Collections.Generic.List(Of System.Drawing.PointF) =
-                GenericCircle.GetIntersections(CircR, CircG)
 
         ' Try to solve in the appropriate space.
-        If NormX > 0.0 Then
+        If Me.Reactance > 0.0 Then
             ' Z is ABOVE the resonance line, between the G=Y0 and R=Z0 circles.
-            Return Me.InTopCenter(
-                MainCirc, CircR, CircG, Intersections, transformations) ' O.
-        ElseIf NormX < 0.0 Then
+            Return Me.InTopCenter(z0, MainCirc, transformations) ' O.
+        ElseIf Me.Reactance < 0.0 Then
             ' Z is BELOW the resonance line, between the G=Y0 and R=Z0 circles.
-            Return Me.InBottomCenter(
-                MainCirc, CircR, CircG, Intersections, transformations) ' P.
+            Return Me.InBottomCenter(z0, MainCirc, transformations) ' P.
         End If
 
         Return False ' DEFAULT UNTIL IMPLEMENTED.

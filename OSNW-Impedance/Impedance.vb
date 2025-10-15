@@ -1,4 +1,5 @@
 ﻿'TODO:
+' Replace PointF with a new PointD?
 ' Should infinity be rejected for admittance and susceptance inputs?
 ' Add De/Serialization to Admittance?????
 '   "the strings should be generated and parsed by using the conventions of the invariant culture."
