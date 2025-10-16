@@ -188,11 +188,14 @@ Partial Public Structure Impedance
 
         Dim TargetZ As New Impedance(z0, 0.0)
         Dim WorkZ As Impedance
-        Dim WorkY As Admittance
         Dim FixupY As Admittance
         Dim FixupZ As Impedance
 
         If aTransformation.Style = TransformationStyles.ShuntCapSeriesInd Then
+
+            ' To go | On a     | Use a
+            ' CW    | G-circle | shunt capacitor
+            ' CW    | R-circle | series inductor
 
             FixupY = New Admittance(0.0, aTransformation.Value1)
             FixupZ = FixupY.ToImpedance
@@ -217,6 +220,10 @@ Partial Public Structure Impedance
 
         ElseIf aTransformation.Style = TransformationStyles.ShuntCapSeriesCap Then
 
+            ' To go | On a     | Use a
+            ' CW    | G-circle | shunt capacitor
+            ' CCW   | R-circle | series capacitor
+
             FixupY = New Admittance(0.0, aTransformation.Value1)
             FixupZ = FixupY.ToImpedance
             WorkZ = Impedance.AddShuntImpedance(Me, FixupZ)
@@ -233,6 +240,10 @@ Partial Public Structure Impedance
             End If
 
         ElseIf aTransformation.Style = TransformationStyles.ShuntIndSeriesCap Then
+
+            ' To go | On a     | Use a
+            ' CCW   | G-circle | shunt inductor
+            ' CCW   | R-circle | series capacitor
 
             FixupY = New Admittance(0.0, aTransformation.Value1)
             FixupZ = FixupY.ToImpedance
@@ -251,6 +262,10 @@ Partial Public Structure Impedance
 
         ElseIf aTransformation.Style = TransformationStyles.ShuntIndSeriesInd Then
 
+            ' To go | On a     | Use a
+            ' CCW   | G-circle | shunt inductor
+            ' CW    | R-circle | series inductor
+
             '
             '
             '
@@ -260,6 +275,10 @@ Partial Public Structure Impedance
             '
 
         ElseIf aTransformation.Style = TransformationStyles.SeriesCapShuntInd Then
+
+            ' To go | On a     | Use a
+            ' CCW   | R-circle | series capacitor
+            ' CCW   | G-circle | shunt inductor
 
             FixupZ = New Impedance(0.0, aTransformation.Value1)
             WorkZ = Impedance.AddSeriesImpedance(Me, FixupZ)
@@ -278,12 +297,16 @@ Partial Public Structure Impedance
 
         ElseIf aTransformation.Style = TransformationStyles.SeriesCapShuntCap Then
 
+            ' To go | On a     | Use a
+            ' CCW   | R-circle | series capacitor
+            ' CW    | G-circle | shunt capacitor
+
             FixupZ = New Impedance(0.0, aTransformation.Value1)
             WorkZ = Impedance.AddSeriesImpedance(Me, FixupZ)
 
             FixupY = New Admittance(0.0, aTransformation.Value2)
-            WorkY = WorkZ.ToAdmittance + FixupY
-            WorkZ = WorkY.ToImpedance
+            FixupZ = FixupY.ToImpedance
+            WorkZ = Impedance.AddShuntImpedance(WorkZ, FixupZ)
 
             Dim NearlyZero As System.Double = z0 * 0.000001
             If Not Impedance.EqualEnough(WorkZ.Resistance, z0) OrElse
@@ -294,6 +317,10 @@ Partial Public Structure Impedance
             End If
 
         ElseIf aTransformation.Style = TransformationStyles.SeriesIndShuntCap Then
+
+            ' To go | On a     | Use a
+            ' CW    | R-circle | series inductor
+            ' CW    | G-circle | shunt capacitor
 
             FixupZ = New Impedance(0.0, aTransformation.Value1)
             WorkZ = Impedance.AddSeriesImpedance(Me, FixupZ)
@@ -314,6 +341,10 @@ Partial Public Structure Impedance
             Return True
 
         ElseIf aTransformation.Style = TransformationStyles.SeriesIndShuntInd Then
+
+            ' To go | On a     | Use a
+            ' CW    | R-circle | series inductor
+            ' CCW   | G-circle | shunt inductor
 
             '
             '
