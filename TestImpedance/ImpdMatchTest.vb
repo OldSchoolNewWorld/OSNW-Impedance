@@ -280,9 +280,9 @@ Namespace TrySelectMatchLayoutTests
         ' O: In the top center.
 
         '<InlineData(     Z0,        R,       X)> ' Model
-        '<InlineData(50.0, 10.0, 70.0)> ' O: 50 ohms In the top center.
         <Theory>
         <InlineData(1.0, 0.2, 1.4)> ' O: In the top center.
+        <InlineData(50.0, 10.0, 70.0)> ' O: 50 ohms In the top center.
         Public Sub TestTrySelectMatchLayoutO(z0 As Double, r As Double, x As Double)
 
             Dim TestZ As New OSNW.Numerics.Impedance(r, x)
@@ -304,6 +304,7 @@ Namespace TrySelectMatchLayoutTests
         '<InlineData(     Z0,        R,       X)> ' Model
         <Theory>
         <InlineData(1.0, 0.4, -0.8)> ' P: In the bottom center.
+        <InlineData(50.0, 20.0, -40.0)> ' P: In the bottom center.
         Public Sub TestTrySelectMatchLayoutP(z0 As Double, r As Double, x As Double)
 
             Dim TestZ As New OSNW.Numerics.Impedance(r, x)

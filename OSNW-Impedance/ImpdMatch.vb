@@ -346,13 +346,24 @@ Partial Public Structure Impedance
             ' CW    | R-circle | series inductor
             ' CCW   | G-circle | shunt inductor
 
-            '
-            '
-            '
-            Throw New NotImplementedException
-            '
-            '
-            '
+
+            FixupZ = New Impedance(0.0, aTransformation.Value1)
+            WorkZ = Impedance.AddSeriesImpedance(Me, FixupZ)
+
+            FixupY = New Admittance(0.0, aTransformation.Value2)
+            FixupZ = FixupY.ToImpedance
+            WorkZ = Impedance.AddShuntImpedance(WorkZ, FixupZ)
+
+            Dim NearlyZero As System.Double = z0 * 0.000001
+            If Not Impedance.EqualEnough(WorkZ.Resistance, z0) OrElse
+                Not Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero) Then
+                'Dim CaughtBy As System.Reflection.MethodBase =
+                '    System.Reflection.MethodBase.GetCurrentMethod
+                Throw New System.ApplicationException("Transformation did not reach target.")
+            End If
+
+            ' On getting this far,
+            Return True
 
         Else
             ' Invalid transformation style.
@@ -1134,7 +1145,6 @@ Partial Public Structure Impedance
         Return True
 
     End Function ' InTopCenterCCW
-    'xxxx
 
     ''' <summary>
     ''' Attempts to obtain a conjugate match from the current instance (load
@@ -1198,65 +1208,109 @@ Partial Public Structure Impedance
 
     End Function ' InTopCenter
 
+    '''' <summary>
+    '''' Attempts to obtain a conjugate match from the current instance (load
+    '''' impedance) to the source characteristic impedance specified by
+    '''' <paramref name="z0"/>, when the current instance appears in the Bottom
+    '''' central area. This is to have the first move go CW.
+    '''' </summary>
+    '''' <param name="z0">Specifies the characteristic impedance to which the
+    '''' current instance should be matched.</param>
+    '''' <param name="transformations">Specifies an array of
+    '''' <see cref="Transformation"/>s that can be used to match a load impedance
+    '''' to match a source impedance.</param>
+    '''' <returns>
+    '''' Returns <c>True</c> if the process succeeds; otherwise,
+    '''' <c>False</c>. Also returns, by reference in
+    '''' <paramref name="transformations"/>, the components to construct the
+    '''' match.</returns>
+    '''' <remarks>
+    '''' <paramref name="z0"/> is the characteristic impedance to which the
+    '''' current instance should be matched. It should have a practical value
+    '''' with regard to the impedance values involved.
+    '''' A succcessful process might result in an empty
+    '''' <paramref name="transformations"/>.
+    '''' </remarks>
     ''' <summary>
-    ''' Attempts to obtain a conjugate match from the current instance (load
-    ''' impedance) to the source characteristic impedance specified by
-    ''' <paramref name="z0"/>, when the current instance appears in the bottom
-    ''' central area. This is to have the first move go CW.
+    ''' xxxxxxxxxx
     ''' </summary>
-    ''' <param name="z0">Specifies the characteristic impedance to which the
-    ''' current instance should be matched.</param>
-    ''' <param name="transformations">Specifies an array of
-    ''' <see cref="Transformation"/>s that can be used to match a load impedance
-    ''' to match a source impedance.</param>
-    ''' <returns>
-    ''' Returns <c>True</c> if the process succeeds; otherwise,
-    ''' <c>False</c>. Also returns, by reference in
-    ''' <paramref name="transformations"/>, the components to construct the
-    ''' match.</returns>
-    ''' <remarks>
-    ''' <paramref name="z0"/> is the characteristic impedance to which the
-    ''' current instance should be matched. It should have a practical value
-    ''' with regard to the impedance values involved.
-    ''' A succcessful process might result in an empty
-    ''' <paramref name="transformations"/>.
-    ''' </remarks>
+    ''' <param name="mainCirc">xxxxxxxxxx</param>
+    ''' <param name="intersections">xxxxxxxxxx</param>
+    ''' <param name="transformations">xxxxxxxxxx</param>
+    ''' <returns>xxxxxxxxxx</returns>
     Private Function InBottomCenterCW(ByVal mainCirc As SmithMainCircle,
-        intersections As _
-            System.Collections.Generic.List(Of System.Drawing.PointF),
         ByRef transformations As Transformation()) _
         As System.Boolean
 
-        'Dim Z0 As System.Double = mainCirc.Z0
-        'Dim NormR As System.Double = Me.Resistance / z0
+        Dim Z0 As System.Double = mainCirc.Z0
+        'Dim NormR As System.Double = Me.Resistance / Z0
         'Dim NormX As System.Double = Me.Reactance / z0
-        'Dim Y0 As System.Double = 1.0 / z0
-        'Dim Y As Admittance = Me.ToAdmittance()
+        'Dim Y0 As System.Double = 1.0 / Z0
+        Dim Y As Admittance = Me.ToAdmittance()
         'Dim NormG As System.Double = Y.Conductance / Y0
         'Dim NormB As System.Double = Y.Susceptance / Y0
 
-        ' Move CW on the G-circle to reach the R=Z0 circle. Use a shunt
-        ' capacitor. Two choices where to end.
+        ' Move CW on the R-circle to reach the G=Y0 circle. Use a series
+        ' inductor. Two choices where to end.
         ' Would there ever be a case to prefer the first or second
         ' intersection? Maybe to favor high- or low-pass?
-        For Each OneIntersection As System.Drawing.PointF In intersections
-            If OneIntersection.Y < 0.0 Then
-                ' The short first move.
+
+        ' Determine the circle intersections.
+        Dim CircG As New GCircle(mainCirc, mainCirc.Y0)
+        Dim CircR As New RCircle(mainCirc, Me.Resistance)
+        Dim Intersections _
+            As System.Collections.Generic.List(Of System.Drawing.PointF) =
+                GenericCircle.GetIntersections(CircR, CircG)
+
+        ' Process each intersection.
+        For Each OneIntersection As System.Drawing.PointF In Intersections
+
+            ' Determine the changes to take place.
+            Dim ImageZ As Impedance =
+                mainCirc.GetZFromPlot(OneIntersection.X, OneIntersection.Y)
+            Dim DeltaX As System.Double =
+                ImageZ.Reactance - Me.Reactance
+            Dim ImageY As Admittance =
+                mainCirc.GetYFromPlot(OneIntersection.X, OneIntersection.Y)
+            Dim DeltaB As System.Double = -ImageY.Susceptance
+
+            ' Set up the transformation.
+            Dim Trans As New Transformation
+            If OneIntersection.Y > mainCirc.GridCenterY Then
+                ' The long first move. Now CW on G-Circle.
+                Trans.Style = TransformationStyles.SeriesIndShuntCap
             Else
-                ' The long first move.
+                ' The short first move. Now CCW on G-Circle.
+                Trans.Style = TransformationStyles.SeriesIndShuntInd
             End If
+            With Trans
+                .Value1 = DeltaX
+                .Value2 = DeltaB
+            End With
+
+            ' THIS CHECK CAN BE DELETED/COMMENTED AFTER THE Transformation
+            ' RESULTS ARE KNOWN TO BE CORRECT.
+            ' There should now be a valid solution that matches to Z=Z0+j0.0.
+            If Not ValidateTransformation(Z0, Trans) Then
+                Return False
+            End If
+
+            Dim CurrTransCount As System.Int32 = transformations.Length
+            ReDim Preserve transformations(CurrTransCount)
+            transformations(CurrTransCount) = Trans
+
         Next
 
-        Return False ' DEFAULT UNTIL IMPLEMENTED.
+        ' On getting this far,
+        Return True
 
     End Function ' InBottomCenterCW
-    'xxxx
 
     ''' <summary>
     ''' Attempts to obtain a conjugate match from the current instance (load
     ''' impedance) to the source characteristic impedance specified by
-    ''' <paramref name="z0"/>, when the current instance appears in the bottom
-    ''' central area. This is to have the first move go CW.
+    ''' <paramref name="z0"/>, when the current instance appears in the Bottom
+    ''' central area. This is to have the first move go CCW.
     ''' </summary>
     ''' <param name="z0">Specifies the characteristic impedance to which the
     ''' current instance should be matched.</param>
@@ -1276,16 +1330,15 @@ Partial Public Structure Impedance
     ''' <paramref name="transformations"/>.
     ''' </remarks>
     Private Function InBottomCenterCCW(ByVal mainCirc As SmithMainCircle,
-        intersections As _
-            System.Collections.Generic.List(Of System.Drawing.PointF),
         ByRef transformations As Transformation()) _
         As System.Boolean
 
-        'Dim Z0 As System.Double = mainCirc.Z0
+        THIS_ONE_NEEDS_TO_CHANGE
+        Dim Z0 As System.Double = mainCirc.Z0
         'Dim NormR As System.Double = Me.Resistance / z0
         'Dim NormX As System.Double = Me.Reactance / z0
         'Dim Y0 As System.Double = 1.0 / z0
-        'Dim Y As Admittance = Me.ToAdmittance()
+        Dim Y As Admittance = Me.ToAdmittance()
         'Dim NormG As System.Double = Y.Conductance / Y0
         'Dim NormB As System.Double = Y.Susceptance / Y0
 
@@ -1293,23 +1346,62 @@ Partial Public Structure Impedance
         ' series capacitor. Two choices where to end.
         ' Would there ever be a case to prefer the first or second
         ' intersection? Maybe to favor high- or low-pass?
-        For Each OneIntersection As System.Drawing.PointF In intersections
-            If OneIntersection.Y < 0.0 Then
-                ' The short first move.
+
+        ' Determine the circle intersections.
+        Dim CircG As New GCircle(mainCirc, mainCirc.Y0)
+        Dim CircR As New RCircle(mainCirc, Me.Resistance)
+        Dim Intersections _
+            As System.Collections.Generic.List(Of System.Drawing.PointF) =
+                GenericCircle.GetIntersections(CircR, CircG)
+
+        ' Process each intersection.
+        For Each OneIntersection As System.Drawing.PointF In Intersections
+
+            ' Determine the changes to take place.
+            Dim ImageZ As Impedance =
+                mainCirc.GetZFromPlot(OneIntersection.X, OneIntersection.Y)
+            Dim DeltaX As System.Double =
+                ImageZ.Reactance - Me.Reactance
+            Dim ImageY As Admittance =
+                mainCirc.GetYFromPlot(OneIntersection.X, OneIntersection.Y)
+            Dim DeltaB As System.Double = -ImageY.Susceptance
+
+            ' Set up the transformation.
+            Dim Trans As New Transformation
+            If OneIntersection.Y > mainCirc.GridCenterY Then
+                ' The short first move. Now CCW on R-Circle.
+                Trans.Style = TransformationStyles.SeriesCapShuntCap
             Else
-                ' The long first move.
+                ' The long first move. Now CW on R-Circle.
+                Trans.Style = TransformationStyles.SeriesCapShuntInd
             End If
+            With Trans
+                .Value1 = DeltaX
+                .Value2 = DeltaB
+            End With
+
+            ' THIS CHECK CAN BE DELETED/COMMENTED AFTER THE Transformation
+            ' RESULTS ARE KNOWN TO BE CORRECT.
+            ' There should now be a valid solution that matches to Z=Z0+j0.0.
+            If Not ValidateTransformation(Z0, Trans) Then
+                Return False
+            End If
+
+            Dim CurrTransCount As System.Int32 = transformations.Length
+            ReDim Preserve transformations(CurrTransCount)
+            transformations(CurrTransCount) = Trans
+
         Next
 
-        Return False ' DEFAULT UNTIL IMPLEMENTED.
+        ' On getting this far,
+        Return True
 
     End Function ' InBottomCenterCCW
-    'xxxx
 
     ''' <summary>
     ''' Attempts to obtain a conjugate match from the current instance (load
     ''' impedance) to the source characteristic impedance specified by
-    ''' <paramref name="z0"/>, when the current instance appears in the bottom
+    ''' <paramref name="z0"/>, when the current instance appears in the Bottom
     ''' central area.
     ''' </summary>
     ''' <param name="z0">Specifies the characteristic impedance to which the
@@ -1338,38 +1430,27 @@ Partial Public Structure Impedance
         'Dim NormR As System.Double = Me.Resistance / z0
         'Dim NormX As System.Double = Me.Reactance / z0
         'Dim Y0 As System.Double = 1.0 / z0
-        'Dim Y As Admittance = Me.ToAdmittance()
+        Dim Y As Admittance = Me.ToAdmittance()
         'Dim NormG As System.Double = Y.Conductance / Y0
         'Dim NormB As System.Double = Y.Susceptance / Y0
 
-        ' Move CCW on the G-circle to reach the R=Z0 circle. Use a shunt
-        ' inductor.
+        ' Move CW on the G-circle to reach the R=Z0 circle. Use a shunt
+        ' capacitor. Two choices where to end.
         ' Would there ever be a case to prefer the first or second
         ' intersection? Maybe to favor high- or low-pass?
 
-        ' Determine the circle intersections.
-        Dim CircR As New RCircle(MainCirc, Me.Resistance)
-        Dim CircG As New GCircle(MainCirc, MainCirc.Y0)
-        Dim Intersections _
-            As System.Collections.Generic.List(Of System.Drawing.PointF) =
-                GenericCircle.GetIntersections(CircR, CircG)
-
-
-
-
-
-
-
         If Not Me.InBottomCenterCW(
-            MainCirc, Intersections, transformations) Then
+            MainCirc, transformations) Then
 
             Return False
         End If
 
-        '          or
-
+        ' Move CCW on the R-circle to reach the G=Y0 circle. Use a
+        ' series capacitor. Two choices where to end.
+        ' Would there ever be a case to prefer the first or second
+        ' intersection? Maybe to favor high- or low-pass?
         If Not Me.InBottomCenterCCW(
-            MainCirc, Intersections, transformations) Then
+            MainCirc, transformations) Then
 
             Return False
         End If
@@ -1378,7 +1459,6 @@ Partial Public Structure Impedance
         Return True
 
     End Function ' InBottomCenter
-    'xxxx
 
     ''' <summary>
     ''' Attempts to obtain a conjugate match from the current instance (load
@@ -1556,13 +1636,6 @@ Partial Public Structure Impedance
                     NameOf(TrySelectMatchLayout))
         End If
 
-        '        If NormX > 0.0 Then
-        '            ' Z is ABOVE the resonance line, between the G=Y0 and R=Z0 circles.
-        '            Return Me.InTopCenter(z0, transformations) ' O.
-        '        ElseIf NormX < 0.0 Then
-        '            ' Z is BELOW the resonance line, between the G=Y0 and R=Z0 circles.
-        '            Return Me.InBottomCenter(z0, transformations) ' P.
-        '        End If
         Return Me.InRemainder(z0, transformations)
 
         ' GETTING HERE MEANS THAT NO CASES MATCHED.
