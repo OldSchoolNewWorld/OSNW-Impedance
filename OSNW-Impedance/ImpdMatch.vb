@@ -1354,7 +1354,7 @@ Partial Public Structure Impedance
         ' intersection? Maybe to favor high- or low-pass?
 
         ' Determine the circle intersections.
-        Dim CircG As New GCircle(mainCirc, Y.Susceptance)
+        Dim CircG As New GCircle(mainCirc, Y.Conductance)
         Dim CircR As New RCircle(mainCirc, mainCirc.Z0)
         Dim Intersections _
             As System.Collections.Generic.List(Of System.Drawing.PointF) =
@@ -1376,10 +1376,10 @@ Partial Public Structure Impedance
             Dim Trans As New Transformation
             If OneIntersection.Y > mainCirc.GridCenterY Then
                 ' The short first move. Now CCW on R-Circle.
-                Trans.Style = TransformationStyles.ShuntIndSeriesInd
+                Trans.Style = TransformationStyles.ShuntIndSeriesCap
             Else
                 ' The long first move. Now CW on R-Circle.
-                Trans.Style = TransformationStyles.ShuntIndSeriesCap
+                Trans.Style = TransformationStyles.ShuntIndSeriesInd
             End If
             With Trans
                 .Value1 = DeltaB
