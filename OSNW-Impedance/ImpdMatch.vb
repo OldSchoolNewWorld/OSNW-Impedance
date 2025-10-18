@@ -194,8 +194,8 @@ Partial Public Structure Impedance
         If aTransformation.Style = TransformationStyles.ShuntCapSeriesInd Then
 
             ' To go | On a     | Use a
-            ' CW    | G-circle | shunt capacitor
             ' CW    | R-circle | series inductor
+            ' CW    | G-circle | shunt capacitor
 
             FixupY = New Admittance(0.0, aTransformation.Value1)
             FixupZ = FixupY.ToImpedance
@@ -266,13 +266,20 @@ Partial Public Structure Impedance
             ' CCW   | G-circle | shunt inductor
             ' CW    | R-circle | series inductor
 
-            '
-            '
-            '
-            Throw New NotImplementedException
-            '
-            '
-            '
+            FixupY = New Admittance(0.0, aTransformation.Value1)
+            FixupZ = FixupY.ToImpedance
+            WorkZ = Impedance.AddShuntImpedance(Me, FixupZ)
+
+            FixupZ = New Impedance(0.0, aTransformation.Value2)
+            WorkZ = Impedance.AddSeriesImpedance(WorkZ, FixupZ)
+
+            Dim NearlyZero As System.Double = z0 * 0.000001
+            If Not Impedance.EqualEnough(WorkZ.Resistance, z0) OrElse
+                Not Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero) Then
+                'Dim CaughtBy As System.Reflection.MethodBase =
+                '    System.Reflection.MethodBase.GetCurrentMethod
+                Throw New System.ApplicationException("Transformation did not reach target.")
+            End If
 
         ElseIf aTransformation.Style = TransformationStyles.SeriesCapShuntInd Then
 
@@ -1333,7 +1340,6 @@ Partial Public Structure Impedance
         ByRef transformations As Transformation()) _
         As System.Boolean
 
-        THIS_ONE_NEEDS_TO_CHANGE
         Dim Z0 As System.Double = mainCirc.Z0
         'Dim NormR As System.Double = Me.Resistance / z0
         'Dim NormX As System.Double = Me.Reactance / z0
@@ -1342,14 +1348,14 @@ Partial Public Structure Impedance
         'Dim NormG As System.Double = Y.Conductance / Y0
         'Dim NormB As System.Double = Y.Susceptance / Y0
 
-        ' Move CCW on the R-circle to reach the G=Y0 circle. Use a
-        ' series capacitor. Two choices where to end.
+        ' Move CCW on the G-circle to reach the R=Z0 circle. Use a
+        ' shunt inductor. Two choices where to end.
         ' Would there ever be a case to prefer the first or second
         ' intersection? Maybe to favor high- or low-pass?
 
         ' Determine the circle intersections.
-        Dim CircG As New GCircle(mainCirc, mainCirc.Y0)
-        Dim CircR As New RCircle(mainCirc, Me.Resistance)
+        Dim CircG As New GCircle(mainCirc, Y.Susceptance)
+        Dim CircR As New RCircle(mainCirc, mainCirc.Z0)
         Dim Intersections _
             As System.Collections.Generic.List(Of System.Drawing.PointF) =
                 GenericCircle.GetIntersections(CircR, CircG)
@@ -1358,26 +1364,26 @@ Partial Public Structure Impedance
         For Each OneIntersection As System.Drawing.PointF In Intersections
 
             ' Determine the changes to take place.
-            Dim ImageZ As Impedance =
-                mainCirc.GetZFromPlot(OneIntersection.X, OneIntersection.Y)
-            Dim DeltaX As System.Double =
-                ImageZ.Reactance - Me.Reactance
             Dim ImageY As Admittance =
                 mainCirc.GetYFromPlot(OneIntersection.X, OneIntersection.Y)
-            Dim DeltaB As System.Double = -ImageY.Susceptance
+            Dim DeltaB As System.Double =
+                ImageY.Susceptance - Y.Susceptance
+            Dim ImageZ As Impedance =
+                mainCirc.GetZFromPlot(OneIntersection.X, OneIntersection.Y)
+            Dim DeltaX As System.Double = -ImageZ.Reactance
 
             ' Set up the transformation.
             Dim Trans As New Transformation
             If OneIntersection.Y > mainCirc.GridCenterY Then
                 ' The short first move. Now CCW on R-Circle.
-                Trans.Style = TransformationStyles.SeriesCapShuntCap
+                Trans.Style = TransformationStyles.ShuntIndSeriesInd
             Else
                 ' The long first move. Now CW on R-Circle.
-                Trans.Style = TransformationStyles.SeriesCapShuntInd
+                Trans.Style = TransformationStyles.ShuntIndSeriesCap
             End If
             With Trans
-                .Value1 = DeltaX
-                .Value2 = DeltaB
+                .Value1 = DeltaB
+                .Value2 = DeltaX
             End With
 
             ' THIS CHECK CAN BE DELETED/COMMENTED AFTER THE Transformation
@@ -1397,6 +1403,7 @@ Partial Public Structure Impedance
         Return True
 
     End Function ' InBottomCenterCCW
+    'xxxx
 
     ''' <summary>
     ''' Attempts to obtain a conjugate match from the current instance (load
@@ -1430,7 +1437,7 @@ Partial Public Structure Impedance
         'Dim NormR As System.Double = Me.Resistance / z0
         'Dim NormX As System.Double = Me.Reactance / z0
         'Dim Y0 As System.Double = 1.0 / z0
-        Dim Y As Admittance = Me.ToAdmittance()
+        'Dim Y As Admittance = Me.ToAdmittance()
         'Dim NormG As System.Double = Y.Conductance / Y0
         'Dim NormB As System.Double = Y.Susceptance / Y0
 
