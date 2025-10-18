@@ -353,7 +353,6 @@ Partial Public Structure Impedance
             ' CW    | R-circle | series inductor
             ' CCW   | G-circle | shunt inductor
 
-
             FixupZ = New Impedance(0.0, aTransformation.Value1)
             WorkZ = Impedance.AddSeriesImpedance(Me, FixupZ)
 
@@ -964,36 +963,28 @@ Partial Public Structure Impedance
 
     End Function ' InsideGEqualsY0
 
-    '''' <summary>
-    '''' Attempts to obtain a conjugate match from the current instance (load
-    '''' impedance) to the source characteristic impedance specified by
-    '''' <paramref name="z0"/>, when the current instance appears in the top
-    '''' central area. This is to have the first move go CW.
-    '''' </summary>
-    '''' <param name="z0">Specifies the characteristic impedance to which the
-    '''' current instance should be matched.</param>
-    '''' <param name="transformations">Specifies an array of
-    '''' <see cref="Transformation"/>s that can be used to match a load impedance
-    '''' to match a source impedance.</param>
-    '''' <returns>
-    '''' Returns <c>True</c> if the process succeeds; otherwise,
-    '''' <c>False</c>. Also returns, by reference in
-    '''' <paramref name="transformations"/>, the components to construct the
-    '''' match.</returns>
-    '''' <remarks>
-    '''' <paramref name="z0"/> is the characteristic impedance to which the
-    '''' current instance should be matched. It should have a practical value
-    '''' with regard to the impedance values involved.
-    '''' A succcessful process might result in an empty
-    '''' <paramref name="transformations"/>.
-    '''' </remarks>
+    '''
+    ''' 
     ''' <summary>
-    ''' xxxxxxxxxx
+    ''' Attempts to obtain a conjugate match from the current instance (load
+    ''' impedance) to the source characteristic impedance of
+    ''' <paramref name="mainCirc"/>, when the current instance appears in the
+    ''' top central area. This is to have the first move go CW.
     ''' </summary>
-    ''' <param name="mainCirc">xxxxxxxxxx</param>
-    ''' <param name="intersections">xxxxxxxxxx</param>
-    ''' <param name="transformations">xxxxxxxxxx</param>
-    ''' <returns>xxxxxxxxxx</returns>
+    ''' <param name="mainCirc">Specifies the <see cref="SmithMainCircle"/> with
+    ''' which the current instance is associated.</param>
+    ''' <param name="transformations">Accumulates an array of
+    ''' <see cref="Transformation"/>s that can be used to match a load impedance
+    ''' to a source impedance.</param>
+    ''' <returns><c>True</c> if the process succeeds; otherwise, <c>False</c>.
+    ''' Also returns, by reference in <paramref name="transformations"/>, the
+    ''' components to construct the match.</returns>
+    ''' <remarks>
+    ''' Z0 in <paramref name="mainCirc"/> is the characteristic impedance to
+    ''' which the current instance should be matched. It should have a practical
+    ''' value with regard to the impedance values involved. A succcessful
+    ''' process might result in an empty <paramref name="transformations"/>.
+    ''' </remarks>
     Private Function InTopCenterCW(ByVal mainCirc As SmithMainCircle,
         ByRef transformations As Transformation()) _
         As System.Boolean
@@ -1064,26 +1055,23 @@ Partial Public Structure Impedance
 
     ''' <summary>
     ''' Attempts to obtain a conjugate match from the current instance (load
-    ''' impedance) to the source characteristic impedance specified by
-    ''' <paramref name="z0"/>, when the current instance appears in the top
-    ''' central area. This is to have the first move go CCW.
+    ''' impedance) to the source characteristic impedance of
+    ''' <paramref name="mainCirc"/>, when the current instance appears in the
+    ''' top central area. This is to have the first move go CCW.
     ''' </summary>
-    ''' <param name="z0">Specifies the characteristic impedance to which the
-    ''' current instance should be matched.</param>
-    ''' <param name="transformations">Specifies an array of
+    ''' <param name="mainCirc">Specifies the <see cref="SmithMainCircle"/> with
+    ''' which the current instance is associated.</param>
+    ''' <param name="transformations">Accumulates an array of
     ''' <see cref="Transformation"/>s that can be used to match a load impedance
-    ''' to match a source impedance.</param>
-    ''' <returns>
-    ''' Returns <c>True</c> if the process succeeds; otherwise,
-    ''' <c>False</c>. Also returns, by reference in
-    ''' <paramref name="transformations"/>, the components to construct the
-    ''' match.</returns>
+    ''' to a source impedance.</param>
+    ''' <returns><c>True</c> if the process succeeds; otherwise, <c>False</c>.
+    ''' Also returns, by reference in <paramref name="transformations"/>, the
+    ''' components to construct the match.</returns>
     ''' <remarks>
-    ''' <paramref name="z0"/> is the characteristic impedance to which the
-    ''' current instance should be matched. It should have a practical value
-    ''' with regard to the impedance values involved.
-    ''' A succcessful process might result in an empty
-    ''' <paramref name="transformations"/>.
+    ''' Z0 in <paramref name="mainCirc"/> is the characteristic impedance to
+    ''' which the current instance should be matched. It should have a practical
+    ''' value with regard to the impedance values involved. A succcessful
+    ''' process might result in an empty <paramref name="transformations"/>.
     ''' </remarks>
     Private Function InTopCenterCCW(ByVal mainCirc As SmithMainCircle,
         ByRef transformations As Transformation()) _
@@ -1215,36 +1203,26 @@ Partial Public Structure Impedance
 
     End Function ' InTopCenter
 
-    '''' <summary>
-    '''' Attempts to obtain a conjugate match from the current instance (load
-    '''' impedance) to the source characteristic impedance specified by
-    '''' <paramref name="z0"/>, when the current instance appears in the Bottom
-    '''' central area. This is to have the first move go CW.
-    '''' </summary>
-    '''' <param name="z0">Specifies the characteristic impedance to which the
-    '''' current instance should be matched.</param>
-    '''' <param name="transformations">Specifies an array of
-    '''' <see cref="Transformation"/>s that can be used to match a load impedance
-    '''' to match a source impedance.</param>
-    '''' <returns>
-    '''' Returns <c>True</c> if the process succeeds; otherwise,
-    '''' <c>False</c>. Also returns, by reference in
-    '''' <paramref name="transformations"/>, the components to construct the
-    '''' match.</returns>
-    '''' <remarks>
-    '''' <paramref name="z0"/> is the characteristic impedance to which the
-    '''' current instance should be matched. It should have a practical value
-    '''' with regard to the impedance values involved.
-    '''' A succcessful process might result in an empty
-    '''' <paramref name="transformations"/>.
-    '''' </remarks>
     ''' <summary>
-    ''' xxxxxxxxxx
+    ''' Attempts to obtain a conjugate match from the current instance (load
+    ''' impedance) to the source characteristic impedance of
+    ''' <paramref name="mainCirc"/>, when the current instance appears in the
+    ''' bottom central area. This is to have the first move go CW.
     ''' </summary>
-    ''' <param name="mainCirc">xxxxxxxxxx</param>
-    ''' <param name="intersections">xxxxxxxxxx</param>
-    ''' <param name="transformations">xxxxxxxxxx</param>
-    ''' <returns>xxxxxxxxxx</returns>
+    ''' <param name="mainCirc">Specifies the <see cref="SmithMainCircle"/> with
+    ''' which the current instance is associated.</param>
+    ''' <param name="transformations">Accumulates an array of
+    ''' <see cref="Transformation"/>s that can be used to match a load impedance
+    ''' to a source impedance.</param>
+    ''' <returns><c>True</c> if the process succeeds; otherwise, <c>False</c>.
+    ''' Also returns, by reference in <paramref name="transformations"/>, the
+    ''' components to construct the match.</returns>
+    ''' <remarks>
+    ''' Z0 in <paramref name="mainCirc"/> is the characteristic impedance to
+    ''' which the current instance should be matched. It should have a practical
+    ''' value with regard to the impedance values involved. A succcessful
+    ''' process might result in an empty <paramref name="transformations"/>.
+    ''' </remarks>
     Private Function InBottomCenterCW(ByVal mainCirc As SmithMainCircle,
         ByRef transformations As Transformation()) _
         As System.Boolean
@@ -1315,26 +1293,23 @@ Partial Public Structure Impedance
 
     ''' <summary>
     ''' Attempts to obtain a conjugate match from the current instance (load
-    ''' impedance) to the source characteristic impedance specified by
-    ''' <paramref name="z0"/>, when the current instance appears in the Bottom
-    ''' central area. This is to have the first move go CCW.
+    ''' impedance) to the source characteristic impedance of
+    ''' <paramref name="mainCirc"/>, when the current instance appears in the
+    ''' bottom central area. This is to have the first move go CCW.
     ''' </summary>
-    ''' <param name="z0">Specifies the characteristic impedance to which the
-    ''' current instance should be matched.</param>
-    ''' <param name="transformations">Specifies an array of
+    ''' <param name="mainCirc">Specifies the <see cref="SmithMainCircle"/> with
+    ''' which the current instance is associated.</param>
+    ''' <param name="transformations">Accumulates an array of
     ''' <see cref="Transformation"/>s that can be used to match a load impedance
-    ''' to match a source impedance.</param>
-    ''' <returns>
-    ''' Returns <c>True</c> if the process succeeds; otherwise,
-    ''' <c>False</c>. Also returns, by reference in
-    ''' <paramref name="transformations"/>, the components to construct the
-    ''' match.</returns>
+    ''' to a source impedance.</param>
+    ''' <returns><c>True</c> if the process succeeds; otherwise, <c>False</c>.
+    ''' Also returns, by reference in <paramref name="transformations"/>, the
+    ''' components to construct the match.</returns>
     ''' <remarks>
-    ''' <paramref name="z0"/> is the characteristic impedance to which the
-    ''' current instance should be matched. It should have a practical value
-    ''' with regard to the impedance values involved.
-    ''' A succcessful process might result in an empty
-    ''' <paramref name="transformations"/>.
+    ''' Z0 in <paramref name="mainCirc"/> is the characteristic impedance to
+    ''' which the current instance should be matched. It should have a practical
+    ''' value with regard to the impedance values involved. A succcessful
+    ''' process might result in an empty <paramref name="transformations"/>.
     ''' </remarks>
     Private Function InBottomCenterCCW(ByVal mainCirc As SmithMainCircle,
         ByRef transformations As Transformation()) _
@@ -1403,7 +1378,6 @@ Partial Public Structure Impedance
         Return True
 
     End Function ' InBottomCenterCCW
-    'xxxx
 
     ''' <summary>
     ''' Attempts to obtain a conjugate match from the current instance (load
