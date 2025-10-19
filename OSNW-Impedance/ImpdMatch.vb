@@ -174,18 +174,22 @@ Partial Public Structure Impedance
     ''' Confirms that the specified transformation produces the expected result.
     ''' This is a worker for routines below.
     ''' </summary>
-    ''' <param name="z0">Specifies the characteristic impedance to which the
-    ''' current instance should be matched, using the specified
-    ''' <paramref name="aTransformation"/>. It should have a practical value
-    ''' with regard to the impedance values involved.</param>
+    ''' <param name="mainCirc">Specifies the <see cref="SmithMainCircle"/> with
+    ''' which the current instance is associated.</param>
     ''' <param name="aTransformation">Specifies the <see cref="Transformation"/>
     ''' to be used to perform the matching.</param>
     ''' <returns><c>True</c> if the proposed <see cref="Transformation"/>
     ''' results in a conjugate match for the current instance; otherwise,
     ''' <c>False</c>.</returns>
-    Private Function ValidateTransformation(ByVal z0 As System.Double,
+    ''' <remarks>
+    ''' Z0 in <paramref name="mainCirc"/> is the characteristic impedance to
+    ''' which the current instance should be matched. It should have a practical
+    ''' value with regard to the impedance values involved.
+    ''' </remarks>
+    Private Function ValidateTransformation(ByVal mainCirc As SmithMainCircle,
         ByVal aTransformation As Transformation) As System.Boolean
 
+        Dim z0 As System.Double = mainCirc.Z0
         Dim TargetZ As New Impedance(z0, 0.0)
         Dim WorkZ As Impedance
         Dim FixupY As Admittance
@@ -840,12 +844,12 @@ Partial Public Structure Impedance
 
     ''' <summary>
     ''' Attempts to obtain a conjugate match from the current instance (load
-    ''' impedance) to the source characteristic impedance specified by
-    ''' <paramref name="z0"/>, when the current instance appears inside the
+    ''' impedance) to the source characteristic impedance of
+    ''' <paramref name="mainCirc"/>, when the current instance appears inside the
     ''' G=Y0 circle.
     ''' </summary>
-    ''' <param name="z0">Specifies the characteristic impedance to which the
-    ''' current instance should be matched.</param>
+    ''' <param name="mainCirc">Specifies the <see cref="SmithMainCircle"/> with
+    ''' which the current instance is associated.</param>
     ''' <param name="transformations">Specifies an array of
     ''' <see cref="Transformation"/>s that can be used to match a load impedance
     ''' to match a source impedance.</param>
@@ -855,20 +859,20 @@ Partial Public Structure Impedance
     ''' <paramref name="transformations"/>, the components to construct the
     ''' match.</returns>
     ''' <remarks>
-    ''' <paramref name="z0"/> is the characteristic impedance to which the
-    ''' current instance should be matched. It should have a practical value
-    ''' with regard to the impedance values involved.
+    ''' Z0 in <paramref name="mainCirc"/> is the characteristic impedance to
+    ''' which the current instance should be matched. It should have a practical
+    ''' value with regard to the impedance values involved.
     ''' A succcessful process might result in an empty
     ''' <paramref name="transformations"/>.
     ''' </remarks>
-    Private Function InsideGEqualsY0(ByVal z0 As System.Double,
+    Private Function InsideGEqualsY0(ByVal mainCirc As SmithMainCircle,
         ByRef transformations As Transformation()) _
         As System.Boolean
 
-        'Dim Z0 As System.Double = mainCirc.Z0
+        Dim Z0 As System.Double = MainCirc.Z0
         'Dim NormR As System.Double = Me.Resistance / z0
         'Dim NormX As System.Double = Me.Reactance / z0
-        Dim Y0 As System.Double = 1.0 / z0
+        Dim Y0 As System.Double = 1.0 / Z0
         'Dim Y As Admittance = Me.ToAdmittance()
         'Dim NormG As System.Double = Y.Conductance / Y0
         'Dim NormB As System.Double = Y.Susceptance / Y0
@@ -887,8 +891,6 @@ Partial Public Structure Impedance
         '  - To favor the shortest first path?
 
         ' Determine the circles and their intersections.
-        Dim MainCirc As New SmithMainCircle(4.0, 5.0, 4.0, z0) ' Test data.
-        'Dim MainCirc As New SmithMainCircle(1.0, 1.0, 1.0, z0) ' Arbitrary.
         Dim CircG As New GCircle(MainCirc, Y0)
         Dim CircR As New RCircle(MainCirc, Me.Resistance)
         Dim Intersections _
@@ -950,11 +952,11 @@ Partial Public Structure Impedance
         ' RESULTS ARE KNOWN TO BE CORRECT.
         ' There should now be two valid solutions that match to Z=Z0+j0.0.
         ' Check first solution.
-        If Not ValidateTransformation(z0, Transformation0) Then
+        If Not ValidateTransformation(mainCirc, Transformation0) Then
             Return False
         End If
         ' Check second solution.
-        If Not ValidateTransformation(z0, Transformation1) Then
+        If Not ValidateTransformation(mainCirc, Transformation1) Then
             Return False
         End If
 
@@ -963,8 +965,6 @@ Partial Public Structure Impedance
 
     End Function ' InsideGEqualsY0
 
-    '''
-    ''' 
     ''' <summary>
     ''' Attempts to obtain a conjugate match from the current instance (load
     ''' impedance) to the source characteristic impedance of
@@ -1038,7 +1038,7 @@ Partial Public Structure Impedance
             ' THIS CHECK CAN BE DELETED/COMMENTED AFTER THE Transformation
             ' RESULTS ARE KNOWN TO BE CORRECT.
             ' There should now be a valid solution that matches to Z=Z0+j0.0.
-            If Not ValidateTransformation(Z0, Trans) Then
+            If Not ValidateTransformation(mainCirc, Trans) Then
                 Return False
             End If
 
@@ -1126,7 +1126,7 @@ Partial Public Structure Impedance
             ' THIS CHECK CAN BE DELETED/COMMENTED AFTER THE Transformation
             ' RESULTS ARE KNOWN TO BE CORRECT.
             ' There should now be a valid solution that matches to Z=Z0+j0.0.
-            If Not ValidateTransformation(Z0, Trans) Then
+            If Not ValidateTransformation(mainCirc, Trans) Then
                 Return False
             End If
 
@@ -1276,7 +1276,7 @@ Partial Public Structure Impedance
             ' THIS CHECK CAN BE DELETED/COMMENTED AFTER THE Transformation
             ' RESULTS ARE KNOWN TO BE CORRECT.
             ' There should now be a valid solution that matches to Z=Z0+j0.0.
-            If Not ValidateTransformation(Z0, Trans) Then
+            If Not ValidateTransformation(mainCirc, Trans) Then
                 Return False
             End If
 
@@ -1364,7 +1364,7 @@ Partial Public Structure Impedance
             ' THIS CHECK CAN BE DELETED/COMMENTED AFTER THE Transformation
             ' RESULTS ARE KNOWN TO BE CORRECT.
             ' There should now be a valid solution that matches to Z=Z0+j0.0.
-            If Not ValidateTransformation(Z0, Trans) Then
+            If Not ValidateTransformation(mainCirc, Trans) Then
                 Return False
             End If
 
@@ -1494,11 +1494,12 @@ Partial Public Structure Impedance
     End Function ' InRemainder
 
     ''' <summary>
-    ''' Attempts to obtain a conjugate match from the current load instance to
-    ''' the source characteristic impedance specified by <paramref name="z0"/>.
-    ''' </summary>
-    ''' <param name="z0">Specifies the characteristic impedance to which the
-    ''' current instance should be matched.</param>
+    ''' Attempts to obtain a conjugate match from the current instance (load
+    ''' impedance) to the source characteristic impedance of
+    ''' <paramref name="mainCirc"/>.
+    ''' </summary> 
+    ''' <param name="mainCirc">Specifies the <see cref="SmithMainCircle"/> with
+    ''' which the current instance is associated.</param>
     ''' <param name="transformations">Specifies an array of
     ''' <see cref="Transformation"/>s that can be used to match a load impedance
     ''' to match a source impedance.</param>
@@ -1509,7 +1510,7 @@ Partial Public Structure Impedance
     ''' An already-matched impedance returns <c>True</c>, with
     ''' <c>Nothing</c>/<c>Null</c> for <paramref name="transformations"/>.
     ''' </remarks>
-    Public Function TrySelectMatchLayout(ByVal z0 As System.Double,
+    Public Function TrySelectMatchLayout(ByVal mainCirc As SmithMainCircle,
         ByRef transformations As Transformation()) _
         As System.Boolean
 
@@ -1544,7 +1545,7 @@ Partial Public Structure Impedance
         ' Q: Outside of main circle. Invalid.
         ' R: NormR<=0. Invalid.
 
-        'Dim Z0 As System.Double = mainCirc.Z0
+        Dim Z0 As System.Double = mainCirc.Z0
         Dim NormR As System.Double = Me.Resistance / z0
         Dim NormX As System.Double = Me.Reactance / z0
         Dim Y0 As System.Double = 1.0 / z0
@@ -1599,7 +1600,7 @@ Partial Public Structure Impedance
             '     N: Inside G=Y0 circle, below line.
             Return If(NormG.Equals(Y0),
                 Me.OnGEqualsY0(z0, transformations), ' J, K.
-                Me.InsideGEqualsY0(z0, transformations)) ' L, M, N.
+                Me.InsideGEqualsY0(mainCirc, transformations)) ' L, M, N.
         End If
 
         ' DELETE THIS AFTER TESTING CONFIRMS THAT IT IS NEVER HIT BY ANY TEST CASES.

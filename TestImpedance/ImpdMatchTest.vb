@@ -54,12 +54,14 @@ Namespace TrySelectMatchLayoutTests
         <InlineData(1.0, 0.0000, 1 / 2.0)> ' B: Anywhere else on the perimeter. R=0.0.
         Public Sub TrySelectMatch_PositionBZeroR_Fails(z0 As Double, r As Double, x As Double)
 
+            Dim MainCirc As New SmithMainCircle(4.0, 5.0, 4.0, z0) ' Test data.
+            'Dim MainCirc As New SmithMainCircle(1.0, 1.0, 1.0, z0) ' Arbitrary.
             Dim Z As New OSNW.Numerics.Impedance(r, x)
             Dim transformations As Transformation() = Array.Empty(Of Transformation)
 
             ' This version, with R=0, does not throw an exception when R=0 is
             ' allowed by Impedance.New(), but it does fail to match.
-            Assert.False(Z.TrySelectMatchLayout(z0, transformations))
+            Assert.False(Z.TrySelectMatchLayout(MainCirc, transformations))
             Assert.True(transformations Is Nothing)
 
         End Sub
@@ -78,9 +80,11 @@ Namespace TrySelectMatchLayoutTests
             Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
                 Sub()
                     ' Code that throws the exception.
+                    Dim MainCirc As New SmithMainCircle(4.0, 5.0, 4.0, z0) ' Test data.
+                    'Dim MainCirc As New SmithMainCircle(1.0, 1.0, 1.0, z0) ' Arbitrary.
                     Dim Z As New OSNW.Numerics.Impedance(r, x)
                     Dim transformations As Transformation() = Array.Empty(Of Transformation)
-                    Assert.False(Z.TrySelectMatchLayout(z0, transformations))
+                    Assert.False(Z.TrySelectMatchLayout(MainCirc, transformations))
                 End Sub)
         End Sub
 
@@ -94,10 +98,12 @@ Namespace TrySelectMatchLayoutTests
         <InlineData(1.0, 1.0, 0.0000)> ' D: At the center.
         Public Sub TestTrySelectMatchLayoutD(z0 As Double, r As Double, x As Double)
 
+            Dim MainCirc As New SmithMainCircle(4.0, 5.0, 4.0, z0) ' Test data.
+            'Dim MainCirc As New SmithMainCircle(1.0, 1.0, 1.0, z0) ' Arbitrary.
             Dim Z As New OSNW.Numerics.Impedance(r, x)
             Dim transformations As Transformation() = Array.Empty(Of Transformation)
 
-            Assert.True(Z.TrySelectMatchLayout(z0, transformations), Messages.TF)
+            Assert.True(Z.TrySelectMatchLayout(MainCirc, transformations), Messages.TF)
             Assert.True(transformations.Length = 0, Messages.ITC)
 
         End Sub
@@ -115,11 +121,13 @@ Namespace TrySelectMatchLayoutTests
         <InlineData(1.0, 1.0, 1.0)> ' E: On R=Z0 circle, above resonance line. Only needs reactance.
         Public Sub TrySelectMatch_PositionE_Succeeds(z0 As Double, r As Double, x As Double)
 
+            Dim MainCirc As New SmithMainCircle(4.0, 5.0, 4.0, z0) ' Test data.
+            'Dim MainCirc As New SmithMainCircle(1.0, 1.0, 1.0, z0) ' Arbitrary.
             Dim TestZ As New OSNW.Numerics.Impedance(r, x)
 
             Dim TargetZ As New Impedance(z0, 0.0)
             Dim transformations As Transformation() = Array.Empty(Of Transformation)
-            If Not TestZ.TrySelectMatchLayout(z0, transformations) Then
+            If Not TestZ.TrySelectMatchLayout(MainCirc, transformations) Then
                 Assert.True(False, Messages.TF)
             End If
             Dim AddZ As New Impedance(0.0, transformations(0).Value1)
@@ -137,11 +145,13 @@ Namespace TrySelectMatchLayoutTests
         <InlineData(1.0, 1.0, -2.0)> ' F: On R=Z0 circle, below resonance line. Only needs reactance.
         Public Sub TrySelectMatch_PositionF_Succeeds(z0 As Double, r As Double, x As Double)
 
+            Dim MainCirc As New SmithMainCircle(4.0, 5.0, 4.0, z0) ' Test data.
+            'Dim MainCirc As New SmithMainCircle(1.0, 1.0, 1.0, z0) ' Arbitrary.
             Dim TestZ As New OSNW.Numerics.Impedance(r, x)
 
             Dim TargetZ As New Impedance(z0, 0.0)
             Dim transformations As Transformation() = Array.Empty(Of Transformation)
-            If Not TestZ.TrySelectMatchLayout(z0, transformations) Then
+            If Not TestZ.TrySelectMatchLayout(MainCirc, transformations) Then
                 Assert.True(False, Messages.TF)
             End If
             Dim AddZ As New Impedance(0.0, transformations(0).Value1)
@@ -167,12 +177,14 @@ Namespace TrySelectMatchLayoutTests
         <InlineData(1.0, 1.0, -1.0)> ' J: On G=Y0 circle, above resonance line. Only needs reactance.
         Public Sub TrySelectMatch_PositionJ_Succeeds(z0 As Double, g As Double, b As Double)
 
+            Dim MainCirc As New SmithMainCircle(4.0, 5.0, 4.0, z0) ' Test data.
+            'Dim MainCirc As New SmithMainCircle(1.0, 1.0, 1.0, z0) ' Arbitrary.
             Dim TestY As New OSNW.Numerics.Admittance(g, b)
             Dim TestZ As OSNW.Numerics.Impedance = TestY.ToImpedance
 
             Dim TargetZ As New Impedance(z0, 0.0)
             Dim transformations As Transformation() = Array.Empty(Of Transformation)
-            If Not TestZ.TrySelectMatchLayout(z0, transformations) Then
+            If Not TestZ.TrySelectMatchLayout(MainCirc, transformations) Then
                 Assert.True(False, Messages.TF)
             End If
             Dim AddZ As New Impedance(0.0, transformations(0).Value1)
@@ -190,12 +202,14 @@ Namespace TrySelectMatchLayoutTests
         <InlineData(1.0, 1.0, 1.0)> ' K: On G=Y0 circle, below resonance line. Only needs reactance.
         Public Sub TrySelectMatch_PositionK_Succeeds(z0 As Double, g As Double, b As Double)
 
+            Dim MainCirc As New SmithMainCircle(4.0, 5.0, 4.0, z0) ' Test data.
+            'Dim MainCirc As New SmithMainCircle(1.0, 1.0, 1.0, z0) ' Arbitrary.
             Dim TestY As New OSNW.Numerics.Admittance(g, b)
             Dim TestZ As OSNW.Numerics.Impedance = TestY.ToImpedance
 
             Dim TargetZ As New Impedance(z0, 0.0)
             Dim transformations As Transformation() = Array.Empty(Of Transformation)
-            If Not TestZ.TrySelectMatchLayout(z0, transformations) Then
+            If Not TestZ.TrySelectMatchLayout(MainCirc, transformations) Then
                 Assert.True(False, Messages.TF)
             End If
             Dim AddZ As New Impedance(0.0, transformations(0).Value1)
@@ -221,11 +235,13 @@ Namespace TrySelectMatchLayoutTests
         <InlineData(1.0, 2.0, -2.0)> ' I: Inside R=Z0 circle, below resonance line.
         Public Sub TrySelectMatch_PositionGHI_Succeeds(z0 As Double, r As Double, x As Double)
 
+            Dim MainCirc As New SmithMainCircle(4.0, 5.0, 4.0, z0) ' Test data.
+            'Dim MainCirc As New SmithMainCircle(1.0, 1.0, 1.0, z0) ' Arbitrary.
             Dim TestZ As New OSNW.Numerics.Impedance(r, x)
 
             Dim TargetZ As New Impedance(z0, 0.0)
             Dim transformations As Transformation() = Array.Empty(Of Transformation)
-            If Not TestZ.TrySelectMatchLayout(z0, transformations) Then
+            If Not TestZ.TrySelectMatchLayout(MainCirc, transformations) Then
                 Assert.True(False, Messages.TF)
             End If
             Assert.True(True)
@@ -254,11 +270,13 @@ Namespace TrySelectMatchLayoutTests
         <InlineData(1.0, 1 / 2.0, -1 / 3.0)> ' N: Inside G=Y0 circle, below line.
         Public Sub TrySelectMatch_PositionLMN_Succeeds(z0 As Double, r As Double, x As Double)
 
+            Dim MainCirc As New SmithMainCircle(4.0, 5.0, 4.0, z0) ' Test data.
+            'Dim MainCirc As New SmithMainCircle(1.0, 1.0, 1.0, z0) ' Arbitrary.
             Dim TestZ As New OSNW.Numerics.Impedance(r, x)
 
             Dim TargetZ As New Impedance(z0, 0.0)
             Dim transformations As Transformation() = Array.Empty(Of Transformation)
-            If Not TestZ.TrySelectMatchLayout(z0, transformations) Then
+            If Not TestZ.TrySelectMatchLayout(MainCirc, transformations) Then
                 Assert.True(False, Messages.TF)
             End If
             Assert.True(True)
@@ -285,11 +303,13 @@ Namespace TrySelectMatchLayoutTests
         <InlineData(50.0, 10.0, 70.0)> ' O: 50 ohms In the top center.
         Public Sub TestTrySelectMatchLayoutO(z0 As Double, r As Double, x As Double)
 
+            Dim MainCirc As New SmithMainCircle(4.0, 5.0, 4.0, z0) ' Test data.
+            'Dim MainCirc As New SmithMainCircle(1.0, 1.0, 1.0, z0) ' Arbitrary.
             Dim TestZ As New OSNW.Numerics.Impedance(r, x)
 
             Dim TargetZ As New Impedance(z0, 0.0)
             Dim transformations As Transformation() = Array.Empty(Of Transformation)
-            If Not TestZ.TrySelectMatchLayout(z0, transformations) Then
+            If Not TestZ.TrySelectMatchLayout(MainCirc, transformations) Then
                 Assert.True(False, Messages.TF)
             End If
             Assert.True(True)
@@ -307,11 +327,13 @@ Namespace TrySelectMatchLayoutTests
         <InlineData(50.0, 20.0, -40.0)> ' P: In the bottom center.
         Public Sub TestTrySelectMatchLayoutP(z0 As Double, r As Double, x As Double)
 
+            Dim MainCirc As New SmithMainCircle(4.0, 5.0, 4.0, z0) ' Test data.
+            'Dim MainCirc As New SmithMainCircle(1.0, 1.0, 1.0, z0) ' Arbitrary.
             Dim TestZ As New OSNW.Numerics.Impedance(r, x)
 
             Dim TargetZ As New Impedance(z0, 0.0)
             Dim transformations As Transformation() = Array.Empty(Of Transformation)
-            If Not TestZ.TrySelectMatchLayout(z0, transformations) Then
+            If Not TestZ.TrySelectMatchLayout(MainCirc, transformations) Then
                 Assert.True(False, Messages.TF)
             End If
             Assert.True(True)
