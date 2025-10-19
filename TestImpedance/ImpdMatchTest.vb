@@ -19,7 +19,7 @@ Imports Xunit
 ' F: On R=Z0 circle, below resonance line. Only needs reactance.
 ' Inside the R=Z0 circle. Two choices: CW or CCW on the G-circle.
 ' G1: Inside R=Z0 circle, above resonance line.
-' G2: Inside R=Z0 circle, above resonance line, Z0=50
+' G2: Inside R=Z0 circle, above resonance line. Z0=50.
 ' H: Inside R=Z0 circle, on line.
 ' I: Inside R=Z0 circle, below resonance line.
 ' On the G=Y0 circle.
@@ -31,8 +31,10 @@ Imports Xunit
 ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
 ' M: Inside G=Y0 circle, on line.
 ' N: Inside G=Y0 circle, below line.
-' O: In the top center.
-' P: In the bottom center.
+' O1: In the top center.
+' O2: In the top center. Z0=50.
+' P1: In the bottom center.
+' P2: In the bottom center. Z0=50.
 ' Q: Outside of main circle. Invalid.
 ' R: NormR<=0. Invalid.
 
@@ -230,7 +232,7 @@ Namespace TrySelectMatchLayoutTests
         '<InlineData(     Z0,        R,       X)> ' Model
         <Theory>
         <InlineData(1.0, 2.0, 1 / 2.0)> ' G1: Inside R=Z0 circle, above resonance line.
-        <InlineData(50.0, 100.0, 25.0)> ' G2: Inside R=Z0 circle, above resonance line, Z0=50
+        <InlineData(50.0, 100.0, 25.0)> ' G2: Inside R=Z0 circle, above resonance line. Z0=50.
         <InlineData(1.0, 3.0, 0.0000)> ' H: Inside R=Z0 circle, on line.
         <InlineData(1.0, 2.0, -2.0)> ' I: Inside R=Z0 circle, below resonance line.
         Public Sub TrySelectMatch_PositionGHI_Succeeds(z0 As Double, r As Double, x As Double)
@@ -299,8 +301,8 @@ Namespace TrySelectMatchLayoutTests
 
         '<InlineData(     Z0,        R,       X)> ' Model
         <Theory>
-        <InlineData(1.0, 0.2, 1.4)> ' O: In the top center.
-        <InlineData(50.0, 10.0, 70.0)> ' O: 50 ohms In the top center.
+        <InlineData(1.0, 0.2, 1.4)> ' O1: In the top center.
+        <InlineData(50.0, 10.0, 70.0)> ' O2: In the top center. Z0=50.
         Public Sub TestTrySelectMatchLayoutO(z0 As Double, r As Double, x As Double)
 
             Dim MainCirc As New SmithMainCircle(4.0, 5.0, 4.0, z0) ' Test data.

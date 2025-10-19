@@ -1541,7 +1541,11 @@ Partial Public Structure Impedance
         '     M: Inside G=Y0 circle, on line.
         '     N: Inside G=Y0 circle, below line.
         ' O: In the top center.
+        '     O1: In the top center.
+        '     O2: In the top center. Z0=50.
         ' P: In the bottom center.
+        '     P1: In the bottom center.
+        '     P2: In the bottom center. Z0=50.
         ' Q: Outside of main circle. Invalid.
         ' R: NormR<=0. Invalid.
 

@@ -25,8 +25,10 @@ Namespace ReflectionTests
         <InlineData(75.0, 25.0, 25.0, 0.5423)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
         <InlineData(1.0, 1 / 3.0, 0.0000, 0.5)> ' M: Inside G=Y0 circle, on line.
         <InlineData(1.0, 1 / 2.0, -1 / 3.0, 0.3911)> ' N: Inside G=Y0 circle, below line.
-        <InlineData(1.0, 0.2, 1.4, 0.8745)> ' O: In the top center.
-        <InlineData(1.0, 0.4, -0.8, 0.62)> ' P: In the bottom center.
+        <InlineData(1.0, 0.2, 1.4, 0.8745)> ' O1: In the top center.
+        <InlineData(50.0, 10.0, 70.0, 0.8745)> ' O2: In the top center. Z0=50.
+        <InlineData(1.0, 0.4, -0.8, 0.62)> ' P1: In the bottom center.
+        <InlineData(50.0, 20.0, -40.0, 0.62)> ' P2: In the bottom center. Z0=50.
         Public Sub VoltageReflectionCoefficient_GoodInput_Succeeds(
             z0 As Double, r As Double, x As Double, expectVRC As Double)
 
@@ -96,8 +98,10 @@ Namespace ReflectionTests
         <InlineData(75.0, 25.0, 25.0, 0.2941)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
         <InlineData(1.0, 1 / 3.0, 0.0000, 0.25)> ' M: Inside G=Y0 circle, on line.
         <InlineData(1.0, 1 / 2.0, -1 / 3.0, 0.1529)> ' N: Inside G=Y0 circle, below line.
-        <InlineData(1.0, 0.2, 1.4, 0.7647)> ' O: In the top center.
-        <InlineData(1.0, 0.4, -0.8, 0.3846)> ' P: In the bottom center.
+        <InlineData(1.0, 0.2, 1.4, 0.7647)> ' O1: In the top center.
+        <InlineData(50.0, 10.0, 70.0, 0.7647)> ' O2: In the top center. Z0=50.
+        <InlineData(1.0, 0.4, -0.8, 0.3846)> ' P1: In the bottom center.
+        <InlineData(50.0, 20.0, -40.0, 0.3846)> ' P2: In the bottom center. Z0=50.
         Public Sub PowerReflectionCoefficient_GoodInput_Succeeds(
             z0 As Double, r As Double, x As Double, expectPRC As Double)
 
@@ -167,8 +171,10 @@ Namespace ReflectionTests
         <InlineData(75.0, 25.0, 25.0, 0.686)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
         <InlineData(1.0, 1 / 3.0, 0.0000, 0.5)> ' M: Inside G=Y0 circle, on line.
         <InlineData(1.0, 1 / 2.0, -1 / 3.0, 0.7822)> ' N: Inside G=Y0 circle, below line.
-        <InlineData(1.0, 0.2, 1.4, 1.534)> ' O: In the top center.
-        <InlineData(1.0, 0.4, -0.8, 1.1094)> ' P: In the bottom center.
+        <InlineData(1.0, 0.2, 1.4, 1.534)> ' O1: In the top center.
+        <InlineData(50.0, 10.0, 70.0, 1.534)> ' O2: In the top center. Z0=50.
+        <InlineData(1.0, 0.4, -0.8, 1.1094)> ' P1: In the bottom center.
+        <InlineData(50.0, 20.0, -40.0, 1.1094)> ' P2: In the bottom center. Z0=50.
         Public Sub VoltageTransmissionCoefficient_GoodInput_Succeeds(
             z0 As Double, r As Double, x As Double, expectVTC As Double)
 
@@ -239,8 +245,10 @@ Namespace ReflectionTests
         '<InlineData(1.0, 1 / 3.0, 1 / 3.0, 0.7059)> ' L1: Inside G=Y0 circle, above resonance line.
         '<InlineData(75.0, 25.0, 25.0, 0.7059)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
         '<InlineData(1.0, 1 / 2.0, -1 / 3.0, 0.8471)> ' N: Inside G=Y0 circle, below line.
-        '<InlineData(1.0, 0.2, 1.4, 0.2353)> ' O: In the top center.
-        '<InlineData(1.0, 0.4, -0.8, 0.6154)> ' P: In the bottom center.
+        '<InlineData(1.0, 0.2, 1.4, 0.2353)> ' O1: In the top center.
+        '<InlineData(50.0, 10.0, 70.0, 0.2353)> ' O2: In the top center. Z0=50.
+        '<InlineData(1.0, 0.4, -0.8, 0.6154)> ' P1: In the bottom center.
+        '<InlineData(50.0, 20.0, -40.0, 0.6154)> ' P2: In the bottom center. Z0=50.
         '<InlineData(1.0, -0.0345, 0.4138, 999)> ' Q: Outside of main circle. Invalid.
         '<InlineData(1.0, -2.0, 999, 999)> ' R: NormR<=0. Invalid.
 
@@ -280,8 +288,10 @@ Namespace ReflectionTests
         <InlineData(75.0, 25.0, 25.0, 139.3987)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
         <InlineData(1.0, 1 / 3.0, 0.0000, 180.0)> ' M: Inside G=Y0 circle, on line.
         <InlineData(1.0, 1 / 2.0, -1 / 3.0, -133.7811)> ' N: Inside G=Y0 circle, below line.
-        <InlineData(1.0, 0.2, 1.4, 70.34617)> ' O: In the top center.
-        <InlineData(1.0, 0.4, -0.8, -97.125)> ' P: In the bottom center.
+        <InlineData(1.0, 0.2, 1.4, 70.34617)> ' O1: In the top center.
+        <InlineData(50.0, 10.0, 70.0, 70.34617)> ' O2: In the top center. Z0=50.
+        <InlineData(1.0, 0.4, -0.8, -97.125)> ' P1: In the bottom center.
+        <InlineData(50.0, 20.0, -40.0, -97.125)> ' P2: In the bottom center. Z0=50.
         Public Sub AngleOfReflection_GoodInput_Succeeds(
             z0 As Double, r As Double, x As Double, expectAOR As Double)
 
@@ -353,8 +363,10 @@ Namespace ReflectionTests
         <InlineData(75.0, 25.0, 25.0, 30.9638)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
         <InlineData(1.0, 1 / 3.0, 0.0000, 0.0000)> ' M: Inside G=Y0 circle, on line.
         <InlineData(1.0, 1 / 2.0, -1 / 3.0, -21.1613)> ' N: Inside G=Y0 circle, below line.
-        <InlineData(1.0, 0.2, 1.4, 32.4712)> ' O: In the top center.
-        <InlineData(1.0, 0.4, -0.8, -33.6901)> ' P: In the bottom center.
+        <InlineData(1.0, 0.2, 1.4, 32.4712)> ' O1: In the top center.
+        <InlineData(50.0, 10.0, 70.0, 32.4712)> ' O2: In the top center. Z0=50.
+        <InlineData(1.0, 0.4, -0.8, -33.6901)> ' P1: In the bottom center.
+        <InlineData(50.0, 20.0, -40.0, -33.6901)> ' P2: In the bottom center. Z0=50.
         Public Sub AngleOfTransmission_GoodInput_Succeeds(
             z0 As Double, r As Double, x As Double, expectAOT As Double)
 
@@ -429,8 +441,10 @@ Namespace ReflectionTests
         <InlineData(75.0, 25.0, 25.0, 3.3699)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
         <InlineData(1.0, 1 / 3.0, 0.0000, 3.0)> ' M: Inside G=Y0 circle, on line.
         <InlineData(1.0, 1 / 2.0, -1 / 3.0, 2.2845)> ' N: Inside G=Y0 circle, below line.
-        <InlineData(1.0, 0.2, 1.4, 14.933)> ' O: In the top center.
-        <InlineData(1.0, 0.4, -0.8, 4.2656)> ' P: In the bottom center.
+        <InlineData(1.0, 0.2, 1.4, 14.933)> ' O1: In the top center.
+        <InlineData(50.0, 10.0, 70.0, 14.933)> ' O2: In the top center. Z0=50.
+        <InlineData(1.0, 0.4, -0.8, 4.2656)> ' P1: In the bottom center.
+        <InlineData(50.0, 20.0, -40.0, 4.2656)> ' P2: In the bottom center. Z0=50.
         Public Sub VSWR_GoodInput_Succeeds(
             z0 As Double, r As Double, x As Double, expectVSWR As Double)
 
