@@ -15,6 +15,7 @@ Option Strict On
 Option Compare Binary
 Option Infer Off
 
+Imports System.ComponentModel.Design
 Imports System.Diagnostics.CodeAnalysis
 Imports System.Globalization
 Imports System.Text.Json.Serialization
@@ -716,9 +717,11 @@ Public Structure Impedance
 
         ' REF: How to write .NET objects as JSON (serialize)
         ' https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/how-to
-        jsonString = If(IsNothing(jsonOptions),
-            System.Text.Json.JsonSerializer.Serialize(Me),
-            System.Text.Json.JsonSerializer.Serialize(Me, jsonOptions))
+        If IsNothing(jsonOptions) Then
+            jsonString = System.Text.Json.JsonSerializer.Serialize(Me)
+        Else
+            jsonString = System.Text.Json.JsonSerializer.Serialize(Me, jsonOptions)
+        End If
 
         ' On getting this far,
         Return True

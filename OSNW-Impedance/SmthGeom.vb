@@ -1074,9 +1074,13 @@ Public Class XCircle
             With Me
                 gridRadius = .MainCircle.GetRadiusX(.Reactance)
                 gridCenterX = .MainCircle.GridRightEdgeX
-                gridCenterY = If(.Reactance < 0.0,
-                    .MainCircle.GridCenterY - System.Math.Abs(gridRadius),
-                    .MainCircle.GridCenterY + System.Math.Abs(gridRadius))
+                If .Reactance < 0.0 Then
+                    gridCenterY =
+                        .MainCircle.GridCenterY - System.Math.Abs(gridRadius)
+                Else
+                    gridCenterY =
+                        .MainCircle.GridCenterY + System.Math.Abs(gridRadius)
+                End If
             End With
             Return True
         Catch ex As Exception
@@ -1288,9 +1292,13 @@ Public Class BCircle
             With Me
                 .GridRadius = .MainCircle.GetRadiusX(.Susceptance)
                 .GridCenterX = .MainCircle.GridLeftEdgeX
-                .GridCenterY = If(.Susceptance < 0.0,
-                    .MainCircle.GridCenterY + System.Math.Abs(.GridRadius),
-                    .MainCircle.GridCenterY - System.Math.Abs(.GridRadius))
+                If .Susceptance < 0.0 Then
+                    .GridCenterY =
+                        .MainCircle.GridCenterY + System.Math.Abs(.GridRadius)
+                Else
+                    .GridCenterY =
+                        .MainCircle.GridCenterY - System.Math.Abs(.GridRadius)
+                End If
             End With
             Return True
         Catch ex As Exception

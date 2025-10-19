@@ -44,24 +44,42 @@ Partial Public Module ComplexExtensions
         Dim ImaginarySegment As System.String = complexStr.Substring(
             BeginImaginary, complexStr.Length - BeginImaginary - 1)
 
-        ' Construct the standard form string.
+        ' Construct the standard form string:
 
         ' Get the sign and magnitude of the imaginary component.
         Dim IsNeg As System.Boolean = ImaginarySegment.StartsWith(CHARMINUS)
-        Dim ImaginaryMagStr As System.String = ImaginarySegment.Substring(
-                If(IsNeg, 1, 0),
-                If(IsNeg, ImaginarySegment.Length - 1, ImaginarySegment.Length))
+        Dim StartIndex As Integer
+        Dim Length As Integer
+        If IsNeg Then
+            StartIndex = 1
+            Length = ImaginarySegment.Length - 1
+        Else
+            StartIndex = 0
+            Length = ImaginarySegment.Length
+        End If
+        Dim ImaginaryMagStr As System.String =
+            ImaginarySegment.Substring(StartIndex, Length)
 
         ' Assign the text containing the sign of the imaginary part.
-        Dim ImaginarySign As System.String = If(
-            (standardizationStyle And StandardizationStyles.Open) > 0,
-            $" {If(IsNeg, CHARMINUS, CHARPLUS)} ", ' With spaces.
-            $"{If(IsNeg, CHARMINUS, CHARPLUS)}") ' Without spaces.
+        Dim ImaginarySign As System.String
+        Dim SignChar As System.Char
+        If IsNeg Then
+            SignChar = CHARMINUS
+        Else
+            SignChar = CHARPLUS
+        End If
+        If (standardizationStyle And StandardizationStyles.Open) > 0 Then
+                ImaginarySign = $" {SignChar} " ' With spaces.
+            Else
+                ImaginarySign = $"{SignChar}" ' Without spaces.
+        End If
 
-        standardizedStr =
-            If((standardizationStyle And StandardizationStyles.AiB) > 0,
-               $"{RealStr}{ImaginarySign}i{ImaginaryMagStr}",
-               $"{RealStr}{ImaginarySign}{ImaginaryMagStr}i")
+        ' Construct the result.
+        If (standardizationStyle And StandardizationStyles.AiB) > 0 Then
+            standardizedStr = $"{RealStr}{ImaginarySign}i{ImaginaryMagStr}"
+        Else
+            standardizedStr = $"{RealStr}{ImaginarySign}{ImaginaryMagStr}i"
+        End If
 
     End Sub ' StandardizeString
 

@@ -189,9 +189,9 @@ Partial Public Structure Impedance
     Private Function ValidateTransformation(ByVal mainCirc As SmithMainCircle,
         ByVal aTransformation As Transformation) As System.Boolean
 
+        Dim z0 As System.Double = mainCirc.Z0
         Dim FixupY As Admittance
         Dim FixupZ As Impedance
-        Dim z0 As System.Double = mainCirc.Z0
         Dim WorkZ As Impedance
 
         If aTransformation.Style = TransformationStyles.ShuntCapSeriesInd Then
@@ -1477,7 +1477,7 @@ Partial Public Structure Impedance
             Return False
         End If
 
-        If Me.Resistance.Equals(z0) AndAlso Me.Reactance.Equals(0.0) Then
+        If Me.Resistance.Equals(Z0) AndAlso Me.Reactance.Equals(0.0) Then
             ' D: At the center.
             ' Leave transformations as the incoming empty array.
             Return True
@@ -1493,9 +1493,11 @@ Partial Public Structure Impedance
             '     G2: Inside R=Z0 circle, above resonance line. Z0=50.
             '     H: Inside R=Z0 circle, on line.
             '     I: Inside R=Z0 circle, below resonance line.
-            Return If(NormR.Equals(z0),
-                Me.OnREqualsZ0(z0, transformations), ' E, F.
-                Me.InsideREqualsZ0(z0, transformations)) 'G, H, I.
+            If NormR.Equals(Z0) Then
+                Return Me.OnREqualsZ0(Z0, transformations) ' E, F.
+            Else
+                Return Me.InsideREqualsZ0(Z0, transformations) 'G, H, I.
+            End If
         ElseIf NormG >= 1.0 Then
             ' On the G=Y0 circle.
             '     Omit: On the resonance line. Already covered by A or D.
@@ -1506,9 +1508,11 @@ Partial Public Structure Impedance
             '     L2: Inside G=Y0 circle, above resonance line. Z0=75.
             '     M: Inside G=Y0 circle, on line.
             '     N: Inside G=Y0 circle, below line.
-            Return If(NormG.Equals(1.0 / Z0),
-                Me.OnGEqualsY0(Z0, transformations), ' J, K.
-                Me.InsideGEqualsY0(mainCirc, transformations)) ' L, M, N.
+            If NormG.Equals(1.0 / Z0) Then
+                Return Me.OnGEqualsY0(Z0, transformations) ' J, K.
+            Else
+                Return Me.InsideGEqualsY0(mainCirc, transformations) ' L, M, N.
+            End If
         End If
 
         ' DELETE THIS AFTER TESTING CONFIRMS THAT IT IS NEVER HIT BY ANY TEST CASES.
