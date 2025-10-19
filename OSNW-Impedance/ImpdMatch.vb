@@ -189,17 +189,16 @@ Partial Public Structure Impedance
     Private Function ValidateTransformation(ByVal mainCirc As SmithMainCircle,
         ByVal aTransformation As Transformation) As System.Boolean
 
-        Dim z0 As System.Double = mainCirc.Z0
-        Dim TargetZ As New Impedance(z0, 0.0)
-        Dim WorkZ As Impedance
         Dim FixupY As Admittance
         Dim FixupZ As Impedance
+        Dim z0 As System.Double = mainCirc.Z0
+        Dim WorkZ As Impedance
 
         If aTransformation.Style = TransformationStyles.ShuntCapSeriesInd Then
 
             ' To go | On a     | Use a
-            ' CW    | R-circle | series inductor
             ' CW    | G-circle | shunt capacitor
+            ' CW    | R-circle | series inductor
 
             FixupY = New Admittance(0.0, aTransformation.Value1)
             FixupZ = FixupY.ToImpedance
@@ -415,13 +414,7 @@ Partial Public Structure Impedance
         ' Test data E: On R=Z0 circle, above resonance line. Only needs reactance.
         ' Test data F: On R=Z0 circle, below resonance line. Only needs reactance.
 
-        'Dim NormR As System.Double = Me.Resistance / z0
         Dim NormX As System.Double = Me.Reactance / z0
-        'Dim Y0 As System.Double = 1.0 / z0
-        'Dim Y As Admittance = Me.ToAdmittance()
-        'Dim NormG As System.Double = Y.Conductance / Y0
-        'Dim NormB As System.Double = Y.Susceptance / Y0
-
         If NormX.Equals(0.0) Then
             ' This happens at two places. One would have been handled as
             ' position C. The other is at the center of the chart.
@@ -499,13 +492,10 @@ Partial Public Structure Impedance
         ByRef transformations As Transformation()) _
         As System.Boolean
 
-        'Dim Z0 As System.Double = mainCirc.Z0
-        'Dim NormR As System.Double = Me.Resistance / z0
-        'Dim NormX As System.Double = Me.Reactance / z0
-        Dim Y0 As System.Double = 1.0 / z0
-        Dim Y As Admittance = Me.ToAdmittance()
-        'Dim NormG As System.Double = Y.Conductance / Y0
-        Dim NormB As System.Double = Y.Susceptance / Y0
+        '        Dim Y0 As System.Double = 1.0 / z0
+        '        Dim Y As Admittance = Me.ToAdmittance()
+        '        Dim NormB As System.Double = Y.Susceptance / Y0
+        Dim NormB As System.Double = Me.ToAdmittance().Susceptance * z0
 
         If NormB.Equals(0.0) Then
             ' Z is already at the center, where Z=1+j0, and already has a
@@ -573,21 +563,13 @@ Partial Public Structure Impedance
         ' that case, the math should be changed to add an impedance/admittance
         ' with actual R/X values.
 
-        'Dim Z0 As System.Double = mainCirc.Z0
-        'Dim NormR As System.Double = Me.Resistance / z0
-        'Dim NormX As System.Double = Me.Reactance / z0
-        'Dim Y0 As System.Double = 1.0 / z0
-        Dim Y As Admittance = Me.ToAdmittance()
-        'Dim NormG As System.Double = Y.Conductance / Y0
-        'Dim NormB As System.Double = Y.Susceptance / Y0
-
         Try
 
             ' First move, to the image impedance.
             Dim ImageY As Admittance =
                 mainCirc.GetYFromPlot(intersection.X, intersection.Y)
             Dim DiffImageB As System.Double =
-                ImageY.Susceptance - Y.Susceptance
+                ImageY.Susceptance - Me.ToAdmittance().Susceptance
 
             ' Second move.
             Dim ImageZ As Impedance =
@@ -660,14 +642,6 @@ Partial Public Structure Impedance
         ByRef transformations As Transformation()) _
         As System.Boolean
 
-        'Dim Z0 As System.Double = mainCirc.Z0
-        'Dim NormR As System.Double = Me.Resistance / z0
-        'Dim NormX As System.Double = Me.Reactance / z0
-        'Dim Y0 As System.Double = 1.0 / z0
-        Dim Y As Admittance = Me.ToAdmittance()
-        'Dim NormG As System.Double = Y.Conductance / Y0
-        'Dim NormB As System.Double = Y.Susceptance / Y0
-
         ' The first move will be to the intersection of the R=Z0 circle and the
         ' G-circle that contains the load impedance. From inside the R=Z0
         ' circle, there are two ways to proceed:
@@ -685,7 +659,7 @@ Partial Public Structure Impedance
         'Dim MainCirc As New SmithMainCircle(4.0, 5.0, 4.0, z0) ' Test data.
         Dim MainCirc As New SmithMainCircle(1.0, 1.0, 1.0, z0) ' Arbitrary.
         Dim CircR As New RCircle(MainCirc, z0)
-        Dim CircG As New GCircle(MainCirc, Y.Conductance)
+        Dim CircG As New GCircle(MainCirc, Me.ToAdmittance().Conductance)
         Dim Intersections _
             As System.Collections.Generic.List(Of System.Drawing.PointF) =
                 GenericCircle.GetIntersections(CircR, CircG)
@@ -782,14 +756,6 @@ Partial Public Structure Impedance
         ' that case, the math should be changed to add an impedance/admittance
         ' with actual R/X values.
 
-        'Dim Z0 As System.Double = mainCirc.Z0
-        'Dim NormR As System.Double = Me.Resistance / z0
-        'Dim NormX As System.Double = Me.Reactance / z0
-        'Dim Y0 As System.Double = 1.0 / z0
-        Dim Y As Admittance = Me.ToAdmittance()
-        'Dim NormG As System.Double = Y.Conductance / Y0
-        'Dim NormB As System.Double = Y.Susceptance / Y0
-
         Try
 
             ' First move, to the image impedance.
@@ -869,14 +835,6 @@ Partial Public Structure Impedance
         ByRef transformations As Transformation()) _
         As System.Boolean
 
-        Dim Z0 As System.Double = MainCirc.Z0
-        'Dim NormR As System.Double = Me.Resistance / z0
-        'Dim NormX As System.Double = Me.Reactance / z0
-        Dim Y0 As System.Double = 1.0 / Z0
-        'Dim Y As Admittance = Me.ToAdmittance()
-        'Dim NormG As System.Double = Y.Conductance / Y0
-        'Dim NormB As System.Double = Y.Susceptance / Y0
-
         ' The first move will be to the intersection of the G=Y0 circle and the
         ' R-circle that contains the load impedance. From inside the G=Y0
         ' circle, there are two ways to proceed:
@@ -891,8 +849,8 @@ Partial Public Structure Impedance
         '  - To favor the shortest first path?
 
         ' Determine the circles and their intersections.
-        Dim CircG As New GCircle(MainCirc, Y0)
-        Dim CircR As New RCircle(MainCirc, Me.Resistance)
+        Dim CircG As New GCircle(mainCirc, 1.0 / mainCirc.Z0)
+        Dim CircR As New RCircle(mainCirc, Me.Resistance)
         Dim Intersections _
             As System.Collections.Generic.List(Of System.Drawing.PointF) =
                 GenericCircle.GetIntersections(CircR, CircG)
@@ -917,9 +875,9 @@ Partial Public Structure Impedance
         ' resonance line. Check for reasonable equality when using floating
         ' point values.
         Dim Offset0 As System.Double =
-            System.Math.Abs(Intersections(0).Y - MainCirc.GridCenterY)
+            System.Math.Abs(Intersections(0).Y - mainCirc.GridCenterY)
         Dim Offset1 As System.Double =
-            System.Math.Abs(Intersections(1).Y - MainCirc.GridCenterY)
+            System.Math.Abs(Intersections(1).Y - mainCirc.GridCenterY)
         If Not EqualEnough(Offset1, Offset0) Then
             'Dim CaughtBy As System.Reflection.MethodBase =
             '    System.Reflection.MethodBase.GetCurrentMethod
@@ -933,7 +891,7 @@ Partial Public Structure Impedance
         ' Expect two valid solutions, one to each intersection.
         Dim Transformation0 As Transformation
         If Not Me.InsideGEqualsY0(
-            MainCirc, Intersections(0), Transformation0) Then
+            mainCirc, Intersections(0), Transformation0) Then
 
             'Dim CaughtBy As System.Reflection.MethodBase =
             '    System.Reflection.MethodBase.GetCurrentMethod
@@ -941,7 +899,7 @@ Partial Public Structure Impedance
         End If
         Dim Transformation1 As Transformation
         If Not Me.InsideGEqualsY0(
-            MainCirc, Intersections(1), Transformation1) Then
+            mainCirc, Intersections(1), Transformation1) Then
 
             'Dim CaughtBy As System.Reflection.MethodBase =
             '    System.Reflection.MethodBase.GetCurrentMethod
@@ -989,13 +947,7 @@ Partial Public Structure Impedance
         ByRef transformations As Transformation()) _
         As System.Boolean
 
-        Dim Z0 As System.Double = mainCirc.Z0
-        'Dim NormR As System.Double = Me.Resistance / Z0
-        'Dim NormX As System.Double = Me.Reactance / z0
-        'Dim Y0 As System.Double = 1.0 / Z0
         Dim Y As Admittance = Me.ToAdmittance()
-        'Dim NormG As System.Double = Y.Conductance / Y0
-        'Dim NormB As System.Double = Y.Susceptance / Y0
 
         ' Move CW on the G-circle to reach the R=Z0 circle. Use a shunt
         ' capacitor. Two choices where to end.
@@ -1076,14 +1028,6 @@ Partial Public Structure Impedance
     Private Function InTopCenterCCW(ByVal mainCirc As SmithMainCircle,
         ByRef transformations As Transformation()) _
         As System.Boolean
-
-        Dim Z0 As System.Double = mainCirc.Z0
-        'Dim NormR As System.Double = Me.Resistance / z0
-        'Dim NormX As System.Double = Me.Reactance / z0
-        'Dim Y0 As System.Double = 1.0 / z0
-        Dim Y As Admittance = Me.ToAdmittance()
-        'Dim NormG As System.Double = Y.Conductance / Y0
-        'Dim NormB As System.Double = Y.Susceptance / Y0
 
         ' Move CCW on the R-circle to reach the G=Y0 circle. Use a
         ' series capacitor. Two choices where to end.
@@ -1169,14 +1113,6 @@ Partial Public Structure Impedance
         ByRef transformations As Transformation()) _
         As System.Boolean
 
-        'Dim Z0 As System.Double = mainCirc.Z0
-        'Dim NormR As System.Double = Me.Resistance / z0
-        'Dim NormX As System.Double = Me.Reactance / z0
-        'Dim Y0 As System.Double = 1.0 / z0
-        Dim Y As Admittance = Me.ToAdmittance()
-        'Dim NormG As System.Double = Y.Conductance / Y0
-        'Dim NormB As System.Double = Y.Susceptance / Y0
-
         ' Move CW on the G-circle to reach the R=Z0 circle. Use a shunt
         ' capacitor. Two choices where to end.
         ' Would there ever be a case to prefer the first or second
@@ -1226,14 +1162,6 @@ Partial Public Structure Impedance
     Private Function InBottomCenterCW(ByVal mainCirc As SmithMainCircle,
         ByRef transformations As Transformation()) _
         As System.Boolean
-
-        Dim Z0 As System.Double = mainCirc.Z0
-        'Dim NormR As System.Double = Me.Resistance / Z0
-        'Dim NormX As System.Double = Me.Reactance / z0
-        'Dim Y0 As System.Double = 1.0 / Z0
-        Dim Y As Admittance = Me.ToAdmittance()
-        'Dim NormG As System.Double = Y.Conductance / Y0
-        'Dim NormB As System.Double = Y.Susceptance / Y0
 
         ' Move CW on the R-circle to reach the G=Y0 circle. Use a series
         ' inductor. Two choices where to end.
@@ -1315,13 +1243,7 @@ Partial Public Structure Impedance
         ByRef transformations As Transformation()) _
         As System.Boolean
 
-        Dim Z0 As System.Double = mainCirc.Z0
-        'Dim NormR As System.Double = Me.Resistance / z0
-        'Dim NormX As System.Double = Me.Reactance / z0
-        'Dim Y0 As System.Double = 1.0 / z0
         Dim Y As Admittance = Me.ToAdmittance()
-        'Dim NormG As System.Double = Y.Conductance / Y0
-        'Dim NormB As System.Double = Y.Susceptance / Y0
 
         ' Move CCW on the G-circle to reach the R=Z0 circle. Use a
         ' shunt inductor. Two choices where to end.
@@ -1407,14 +1329,6 @@ Partial Public Structure Impedance
         ByRef transformations As Transformation()) _
         As System.Boolean
 
-        'Dim Z0 As System.Double = mainCirc.Z0
-        'Dim NormR As System.Double = Me.Resistance / z0
-        'Dim NormX As System.Double = Me.Reactance / z0
-        'Dim Y0 As System.Double = 1.0 / z0
-        'Dim Y As Admittance = Me.ToAdmittance()
-        'Dim NormG As System.Double = Y.Conductance / Y0
-        'Dim NormB As System.Double = Y.Susceptance / Y0
-
         ' Move CW on the G-circle to reach the R=Z0 circle. Use a shunt
         ' capacitor. Two choices where to end.
         ' Would there ever be a case to prefer the first or second
@@ -1467,14 +1381,6 @@ Partial Public Structure Impedance
     Private Function InRemainder(ByVal z0 As System.Double,
         ByRef transformations As Transformation()) _
         As System.Boolean
-
-        'Dim Z0 As System.Double = mainCirc.Z0
-        'Dim NormR As System.Double = Me.Resistance / z0
-        'Dim NormX As System.Double = Me.Reactance / z0
-        'Dim Y0 As System.Double = 1.0 / z0
-        'Dim Y As Admittance = Me.ToAdmittance()
-        'Dim NormG As System.Double = Y.Conductance / Y0
-        'Dim NormB As System.Double = Y.Susceptance / Y0
 
         ' Assign the outer circle.
         Dim MainCirc As New SmithMainCircle(4.0, 5.0, 4.0, z0) ' Test data.
@@ -1550,12 +1456,10 @@ Partial Public Structure Impedance
         ' R: NormR<=0. Invalid.
 
         Dim Z0 As System.Double = mainCirc.Z0
-        Dim NormR As System.Double = Me.Resistance / z0
-        Dim NormX As System.Double = Me.Reactance / z0
-        Dim Y0 As System.Double = 1.0 / z0
-        Dim Y As Admittance = Me.ToAdmittance()
-        Dim NormG As System.Double = Y.Conductance / Y0
-        Dim NormB As System.Double = Y.Susceptance / Y0
+        Dim NormR As System.Double = Me.Resistance / Z0
+        ''        Dim Y0 As System.Double = 1.0 / Z0
+        ''        Dim NormG As System.Double = Me.ToAdmittance().Conductance / Y0
+        Dim NormG As System.Double = Me.ToAdmittance().Conductance * Z0
 
         ' LEAVE THIS HERE FOR NOW.
         ' OPEN OR SHORT SHOULD HAVE BEEN REJECTED IN NEW() AND THIS SHOULD NOT
@@ -1602,14 +1506,15 @@ Partial Public Structure Impedance
             '     L2: Inside G=Y0 circle, above resonance line. Z0=75.
             '     M: Inside G=Y0 circle, on line.
             '     N: Inside G=Y0 circle, below line.
-            Return If(NormG.Equals(Y0),
-                Me.OnGEqualsY0(z0, transformations), ' J, K.
+            Return If(NormG.Equals(1.0 / Z0),
+                Me.OnGEqualsY0(Z0, transformations), ' J, K.
                 Me.InsideGEqualsY0(mainCirc, transformations)) ' L, M, N.
         End If
 
         ' DELETE THIS AFTER TESTING CONFIRMS THAT IT IS NEVER HIT BY ANY TEST CASES.
         ' On getting this far, the impedance will, usually, fall into either
         ' the top or bottom center section.
+        Dim NormX As System.Double = Me.Reactance / Z0
         If NormX.Equals(0.0) Then
             ' Z is ON the resonance line.
 
