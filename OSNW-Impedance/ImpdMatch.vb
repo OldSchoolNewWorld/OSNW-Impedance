@@ -404,45 +404,39 @@ Partial Public Structure Impedance
             ' Z is at the center point and already has a conjugate match.
             transformations = {
                 New Transformation With {
-                .Style = TransformationStyles.None}
+                    .Style = TransformationStyles.None}
             }
             Return True
         Else
             ' Z is on the perimeter of the R=Z0 circle and only needs a
             ' reactance.
 
+            Dim Style As TransformationStyles
             If NormX > 0.0 Then
+
                 ' Test data E: On R=Z0 circle, above resonance line. Only needs
                 ' reactance.
                 ' CCW on an R-circle needs a series capacitor.
-                transformations = {
-                    New Transformation With {
-                    .Style = TransformationStyles.SeriesCap,
-                    .Value1 = -NormX}
-                }
-                Return True
+                Style = TransformationStyles.SeriesCap
 
                 ' Consider alternative approaches.
-                ' CW on an R-circle would need a series inductor, increasing
+                ' CW on a R-circle would need a series inductor, increasing
                 ' the inductance of an already inductive load. NO.
                 ' What about matching the equivalent admittance?
-                ' CCW on a G-circle would need a shunt inductor, reducing
-                ' but not canceling the reactance. NO.
-                ' CW on a G-circle would need a shunt capacitor. For Z=1+j3,
-                ' Y=0.1-j0.3. Adding a shunt capacitor 0+j0.3 results in a
-                ' total admittance Y=0.1+j0. For Y=0.1+j0, Z=10+j0. NO.
+                ' CW, or CCW, on a G-circle would never reach the matched position. NO.
 
             Else
                 ' Test data F: On R=Z0 circle, below resonance line. Only needs
                 ' reactance.
                 ' CW on an R-circle needs a series inductor.
-                transformations = {
-                    New Transformation With {
-                    .Style = TransformationStyles.SeriesInd,
+                Style = TransformationStyles.SeriesInd
+            End If
+            transformations = {
+                New Transformation With {
+                    .Style = Style,
                     .Value1 = -NormX}
                 }
-                Return True
-            End If
+            Return True
         End If
     End Function ' OnREqualsZ0
 
@@ -519,6 +513,7 @@ Partial Public Structure Impedance
         End If
 
     End Function ' OnGEqualsY0
+    '       DUPLICATE_THE_CHANGE_JUST_MADE_INTO_OnGEqualsY0
 
     '''' <summary>
     ''''  Processes one intersection found in
@@ -1438,7 +1433,7 @@ Partial Public Structure Impedance
 
         Dim Z0 As System.Double = mainCirc.Z0
         Dim NormR As System.Double = Me.Resistance / Z0
-        ''        Dim Y0 As System.Double = 1.0 / Z0
+        Dim Y0 As System.Double = 1.0 / Z0
         ''        Dim NormG As System.Double = Me.ToAdmittance().Conductance / Y0
         Dim NormG As System.Double = Me.ToAdmittance().Conductance * Z0
 
@@ -1489,7 +1484,7 @@ Partial Public Structure Impedance
             '     L2: Inside G=Y0 circle, above resonance line. Z0=75.
             '     M: Inside G=Y0 circle, on line.
             '     N: Inside G=Y0 circle, below line.
-            If NormG.Equals(1.0 / Z0) Then
+            If Me.ToAdmittance().Conductance.Equals(Y0) Then
                 Return Me.OnGEqualsY0(Z0, transformations) ' J, K.
             Else
                 Return Me.InsideGEqualsY0(mainCirc, transformations) ' L, M, N.

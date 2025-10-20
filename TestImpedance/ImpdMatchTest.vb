@@ -177,6 +177,7 @@ Namespace TrySelectMatchLayoutTests
         '<InlineData(    Z0,      G,       B)> ' Model
         <Theory>
         <InlineData(1.0, 1.0, -1.0)> ' J: On G=Y0 circle, above resonance line. Only needs reactance.
+        <InlineData(50.0, 0.02, -0.02)> ' J: On G=Y0 circle, above resonance line. Only needs reactance.
         Public Sub TrySelectMatch_PositionJ_Succeeds(z0 As Double, g As Double, b As Double)
 
             Dim MainCirc As New SmithMainCircle(4.0, 5.0, 4.0, z0) ' Test data.

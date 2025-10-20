@@ -1,4 +1,7 @@
 ﻿'TODO:
+' Expand use of non-characteristic impedance test values. 
+'   Update routines as needed to pass.
+' Convert from building an array to building a list of suggested solutions.
 ' Replace PointF with a new PointD?
 ' Should infinity be rejected for admittance and susceptance inputs?
 ' Add De/Serialization to Admittance?????
