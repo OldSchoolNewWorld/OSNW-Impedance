@@ -129,7 +129,7 @@ Public Enum TransformationStyles
     '
     '
     ' Futures could include the addition of the ability to insert:
-    '   PI, T, M, band-pass, and notch filter sections.
+    '   PI, T, M, LC band-pass, and LC notch filter sections.
     '   Shunt or series, parallel tank or series-resonant, sections to construct
     '     band-pass or notch filters.
     '   Feedline segments to cause impedance rotation or quarter-wave impedance
@@ -190,101 +190,91 @@ Partial Public Structure Impedance
         ByVal aTransformation As Transformation) As System.Boolean
 
         Dim z0 As System.Double = mainCirc.Z0
-        Dim FixupY As Admittance
+        Dim NearlyZero As System.Double = z0 * 0.000001
         Dim FixupZ As Impedance
         Dim WorkZ As Impedance
 
-        If aTransformation.Style = TransformationStyles.ShuntCapSeriesInd Then
+        Const MSGTDNRT As String =
+            " transformation did not reach target."
+
+        If aTransformation.Style.Equals(
+            TransformationStyles.ShuntCapSeriesInd) Then
 
             ' To go | On a     | Use a
             ' CW    | G-circle | shunt capacitor
             ' CW    | R-circle | series inductor
 
-            FixupY = New Admittance(0.0, aTransformation.Value1)
-            FixupZ = FixupY.ToImpedance
+            FixupZ = New Admittance(0.0, aTransformation.Value1).ToImpedance
             WorkZ = Impedance.AddShuntImpedance(Me, FixupZ)
 
             FixupZ = New Impedance(0.0, aTransformation.Value2)
             WorkZ = Impedance.AddSeriesImpedance(WorkZ, FixupZ)
 
-            If Not Impedance.EqualEnough(WorkZ.Resistance, z0) Then
-                'Dim CaughtBy As System.Reflection.MethodBase =
-                '    System.Reflection.MethodBase.GetCurrentMethod
+            If Not (Impedance.EqualEnough(WorkZ.Resistance, z0) AndAlso
+                Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero)) Then
                 Throw New System.ApplicationException(
-                    "Resistance did not reach target.")
+                    "ShuntCapSeriesInd" & MSGTDNRT)
             End If
-            Dim NearlyZero As System.Double = z0 * 0.000001
-            If Not Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero) Then
-                'Dim CaughtBy As System.Reflection.MethodBase =
-                '    System.Reflection.MethodBase.GetCurrentMethod
+
+        ElseIf aTransformation.Style.Equals(
+            TransformationStyles.ShuntCapSeriesCap) Then
+
+            ' To go | On a     | Use a
+            ' CW    | G-circle | shunt capacitor
+            ' CCW   | R-circle | series capacitor
+
+            FixupZ = New Admittance(0.0, aTransformation.Value1).ToImpedance
+            WorkZ = Impedance.AddShuntImpedance(Me, FixupZ)
+
+            FixupZ = New Impedance(0.0, aTransformation.Value2)
+            WorkZ = Impedance.AddSeriesImpedance(WorkZ, FixupZ)
+
+            If Not (Impedance.EqualEnough(WorkZ.Resistance, z0) AndAlso
+                Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero)) Then
                 Throw New System.ApplicationException(
-                    "Reactance did not reach target.")
+                    "ShuntCapSeriesCap" & MSGTDNRT)
             End If
 
-        ElseIf aTransformation.Style = TransformationStyles.ShuntCapSeriesCap Then
-
-            ' To go | On a     | Use a
-            ' CW    | G-circle | shunt capacitor
-            ' CCW   | R-circle | series capacitor
-
-            FixupY = New Admittance(0.0, aTransformation.Value1)
-            FixupZ = FixupY.ToImpedance
-            WorkZ = Impedance.AddShuntImpedance(Me, FixupZ)
-
-            FixupZ = New Impedance(0.0, aTransformation.Value2)
-            WorkZ = Impedance.AddSeriesImpedance(WorkZ, FixupZ)
-
-            Dim NearlyZero As System.Double = z0 * 0.000001
-            If Not Impedance.EqualEnough(WorkZ.Resistance, z0) OrElse
-                Not Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero) Then
-                'Dim CaughtBy As System.Reflection.MethodBase =
-                '    System.Reflection.MethodBase.GetCurrentMethod
-                Throw New System.ApplicationException("Transformation did not reach target.")
-            End If
-
-        ElseIf aTransformation.Style = TransformationStyles.ShuntIndSeriesCap Then
+        ElseIf aTransformation.Style.Equals(
+            TransformationStyles.ShuntIndSeriesCap) Then
 
             ' To go | On a     | Use a
             ' CCW   | G-circle | shunt inductor
             ' CCW   | R-circle | series capacitor
 
-            FixupY = New Admittance(0.0, aTransformation.Value1)
-            FixupZ = FixupY.ToImpedance
+            FixupZ = New Admittance(0.0, aTransformation.Value1).ToImpedance
             WorkZ = Impedance.AddShuntImpedance(Me, FixupZ)
 
             FixupZ = New Impedance(0.0, aTransformation.Value2)
             WorkZ = Impedance.AddSeriesImpedance(WorkZ, FixupZ)
 
-            Dim NearlyZero As System.Double = z0 * 0.000001
-            If Not Impedance.EqualEnough(WorkZ.Resistance, z0) OrElse
-                Not Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero) Then
-                'Dim CaughtBy As System.Reflection.MethodBase =
-                '    System.Reflection.MethodBase.GetCurrentMethod
-                Throw New System.ApplicationException("Transformation did not reach target.")
+            If Not (Impedance.EqualEnough(WorkZ.Resistance, z0) AndAlso
+                Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero)) Then
+                Throw New System.ApplicationException(
+                    "ShuntIndSeriesCap" & MSGTDNRT)
             End If
 
-        ElseIf aTransformation.Style = TransformationStyles.ShuntIndSeriesInd Then
+        ElseIf aTransformation.Style.Equals(
+            TransformationStyles.ShuntIndSeriesInd) Then
 
             ' To go | On a     | Use a
             ' CCW   | G-circle | shunt inductor
             ' CW    | R-circle | series inductor
 
-            FixupY = New Admittance(0.0, aTransformation.Value1)
-            FixupZ = FixupY.ToImpedance
+            FixupZ = New Admittance(0.0, aTransformation.Value1).ToImpedance
             WorkZ = Impedance.AddShuntImpedance(Me, FixupZ)
 
             FixupZ = New Impedance(0.0, aTransformation.Value2)
             WorkZ = Impedance.AddSeriesImpedance(WorkZ, FixupZ)
 
-            Dim NearlyZero As System.Double = z0 * 0.000001
-            If Not Impedance.EqualEnough(WorkZ.Resistance, z0) OrElse
-                Not Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero) Then
-                'Dim CaughtBy As System.Reflection.MethodBase =
-                '    System.Reflection.MethodBase.GetCurrentMethod
-                Throw New System.ApplicationException("Transformation did not reach target.")
+            If Not (Impedance.EqualEnough(WorkZ.Resistance, z0) AndAlso
+                Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero)) Then
+                Throw New System.ApplicationException(
+                    "ShuntIndSeriesInd" & MSGTDNRT)
             End If
 
-        ElseIf aTransformation.Style = TransformationStyles.SeriesCapShuntInd Then
+        ElseIf aTransformation.Style.Equals(
+            TransformationStyles.SeriesCapShuntInd) Then
 
             ' To go | On a     | Use a
             ' CCW   | R-circle | series capacitor
@@ -293,19 +283,17 @@ Partial Public Structure Impedance
             FixupZ = New Impedance(0.0, aTransformation.Value1)
             WorkZ = Impedance.AddSeriesImpedance(Me, FixupZ)
 
-            FixupY = New Admittance(0.0, aTransformation.Value2)
-            FixupZ = FixupY.ToImpedance
+            FixupZ = New Admittance(0.0, aTransformation.Value2).ToImpedance
             WorkZ = Impedance.AddShuntImpedance(WorkZ, FixupZ)
 
-            Dim NearlyZero As System.Double = z0 * 0.000001
-            If Not Impedance.EqualEnough(WorkZ.Resistance, z0) OrElse
-                Not Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero) Then
-                'Dim CaughtBy As System.Reflection.MethodBase =
-                '    System.Reflection.MethodBase.GetCurrentMethod
-                Throw New System.ApplicationException("Transformation did not reach target.")
+            If Not (Impedance.EqualEnough(WorkZ.Resistance, z0) AndAlso
+                Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero)) Then
+                Throw New System.ApplicationException(
+                    "SeriesCapShuntInd" & MSGTDNRT)
             End If
 
-        ElseIf aTransformation.Style = TransformationStyles.SeriesCapShuntCap Then
+        ElseIf aTransformation.Style.Equals(
+            TransformationStyles.SeriesCapShuntCap) Then
 
             ' To go | On a     | Use a
             ' CCW   | R-circle | series capacitor
@@ -314,19 +302,17 @@ Partial Public Structure Impedance
             FixupZ = New Impedance(0.0, aTransformation.Value1)
             WorkZ = Impedance.AddSeriesImpedance(Me, FixupZ)
 
-            FixupY = New Admittance(0.0, aTransformation.Value2)
-            FixupZ = FixupY.ToImpedance
+            FixupZ = New Admittance(0.0, aTransformation.Value2).ToImpedance
             WorkZ = Impedance.AddShuntImpedance(WorkZ, FixupZ)
 
-            Dim NearlyZero As System.Double = z0 * 0.000001
-            If Not Impedance.EqualEnough(WorkZ.Resistance, z0) OrElse
-                Not Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero) Then
-                'Dim CaughtBy As System.Reflection.MethodBase =
-                '    System.Reflection.MethodBase.GetCurrentMethod
-                Throw New System.ApplicationException("Transformation did not reach target.")
+            If Not (Impedance.EqualEnough(WorkZ.Resistance, z0) AndAlso
+                Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero)) Then
+                Throw New System.ApplicationException(
+                    "SeriesCapShuntCap" & MSGTDNRT)
             End If
 
-        ElseIf aTransformation.Style = TransformationStyles.SeriesIndShuntCap Then
+        ElseIf aTransformation.Style.Equals(
+            TransformationStyles.SeriesIndShuntCap) Then
 
             ' To go | On a     | Use a
             ' CW    | R-circle | series inductor
@@ -335,22 +321,20 @@ Partial Public Structure Impedance
             FixupZ = New Impedance(0.0, aTransformation.Value1)
             WorkZ = Impedance.AddSeriesImpedance(Me, FixupZ)
 
-            FixupY = New Admittance(0.0, aTransformation.Value2)
-            FixupZ = FixupY.ToImpedance
+            FixupZ = New Admittance(0.0, aTransformation.Value2).ToImpedance
             WorkZ = Impedance.AddShuntImpedance(WorkZ, FixupZ)
 
-            Dim NearlyZero As System.Double = z0 * 0.000001
-            If Not Impedance.EqualEnough(WorkZ.Resistance, z0) OrElse
-                Not Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero) Then
-                'Dim CaughtBy As System.Reflection.MethodBase =
-                '    System.Reflection.MethodBase.GetCurrentMethod
-                Throw New System.ApplicationException("Transformation did not reach target.")
+            If Not (Impedance.EqualEnough(WorkZ.Resistance, z0) AndAlso
+                Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero)) Then
+                Throw New System.ApplicationException(
+                    "SeriesIndShuntCap" & MSGTDNRT)
             End If
 
             ' On getting this far,
             Return True
 
-        ElseIf aTransformation.Style = TransformationStyles.SeriesIndShuntInd Then
+        ElseIf aTransformation.Style.Equals(
+            TransformationStyles.SeriesIndShuntInd) Then
 
             ' To go | On a     | Use a
             ' CW    | R-circle | series inductor
@@ -359,16 +343,13 @@ Partial Public Structure Impedance
             FixupZ = New Impedance(0.0, aTransformation.Value1)
             WorkZ = Impedance.AddSeriesImpedance(Me, FixupZ)
 
-            FixupY = New Admittance(0.0, aTransformation.Value2)
-            FixupZ = FixupY.ToImpedance
+            FixupZ = New Admittance(0.0, aTransformation.Value2).ToImpedance
             WorkZ = Impedance.AddShuntImpedance(WorkZ, FixupZ)
 
-            Dim NearlyZero As System.Double = z0 * 0.000001
-            If Not Impedance.EqualEnough(WorkZ.Resistance, z0) OrElse
-                Not Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero) Then
-                'Dim CaughtBy As System.Reflection.MethodBase =
-                '    System.Reflection.MethodBase.GetCurrentMethod
-                Throw New System.ApplicationException("Transformation did not reach target.")
+            If Not (Impedance.EqualEnough(WorkZ.Resistance, z0) AndAlso
+                Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero)) Then
+                Throw New System.ApplicationException(
+                    "SeriesIndShuntInd" & MSGTDNRT)
             End If
 
             ' On getting this far,
