@@ -29,12 +29,12 @@ Imports Xunit
 ' Inside the G=Y0 circle. Two choices: CW or CCW on the R-circle.
 ' L1: Inside G=Y0 circle, above resonance line.
 ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
-' M: Inside G=Y0 circle, on line.
-' N: Inside G=Y0 circle, below line.
+' M1: Inside G=Y0 circle, on line.
+' N1: Inside G=Y0 circle, below line.
 ' O1: In the top center.
-' O2: In the top center. Z0=50.
+' O50: In the top center. Z0=50.
 ' P1: In the bottom center.
-' P2: In the bottom center. Z0=50.
+' P50: In the bottom center. Z0=50.
 ' Q: Outside of main circle. Invalid.
 ' R: NormR<=0. Invalid.
 
@@ -273,10 +273,10 @@ Namespace TrySelectMatchLayoutTests
 
         '<InlineData(     Z0,        R,       X)> ' Model
         <Theory>
-        <InlineData(1.0, 1 / 3.0, 1 / 3.0)> ' L1: Inside G=Y0 circle, above resonance line.
-        <InlineData(75.0, 25.0, 25.0)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
-        <InlineData(1.0, 1 / 3.0, 0.0000)> ' M: Inside G=Y0 circle, on line.
-        <InlineData(1.0, 1 / 2.0, -1 / 3.0)> ' N: Inside G=Y0 circle, below line.
+        <InlineData(1.0, 1 / 3.0, 0.0000)> ' M1: Inside G=Y0 circle, on line.
+        <InlineData(75.0, 25.0, 0.0000)> ' M75: Inside G=Y0 circle, on line.
+        <InlineData(1.0, 1 / 2.0, -1 / 3.0)> ' N1: Inside G=Y0 circle, below line.
+        <InlineData(75.0, 37.5, -25.0)> ' N75: Inside G=Y0 circle, below line.
         Public Sub TrySelectMatch_PositionLMN_Succeeds(z0 As Double, r As Double, x As Double)
 
             Dim MainCirc As New SmithMainCircle(4.0, 5.0, 4.0, z0) ' Test data.
@@ -309,7 +309,7 @@ Namespace TrySelectMatchLayoutTests
         '<InlineData(     Z0,        R,       X)> ' Model
         <Theory>
         <InlineData(1.0, 0.2, 1.4)> ' O1: In the top center.
-        <InlineData(50.0, 10.0, 70.0)> ' O2: In the top center. Z0=50.
+        <InlineData(50.0, 10.0, 70.0)> ' O50: In the top center. Z0=50.
         Public Sub TestTrySelectMatchLayoutO(z0 As Double, r As Double, x As Double)
 
             Dim MainCirc As New SmithMainCircle(4.0, 5.0, 4.0, z0) ' Test data.

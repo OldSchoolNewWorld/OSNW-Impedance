@@ -1419,14 +1419,14 @@ Partial Public Structure Impedance
         ' Inside the G=Y0 circle. Two choices: CW or CCW on the R-circle.
         '     L1: Inside G=Y0 circle, above resonance line.
         '     L2: Inside G=Y0 circle, above resonance line. Z0=75.
-        '     M: Inside G=Y0 circle, on line.
-        '     N: Inside G=Y0 circle, below line.
+        '     M1: Inside G=Y0 circle, on line.
+        '     N1: Inside G=Y0 circle, below line.
         ' O: In the top center.
         '     O1: In the top center.
-        '     O2: In the top center. Z0=50.
+        '     O50: In the top center. Z0=50.
         ' P: In the bottom center.
         '     P1: In the bottom center.
-        '     P2: In the bottom center. Z0=50.
+        '     P50: In the bottom center. Z0=50.
         ' Q: Outside of main circle. Invalid.
         ' R: NormR<=0. Invalid.
 
@@ -1480,8 +1480,8 @@ Partial Public Structure Impedance
             ' Inside the G=Y0 circle. Two choices: CW or CCW on the R-circle.
             '     L1: Inside G=Y0 circle, above resonance line.
             '     L2: Inside G=Y0 circle, above resonance line. Z0=75.
-            '     M: Inside G=Y0 circle, on line.
-            '     N: Inside G=Y0 circle, below line.
+            '     M1: Inside G=Y0 circle, on line.
+            '     N1: Inside G=Y0 circle, below line.
             If Me.ToAdmittance().Conductance.Equals(Y0) Then
                 Return Me.OnGEqualsY0(Z0, transformations) ' J, K.
             Else

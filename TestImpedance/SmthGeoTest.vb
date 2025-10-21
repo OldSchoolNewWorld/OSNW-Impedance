@@ -27,12 +27,12 @@ Namespace GeometryTests
         <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, 4.0 / 3)> ' K1: On G=Y0 circle, below resonance line. Only needs reactance.
         <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 3.0, 1.5)> ' L1: Inside G=Y0 circle, above resonance line.
         <InlineData(4.0, 5.0, 2.0, 75.0, 25.0, 1.5)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 3.0, 1.5)> ' M: Inside G=Y0 circle, on line.
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, 4.0 / 3)> ' N: Inside G=Y0 circle, below line.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 3.0, 1.5)> ' M1: Inside G=Y0 circle, on line.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, 4.0 / 3)> ' N1: Inside G=Y0 circle, below line.
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.2, 5.0 / 3)> ' O1: In the top center.
-        <InlineData(4.0, 5.0, 2.0, 50.0, 10.0, 5.0 / 3)> ' O2: In the top center. Z0=50.
+        <InlineData(4.0, 5.0, 2.0, 50.0, 10.0, 5.0 / 3)> ' O50: In the top center. Z0=50.
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.4, 1.4286)> ' P1: In the bottom center.
-        <InlineData(4.0, 5.0, 2.0, 50.0, 20.0, 1.4286)> ' P2: In the bottom center. Z0=50.
+        <InlineData(4.0, 5.0, 2.0, 50.0, 20.0, 1.4286)> ' P50: In the bottom center. Z0=50.
         Sub GetRadiusR_GoodInput_Succeeds(gridCenterX As Double, gridCenterY As Double, gridRadius As Double,
                                           z0 As Double, testR As Double, expectRadR As Double)
 
@@ -98,11 +98,11 @@ Namespace GeometryTests
         <InlineData(4.0, 5.0, 2.0, 1.0, -1 / 2.0, 4.0)> ' K1: On G=Y0 circle, below resonance line. Only needs reactance.
         <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 3.0, 6.0)> ' L1: Inside G=Y0 circle, above resonance line.
         <InlineData(4.0, 5.0, 2.0, 75.0, 25.0, 6.0)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
-        <InlineData(4.0, 5.0, 2.0, 1.0, -1 / 3.0, 6.0)> ' N: Inside G=Y0 circle, below line.
+        <InlineData(4.0, 5.0, 2.0, 1.0, -1 / 3.0, 6.0)> ' N1: Inside G=Y0 circle, below line.
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.4, 1.4286)> ' O1: In the top center.
-        <InlineData(4.0, 5.0, 2.0, 50.0, 70.0, 1.4286)> ' O2: In the top center. Z0=50.
+        <InlineData(4.0, 5.0, 2.0, 50.0, 70.0, 1.4286)> ' O50: In the top center. Z0=50.
         <InlineData(4.0, 5.0, 2.0, 1.0, -0.8, 2.5)> ' P1: In the bottom center.
-        <InlineData(4.0, 5.0, 2.0, 50.0, -40.0, 2.5)> ' P2: In the bottom center. Z0=50.
+        <InlineData(4.0, 5.0, 2.0, 50.0, -40.0, 2.5)> ' P50: In the bottom center. Z0=50.
         Sub GetRadiusX_GoodInput_Succeeds(gridCenterX As Double, gridCenterY As Double, gridRadius As Double,
                                           z0 As Double, testX As Double, expectRad As Double)
 
@@ -119,7 +119,7 @@ Namespace GeometryTests
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, INF)> ' C: At the open circuit point on the right.
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, INF)> ' D: At the center.
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, INF)> ' H1: Inside R=Z0 circle, on line.
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, INF)> ' M: Inside G=Y0 circle, on line.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, INF)> ' M1: Inside G=Y0 circle, on line.
         Sub GetRadiusX_BadInput_Fails1(gridCenterX As Double, gridCenterY As Double, gridRadius As Double,
                                        z0 As Double, testX As Double, expectRad As Double)
 
@@ -140,7 +140,7 @@ Namespace GeometryTests
         '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, INF)> ' C: At the open circuit point on the right.
         '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, INF)> ' D: At the center.
         '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, INF)> ' H1: Inside R=Z0 circle, on line.
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, INF)> ' M: Inside G=Y0 circle, on line.
+        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, INF)> ' M1: Inside G=Y0 circle, on line.
         'Sub GetRadiusX_BadInput_Fails2(gridCenterX As Double, gridCenterY As Double, gridRadius As Double,
         '                               z0 As Double, testX As Double, expectRad As Double)
         '    Try
@@ -175,12 +175,12 @@ Namespace GeometryTests
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 1.0)> ' K1: On G=Y0 circle, below resonance line. Only needs reactance.
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.5, 0.8)> ' L1: Inside G=Y0 circle, above resonance line.
         <InlineData(4.0, 5.0, 2.0, 75.0, 0.02, 0.8)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
-        <InlineData(4.0, 5.0, 2.0, 1.0, 3.0, 0.5)> ' M: Inside G=Y0 circle, on line.
-        <InlineData(4.0, 5.0, 2.0, 1.0, 18 / 13.0, 0.8387)> ' N: Inside G=Y0 circle, below line.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 3.0, 0.5)> ' M1: Inside G=Y0 circle, on line.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 18 / 13.0, 0.8387)> ' N1: Inside G=Y0 circle, below line.
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.1, 1.8182)> ' O1: In the top center.
-        <InlineData(4.0, 5.0, 2.0, 50.0, 0.002, 1.8182)> ' O2: In the top center. Z0=50.
+        <InlineData(4.0, 5.0, 2.0, 50.0, 0.002, 1.8182)> ' O50: In the top center. Z0=50.
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.5, 4.0 / 3)> ' P1: In the bottom center.
-        <InlineData(4.0, 5.0, 2.0, 50.0, 0.01, 4.0 / 3)> ' P2: In the bottom center. Z0=50.
+        <InlineData(4.0, 5.0, 2.0, 50.0, 0.01, 4.0 / 3)> ' P50: In the bottom center. Z0=50.
         Sub GetRadiusG_GoodInput_Succeeds(gridCenterX As Double, gridCenterY As Double, gridRadius As Double,
                                           z0 As Double, testG As Double, expectRad As Double)
 
@@ -243,11 +243,11 @@ Namespace GeometryTests
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 2.0)> ' K1: On G=Y0 circle, below resonance line. Only needs reactance.
         <InlineData(4.0, 5.0, 2.0, 1.0, -1.5, 1.3333)> ' L1: Inside G=Y0 circle, above resonance line.
         <InlineData(4.0, 5.0, 2.0, 75.0, -0.02, 1.3333)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
-        <InlineData(4.0, 5.0, 2.0, 1.0, 12 / 13.0, 2.1666)> ' N: Inside G=Y0 circle, below line.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 12 / 13.0, 2.1666)> ' N1: Inside G=Y0 circle, below line.
         <InlineData(4.0, 5.0, 2.0, 1.0, -0.7, 2.8571)> ' O1: In the top center.
-        <InlineData(4.0, 5.0, 2.0, 50.0, -0.014, 2.8571)> ' O2: In the top center. Z0=50.
+        <InlineData(4.0, 5.0, 2.0, 50.0, -0.014, 2.8571)> ' O50: In the top center. Z0=50.
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 2.0)> ' P1: In the bottom center.
-        <InlineData(4.0, 5.0, 2.0, 50.0, 0.02, 2.0)> ' P2: In the bottom center. Z0=50.
+        <InlineData(4.0, 5.0, 2.0, 50.0, 0.02, 2.0)> ' P50: In the bottom center. Z0=50.
         Sub GetRadiusB_GoodInput_Succeeds(gridCenterX As Double, gridCenterY As Double, gridRadius As Double,
                                           z0 As Double, testB As Double, expectRad As Double)
 
@@ -262,7 +262,7 @@ Namespace GeometryTests
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, INF)> ' C: At the open circuit point on the right.
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, INF)> ' D: At the center.
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, INF)> ' H1: Inside R=Z0 circle, on line.
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, INF)> ' M: Inside G=Y0 circle, on line.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, INF)> ' M1: Inside G=Y0 circle, on line.
         Sub GetRadiusB_BadInput_Fails1(gridCenterX As Double, gridCenterY As Double, gridRadius As Double,
                                        z0 As Double, testB As Double, expectRad As Double)
 
@@ -389,12 +389,12 @@ Namespace GeometryTests
         <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, -1 / 2.0, 3.6, 4.2)> ' K1: On G=Y0 circle, below resonance line. Only needs reactance.
         <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 3.0, 1 / 3.0, 3.1765, 5.7059)> ' L1: Inside G=Y0 circle, above resonance line.
         <InlineData(4.0, 5.0, 2.0, 75.0, 25.0, 25.0, 3.1765, 5.7059)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 3.0, 0.0000, 3.0, 5.0)> ' M: Inside G=Y0 circle, on line.
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, -1 / 3.0, 3.4588, 4.4353)> ' N: Inside G=Y0 circle, below line.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 3.0, 0.0000, 3.0, 5.0)> ' M1: Inside G=Y0 circle, on line.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, -1 / 3.0, 3.4588, 4.4353)> ' N1: Inside G=Y0 circle, below line.
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.2, 1.4, 4.5882, 6.6471)> ' O1: In the top center.
-        <InlineData(4.0, 5.0, 2.0, 50.0, 10.0, 70.0, 4.5882, 6.6471)> ' O2: In the top center. Z0=50.
+        <InlineData(4.0, 5.0, 2.0, 50.0, 10.0, 70.0, 4.5882, 6.6471)> ' O50: In the top center. Z0=50.
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.4, -0.8, 3.8462, 3.7692)> ' P1: In the bottom center.
-        <InlineData(4.0, 5.0, 2.0, 50.0, 20.0, -40.0, 3.8462, 3.7692)> ' P2: In the bottom center. Z0=50.
+        <InlineData(4.0, 5.0, 2.0, 50.0, 20.0, -40.0, 3.8462, 3.7692)> ' P50: In the bottom center. Z0=50.
         Sub TryGetPlotXY_GoodInput_Succeeds(
             gridCenterX As Double, gridCenterY As Double, gridRadius As Double, z0 As Double,
             testR As Double, testX As Double, expectPlotX As Double, expectPlotY As Double)
@@ -497,12 +497,12 @@ Namespace GeometryTests
         <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, -1 / 2.0, 3.6, 4.2)> ' K1: On G=Y0 circle, below resonance line. Only needs reactance.
         <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 3.0, 1 / 3.0, 3.1765, 5.7059)> ' L1: Inside G=Y0 circle, above resonance line.
         <InlineData(4.0, 5.0, 2.0, 75.0, 25.0, 25.0, 3.1765, 5.7059)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 3.0, 0.0000, 3.0, 5.0)> ' M: Inside G=Y0 circle, on line.
-        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, -1 / 3.0, 3.4588, 4.4353)> ' N: Inside G=Y0 circle, below line.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 3.0, 0.0000, 3.0, 5.0)> ' M1: Inside G=Y0 circle, on line.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 2.0, -1 / 3.0, 3.4588, 4.4353)> ' N1: Inside G=Y0 circle, below line.
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.2, 1.4, 4.5882, 6.6471)> ' O1: In the top center.
-        <InlineData(4.0, 5.0, 2.0, 50.0, 10.0, 70.0, 4.5882, 6.6471)> ' O2: In the top center. Z0=50.
+        <InlineData(4.0, 5.0, 2.0, 50.0, 10.0, 70.0, 4.5882, 6.6471)> ' O50: In the top center. Z0=50.
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.4, -0.8, 3.8462, 3.7692)> ' P1: In the bottom center.
-        <InlineData(4.0, 5.0, 2.0, 50.0, 20.0, -40.0, 3.8462, 3.7692)> ' P2: In the bottom center. Z0=50.
+        <InlineData(4.0, 5.0, 2.0, 50.0, 20.0, -40.0, 3.8462, 3.7692)> ' P50: In the bottom center. Z0=50.
         Public Sub GetZFromPlot_GoodInput_Succeeds(
             gridCenterX As Double, gridCenterY As Double, gridRadius As Double, z0 As Double,
             expectR As Double, expectX As Double,
@@ -584,12 +584,12 @@ Namespace GeometryTests
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 1.0, 3.6, 4.2)> ' K1: On G=Y0 circle, below resonance line. Only needs reactance.
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.5, -1.5, 3.1765, 5.7059)> ' L1: Inside G=Y0 circle, above resonance line.
         <InlineData(4.0, 5.0, 2.0, 75.0, 0.02, -0.02, 3.1765, 5.7059)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
-        <InlineData(4.0, 5.0, 2.0, 1.0, 3.0, 0.0000, 3.0, 5.0)> ' M: Inside G=Y0 circle, on line.
-        <InlineData(4.0, 5.0, 2.0, 1.0, 18 / 13.0, 12 / 13.0, 3.4588, 4.4353)> ' N: Inside G=Y0 circle, below line.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 3.0, 0.0000, 3.0, 5.0)> ' M1: Inside G=Y0 circle, on line.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 18 / 13.0, 12 / 13.0, 3.4588, 4.4353)> ' N1: Inside G=Y0 circle, below line.
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.1, -0.7, 4.5882, 6.6471)> ' O1: In the top center.
-        <InlineData(4.0, 5.0, 2.0, 50.0, 0.002, -0.014, 4.5882, 6.6471)> ' O2: In the top center. Z0=50.
+        <InlineData(4.0, 5.0, 2.0, 50.0, 0.002, -0.014, 4.5882, 6.6471)> ' O50: In the top center. Z0=50.
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.5, 1.0, 3.8462, 3.7692)> ' P1: In the bottom center.
-        <InlineData(4.0, 5.0, 2.0, 50.0, 0.01, 0.02, 3.8462, 3.7692)> ' P2: In the bottom center. Z0=50.
+        <InlineData(4.0, 5.0, 2.0, 50.0, 0.01, 0.02, 3.8462, 3.7692)> ' P50: In the bottom center. Z0=50.
         Public Sub GetYFromPlot_GoodInput_Succeeds(
             gridCenterX As Double, gridCenterY As Double, gridRadius As Double, z0 As Double,
             expectG As Double, expectB As Double,
