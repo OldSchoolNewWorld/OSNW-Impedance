@@ -14,18 +14,18 @@ Imports Xunit
 ' C: At the open circuit point on the right.
 ' D: At the center.
 ' On the R=Z0 circle.
-' On R=Z0 circle, on the resonance line. Already covered by C or D.
-' E: On R=Z0 circle, above resonance line. Only needs reactance.
-' F: On R=Z0 circle, below resonance line. Only needs reactance.
+'   On R=Z0 circle, on the resonance line. Already covered by C or D.
+'   E1: On R=Z0 circle, above resonance line. Only needs reactance.
+'   F1: On R=Z0 circle, below resonance line. Only needs reactance.
 ' Inside the R=Z0 circle. Two choices: CW or CCW on the G-circle.
-' G1: Inside R=Z0 circle, above resonance line.
-' G2: Inside R=Z0 circle, above resonance line. Z0=50.
+'   G1: Inside R=Z0 circle, above resonance line.
+'   G50: Inside R=Z0 circle, above resonance line. Z0=50.
 ' H: Inside R=Z0 circle, on line.
 ' I: Inside R=Z0 circle, below resonance line.
 ' On the G=Y0 circle.
-' On G=Y0 circle, on resonance line. Omit - already either A or D.
-' J: On G=Y0 circle, above resonance line. Only needs reactance.
-' K: On G=Y0 circle, below resonance line. Only needs reactance.
+'   On G=Y0 circle, on resonance line. Omit - already either A or D.
+'   J1: On G=Y0 circle, above resonance line. Only needs reactance.
+'   K1: On G=Y0 circle, below resonance line. Only needs reactance.
 ' Inside the G=Y0 circle. Two choices: CW or CCW on the R-circle.
 ' L1: Inside G=Y0 circle, above resonance line.
 ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
@@ -97,7 +97,8 @@ Namespace TrySelectMatchLayoutTests
 
         '<InlineData(    Z0,        R,       X)> ' Model
         <Theory>
-        <InlineData(1.0, 1.0, 0.0000)> ' D: At the center.
+        <InlineData(1.0, 1.0, 0.0000)> ' D1: At the center.
+        <InlineData(75.0, 75.0, 0.0000)> ' D75: At the center.
         Public Sub TestTrySelectMatchLayoutD(z0 As Double, r As Double, x As Double)
 
             Dim MainCirc As New SmithMainCircle(4.0, 5.0, 4.0, z0) ' Test data.
@@ -120,7 +121,8 @@ Namespace TrySelectMatchLayoutTests
 
         '<InlineData(    Z0,        R,       X)> ' Model
         <Theory>
-        <InlineData(1.0, 1.0, 1.0)> ' E: On R=Z0 circle, above resonance line. Only needs reactance.
+        <InlineData(1.0, 1.0, 1.0)> ' E1: On R=Z0 circle, above resonance line. Only needs reactance.
+        <InlineData(50.0, 50.0, 50.0)> ' E50: On R=Z0 circle, above resonance line. Only needs reactance.
         Public Sub TrySelectMatch_PositionE_Succeeds(z0 As Double, r As Double, x As Double)
 
             Dim MainCirc As New SmithMainCircle(4.0, 5.0, 4.0, z0) ' Test data.
@@ -144,7 +146,8 @@ Namespace TrySelectMatchLayoutTests
 
         '<InlineData(    Z0,        R,       X)> ' Model
         <Theory>
-        <InlineData(1.0, 1.0, -2.0)> ' F: On R=Z0 circle, below resonance line. Only needs reactance.
+        <InlineData(1.0, 1.0, -2.0)> ' F1: On R=Z0 circle, below resonance line. Only needs reactance.
+        <InlineData(50.0, 50.0, -100.0)> ' F50: On R=Z0 circle, below resonance line. Only needs reactance.
         Public Sub TrySelectMatch_PositionF_Succeeds(z0 As Double, r As Double, x As Double)
 
             Dim MainCirc As New SmithMainCircle(4.0, 5.0, 4.0, z0) ' Test data.
@@ -171,21 +174,21 @@ Namespace TrySelectMatchLayoutTests
     Public Class TestTrySelectMatchLayoutJK
         ' On the G=Y0 circle.
         ' On G=Y0 circle, on resonance line. Omit - already either A or D.
-        ' J: On G=Y0 circle, above resonance line. Only needs reactance.
-        ' K: On G=Y0 circle, below resonance line. Only needs reactance.
+        ' J1: On G=Y0 circle, above resonance line. Only needs reactance.
+        ' K1: On G=Y0 circle, below resonance line. Only needs reactance.
 
         '<InlineData(    Z0,      G,       B)> ' Model
         <Theory>
-        <InlineData(1.0, 1.0, -1.0)> ' J: On G=Y0 circle, above resonance line. Only needs reactance.
-        <InlineData(50.0, 0.02, -0.02)> ' J: On G=Y0 circle, above resonance line. Only needs reactance.
+        <InlineData(1.0, 1.0, -1.0)> ' J1: On G=Y0 circle, above resonance line. Only needs reactance.
+        <InlineData(50.0, 0.02, -0.02)> ' J50: On G=Y0 circle, above resonance line. Only needs reactance.
         Public Sub TrySelectMatch_PositionJ_Succeeds(z0 As Double, g As Double, b As Double)
 
             Dim MainCirc As New SmithMainCircle(4.0, 5.0, 4.0, z0) ' Test data.
             'Dim MainCirc As New SmithMainCircle(1.0, 1.0, 1.0, z0) ' Arbitrary.
-            Dim TestY As New OSNW.Numerics.Admittance(g, b)
-            Dim TestZ As OSNW.Numerics.Impedance = TestY.ToImpedance
-
+            Dim TestZ As OSNW.Numerics.Impedance =
+                New OSNW.Numerics.Admittance(g, b).ToImpedance
             Dim TargetZ As New Impedance(z0, 0.0)
+
             Dim transformations As Transformation() = Array.Empty(Of Transformation)
             If Not TestZ.TrySelectMatchLayout(MainCirc, transformations) Then
                 Assert.True(False, Messages.TF)
@@ -195,22 +198,23 @@ Namespace TrySelectMatchLayoutTests
 
             Assert.True(transformations.Length = 1, Messages.ITC)
             Assert.True(transformations(0).Style.Equals(TransformationStyles.ShuntCap), Messages.ITS)
-            Assert.Equal(-1, transformations(0).Value1)
+            Assert.Equal(-z0, transformations(0).Value1)
             Assert.Equal(TargetZ, CombinedZ)
 
         End Sub
 
         '<InlineData(    Z0,      G,       B)> ' Model
         <Theory>
-        <InlineData(1.0, 1.0, 1.0)> ' K: On G=Y0 circle, below resonance line. Only needs reactance.
+        <InlineData(1.0, 1.0, 1.0)> ' K1: On G=Y0 circle, below resonance line. Only needs reactance.
+        <InlineData(50.0, 0.02, 0.02)> ' K50: On G=Y0 circle, below resonance line. Only needs reactance.
         Public Sub TrySelectMatch_PositionK_Succeeds(z0 As Double, g As Double, b As Double)
 
             Dim MainCirc As New SmithMainCircle(4.0, 5.0, 4.0, z0) ' Test data.
             'Dim MainCirc As New SmithMainCircle(1.0, 1.0, 1.0, z0) ' Arbitrary.
-            Dim TestY As New OSNW.Numerics.Admittance(g, b)
-            Dim TestZ As OSNW.Numerics.Impedance = TestY.ToImpedance
-
+            Dim TestZ As OSNW.Numerics.Impedance =
+                New OSNW.Numerics.Admittance(g, b).ToImpedance
             Dim TargetZ As New Impedance(z0, 0.0)
+
             Dim transformations As Transformation() = Array.Empty(Of Transformation)
             If Not TestZ.TrySelectMatchLayout(MainCirc, transformations) Then
                 Assert.True(False, Messages.TF)
@@ -220,7 +224,7 @@ Namespace TrySelectMatchLayoutTests
 
             Assert.True(transformations.Length = 1, Messages.ITC)
             Assert.True(transformations(0).Style.Equals(TransformationStyles.ShuntInd), Messages.ITS)
-            Assert.Equal(1, transformations(0).Value1)
+            Assert.Equal(z0, transformations(0).Value1)
             Assert.Equal(TargetZ, CombinedZ)
 
         End Sub
@@ -233,7 +237,7 @@ Namespace TrySelectMatchLayoutTests
         '<InlineData(     Z0,        R,       X)> ' Model
         <Theory>
         <InlineData(1.0, 2.0, 1 / 2.0)> ' G1: Inside R=Z0 circle, above resonance line.
-        <InlineData(50.0, 100.0, 25.0)> ' G2: Inside R=Z0 circle, above resonance line. Z0=50.
+        <InlineData(50.0, 100.0, 25.0)> ' G50: Inside R=Z0 circle, above resonance line. Z0=50.
         <InlineData(1.0, 3.0, 0.0000)> ' H: Inside R=Z0 circle, on line.
         <InlineData(1.0, 2.0, -2.0)> ' I: Inside R=Z0 circle, below resonance line.
         Public Sub TrySelectMatch_PositionGHI_Succeeds(z0 As Double, r As Double, x As Double)
