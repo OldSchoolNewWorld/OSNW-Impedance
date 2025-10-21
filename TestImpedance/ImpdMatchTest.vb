@@ -20,8 +20,8 @@ Imports Xunit
 ' Inside the R=Z0 circle. Two choices: CW or CCW on the G-circle.
 '   G1: Inside R=Z0 circle, above resonance line.
 '   G50: Inside R=Z0 circle, above resonance line. Z0=50.
-' H: Inside R=Z0 circle, on line.
-' I: Inside R=Z0 circle, below resonance line.
+'   H1: Inside R=Z0 circle, on line.
+'   I1: Inside R=Z0 circle, below resonance line.
 ' On the G=Y0 circle.
 '   On G=Y0 circle, on resonance line. Omit - already either A or D.
 '   J1: On G=Y0 circle, above resonance line. Only needs reactance.
@@ -238,8 +238,10 @@ Namespace TrySelectMatchLayoutTests
         <Theory>
         <InlineData(1.0, 2.0, 1 / 2.0)> ' G1: Inside R=Z0 circle, above resonance line.
         <InlineData(50.0, 100.0, 25.0)> ' G50: Inside R=Z0 circle, above resonance line. Z0=50.
-        <InlineData(1.0, 3.0, 0.0000)> ' H: Inside R=Z0 circle, on line.
-        <InlineData(1.0, 2.0, -2.0)> ' I: Inside R=Z0 circle, below resonance line.
+        <InlineData(1.0, 3.0, 0.0000)> ' H1: Inside R=Z0 circle, on line.
+        <InlineData(50.0, 150.0, 0.0000)> ' H50: Inside R=Z0 circle, on line. Z0=50.
+        <InlineData(1.0, 2.0, -2.0)> ' I1: Inside R=Z0 circle, below resonance line.
+        <InlineData(50.0, 100.0, -100.0)> ' I50: Inside R=Z0 circle, below resonance line. Z0=50.
         Public Sub TrySelectMatch_PositionGHI_Succeeds(z0 As Double, r As Double, x As Double)
 
             Dim MainCirc As New SmithMainCircle(4.0, 5.0, 4.0, z0) ' Test data.
