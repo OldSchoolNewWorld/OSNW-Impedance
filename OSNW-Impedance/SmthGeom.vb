@@ -516,7 +516,7 @@ Public Class SmithMainCircle
         ' https://www.allaboutcircuits.com/technical-articles/mathematical-construction-and-properties-of-the-smith-chart/
 
         'Dim NormR As System.Double = resistance / Me.Z0
-        'Dim Scale As System.Double = 1 / (NormR + 1)
+        'Dim Scale As System.Double = 1.0 / (NormR + 1.0)
         'Dim AnsRadius As System.Double = Scale * Me.GridRadius
         'Return AnsRadius
 
@@ -570,8 +570,12 @@ Public Class SmithMainCircle
                 NameOf(conductance), Impedance.MSGVMBGTZ)
         End If
 
-        ' Derived like GetRadiusR.
-        Return Me.GridRadius / ((conductance / Me.Y0) + 1.0)
+        'Dim NormG As System.Double = conductance / Me.Y0
+        'Dim Scale As System.Double = 1.0 / (NormG + 1.0)
+        'Dim AnsRadius As System.Double = Scale * Me.GridRadius
+        'Return AnsRadius
+
+        Return (1.0 / ((conductance / Me.Y0) + 1.0)) * Me.GridRadius
 
     End Function ' GetRadiusG
 

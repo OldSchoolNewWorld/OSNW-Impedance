@@ -22,7 +22,7 @@ Namespace ReflectionTests
         <InlineData(1.0, 1 / 2.0, 1 / 2.0, 0.4472)> ' J1: On G=Y0 circle, above resonance line. Only needs reactance.
         <InlineData(1.0, 1 / 2.0, -1 / 2.0, 0.4472)> ' K1: On G=Y0 circle, below resonance line. Only needs reactance.
         <InlineData(1.0, 1 / 3.0, 1 / 3.0, 0.5423)> ' L1: Inside G=Y0 circle, above resonance line.
-        <InlineData(75.0, 25.0, 25.0, 0.5423)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
+        <InlineData(75.0, 25.0, 25.0, 0.5423)> ' L75: Inside G=Y0 circle, above resonance line. Z0=75.
         <InlineData(1.0, 1 / 3.0, 0.0000, 0.5)> ' M1: Inside G=Y0 circle, on line.
         <InlineData(1.0, 1 / 2.0, -1 / 3.0, 0.3911)> ' N1: Inside G=Y0 circle, below line.
         <InlineData(1.0, 0.2, 1.4, 0.8745)> ' O1: In the top center.
@@ -95,7 +95,7 @@ Namespace ReflectionTests
         <InlineData(1.0, 1 / 2.0, 1 / 2.0, 0.2)> ' J1: On G=Y0 circle, above resonance line. Only needs reactance.
         <InlineData(1.0, 1 / 2.0, -1 / 2.0, 0.2)> ' K1: On G=Y0 circle, below resonance line. Only needs reactance.
         <InlineData(1.0, 1 / 3.0, 1 / 3.0, 0.2941)> ' L1: Inside G=Y0 circle, above resonance line.
-        <InlineData(75.0, 25.0, 25.0, 0.2941)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
+        <InlineData(75.0, 25.0, 25.0, 0.2941)> ' L75: Inside G=Y0 circle, above resonance line. Z0=75.
         <InlineData(1.0, 1 / 3.0, 0.0000, 0.25)> ' M1: Inside G=Y0 circle, on line.
         <InlineData(1.0, 1 / 2.0, -1 / 3.0, 0.1529)> ' N1: Inside G=Y0 circle, below line.
         <InlineData(1.0, 0.2, 1.4, 0.7647)> ' O1: In the top center.
@@ -168,7 +168,7 @@ Namespace ReflectionTests
         <InlineData(1.0, 1 / 2.0, 1 / 2.0, 0.8944)> ' J1: On G=Y0 circle, above resonance line. Only needs reactance.
         <InlineData(1.0, 1 / 2.0, -1 / 2.0, 0.8944)> ' K1: On G=Y0 circle, below resonance line. Only needs reactance.
         <InlineData(1.0, 1 / 3.0, 1 / 3.0, 0.686)> ' L1: Inside G=Y0 circle, above resonance line.
-        <InlineData(75.0, 25.0, 25.0, 0.686)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
+        <InlineData(75.0, 25.0, 25.0, 0.686)> ' L75: Inside G=Y0 circle, above resonance line. Z0=75.
         <InlineData(1.0, 1 / 3.0, 0.0000, 0.5)> ' M1: Inside G=Y0 circle, on line.
         <InlineData(1.0, 1 / 2.0, -1 / 3.0, 0.7822)> ' N1: Inside G=Y0 circle, below line.
         <InlineData(1.0, 0.2, 1.4, 1.534)> ' O1: In the top center.
@@ -243,7 +243,7 @@ Namespace ReflectionTests
         '<InlineData(1.0, 1 / 2.0, 1 / 2.0, 0.8)> ' J1: On G=Y0 circle, above resonance line. Only needs reactance.
         '<InlineData(1.0, 1 / 2.0, -1 / 2.0, 0.8)> ' K1: On G=Y0 circle, below resonance line. Only needs reactance.
         '<InlineData(1.0, 1 / 3.0, 1 / 3.0, 0.7059)> ' L1: Inside G=Y0 circle, above resonance line.
-        '<InlineData(75.0, 25.0, 25.0, 0.7059)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
+        '<InlineData(75.0, 25.0, 25.0, 0.7059)> ' L75: Inside G=Y0 circle, above resonance line. Z0=75.
         '<InlineData(1.0, 1 / 2.0, -1 / 3.0, 0.8471)> ' N1: Inside G=Y0 circle, below line.
         '<InlineData(1.0, 0.2, 1.4, 0.2353)> ' O1: In the top center.
         '<InlineData(50.0, 10.0, 70.0, 0.2353)> ' O50: In the top center. Z0=50.
@@ -285,7 +285,7 @@ Namespace ReflectionTests
         <InlineData(1.0, 1 / 2.0, 1 / 2.0, 116.5651)> ' J1: On G=Y0 circle, above resonance line. Only needs reactance.
         <InlineData(1.0, 1 / 2.0, -1 / 2.0, -116.5651)> ' K1: On G=Y0 circle, below resonance line. Only needs reactance.
         <InlineData(1.0, 1 / 3.0, 1 / 3.0, 139.3987)> ' L1: Inside G=Y0 circle, above resonance line.
-        <InlineData(75.0, 25.0, 25.0, 139.3987)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
+        <InlineData(75.0, 25.0, 25.0, 139.3987)> ' L75: Inside G=Y0 circle, above resonance line. Z0=75.
         <InlineData(1.0, 1 / 3.0, 0.0000, 180.0)> ' M1: Inside G=Y0 circle, on line.
         <InlineData(1.0, 1 / 2.0, -1 / 3.0, -133.7811)> ' N1: Inside G=Y0 circle, below line.
         <InlineData(1.0, 0.2, 1.4, 70.34617)> ' O1: In the top center.
@@ -360,7 +360,7 @@ Namespace ReflectionTests
         <InlineData(1.0, 1 / 2.0, 1 / 2.0, 26.5651)> ' J1: On G=Y0 circle, above resonance line. Only needs reactance.
         <InlineData(1.0, 1 / 2.0, -1 / 2.0, -26.5651)> ' K1: On G=Y0 circle, below resonance line. Only needs reactance.
         <InlineData(1.0, 1 / 3.0, 1 / 3.0, 30.9638)> ' L1: Inside G=Y0 circle, above resonance line.
-        <InlineData(75.0, 25.0, 25.0, 30.9638)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
+        <InlineData(75.0, 25.0, 25.0, 30.9638)> ' L75: Inside G=Y0 circle, above resonance line. Z0=75.
         <InlineData(1.0, 1 / 3.0, 0.0000, 0.0000)> ' M1: Inside G=Y0 circle, on line.
         <InlineData(1.0, 1 / 2.0, -1 / 3.0, -21.1613)> ' N1: Inside G=Y0 circle, below line.
         <InlineData(1.0, 0.2, 1.4, 32.4712)> ' O1: In the top center.
@@ -438,7 +438,7 @@ Namespace ReflectionTests
         <InlineData(1.0, 1 / 2.0, 1 / 2.0, 2.618)> ' J1: On G=Y0 circle, above resonance line. Only needs reactance.
         <InlineData(1.0, 1 / 2.0, -1 / 2.0, 2.618)> ' K1: On G=Y0 circle, below resonance line. Only needs reactance.
         <InlineData(1.0, 1 / 3.0, 1 / 3.0, 3.3699)> ' L1: Inside G=Y0 circle, above resonance line.
-        <InlineData(75.0, 25.0, 25.0, 3.3699)> ' L2: Inside G=Y0 circle, above resonance line. Z0=75.
+        <InlineData(75.0, 25.0, 25.0, 3.3699)> ' L75: Inside G=Y0 circle, above resonance line. Z0=75.
         <InlineData(1.0, 1 / 3.0, 0.0000, 3.0)> ' M1: Inside G=Y0 circle, on line.
         <InlineData(1.0, 1 / 2.0, -1 / 3.0, 2.2845)> ' N1: Inside G=Y0 circle, below line.
         <InlineData(1.0, 0.2, 1.4, 14.933)> ' O1: In the top center.
