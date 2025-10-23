@@ -211,7 +211,7 @@ Namespace GeometryTests
         <InlineData(4.0, 5.0, 2.0, 1.0, 3.0, 0.5)> ' M1: Inside G=Y0 circle, on line.
         <InlineData(4.0, 5.0, 2.0, 75.0, 0.04, 0.5)> ' M75: Inside G=Y0 circle, on line. Z0=75.
         <InlineData(4.0, 5.0, 2.0, 1.0, 18 / 13.0, 0.8387)> ' N1: Inside G=Y0 circle, below line.
-        <InlineData(4.0, 5.0, 2.0, 75.0, 2 / 8125.0, 0.8387)> ' N75: Inside G=Y0 circle, below line. Z0=75.
+        <InlineData(4.0, 5.0, 2.0, 75.0, 6 / 325.0, 0.8387)> ' N75: Inside G=Y0 circle, below line. Z0=75.
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.1, 1.8182)> ' O1: In the top center.
         <InlineData(4.0, 5.0, 2.0, 50.0, 0.002, 1.8182)> ' O50: In the top center. Z0=50.
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.5, 4.0 / 3)> ' P1: In the bottom center.
@@ -544,11 +544,6 @@ Namespace GeometryTests
         Const Precision As Double = 0.005
         Const INF As Double = Double.PositiveInfinity
 
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 0.0000, 2.0, 5.0)> ' A: At the short circuit point. Omit - covered by B.
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 1 / 2.0, 2.8, 6.6)> ' B: Anywhere else on the perimeter. R=0.0.
-        '<InlineData(4.0, 5.0, 2.0, 1.0, INF, 0.0000, 6.0, 5.0)> ' C: At the open circuit point on the right.
-        '<InlineData(4.0, 5.0, 2.0, 1.0, -0.0345, 0.4138, 2.5, 6.5)> ' Q: Outside of main circle. Invalid.
-        '<InlineData(4.0, 5.0, 2.0, 1.0, -2.0, 999, 999, 999)> ' R: NormR<=0. Invalid.
         '<InlineData(ChartX, ChartY, ChartRad,      Z0,        R,         X,  PlotX,  PlotY)> ' Model
         <Theory>
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 0.0000, 4.0, 5.0)> ' D1: At the center.
@@ -588,6 +583,7 @@ Namespace GeometryTests
             Assert.Equal(expectX, ZAns.Reactance, Precision)
         End Sub
 
+        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 1 / 2.0, 2.8, 6.6)> ' B: Anywhere else on the perimeter. R=0.0.
         '<InlineData(ChartX, ChartY, ChartRad,      Z0,        R,       X,  PlotX,  PlotY)> ' Model
         <Theory>
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 0.0000, 2.0, 5.0)> ' A: At the short circuit point. Omit - covered by B.
@@ -612,6 +608,7 @@ Namespace GeometryTests
         ''<InlineData(ChartX, ChartY, ChartRad,      Z0,        R,       X,  PlotX,  PlotY)> ' Model
         '<Theory>
         '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 0.0000, 2.0, 5.0)> ' A: At the short circuit point. Omit - covered by B.
+        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 1 / 2.0, 2.8, 6.6)> ' B: Anywhere else on the perimeter. R=0.0.
         '<InlineData(4.0, 5.0, 2.0, 1.0, INF, 0.0000, 6.0, 5.0)> ' C: At the open circuit point on the right.
         '<InlineData(4.0, 5.0, 2.0, 1.0, -0.0345, 0.4138, 2.5, 6.5)> ' Q: Outside of main circle. Invalid.
         '<InlineData(4.0, 5.0, 2.0, 1.0, -2.0, 999, 999, 999)> ' R: NormR<=0. Invalid.
@@ -640,39 +637,39 @@ Namespace GeometryTests
 
         Const Precision As Double = 0.0005
 
-        '<InlineData(ChartX, ChartY, ChartRad,      Z0,        R,         X,       G,        B,  PlotX,  PlotY, RadiusR, RadiusX, RadiusG, RadiusB, RadiusV)> ' Model
-        '<Theory>
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.0000,    0.0000,  0.0000,   0.0000, 2.0000, 5.0000,  2.0000,     INF,  0.0000,     INF,  2.0000)> ' A: At the short circuit point. Omit - covered by B.
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.0000,     1/2.0,  0.0000,  -2.0000,    2.8,    6.6,  2.0000,  4.0000,     INF,   1.000,  2.0000)> ' B: Anywhere else on the perimeter. R=0.0.
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,      INF,    0.0000,  0.0000,   0.0000, 6.0000, 5.0000,  0.0000,     INF,  2.0000,     INF,  2.0000)> ' C: At the open circuit point on the right.
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   1.0000,    0.0000,  1.0000,   0.0000, 4.0000, 5.0000,  1.0000,     INF,  1.0000,     INF,  0.0000)> ' D1: At the center.
-        '<InlineData(4.0000, 5.0000,   2.0000, 75.0000,  75.0000,    0.0000,  0.0133,   0.0000, 4.0000, 5.0000,  1.0000,     INF,  1.0000,     INF,  0.0000)> ' D75: At the center. Z0=75.
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   1.0000,    1.0000,  0.5000,  -0.5000, 4.4000, 5.8000,  1.0000,  2.0000,   4.0/3,  4.0000,  0.8944)> ' E1: On R=Z0 circle, above resonance line. Only needs reactance.
-        '<InlineData(4.0000, 5.0000,   2.0000, 50.0000,  50.0000,   50.0000,  0.0100,  -0.5000, 4.4000, 5.8000,  1.0000,  2.0000,   4.0/3,  4.0000,  0.8944)> ' E50: On R=Z0 circle, above resonance line. Only needs reactance. Z0=50.
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   1.0000, -100.0000,  0.2000,   0.4000, 5.0000, 4.0000,  1.0000,  1.0000,   5.0/3,  5.0000,  1.4142)> ' F1: On R=Z0 circle, below resonance line. Only needs reactance.
-        '<InlineData(4.0000, 5.0000,   2.0000, 50.0000,  50.0000,   -2.0000,  0.0040,   0.4000, 5.0000, 4.0000,  1.0000,  1.0000,   5.0/3,  5.0000,  1.4142)> ' F50: On R=Z0 circle, below resonance line. Only needs reactance. Z0=50.
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   2.0000,     1/2.0,  8/17.0,  -2/17.0, 4.7027, 5.2162,   2.0/3,  4.0000,  1.3600, 17.0000,  0.7352)> ' G1: Inside R=Z0 circle, above resonance line.
-        '<InlineData(4.0000, 5.0000,   2.0000, 50.0000, 100.0000,   25.0000, 4/425.0, -1/425.0, 4.7027, 5.2162,   2.0/3,  4.0000,  1.3600, 17.0000,  0.7352)> ' G50: Inside R=Z0 circle, above resonance line. Z0=50.
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   3.0000,    0.0000,  1/75.0,   0.0000, 5.0000, 5.0000,  0.5000,     INF,  1.5000,     INF,  1.0000)> ' H1: Inside R=Z0 circle, on line.
-        '<InlineData(4.0000, 5.0000,   2.0000, 50.0000, 150.0000,    0.0000,  50.0/3,   50.0/3, 5.0000, 5.0000,  0.5000,     INF,  1.5000,     INF,  1.0000)> ' H50: Inside R=Z0 circle, on line. Z0=50.
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   2.0000,   -2.0000,  0.2500,   0.2500, 5.0769, 4.3846,   2.0/3,  1.0000,  1.6000,  8.0000,  1.2404)> ' I1: Inside R=Z0 circle, below resonance line.
-        '<InlineData(4.0000, 5.0000,   2.0000, 50.0000, 100.0000, -100.0000, 12.5000,  12.5000, 5.0769, 4.3846,   2.0/3,  1.0000,  1.6000,  8.0000,  1.2404)> ' I50: Inside R=Z0 circle, below resonance line. Z0=50.
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/2.0,     1/2.0,  1.0000,  -1.0000, 3.6000, 5.8000,   4.0/3,  4.0000,  1.0000,  2.0000,  0.8944)> ' J1: On G=Y0 circle, above resonance line. Only needs reactance.
-        '<InlineData(4.0000, 5.0000,   2.0000, 50.0000,  25.0000,   25.0000,  0.0200,  -0.0200, 3.6000, 5.8000,   4.0/3,  4.0000,  1.0000,  2.0000,  0.8944)> ' J50: On G=Y0 circle, above resonance line. Only needs reactance. Z0=50.
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/2.0,    -1/2.0,  1.0000,   1.0000, 3.6000, 4.2000,   4.0/3,  4.0000,  1.0000,  2.0000,  0.8944)> ' K1: On G=Y0 circle, below resonance line. Only needs reactance.
-        '<InlineData(4.0000, 5.0000,   2.0000, 50.0000,  25.0000,  -25.0000,  0.0200,   0.0200, 3.6000, 4.2000,   4.0/3,  4.0000,  1.0000,  2.0000,  0.8944)> ' K50: On G=Y0 circle, below resonance line. Only needs reactance. Z0=50.
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/3.0,     1/3.0,  1.5000,  -1.5000, 3.1765, 5.7059,  1.5000,  6.0000,  0.8000,  1.3333,  1.0846)> ' L1: Inside G=Y0 circle, above resonance line.
-        '<InlineData(4.0000, 5.0000,   2.0000, 75.0000,  25.0000,   25.0000,  0.0200,  -0.0200, 3.1765, 5.7059,  1.5000,  6.0000,  0.8000,  1.3333,  1.0846)> ' L75: Inside G=Y0 circle, above resonance line. Z0=75.
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/3.0,    0.0000,  3.0000,   0.0000, 3.0000, 5.0000,  1.5000,     INF,  0.5000,     INF,  1.0000)> ' M1: Inside G=Y0 circle, on line.
-        '<InlineData(4.0000, 5.0000,   2.0000, 75.0000,  25.0000,    0.0000,  3.0000,   0.0000, 3.0000, 5.0000,  1.5000,     INF,  0.5000,     INF,  1.0000)> ' M75: Inside G=Y0 circle, on line. Z0=75.
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,    1/2.0,    -1/3.0, 18/13.0,  12/13.0, 3.4588, 4.4353,   4.0/3,  6.0000,  0.8387,  2.1666,  0.7822)> ' N1: Inside G=Y0 circle, below line.
-        '<InlineData(4.0000, 5.0000,   2.0000, 75.0000,  37.5000,  -25.0000, 18/13.0,  12/13.0, 3.4588, 4.4353,   4.0/3,  6.0000,  0.8387,  2.1666,  0.7822)> ' N75: Inside G=Y0 circle, below line. Z0=75.
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.2000,    1.4000,  0.1000,  -0.7000, 4.5882, 6.6471,   5.0/3,  1.4286,  1.8182,  2.8571,  1.7489)> ' O1: In the top center.
-        '<InlineData(4.0000, 5.0000,   2.0000, 50.0000,  10.0000,   70.0000,  0.0020,  -0.0140, 4.5882, 6.6471,   5.0/3,  1.4286,  1.8182,  2.8571,  1.7489)> ' O50: In the top center. Z0=50.
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,   0.4000,   -0.8000,  0.5000,   1.0000, 3.8462, 3.7692,  1.4286,  2.5000,   4.0/3,  2.0000,  1.2404)> ' P1: In the bottom center.
-        '<InlineData(4.0000, 5.0000,   2.0000, 50.0000,  20.0000,  -40.0000,  0.0100,   0.0200, 3.8462, 3.7692,  1.4286,  2.5000,   4.0/3,  2.0000,  1.2404)> ' P50: In the bottom center. Z0=50.
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,  -0.0345,    0.4138,     999,      999,    2.5,    6.5,     999,     999,     999,     999, RadiusV)> ' Q: Outside of main circle. Invalid.
-        '<InlineData(4.0000, 5.0000,   2.0000,  1.0000,  -2.0000,       999,     999,      999,    999,    999,     999,     999,     999,     999, RadiusV)> ' R: NormR<=0. Invalid.
+        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 0.0000, 2.0, 5.0)> ' A: At the short circuit point. Omit - covered by B.
+        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 0.0000, 6.0, 5.0)> ' C: At the open circuit point on the right.
+        '<InlineData(4.0, 5.0, 2.0, 1.0, 999, 999, 2.5, 6.5)> ' Q: Outside of main circle. Invalid.
+        '<InlineData(4.0, 5.0, 2.0, 1.0, 999, 999, 999, 999)> ' R: NormR<=0. Invalid.
+        '<InlineData(ChartX, ChartY, ChartRad,      Z0,       G,        B,  PlotX,  PlotY)> ' Model
+        <Theory>
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, -2.0, 2.8, 6.6)> ' B: Anywhere else on the perimeter. R=0.0.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 0.0000, 4.0, 5.0)> ' D1: At the center.
+        <InlineData(4.0, 5.0, 2.0, 75.0, 0.0133, 0.0000, 4.0, 5.0)> ' D75: At the center. Z0=75.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.5, -0.5, 4.4, 5.8)> ' E1: On R=Z0 circle, above resonance line. Only needs reactance.
+        <InlineData(4.0, 5.0, 2.0, 50.0, 0.01, -0.01, 4.4, 5.8)> ' E50: On R=Z0 circle, above resonance line. Only needs reactance. Z0=50.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.2, 0.4, 5.0, 4.0)> ' F1: On R=Z0 circle, below resonance line. Only needs reactance.
+        <InlineData(4.0, 5.0, 2.0, 50.0, 0.004, 0.008, 5.0, 4.0)> ' F50: On R=Z0 circle, below resonance line. Only needs reactance. Z0=50.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 8 / 17.0, -2 / 17.0, 4.7027, 5.2162)> ' G1: Inside R=Z0 circle, above resonance line.
+        <InlineData(4.0, 5.0, 2.0, 50.0, 4 / 425.0, -1 / 425.0, 4.7027, 5.2162)> ' G50: Inside R=Z0 circle, above resonance line. Z0=50.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1 / 3.0, 0.0000, 5.0, 5.0)> ' H1: Inside R=Z0 circle, on line.
+        <InlineData(4.0, 5.0, 2.0, 50.0, 0.02 / 3, 0.0000, 5.0, 5.0)> ' H50: Inside R=Z0 circle, on line. Z0=50.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.25, 0.25, 5.0769, 4.3846)> ' I1: Inside R=Z0 circle, below resonance line.
+        <InlineData(4.0, 5.0, 2.0, 50.0, 0.005, 0.005, 5.0769, 4.3846)> ' I50: Inside R=Z0 circle, below resonance line. Z0=50.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, -1.0, 3.6, 5.8)> ' J1: On G=Y0 circle, above resonance line. Only needs reactance.
+        <InlineData(4.0, 5.0, 2.0, 50.0, 0.02, -0.02, 3.6, 5.8)> ' J50: On G=Y0 circle, above resonance line. Only needs reactance. Z0=50.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 1.0, 3.6, 4.2)> ' K1: On G=Y0 circle, below resonance line. Only needs reactance.
+        <InlineData(4.0, 5.0, 2.0, 50.0, 0.02, 0.02, 3.6, 4.2)> ' K50: On G=Y0 circle, below resonance line. Only needs reactance. Z0=50.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 1.5, -1.5, 3.1765, 5.7059)> ' L1: Inside G=Y0 circle, above resonance line.
+        <InlineData(4.0, 5.0, 2.0, 75.0, 0.02, -0.02, 3.1765, 5.7059)> ' L75: Inside G=Y0 circle, above resonance line. Z0=75.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 3.0, 0.0000, 3.0, 5.0)> ' M1: Inside G=Y0 circle, on line.
+        <InlineData(4.0, 5.0, 2.0, 75.0, 0.04, 0.0000, 3.0, 5.0)> ' M75: Inside G=Y0 circle, on line. Z0=75.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 18 / 13.0, 12 / 13.0, 3.4588, 4.4353)> ' N1: Inside G=Y0 circle, below line.
+        <InlineData(4.0, 5.0, 2.0, 75.0, 6 / 325.0, 4 / 325.0, 3.4588, 4.4353)> ' N75: Inside G=Y0 circle, below line. Z0=75.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.1, -0.7, 4.5882, 6.6471)> ' O1: In the top center.
+        <InlineData(4.0, 5.0, 2.0, 50.0, 0.002, -0.014, 4.5882, 6.6471)> ' O50: In the top center. Z0=50.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.5, 1.0, 3.8462, 3.7692)> ' P1: In the bottom center.
+        <InlineData(4.0, 5.0, 2.0, 50.0, 0.01, 0.02, 3.8462, 3.7692)> ' P50: In the bottom center. Z0=50.
         Public Sub GetYFromPlot_GoodInput_Succeeds(
             gridCenterX As Double, gridCenterY As Double, gridRadius As Double, z0 As Double,
             expectG As Double, expectB As Double,
