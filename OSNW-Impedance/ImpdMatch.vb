@@ -367,12 +367,12 @@ Partial Public Structure Impedance
 
     ''' <summary>
     ''' Attempts to obtain a conjugate match from the current instance (load
-    ''' impedance) to the source characteristic impedance specified by
-    ''' <paramref name="z0"/>, when the current instance appears directly on the
-    ''' R=Z0 circle.
+    ''' impedance) to the source characteristic impedance of
+    ''' <paramref name="mainCirc"/>, when the current instance appears directly
+    ''' on the R=Z0 circle.
     ''' </summary>
-    ''' <param name="z0">Specifies the characteristic impedance to which the
-    ''' current instance should be matched.</param>
+    ''' <param name="mainCirc">Specifies the <see cref="SmithMainCircle"/> with
+    ''' which the current instance is associated.</param>
     ''' <param name="transformations">Specifies an array of
     ''' <see cref="Transformation"/>s that can be used to match a load impedance
     ''' to match a source impedance.</param>
@@ -382,9 +382,9 @@ Partial Public Structure Impedance
     ''' <paramref name="transformations"/>, the components to construct the
     ''' match.</returns>
     ''' <remarks>
-    ''' <paramref name="z0"/> is the characteristic impedance to which the
-    ''' current instance should be matched. It should have a practical value
-    ''' with regard to the impedance values involved.
+    ''' Z0 in <paramref name="mainCirc"/> is the characteristic impedance to
+    ''' which the current instance should be matched. It should have a practical
+    ''' value with regard to the impedance values involved.
     ''' A succcessful process might result in an empty
     ''' <paramref name="transformations"/>.
     ''' </remarks>
