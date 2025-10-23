@@ -570,10 +570,10 @@ Public Class SmithMainCircle
                 NameOf(conductance), Impedance.MSGVMBGTZ)
         End If
 
-        'Dim NormG As System.Double = conductance / Me.Y0
-        'Dim Scale As System.Double = 1.0 / (NormG + 1.0)
-        'Dim AnsRadius As System.Double = Scale * Me.GridRadius
-        'Return AnsRadius
+        Dim NormG As System.Double = conductance / Me.Y0
+        Dim Scale As System.Double = 1.0 / (NormG + 1.0)
+        Dim AnsRadius As System.Double = Scale * Me.GridRadius
+        Return AnsRadius
 
         Return (1.0 / ((conductance / Me.Y0) + 1.0)) * Me.GridRadius
 
