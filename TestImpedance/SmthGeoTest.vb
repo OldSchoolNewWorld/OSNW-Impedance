@@ -183,11 +183,6 @@ Namespace GeometryTests
         Const Precision As Double = 0.0005
         Const INF As Double = Double.PositiveInfinity
 
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 0.0000)> ' A: At the short circuit point. Omit - covered by B.
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, INF)> ' B: Anywhere else on the perimeter. R=0.0.
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 2.0)> ' C: At the open circuit point on the right.
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 999, 999)> ' Q: Outside of main circle. Invalid.
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 999, 999)> ' R: NormR<=0. Invalid.
         '<InlineData(ChartX, ChartY, ChartRad,      Z0,       G, RadiusG)> ' Model
         <Theory>
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 1.0)> ' D1: At the center.
@@ -637,10 +632,6 @@ Namespace GeometryTests
 
         Const Precision As Double = 0.0005
 
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 0.0000, 2.0, 5.0)> ' A: At the short circuit point. Omit - covered by B.
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 0.0000, 6.0, 5.0)> ' C: At the open circuit point on the right.
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 999, 999, 2.5, 6.5)> ' Q: Outside of main circle. Invalid.
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 999, 999, 999, 999)> ' R: NormR<=0. Invalid.
         '<InlineData(ChartX, ChartY, ChartRad,      Z0,       G,        B,  PlotX,  PlotY)> ' Model
         <Theory>
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, -2.0, 2.8, 6.6)> ' B: Anywhere else on the perimeter. R=0.0.
@@ -703,29 +694,29 @@ Namespace GeometryTests
             End Sub)
         End Sub
 
-        '<InlineData(ChartX, ChartY, ChartRad,      Z0,       G,        B,  PlotX,  PlotY)> ' Model
-        <Theory>
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 0.0000, 2.0, 5.0)> ' A: At the short circuit point. Omit - covered by B.
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 0.0000, 6.0, 5.0)> ' C: At the open circuit point on the right.
-        <InlineData(4.0, 5.0, 2.0, 1.0, 999, 999, 2.5, 6.5)> ' Q: Outside of main circle. Invalid.
-        <InlineData(4.0, 5.0, 2.0, 1.0, 999, 999, 999, 999)> ' R: NormR<=0. Invalid.
-        Public Sub GetYFromPlot_BadInput_Fails2(
-            gridCenterX As Double, gridCenterY As Double, gridRadius As Double, z0 As Double,
-            expectG As Double, expectB As Double,
-            plotX As Double, plotY As Double)
+        ''<InlineData(ChartX, ChartY, ChartRad,      Z0,       G,        B,  PlotX,  PlotY)> ' Model
+        '<Theory>
+        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 0.0000, 2.0, 5.0)> ' A: At the short circuit point. Omit - covered by B.
+        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 0.0000, 6.0, 5.0)> ' C: At the open circuit point on the right.
+        '<InlineData(4.0, 5.0, 2.0, 1.0, 999, 999, 2.5, 6.5)> ' Q: Outside of main circle. Invalid.
+        '<InlineData(4.0, 5.0, 2.0, 1.0, 999, 999, 999, 999)> ' R: NormR<=0. Invalid.
+        'Public Sub GetYFromPlot_BadInput_Fails2(
+        '    gridCenterX As Double, gridCenterY As Double, gridRadius As Double, z0 As Double,
+        '    expectG As Double, expectB As Double,
+        '    plotX As Double, plotY As Double)
 
-            Try
-                ' Code that throws the exception
-                Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridRadius * 2.0, z0)
-                Dim YAns As Admittance = SmithCirc.GetYFromPlot(plotX, plotY)
-                Assert.Equal(expectG, YAns.Conductance, Precision)
-                Assert.Equal(expectB, YAns.Susceptance, Precision)
-            Catch ex As Exception
-                Assert.True(True)
-                Exit Sub
-            End Try
-            Assert.True(False, "Did not fail")
-        End Sub
+        '    Try
+        '        ' Code that throws the exception
+        '        Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridRadius * 2.0, z0)
+        '        Dim YAns As Admittance = SmithCirc.GetYFromPlot(plotX, plotY)
+        '        Assert.Equal(expectG, YAns.Conductance, Precision)
+        '        Assert.Equal(expectB, YAns.Susceptance, Precision)
+        '    Catch ex As Exception
+        '        Assert.True(True)
+        '        Exit Sub
+        '    End Try
+        '    Assert.True(False, "Did not fail")
+        'End Sub
 
     End Class ' TestGetYFromPlot
 

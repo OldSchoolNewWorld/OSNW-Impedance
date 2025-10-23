@@ -47,9 +47,9 @@ End Class
 '<InlineData( 1.0000,   2.0000,     1/2.0, 0.3676, 0.1351, 1.3557, 0.8649,   17.1027,   4.5739,  2.1626)> ' G1: Inside R=Z0 circle, above resonance line.
 '<InlineData(50.0000, 100.0000,   25.0000, 0.3676, 0.1351, 1.3557, 0.8649,   17.1027,   4.5739,  2.1626)> ' G50: Inside R=Z0 circle, above resonance line. Z0=50.
 '<InlineData( 1.0000,   3.0000,    0.0000, 0.5000, 0.2500, 1.5000, 0.7500,    0.0000,   0.0000,  3.0000)> ' H1: Inside R=Z0 circle, on line.
-'<InlineData( 1.0000, 150.0000,    0.0000, 0.5000, 0.2500, 1.5000, 0.7500,    0.0000,   0.0000,  3.0000)> ' H50: Inside R=Z0 circle, on line. Z0=50.
+'<InlineData(50.0000, 150.0000,    0.0000, 0.5000, 0.2500, 1.5000, 0.7500,    0.0000,   0.0000,  3.0000)> ' H50: Inside R=Z0 circle, on line. Z0=50.
 '<InlineData( 1.0000,   2.0000,   -2.0000, 0.6200, 0.3846, 1.5689, 0.6154,  -29.7449, -11.3099,  4.2656)> ' I1: Inside R=Z0 circle, below resonance line.
-'<InlineData( 1.0000, 100.0000, -100.0000, 0.6200, 0.3846, 1.5689, 0.6154,  -29.7449, -11.3099,  4.2656)> ' I50: Inside R=Z0 circle, below resonance line. Z0=50.
+'<InlineData(50.0000, 100.0000, -100.0000, 0.6200, 0.3846, 1.5689, 0.6154,  -29.7449, -11.3099,  4.2656)> ' I50: Inside R=Z0 circle, below resonance line. Z0=50.
 '<InlineData( 1.0000,    1/2.0,     1/2.0, 0.4472, 0.2000, 0.8944, 0.8000,  116.5651,  26.5651,  2.6180)> ' J1: On G=Y0 circle, above resonance line. Only needs reactance.
 '<InlineData(50.0000,  25.0000,   25.0000, 0.4472, 0.2000, 0.8944, 0.8000,  116.5651,  26.5651,  2.6180)> ' J50: On G=Y0 circle, above resonance line. Only needs reactance. Z0=50.
 '<InlineData( 1.0000,    1/2.0,    -1/2.0, 0.4472, 0.2000, 0.8944, 0.8000, -116.5651, -26.5651,  2.6180)> ' K1: On G=Y0 circle, below resonance line. Only needs reactance.
@@ -57,9 +57,9 @@ End Class
 '<InlineData( 1.0000,    1/3.0,     1/3.0, 0.5423, 0.2941, 0.6860, 0.7059,  139.3987,  30.9638,  3.3699)> ' L1: Inside G=Y0 circle, above resonance line.
 '<InlineData(75.0000,  25.0000,   25.0000, 0.5423, 0.2941, 0.6860, 0.7059,  139.3987,  30.9638,  3.3699)> ' L75: Inside G=Y0 circle, above resonance line. Z0=75.
 '<InlineData( 1.0000,    1/3.0,    0.0000, 0.5000, 0.2500, 0.5000, 0.7500,  180.0000,   0.0000,  3.0000)> ' M1: Inside G=Y0 circle, on line.
+'<InlineData(75.0000,  25.0000,    0.0000, 0.5000, 0.2500, 0.5000, 0.7500,  180.0000,   0.0000,  3.0000)> ' M75: Inside G=Y0 circle, on line. Z0=75.
 '<InlineData( 1.0000,    1/2.0,    -1/3.0, 0.3911, 0.1529, 0.7822, 0.8471, -133.7811, -21.1613,  2.2845)> ' N1: Inside G=Y0 circle, below line.
-'<InlineData( 1.0000,  25.0000,    0.0000, 0.5000, 0.2500, 0.5000, 0.7500,  180.0000,   0.0000,  3.0000)> ' M75: Inside G=Y0 circle, on line. Z0=75.
-'<InlineData( 1.0000,  37.5000,  -25.0000, 0.3911, 0.1529, 0.7822, 0.8471, -133.7811, -21.1613,  2.2845)> ' N75: Inside G=Y0 circle, below line. Z0=75.
+'<InlineData(75.0000,  37.5000,  -25.0000, 0.3911, 0.1529, 0.7822, 0.8471, -133.7811, -21.1613,  2.2845)> ' N75: Inside G=Y0 circle, below line. Z0=75.
 '<InlineData( 1.0000,   0.2000,    1.4000, 0.8745, 0.7647, 1.5340, 0.2353,  70.34617,  32.4712, 14.9330)> ' O1: In the top center.
 '<InlineData(50.0000,  10.0000,   70.0000, 0.8745, 0.7647, 1.5340, 0.2353,  70.34617,  32.4712, 14.9330)> ' O50: In the top center. Z0=50.
 '<InlineData( 1.0000,   0.4000,   -0.8000, 0.6200, 0.3846, 1.1094, 0.6154,  -97.1250, -33.6901,  4.2656)> ' P1: In the bottom center.
