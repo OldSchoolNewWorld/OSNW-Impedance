@@ -358,7 +358,7 @@ Namespace GeometryTests
             ' NOTE: The order in which the circles are specified dictates the order in which the intersections are stored.
             Dim C1 As New GenericCircle(c1X, c1Y, c1R)
             Dim C2 As New GenericCircle(c2X, c2Y, c2R)
-            Dim Intersections As System.Collections.Generic.List(Of System.Drawing.PointF) = C1.GetIntersections(C2)
+            Dim Intersections As System.Collections.Generic.List(Of OSNW.Numerics.PointD) = C1.GetIntersections(C2)
             Assert.Equal(2, Intersections.Count)
             Assert.Equal(expect1x, Intersections(0).X, 0.01)
             Assert.Equal(expect1y, Intersections(0).Y, 0.01)
@@ -382,7 +382,7 @@ Namespace GeometryTests
             ' Testing via GetIntersections(otherCircle As GenericCircle) exercises all three overloads.
             Dim C1 As New GenericCircle(c1X, c1Y, c1R)
             Dim C2 As New GenericCircle(c2X, c2Y, c2R)
-            Dim Intersections As System.Collections.Generic.List(Of System.Drawing.PointF) = C1.GetIntersections(C2)
+            Dim Intersections As System.Collections.Generic.List(Of OSNW.Numerics.PointD) = C1.GetIntersections(C2)
             Assert.Equal(2, Intersections.Count)
             Assert.Equal(expect1x, Intersections(0).X, 0.01)
             Assert.Equal(expect1y, Intersections(0).Y, 0.01)
@@ -399,7 +399,7 @@ Namespace GeometryTests
             ' Testing via GetIntersections(otherCircle As GenericCircle) exercises all three overloads.
             Dim C1 As New GenericCircle(c1X, c1Y, c1R)
             Dim C2 As New GenericCircle(c2X, c2Y, c2R)
-            Dim Intersections As System.Collections.Generic.List(Of System.Drawing.PointF) = C1.GetIntersections(C2)
+            Dim Intersections As System.Collections.Generic.List(Of OSNW.Numerics.PointD) = C1.GetIntersections(C2)
             Assert.Equal(0, Intersections.Count)
         End Sub
 
@@ -412,7 +412,7 @@ Namespace GeometryTests
             ' Testing via GetIntersections(otherCircle As GenericCircle) exercises all three overloads.
             Dim C1 As New GenericCircle(c1X, c1Y, c1R)
             Dim C2 As New GenericCircle(c2X, c2Y, c2R)
-            Dim Intersections As System.Collections.Generic.List(Of System.Drawing.PointF) = C1.GetIntersections(C2)
+            Dim Intersections As System.Collections.Generic.List(Of OSNW.Numerics.PointD) = C1.GetIntersections(C2)
             Assert.Equal(0, Intersections.Count)
         End Sub
 

@@ -529,7 +529,7 @@ Partial Public Structure Impedance
     '''' results in a conjugate match for the current instance; otherwise,
     '''' <c>False</c>.</returns>
     Private Function InsideREqualsZ0(ByVal mainCirc As SmithMainCircle,
-        ByVal intersection As System.Drawing.PointF,
+        ByVal intersection As OSNW.Numerics.PointD,
         ByRef transformation As Transformation) As System.Boolean
 
         ' DEV: This development implementation is based on selection of pure
@@ -636,7 +636,7 @@ Partial Public Structure Impedance
         Dim CircR As New RCircle(MainCirc, z0)
         Dim CircG As New GCircle(MainCirc, Me.ToAdmittance().Conductance)
         Dim Intersections _
-            As System.Collections.Generic.List(Of System.Drawing.PointF) =
+            As System.Collections.Generic.List(Of OSNW.Numerics.PointD) =
                 GenericCircle.GetIntersections(CircR, CircG)
 
         '' THESE CHECKS CAN BE DELETED/COMMENTED AFTER THE GetIntersections()
@@ -722,7 +722,7 @@ Partial Public Structure Impedance
     '''' results in a conjugate match for the current instance; otherwise,
     '''' <c>False</c>.</returns>
     Private Function InsideGEqualsY0(ByVal mainCirc As SmithMainCircle,
-        ByVal intersection As System.Drawing.PointF,
+        ByVal intersection As OSNW.Numerics.PointD,
         ByRef transformation As Transformation) As System.Boolean
 
         ' DEV: This development implementation is based on selection of pure
@@ -827,7 +827,7 @@ Partial Public Structure Impedance
         Dim CircG As New GCircle(mainCirc, 1.0 / mainCirc.Z0)
         Dim CircR As New RCircle(mainCirc, Me.Resistance)
         Dim Intersections _
-            As System.Collections.Generic.List(Of System.Drawing.PointF) =
+            As System.Collections.Generic.List(Of OSNW.Numerics.PointD) =
                 GenericCircle.GetIntersections(CircR, CircG)
 
         ' THESE CHECKS CAN BE DELETED/COMMENTED AFTER THE GetIntersections()
@@ -933,11 +933,11 @@ Partial Public Structure Impedance
         Dim CircG As New GCircle(mainCirc, Y.Conductance)
         Dim CircR As New RCircle(mainCirc, mainCirc.Z0)
         Dim Intersections _
-            As System.Collections.Generic.List(Of System.Drawing.PointF) =
+            As System.Collections.Generic.List(Of OSNW.Numerics.PointD) =
                 GenericCircle.GetIntersections(CircR, CircG)
 
         ' Process each intersection.
-        For Each OneIntersection As System.Drawing.PointF In Intersections
+        For Each OneIntersection As OSNW.Numerics.PointD In Intersections
 
             ' Determine the changes to take place.
             Dim ImageY As Admittance =
@@ -1013,11 +1013,11 @@ Partial Public Structure Impedance
         Dim CircG As New GCircle(mainCirc, mainCirc.Y0)
         Dim CircR As New RCircle(mainCirc, Me.Resistance)
         Dim Intersections _
-            As System.Collections.Generic.List(Of System.Drawing.PointF) =
+            As System.Collections.Generic.List(Of OSNW.Numerics.PointD) =
                 GenericCircle.GetIntersections(CircR, CircG)
 
         ' Process each intersection.
-        For Each OneIntersection As System.Drawing.PointF In Intersections
+        For Each OneIntersection As OSNW.Numerics.PointD In Intersections
 
             ' Determine the changes to take place.
             Dim ImageZ As Impedance =
@@ -1147,11 +1147,11 @@ Partial Public Structure Impedance
         Dim CircG As New GCircle(mainCirc, mainCirc.Y0)
         Dim CircR As New RCircle(mainCirc, Me.Resistance)
         Dim Intersections _
-            As System.Collections.Generic.List(Of System.Drawing.PointF) =
+            As System.Collections.Generic.List(Of OSNW.Numerics.PointD) =
                 GenericCircle.GetIntersections(CircR, CircG)
 
         ' Process each intersection.
-        For Each OneIntersection As System.Drawing.PointF In Intersections
+        For Each OneIntersection As OSNW.Numerics.PointD In Intersections
 
             ' Determine the changes to take place.
             Dim ImageZ As Impedance =
@@ -1229,11 +1229,11 @@ Partial Public Structure Impedance
         Dim CircG As New GCircle(mainCirc, Y.Conductance)
         Dim CircR As New RCircle(mainCirc, mainCirc.Z0)
         Dim Intersections _
-            As System.Collections.Generic.List(Of System.Drawing.PointF) =
+            As System.Collections.Generic.List(Of OSNW.Numerics.PointD) =
                 GenericCircle.GetIntersections(CircR, CircG)
 
         ' Process each intersection.
-        For Each OneIntersection As System.Drawing.PointF In Intersections
+        For Each OneIntersection As OSNW.Numerics.PointD In Intersections
 
             ' Determine the changes to take place.
             Dim ImageY As Admittance =
