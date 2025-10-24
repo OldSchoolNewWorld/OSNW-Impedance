@@ -1,9 +1,7 @@
 ﻿'TODO:
-' Expand use of non-characteristic impedance test values. 
-'   Update routines as needed to pass.
 ' Convert from building an array to building a list of suggested solutions.
 ' Replace PointF with a new PointD?
-' Should infinity be rejected for admittance and susceptance inputs?
+' Should infinity be allowed or rejected for admittance and susceptance inputs?
 ' Add De/Serialization to Admittance?????
 '   "the strings should be generated and parsed by using the conventions of the invariant culture."
 '   REF: Serialize and deserialize numeric data
