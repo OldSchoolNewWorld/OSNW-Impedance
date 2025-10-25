@@ -4,15 +4,15 @@ Option Compare Binary
 Option Infer Off
 
 ''' <summary>
-''' Represents an ordered pair of X And Y coordinates that define a point in
-''' a two-dimensional plane.
+''' Represents an ordered pair of X and Y double precision coordinates that
+''' define a point in a two-dimensional plane.
 ''' </summary>
 ''' <remarks>
-''' This is a very simple implementation of a double precision version
-''' of <see cref="System.Drawing.PointF"/>. In any practical sense, there is no
-''' useful difference between <c>PointF</c> and <c>PointD</c> on a monitor or
-''' printer. Double precision values are only used here to minimize any impact
-''' of doing geometric calculations with floating point values.
+''' This is a very simplified implementation of a double precision version
+''' of <see cref="System.Drawing.PointF"/>. In almost any practical case, there
+''' is no significant difference between <c>PointF</c> and <c>PointD</c> on a
+''' monitor or printer. Double precision values are only used here to minimize
+''' any impact of doing geometric calculations with floating point values.
 ''' </remarks>
 Public Structure PointD
 
@@ -24,7 +24,7 @@ Public Structure PointD
     ''' <summary>
     ''' Represents the Y-coordinate of this <see cref='OSNW.Numerics.PointD'/>.
     ''' </summary>
-    Public Property Y As System.Double
+    Public Y As System.Double
 
     ''' <summary>
     ''' Initializes a New instance of the <see cref="OSNW.Numerics.PointD"/>
