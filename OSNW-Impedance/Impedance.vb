@@ -1,6 +1,5 @@
 ﻿'TODO:
 ' Convert from building an array to building a list of suggested solutions.
-' Replace PointF with a new PointD?
 ' Should infinity be allowed or rejected for admittance and susceptance inputs?
 ' Add De/Serialization to Admittance?????
 '   "the strings should be generated and parsed by using the conventions of the invariant culture."
@@ -16,7 +15,6 @@ Option Strict On
 Option Compare Binary
 Option Infer Off
 
-Imports System.ComponentModel.Design
 Imports System.Diagnostics.CodeAnalysis
 Imports System.Globalization
 Imports System.Text.Json.Serialization
