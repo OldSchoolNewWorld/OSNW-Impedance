@@ -3,6 +3,13 @@ Option Strict On
 Option Compare Binary
 Option Infer Off
 
+' This document contains a structure that represents an admittance. It is
+' included as a convenience and to allow the use of a familiar concept. At a
+' certain level, an admittance is just a different way to represent an
+' impedance. A derived project could be reworked to use impedances directly,
+' which may offer some performance improvments at the expense of readability. A
+' limited set of convenience features has been implemented.
+
 Imports System.Diagnostics.CodeAnalysis
 Imports System.Text.Json.Serialization
 Imports OSNW.Numerics.ComplexExtensions

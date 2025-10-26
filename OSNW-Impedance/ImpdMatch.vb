@@ -3,6 +3,9 @@ Option Strict On
 Option Compare Binary
 Option Infer Off
 
+' This document contains items related to matching a load impedance to a source
+' impedance.
+
 ' The generic matching process is intended to be able to select a method to
 ' obtain a conjugate match for a load impedance to a source characteristic
 ' impedance. It is not intended to select specific capacitance or inductance
