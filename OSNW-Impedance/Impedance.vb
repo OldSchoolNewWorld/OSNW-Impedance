@@ -1,5 +1,4 @@
 ﻿'TODO:
-' Dump PointD and substitute SYSTEM.WINDOWS.POINT?
 ' Convert from building an array to building a list of suggested solutions.
 ' Should infinity be allowed or rejected for admittance and susceptance inputs?
 ' Add De/Serialization to Admittance?????
@@ -95,6 +94,7 @@ Public Structure Impedance
     Public Const MSGIIC As System.String = "Invalid intersection count."
     Public Const MSGFGPXPY As System.String = "Failure getting PlotX, PlotY."
     Public Const MSGUEEZ As System.String = MSGCHZV & " Use EqualEnoughZero()."
+    Public Const MSGTDNRT As String = " transformation did not reach target."
 
 #Region "Fields and Properties"
 

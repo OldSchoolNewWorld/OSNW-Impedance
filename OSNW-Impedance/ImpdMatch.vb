@@ -6,12 +6,12 @@ Option Infer Off
 ' This document contains items related to matching a load impedance to a source
 ' impedance.
 
-' The generic matching process is intended to be able to select a method to
+' The simple matching process is intended to be able to select a method to
 ' obtain a conjugate match for a load impedance to a source characteristic
 ' impedance. It is not intended to select specific capacitance or inductance
-' values. The goal is to be able to lay out an L-section and select a reactance
-' value for each component. Those reactance values could then be used to select
-' appropriate component values based on frequency.
+' values. The goal is to be able to lay out a single-element, or an L-section,
+' and select a reactance value for each component. Those reactance values could
+' then be used to select appropriate component values based on frequency.
 
 ' The comments here relate to solving conjugate matches on a Smith Chart that
 ' has a horizontal resonance line, with R=0 on the left.
@@ -48,8 +48,8 @@ Option Infer Off
 ' CCW   | G-circle | shunt inductor
 
 ''' <summary>
-''' The circuit layout to be used to match a load impedance to a source
-''' characteristic impedance or to otherwise modify the impedance.
+''' Represents the circuit layout to be used to match a load impedance to a
+''' source characteristic impedance or to otherwise modify the impedance.
 ''' </summary>
 ''' <remarks>
 ''' Member names begin with the first component encountered by the load,
@@ -196,9 +196,6 @@ Partial Public Structure Impedance
         Dim NearlyZero As System.Double = z0 * 0.000001
         Dim FixupZ As Impedance
         Dim WorkZ As Impedance
-
-        Const MSGTDNRT As String =
-            " transformation did not reach target."
 
         If aTransformation.Style.Equals(
             TransformationStyles.ShuntCapSeriesInd) Then

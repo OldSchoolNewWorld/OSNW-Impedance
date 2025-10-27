@@ -57,6 +57,9 @@ Public Module ComplexExtensions
     Private Const CHARSEMI As System.Char = ";"c
     Private Const CHARSPACE As System.Char = " "c
 
+    Private Const MSGISSWV As System.String =
+        "Invalid standardization Style with value:"
+
     ' REF: Mystery of The French Thousands Separator
     ' https://haacked.com/archive/2020/05/17/french-thousand-separator-mystery/
     ' This is set as Public to allow for access by unit tests.
@@ -263,8 +266,6 @@ Public Module ComplexExtensions
     Private Sub ValidateStandardizationStyle(
         standardizationStyle As StandardizationStyles)
 
-        Const MSGISSWV As System.String =
-            "Invalid standardization Style with value"
         If (standardizationStyle And InvalidStandardizationStyles) <> 0 Then
             Throw New ArgumentException(
                 $"{MSGISSWV} {CInt(standardizationStyle)}")

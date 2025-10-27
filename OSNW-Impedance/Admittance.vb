@@ -30,7 +30,6 @@ Public Structure Admittance
     Const MSGCHNV As System.String = Impedance.MSGCHNV
     Const MSGCHZV As System.String = Impedance.MSGCHZV
     Const MSGCHIV As System.String = Impedance.MSGCHIV
-    '    Const MSGVMBGTZ As System.String = Impedance.MSGVMBGTZ
 
 #Region "Fields and Properties"
 
