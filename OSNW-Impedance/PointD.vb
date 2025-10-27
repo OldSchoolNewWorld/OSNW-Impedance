@@ -3,6 +3,8 @@ Option Strict On
 Option Compare Binary
 Option Infer Off
 
+' COULD THIS HAVE JUST USED SYSTEM.WINDOWS.POINT, WHICH USES DOUBLES?
+
 ''' <summary>
 ''' Represents an ordered pair of X and Y double precision coordinates that
 ''' define a point in a two-dimensional plane.
