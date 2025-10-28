@@ -503,20 +503,20 @@ Partial Public Structure Impedance
 
     End Function ' OnGEqualsY0
 
-    '''' <summary>
-    ''''  Processes one intersection found in
-    ''''  <see cref="M:InsideREqualsZ0(z0, transformations)"/>".>
-    '''' </summary>
-    '''' <param name="mainCirc">Specifies an arbitrary
-    '''' <see cref="SmithMainCircle"/> reference for calculations.</param>
-    '''' <param name="intersection">Specifies the Cartesian coordinates of one
-    '''' intersection of R- and G-circles.</param>
-    '''' <param name="transformation"> Returns a <see cref="Transformation"/>
-    '''' that can be used to match a load impedance, located at the specified
-    '''' <paramref name="intersection"/>, to match a source impedance.</param>
-    '''' <returns><c>True</c> if the proposed <see cref="Transformation"/>
-    '''' results in a conjugate match for the current instance; otherwise,
-    '''' <c>False</c>.</returns>
+    ''' <summary>
+    '''  Processes one intersection found in
+    '''  <see cref="M:InsideREqualsZ0(z0, transformations)"/>".>
+    ''' </summary>
+    ''' <param name="mainCirc">Specifies an arbitrary
+    ''' <see cref="SmithMainCircle"/> reference for calculations.</param>
+    ''' <param name="intersection">Specifies the Cartesian coordinates of one
+    ''' intersection of R- and G-circles.</param>
+    ''' <param name="transformation"> Returns a <see cref="Transformation"/>
+    ''' that can be used to match a load impedance, located at the specified
+    ''' <paramref name="intersection"/>, to match a source impedance.</param>
+    ''' <returns><c>True</c> if the proposed <see cref="Transformation"/>
+    ''' results in a conjugate match for the current instance; otherwise,
+    ''' <c>False</c>.</returns>
     Private Function InsideREqualsZ0(ByVal mainCirc As SmithMainCircle,
         ByVal intersection As OSNW.Numerics.PointD,
         ByRef transformation As Transformation) As System.Boolean
@@ -696,20 +696,20 @@ Partial Public Structure Impedance
 
     End Function ' InsideREqualsZ0
 
-    '''' <summary>
-    ''''  Processes one intersection found in
-    ''''  <see cref="M:InsideGEqualsY0(z0, transformations)"/>".>
-    '''' </summary>
-    '''' <param name="mainCirc">Specifies an arbitrary
-    '''' <see cref="SmithMainCircle"/> reference for calculations.</param>
-    '''' <param name="intersection">Specifies the Cartesian coordinates of one
-    '''' intersection of R- and G-circles.</param>
-    '''' <param name="transformation"> Returns a <see cref="Transformation"/>
-    '''' that can be used to match a load impedance, located at the specified
-    '''' <paramref name="intersection"/>, to match a source impedance.</param>
-    '''' <returns><c>True</c> if the proposed <see cref="Transformation"/>
-    '''' results in a conjugate match for the current instance; otherwise,
-    '''' <c>False</c>.</returns>
+    ''' <summary>
+    '''  Processes one intersection found in
+    '''  <see cref="M:InsideGEqualsY0(z0, transformations)"/>".>
+    ''' </summary>
+    ''' <param name="mainCirc">Specifies an arbitrary
+    ''' <see cref="SmithMainCircle"/> reference for calculations.</param>
+    ''' <param name="intersection">Specifies the Cartesian coordinates of one
+    ''' intersection of R- and G-circles.</param>
+    ''' <param name="transformation"> Returns a <see cref="Transformation"/>
+    ''' that can be used to match a load impedance, located at the specified
+    ''' <paramref name="intersection"/>, to match a source impedance.</param>
+    ''' <returns><c>True</c> if the proposed <see cref="Transformation"/>
+    ''' results in a conjugate match for the current instance; otherwise,
+    ''' <c>False</c>.</returns>
     Private Function InsideGEqualsY0(ByVal mainCirc As SmithMainCircle,
         ByVal intersection As OSNW.Numerics.PointD,
         ByRef transformation As Transformation) As System.Boolean
