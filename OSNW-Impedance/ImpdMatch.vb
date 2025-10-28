@@ -367,12 +367,10 @@ Partial Public Structure Impedance
 
     ''' <summary>
     ''' Attempts to obtain a conjugate match from the current instance (load
-    ''' impedance) to the source characteristic impedance of
-    ''' <paramref name="mainCirc"/>, when the current instance appears directly
+    ''' impedance) to the source characteristic impedance, when the current
+    ''' instance appears directly
     ''' on the R=Z0 circle.
     ''' </summary>
-    ''' <param name="mainCirc">Specifies the <see cref="SmithMainCircle"/> with
-    ''' which the current instance is associated.</param>
     ''' <param name="transformations">Specifies an array of
     ''' <see cref="Transformation"/>s that can be used to match a load impedance
     ''' to match a source impedance.</param>
@@ -382,24 +380,25 @@ Partial Public Structure Impedance
     ''' <paramref name="transformations"/>, the components to construct the
     ''' match.</returns>
     ''' <remarks>
-    ''' Z0 in <paramref name="mainCirc"/> is the characteristic impedance to
-    ''' which the current instance should be matched. It should have a practical
-    ''' value with regard to the impedance values involved.
     ''' A succcessful process might result in an empty
     ''' <paramref name="transformations"/>.
     ''' </remarks>
-    Private Function OnREqualsZ0(ByVal mainCirc As SmithMainCircle,
-        ByRef transformations As Transformation()) _
+    Private Function OnREqualsZ0(ByRef transformations As Transformation()) _
         As System.Boolean
 
+        ' Test data C: At the open circuit point on the right.
+        ' Test data D: At the center.
         ' Test data E: On R=Z0 circle, above resonance line. Only needs reactance.
         ' Test data F: On R=Z0 circle, below resonance line. Only needs reactance.
 
         Dim CurrentX As System.Double = Me.Reactance
-
         If CurrentX.Equals(0.0) Then
-            ' This happens at two places. One would have been handled as
-            ' position C. The other is at the center of the chart.
+            ' This happens at two places.
+
+            If System.Double.IsInfinity(Me.Resistance) Then
+                ' Test data C: At the open circuit point on the right.
+                Return False
+            End If
 
             ' Test data D1: At the center.
             ' Z is at the center point and already has a conjugate match.
@@ -408,27 +407,17 @@ Partial Public Structure Impedance
                     .Style = TransformationStyles.None}
             }
             Return True
+
         Else
-            ' Z is on the perimeter of the R=Z0 circle and only needs a
-            ' reactance.
-
+            ' Z is elsewhere on the perimeter of the R=Z0 circle and only needs
+            ' a reactance.
             Dim Style As TransformationStyles
-            If Me.Reactance > 0.0 Then
-
-                ' Test data E: On R=Z0 circle, above resonance line. Only needs
-                ' reactance.
+            If CurrentX > 0.0 Then
+                ' Test data E: On R=Z0 circle, above resonance line.
                 ' CCW on an R-circle needs a series capacitor.
                 Style = TransformationStyles.SeriesCap
-
-                ' Consider alternative approaches.
-                ' CW on a R-circle would need a series inductor, increasing
-                ' the inductance of an already inductive load. NO.
-                ' What about matching the equivalent admittance?
-                ' CW, or CCW, on a G-circle would never reach the matched position. NO.
-
             Else
-                ' Test data F: On R=Z0 circle, below resonance line. Only needs
-                ' reactance.
+                ' Test data F: On R=Z0 circle, below resonance line.
                 ' CW on an R-circle needs a series inductor.
                 Style = TransformationStyles.SeriesInd
             End If
@@ -468,48 +457,48 @@ Partial Public Structure Impedance
         ByRef transformations As Transformation()) _
         As System.Boolean
 
-        Dim Y0 As System.Double = 1.0 / z0
-        Dim CurrentY As Admittance = Me.ToAdmittance()
-        Dim CurrentB As System.Double = CurrentY.Susceptance
+        ' A: At the short circuit point.
+        ' D: At the center.
+        ' J: On G=Y0 circle, above resonance line. Only needs reactance.
+        ' K: On G=Y0 circle, below resonance line. Only needs reactance.
 
+        Dim CurrentB As System.Double = Me.ToAdmittance().Susceptance
         If CurrentB.Equals(0.0) Then
-            ' Z is already at the center, where Z=1+j0, and already has a
-            ' conjugate match.
-            ' THAT SHOULD HAVE ALREADY BEEN CAUGHT???
+            ' This happens at two places.
+
+            If Me.Resistance.Equals(0.0) Then
+                ' Test data A: At the short circuit point.
+                Return False
+            End If
+
+            ' Test data D: At the center.
+            ' Z is at the center point and already has a conjugate match.
             transformations = {
                 New Transformation With {
-                .Style = TransformationStyles.None}
+                    .Style = TransformationStyles.None}
             }
             Return True
-        Else
-            ' Z is on the perimeter of the G=Y0 circle and only needs a
-            ' reactance.
 
-            '            Dim DeltaB As System.Double = -CurrentB
-            '            Dim DeltaY As New Admittance(0.0, DeltaB)
-            '            Dim DeltaZ As Impedance = DeltaY.ToImpedance
+        Else
+            ' Z is elsewhere on the perimeter of the Y=G0 circle and only needs
+            ' a reactance.
+            Dim Style As TransformationStyles
             Dim DeltaZ As Impedance = New Admittance(0.0, -CurrentB).ToImpedance
             If CurrentB > 0.0 Then
-                ' K1: On G=Y0 circle, below resonance line. Only needs reactance.
-                ' K50: On G=Y0 circle, below resonance line. Only needs reactance.
+                ' Test data K: On G=Y0 circle, below resonance line.
                 ' CCW on a G-circle needs a shunt inductor.
-                transformations = {
-                    New Transformation With {
-                    .Style = TransformationStyles.ShuntInd,
-                    .Value1 = DeltaZ.Reactance}
-                }
-                Return True
+                Style = TransformationStyles.ShuntInd
             Else
-                ' J1: On G=Y0 circle, above resonance line. Only needs reactance.
-                ' J50: On G=Y0 circle, above resonance line. Only needs reactance.
+                ' Test data J: On G=Y0 circle, above resonance line.
                 ' CW on a G-circle needs a shunt capacitor.
-                transformations = {
-                    New Transformation With {
-                    .Style = TransformationStyles.ShuntCap,
+                Style = TransformationStyles.ShuntCap
+            End If
+            transformations = {
+                New Transformation With {
+                    .Style = Style,
                     .Value1 = DeltaZ.Reactance}
                 }
-                Return True
-            End If
+            Return True
         End If
 
     End Function ' OnGEqualsY0
@@ -1468,7 +1457,7 @@ Partial Public Structure Impedance
             '     H1: Inside R=Z0 circle, on line.
             '     I1: Inside R=Z0 circle, below resonance line.
             If CurrentR.Equals(Z0) Then
-                Return Me.OnREqualsZ0(mainCirc, transformations) ' E, F.
+                Return Me.OnREqualsZ0(transformations) ' E, F.
             Else
                 Return Me.InsideREqualsZ0(Z0, transformations) 'G, H, I.
             End If
