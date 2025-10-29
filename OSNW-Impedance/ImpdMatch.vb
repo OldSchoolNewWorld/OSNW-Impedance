@@ -620,6 +620,12 @@ Partial Public Structure Impedance
         ByRef transformations As Transformation()) _
         As System.Boolean
 
+        ' DEV: This development implementation is based on selection of pure
+        ' impedances. A future derivation might need to select the nearest
+        ' commonly available component values, as a practical consideration. In
+        ' that case, the math should be changed to add an impedance with actual
+        ' R/X values.
+
         ' The first move will be to the intersection of the R=Z0 circle and the
         ' G-circle that includes the load impedance. From inside the R=Z0
         ' circle, there are two ways to proceed:
@@ -823,6 +829,12 @@ Partial Public Structure Impedance
         ByRef transformations As Transformation()) _
         As System.Boolean
 
+        ' DEV: This development implementation is based on selection of pure
+        ' impedances. A future derivation might need to select the nearest
+        ' commonly available component values, as a practical consideration. In
+        ' that case, the math should be changed to add an impedance with actual
+        ' R/X values.
+
         ' The first move will be to the intersection of the G=Y0 circle and the
         ' R-circle that contains the load impedance. From inside the G=Y0
         ' circle, there are two ways to proceed:
@@ -938,6 +950,12 @@ Partial Public Structure Impedance
         ByRef transformations As Transformation()) _
         As System.Boolean
 
+        ' DEV: This development implementation is based on selection of pure
+        ' impedances. A future derivation might need to select the nearest
+        ' commonly available component values, as a practical consideration. In
+        ' that case, the math should be changed to add an impedance with actual
+        ' R/X values.
+
         Dim Y As Admittance = Me.ToAdmittance()
 
         ' Move CW on the G-circle to reach the R=Z0 circle. Use a shunt
@@ -1022,6 +1040,12 @@ Partial Public Structure Impedance
     Private Function InTopCenterCCW(ByVal mainCirc As SmithMainCircle,
         ByRef transformations As Transformation()) _
         As System.Boolean
+
+        ' DEV: This development implementation is based on selection of pure
+        ' impedances. A future derivation might need to select the nearest
+        ' commonly available component values, as a practical consideration. In
+        ' that case, the math should be changed to add an impedance with actual
+        ' R/X values.
 
         ' Move CCW on the R-circle to reach the G=Y0 circle. Use a
         ' series capacitor. Two choices where to end.
@@ -1110,6 +1134,12 @@ Partial Public Structure Impedance
         ByRef transformations As Transformation()) _
         As System.Boolean
 
+        ' DEV: This development implementation is based on selection of pure
+        ' impedances. A future derivation might need to select the nearest
+        ' commonly available component values, as a practical consideration. In
+        ' that case, the math should be changed to add an impedance with actual
+        ' R/X values.
+
         ' Move CW on the G-circle to reach the R=Z0 circle. Use a shunt
         ' capacitor. Two choices where to end.
         ' Would there ever be a case to prefer the first or second
@@ -1162,6 +1192,12 @@ Partial Public Structure Impedance
     Private Function InBottomCenterCW(ByVal mainCirc As SmithMainCircle,
         ByRef transformations As Transformation()) _
         As System.Boolean
+
+        ' DEV: This development implementation is based on selection of pure
+        ' impedances. A future derivation might need to select the nearest
+        ' commonly available component values, as a practical consideration. In
+        ' that case, the math should be changed to add an impedance with actual
+        ' R/X values.
 
         ' Move CW on the R-circle to reach the G=Y0 circle. Use a series
         ' inductor. Two choices where to end.
@@ -1247,6 +1283,12 @@ Partial Public Structure Impedance
         As System.Boolean
 
         Dim Y As Admittance = Me.ToAdmittance()
+
+        ' DEV: This development implementation is based on selection of pure
+        ' impedances. A future derivation might need to select the nearest
+        ' commonly available component values, as a practical consideration. In
+        ' that case, the math should be changed to add an impedance with actual
+        ' R/X values.
 
         ' Move CCW on the G-circle to reach the R=Z0 circle. Use a
         ' shunt inductor. Two choices where to end.
@@ -1335,6 +1377,12 @@ Partial Public Structure Impedance
         ByRef transformations As Transformation()) _
         As System.Boolean
 
+        ' DEV: This development implementation is based on selection of pure
+        ' impedances. A future derivation might need to select the nearest
+        ' commonly available component values, as a practical consideration. In
+        ' that case, the math should be changed to add an impedance with actual
+        ' R/X values.
+
         ' Move CW on the G-circle to reach the R=Z0 circle. Use a shunt
         ' capacitor. Two choices where to end.
         ' Would there ever be a case to prefer the first or second
@@ -1391,6 +1439,12 @@ Partial Public Structure Impedance
         ByRef transformations As Transformation()) _
         As System.Boolean
 
+        ' DEV: This development implementation is based on selection of pure
+        ' impedances. A future derivation might need to select the nearest
+        ' commonly available component values, as a practical consideration. In
+        ' that case, the math should be changed to add an impedance with actual
+        ' R/X values.
+
         ' Assign the outer circle.
         Dim MainCirc As New SmithMainCircle(4.0, 5.0, 4.0, z0) ' Test data.
         'Dim MainCirc As New SmithMainCircle(1.0, 1.0, 1.0, z0) ' Arbitrary.
@@ -1428,6 +1482,12 @@ Partial Public Structure Impedance
     Public Function TrySelectMatchLayout(ByVal mainCirc As SmithMainCircle,
         ByRef transformations As Transformation()) _
         As System.Boolean
+
+        ' DEV: This development implementation is based on selection of pure
+        ' impedances. A future derivation might need to select the nearest
+        ' commonly available component values, as a practical consideration. In
+        ' that case, the math should be changed to add an impedance with actual
+        ' R/X values.
 
         ' The terminology here relates to solving conjugate matches on a Smith
         ' Chart.
