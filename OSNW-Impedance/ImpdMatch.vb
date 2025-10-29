@@ -380,6 +380,9 @@ Partial Public Structure Impedance
     ''' <paramref name="transformations"/>, the components to construct the
     ''' match.</returns>
     ''' <remarks>
+    ''' <para> An assumption is made that the calling code has determined that
+    ''' the current instance lies in the expected position. Failure to meet that
+    ''' assumption could result in an invalid or incomplete result. </para>
     ''' A succcessful process might result in an empty
     ''' <paramref name="transformations"/>.
     ''' </remarks>
@@ -447,6 +450,9 @@ Partial Public Structure Impedance
     ''' <paramref name="transformations"/>, the components to construct the
     ''' match.</returns>
     ''' <remarks>
+    ''' <para> An assumption is made that the calling code has determined that
+    ''' the current instance lies in the expected position. Failure to meet that
+    ''' assumption could result in an invalid or incomplete result. </para>
     ''' <paramref name="z0"/> is the characteristic impedance to which the
     ''' current instance should be matched. It should have a practical value
     ''' with regard to the impedance values involved.
@@ -503,20 +509,25 @@ Partial Public Structure Impedance
 
     End Function ' OnGEqualsY0
 
-    ''' <summary>
-    '''  Processes one intersection found in
-    '''  <see cref="M:InsideREqualsZ0(z0, transformations)"/>".>
-    ''' </summary>
-    ''' <param name="mainCirc">Specifies an arbitrary
-    ''' <see cref="SmithMainCircle"/> reference for calculations.</param>
-    ''' <param name="intersection">Specifies the Cartesian coordinates of one
-    ''' intersection of R- and G-circles.</param>
-    ''' <param name="transformation"> Returns a <see cref="Transformation"/>
-    ''' that can be used to match a load impedance, located at the specified
-    ''' <paramref name="intersection"/>, to match a source impedance.</param>
-    ''' <returns><c>True</c> if the proposed <see cref="Transformation"/>
-    ''' results in a conjugate match for the current instance; otherwise,
-    ''' <c>False</c>.</returns>
+    '''' <summary>
+    ''''  Processes one intersection found in
+    ''''  <see cref="M:InsideREqualsZ0(z0, transformations)"/>".>
+    '''' </summary>
+    '''' <param name="mainCirc">Specifies an arbitrary
+    '''' <see cref="SmithMainCircle"/> reference for calculations.</param>
+    '''' <param name="intersection">Specifies the Cartesian coordinates of one
+    '''' intersection of R- and G-circles.</param>
+    '''' <param name="transformation"> Returns a <see cref="Transformation"/>
+    '''' that can be used to match a load impedance, located at the specified
+    '''' <paramref name="intersection"/>, to match a source impedance.</param>
+    '''' <returns><c>True</c> if the proposed <see cref="Transformation"/>
+    '''' results in a conjugate match for the current instance; otherwise,
+    '''' <c>False</c>.</returns>
+    '''' <remarks>
+    '''' <para> An assumption is made that the calling code has determined that
+    '''' the current instance lies in the expected position. Failure to meet that
+    '''' assumption could result in an invalid or incomplete result. </para>
+    '''' </remarks>
     Private Function InsideREqualsZ0(ByVal mainCirc As SmithMainCircle,
         ByVal intersection As OSNW.Numerics.PointD,
         ByRef transformation As Transformation) As System.Boolean
@@ -524,8 +535,8 @@ Partial Public Structure Impedance
         ' DEV: This development implementation is based on selection of pure
         ' impedances. A future derivation might need to select the nearest
         ' commonly available component values, as a practical consideration. In
-        ' that case, the math should be changed to add an impedance/admittance
-        ' with actual R/X values.
+        ' that case, the math should be changed to add an impedance with actual
+        ' R/X values.
 
         Try
 
@@ -535,7 +546,7 @@ Partial Public Structure Impedance
             Dim DiffImageB As System.Double =
                 ImageY.Susceptance - Me.ToAdmittance().Susceptance
 
-            ' Second move.
+            ' Second move, to the center.
             Dim ImageZ As Impedance =
                 mainCirc.GetZFromPlot(intersection.X, intersection.Y)
             Dim DiffFinalX As System.Double = -ImageZ.Reactance
@@ -545,7 +556,7 @@ Partial Public Structure Impedance
             If intersection.Y > mainCirc.GridCenterY Then
                 ' Intersection above the resonance line.
 
-                ' Use a shunt inductor to move CCW on the G-circle to the R=Z0
+                ' Use a shunt inductor to move CCW the G-circle to the R=Z0
                 ' circle, then use a series capacitor to move CCW on the R=Z0
                 ' circle to the center.
                 transformation = New Transformation With {
@@ -596,6 +607,9 @@ Partial Public Structure Impedance
     ''' <paramref name="transformations"/>, the components to construct the
     ''' match.</returns>
     ''' <remarks>
+    ''' <para> An assumption is made that the calling code has determined that
+    ''' the current instance lies in the expected position. Failure to meet that
+    ''' assumption could result in an invalid or incomplete result. </para>
     ''' <paramref name="z0"/> is the characteristic impedance to which the
     ''' current instance should be matched. It should have a practical value
     ''' with regard to the impedance values involved.
@@ -607,7 +621,7 @@ Partial Public Structure Impedance
         As System.Boolean
 
         ' The first move will be to the intersection of the R=Z0 circle and the
-        ' G-circle that contains the load impedance. From inside the R=Z0
+        ' G-circle that includes the load impedance. From inside the R=Z0
         ' circle, there are two ways to proceed:
         '  - Use a shunt capacitor to move CW on the G-circle to the R=Z0
         '  circle, then use a series inductor to move CW on the R=Z0 circle to
@@ -618,6 +632,8 @@ Partial Public Structure Impedance
         ' Would there ever be a reason to prefer one approach over the other?
         '  - To favor high- or low-pass?
         '  - To favor the shortest first path?
+        '  - To favor availability of suitable components for the frequency of
+        '      interest?
 
         ' Determine the circles and their intersections.
         'Dim MainCirc As New SmithMainCircle(4.0, 5.0, 4.0, z0) ' Test data.
@@ -710,6 +726,11 @@ Partial Public Structure Impedance
     ''' <returns><c>True</c> if the proposed <see cref="Transformation"/>
     ''' results in a conjugate match for the current instance; otherwise,
     ''' <c>False</c>.</returns>
+    ''' <remarks>
+    ''' <para> An assumption is made that the calling code has determined that
+    ''' the current instance lies in the expected position. Failure to meet that
+    ''' assumption could result in an invalid or incomplete result. </para>
+    ''' </remarks>
     Private Function InsideGEqualsY0(ByVal mainCirc As SmithMainCircle,
         ByVal intersection As OSNW.Numerics.PointD,
         ByRef transformation As Transformation) As System.Boolean
@@ -717,8 +738,8 @@ Partial Public Structure Impedance
         ' DEV: This development implementation is based on selection of pure
         ' impedances. A future derivation might need to select the nearest
         ' commonly available component values, as a practical consideration. In
-        ' that case, the math should be changed to add an impedance/admittance
-        ' with actual R/X values.
+        ' that case, the math should be changed to add an impedance with actual
+        ' R/X values.
 
         Try
 
@@ -728,7 +749,7 @@ Partial Public Structure Impedance
             Dim DiffImageX As System.Double =
                 ImageZ.Reactance - Me.Reactance
 
-            ' Second move.
+            ' Second move, to the center.
             Dim ImageY As Admittance =
                 mainCirc.GetYFromPlot(intersection.X, intersection.Y)
             Dim DiffFinalY As System.Double = -ImageY.Susceptance
@@ -789,6 +810,9 @@ Partial Public Structure Impedance
     ''' <paramref name="transformations"/>, the components to construct the
     ''' match.</returns>
     ''' <remarks>
+    ''' <para> An assumption is made that the calling code has determined that
+    ''' the current instance lies in the expected position. Failure to meet that
+    ''' assumption could result in an invalid or incomplete result. </para>
     ''' Z0 in <paramref name="mainCirc"/> is the characteristic impedance to
     ''' which the current instance should be matched. It should have a practical
     ''' value with regard to the impedance values involved.
@@ -902,6 +926,9 @@ Partial Public Structure Impedance
     ''' Also returns, by reference in <paramref name="transformations"/>, the
     ''' components to construct the match.</returns>
     ''' <remarks>
+    ''' <para> An assumption is made that the calling code has determined that
+    ''' the current instance lies in the expected position. Failure to meet that
+    ''' assumption could result in an invalid or incomplete result. </para>
     ''' Z0 in <paramref name="mainCirc"/> is the characteristic impedance to
     ''' which the current instance should be matched. It should have a practical
     ''' value with regard to the impedance values involved. A succcessful
@@ -984,6 +1011,9 @@ Partial Public Structure Impedance
     ''' Also returns, by reference in <paramref name="transformations"/>, the
     ''' components to construct the match.</returns>
     ''' <remarks>
+    ''' <para> An assumption is made that the calling code has determined that
+    ''' the current instance lies in the expected position. Failure to meet that
+    ''' assumption could result in an invalid or incomplete result. </para>
     ''' Z0 in <paramref name="mainCirc"/> is the characteristic impedance to
     ''' which the current instance should be matched. It should have a practical
     ''' value with regard to the impedance values involved. A succcessful
@@ -1066,6 +1096,9 @@ Partial Public Structure Impedance
     ''' <paramref name="transformations"/>, the components to construct the
     ''' match.</returns>
     ''' <remarks>
+    ''' <para> An assumption is made that the calling code has determined that
+    ''' the current instance lies in the expected position. Failure to meet that
+    ''' assumption could result in an invalid or incomplete result. </para>
     ''' <paramref name="z0"/> is the characteristic impedance to which the
     ''' current instance should be matched. It should have a practical value
     ''' with regard to the impedance values involved.
@@ -1118,6 +1151,9 @@ Partial Public Structure Impedance
     ''' Also returns, by reference in <paramref name="transformations"/>, the
     ''' components to construct the match.</returns>
     ''' <remarks>
+    ''' <para> An assumption is made that the calling code has determined that
+    ''' the current instance lies in the expected position. Failure to meet that
+    ''' assumption could result in an invalid or incomplete result. </para>
     ''' Z0 in <paramref name="mainCirc"/> is the characteristic impedance to
     ''' which the current instance should be matched. It should have a practical
     ''' value with regard to the impedance values involved. A succcessful
@@ -1198,6 +1234,9 @@ Partial Public Structure Impedance
     ''' Also returns, by reference in <paramref name="transformations"/>, the
     ''' components to construct the match.</returns>
     ''' <remarks>
+    ''' <para> An assumption is made that the calling code has determined that
+    ''' the current instance lies in the expected position. Failure to meet that
+    ''' assumption could result in an invalid or incomplete result. </para>
     ''' Z0 in <paramref name="mainCirc"/> is the characteristic impedance to
     ''' which the current instance should be matched. It should have a practical
     ''' value with regard to the impedance values involved. A succcessful
@@ -1282,6 +1321,9 @@ Partial Public Structure Impedance
     ''' <paramref name="transformations"/>, the components to construct the
     ''' match.</returns>
     ''' <remarks>
+    ''' <para> An assumption is made that the calling code has determined that
+    ''' the current instance lies in the expected position. Failure to meet that
+    ''' assumption could result in an invalid or incomplete result. </para>
     ''' <paramref name="z0"/> is the characteristic impedance to which the
     ''' current instance should be matched. It should have a practical value
     ''' with regard to the impedance values involved.
@@ -1336,6 +1378,9 @@ Partial Public Structure Impedance
     ''' <paramref name="transformations"/>, the components to construct the
     ''' match.</returns>
     ''' <remarks>
+    ''' <para> An assumption is made that the calling code has determined that
+    ''' the current instance lies in the expected position. Failure to meet that
+    ''' assumption could result in an invalid or incomplete result. </para>
     ''' <paramref name="z0"/> is the characteristic impedance to which the
     ''' current instance should be matched. It should have a practical value
     ''' with regard to the impedance values involved.
