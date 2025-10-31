@@ -4,6 +4,8 @@ Option Compare Binary
 Option Infer Off
 
 Imports System.Globalization
+Imports System.Net.Security
+Imports System.Runtime
 Imports OSNW.Numerics
 Imports Xunit
 Imports OsnwImpd = OSNW.Numerics.Impedance
@@ -175,7 +177,174 @@ Namespace DevelopmentTests
 
     End Class ' TestCultureStuff
 
-End Namespace ' DevTests
+    Public Class TryMatchArbitraryTests
+
+        Public Function MatchArbitrary(z0 As System.Double, loadZ As Impedance,
+                                       targetZ As Impedance) As System.Boolean
+
+            ' REF: Smith Chart Full Presentation
+            '   https://amris.mbi.ufl.edu/wordpress/files/2021/01/SmithChart_FullPresentation.pdf
+
+            ' Set up stuff that may be useful.
+            Dim Y0 As Double = 1.0 / z0
+            Dim LoadR As Double = loadZ.Resistance
+            Dim LoadX As Double = loadZ.Reactance
+            Dim LoadY As Admittance = loadZ.ToAdmittance()
+            Dim LoadG As Double = LoadY.Conductance
+            Dim LoadB As Double = LoadY.Susceptance
+            Dim TargetR As Double = targetZ.Resistance
+            Dim TargetX As Double = targetZ.Reactance
+            Dim TargetY As Admittance = targetZ.ToAdmittance()
+            Dim TargetG As Double = TargetY.Conductance
+            Dim TargetB As Double = TargetY.Susceptance
+
+            ' Determine the circles and their intersections.
+            'Dim MainCirc As New SmithMainCircle(4.0, 5.0, 4.0, z0) ' Test data.
+            Dim MainCirc As New SmithMainCircle(1.0, 1.0, 1.0, z0) ' Arbitrary.
+            Dim CircR As New RCircle(MainCirc, z0)
+            Dim CircG As New GCircle(MainCirc, Y0)
+            Dim Intersections _
+                As System.Collections.Generic.List(Of OSNW.Numerics.PointD) =
+                     GenericCircle.GetIntersections(CircR, CircG)
+
+            ' THESE CHECKS CAN BE DELETED/COMMENTED AFTER THE GetIntersections()
+            ' RESULTS ARE KNOWN TO BE CORRECT.
+            ' There should now be two intersection points, with one above, and one
+            ' below, the resonance line.
+            If Intersections.Count <> 2 Then
+                'Dim CaughtBy As System.Reflection.MethodBase =
+                '    System.Reflection.MethodBase.GetCurrentMethod
+                Throw New System.ApplicationException(Impedance.MSGIIC)
+            End If
+            ' The X values should match. Check for reasonable equality when using
+            ' floating point values.
+            If Not Impedance.EqualEnough(Intersections(0).X, Intersections(0).X) Then
+                'Dim CaughtBy As System.Reflection.MethodBase =
+                '    System.Reflection.MethodBase.GetCurrentMethod
+                Throw New System.ApplicationException("X values do not match.")
+            End If
+            ' The Y values should be the same distance above and below the
+            ' resonance line. Check for reasonable equality when using floating
+            ' point values.
+            Dim Offset0 As System.Double =
+            System.Math.Abs(Intersections(0).Y - MainCirc.GridCenterY)
+            Dim Offset1 As System.Double =
+            System.Math.Abs(Intersections(1).Y - MainCirc.GridCenterY)
+            If Not Impedance.EqualEnough(Offset1, Offset0) Then
+                'Dim CaughtBy As System.Reflection.MethodBase =
+                '    System.Reflection.MethodBase.GetCurrentMethod
+                Throw New System.ApplicationException("Y offsets do not match.")
+            End If
+
+
+
+
+
+
+            '' Move CW or CCW on the TargetG circle to the LoadR circle.
+            'Dim ImageR As System.Double = LoadR
+            'Dim ImageX As System.Double =???
+            'Dim ImageG As System.Double = TargetG
+            'Dim ImageB As System.Double =???
+
+
+            ' There are now two intersection points, with one above and one below
+            ' the resonance line. The X values match. The Y values are the same
+            ' distance above and below the resonance line.
+
+            ' Expect two valid solutions, one to each intersection.
+            Dim Transformation0 As Transformation
+            If Not Me.InsideGEqualsY0(
+                MainCirc, Intersections(0), Transformation0) Then
+
+                'Dim CaughtBy As System.Reflection.MethodBase =
+                '    System.Reflection.MethodBase.GetCurrentMethod
+                Throw New System.ApplicationException("Transformation 0 failed.")
+            End If
+            Dim Transformation1 As Transformation
+            If Not Me.InsideGEqualsY0(
+                MainCirc, Intersections(1), Transformation1) Then
+
+                'Dim CaughtBy As System.Reflection.MethodBase =
+                '    System.Reflection.MethodBase.GetCurrentMethod
+                Throw New System.ApplicationException("Transformation 1 failed.")
+            End If
+
+            ' THESE CHECKS CAN BE DELETED/COMMENTED AFTER THE Transformation
+            ' RESULTS ARE KNOWN TO BE CORRECT.
+            ' There should now be two valid solutions that match to Z=Z0+j0.0.
+            ' Check first solution.
+            If Not ValidateTransformation(MainCirc, Transformation0) Then
+                Return False
+            End If
+            ' Check second solution.
+            If Not ValidateTransformation(MainCirc, Transformation1) Then
+                Return False
+            End If
+
+            ' On getting this far,
+            Return True
+
+        End Function ' MatchArbitrary
+    xxxx
+
+
+        '<InlineData(  Z0,        R,         X)> ' Model
+        '<InlineData( 1.0,   0.0000,    0.0000)> ' A: At the short circuit point. Omit - covered by B.
+        '<InlineData( 1.0,   0.0000,     1/2.0)> ' B: Anywhere else on the perimeter. R=0.0.
+        '<InlineData( 1.0,      INF,    0.0000)> ' C: At the open circuit point on the right.
+        '<InlineData( 1.0,   1.0000,    0.0000)> ' D1: At the center.
+        '<InlineData(75.0,  75.0000,    0.0000)> ' D75: At the center. Z0=75.
+        '<InlineData( 1.0,   1.0000,    1.0000)> ' E1: On R=Z0 circle, above resonance line. Only needs reactance.
+        '<InlineData(50.0,  50.0000,   50.0000)> ' E50: On R=Z0 circle, above resonance line. Only needs reactance. Z0=50.
+        '<InlineData( 1.0,   1.0000,   -2.0000)> ' F1: On R=Z0 circle, below resonance line. Only needs reactance.
+        '<InlineData(50.0,  50.0000, -100.0000)> ' F50: On R=Z0 circle, below resonance line. Only needs reactance. Z0=50.
+        '<InlineData( 1.0,   2.0000,     1/2.0)> ' G1: Inside R=Z0 circle, above resonance line.
+        '<InlineData(50.0, 100.0000,   25.0000)> ' G50: Inside R=Z0 circle, above resonance line. Z0=50.
+        '<InlineData( 1.0,   3.0000,    0.0000)> ' H1: Inside R=Z0 circle, on line.
+        '<InlineData(50.0, 150.0000,    0.0000)> ' H50: Inside R=Z0 circle, on line. Z0=50.
+        '<InlineData( 1.0,   2.0000,   -2.0000)> ' I1: Inside R=Z0 circle, below resonance line.
+        '<InlineData(50.0, 100.0000, -100.0000)> ' I50: Inside R=Z0 circle, below resonance line. Z0=50.
+        '<InlineData( 1.0,    1/2.0,     1/2.0)> ' J1: On G=Y0 circle, above resonance line. Only needs reactance.
+        '<InlineData(50.0,  25.0000,   25.0000)> ' J50: On G=Y0 circle, above resonance line. Only needs reactance. Z0=50.
+        '<InlineData( 1.0,    1/2.0,    -1/2.0)> ' K1: On G=Y0 circle, below resonance line. Only needs reactance.
+        '<InlineData(50.0,  25.0000,  -25.0000)> ' K50: On G=Y0 circle, below resonance line. Only needs reactance. Z0=50.
+        '<InlineData( 1.0,    1/3.0,     1/3.0)> ' L1: Inside G=Y0 circle, above resonance line.
+        '<InlineData(75.0,  25.0000,   25.0000)> ' L75: Inside G=Y0 circle, above resonance line. Z0=75.
+        '<InlineData( 1.0,    1/3.0,    0.0000)> ' M1: Inside G=Y0 circle, on line.
+        '<InlineData(75.0,  25.0000,    0.0000)> ' M75: Inside G=Y0 circle, on line. Z0=75.
+        '<InlineData( 1.0,    1/2.0,    -1/3.0)> ' N1: Inside G=Y0 circle, below line.
+        '<InlineData(75.0,  37.5000,  -25.0000)> ' N75: Inside G=Y0 circle, below line. Z0=75.
+        '<InlineData( 1.0,   0.2000,    1.4000)> ' O1: In the top center.
+        '<InlineData(50.0,  10.0000,   70.0000)> ' O50: In the top center. Z0=50.
+        '<InlineData( 1.0,   0.4000,   -0.8000)> ' P1: In the bottom center.
+        '<InlineData(50.0,  20.0000,  -40.0000)> ' P50: In the bottom center. Z0=50.
+        '<InlineData( 1.0,  -0.0345,    0.4138)> ' Q: Outside of main circle. Invalid.
+        '<InlineData( 1.0,  -2.0000,       999)> ' R: NormR<=0. Invalid.
+
+
+
+        '<InlineData( 1.0,    1/3.0,     1/3.0)> ' L1: Inside G=Y0 circle, above resonance line.
+        '<InlineData(75.0,  25.0000,   25.0000)> ' L75: Inside G=Y0 circle, above resonance line. Z0=75.
+        '<InlineData( 1.0,    1/3.0,    0.0000)> ' M1: Inside G=Y0 circle, on line.
+        '<InlineData(75.0,  25.0000,    0.0000)> ' M75: Inside G=Y0 circle, on line. Z0=75.
+
+        <Theory>
+        <InlineData(1, 1 / 3.0, 1 / 3.0, 1 / 3.0, 0.0000)> ' L1 to M1.
+        <InlineData(75, 25.0, 25.0, 25.0, 0.0000)> ' L75 to M75.
+        Sub TestMatchArbitrary(z0 As Double, loadr As Double, loadX As Double, targetR As Double, targetX As Double)
+
+            Dim Y0 As Double = 1.0 / z0
+            Dim loadZ As Impedance = New Impedance(loadr, loadX)
+            Dim targetz As Impedance = New Impedance(targetR, targetX)
+
+            Assert.True(MatchArbitrary(z0, loadZ, targetz))
+
+        End Sub
+
+    End Class ' TestMatchArbitrary
+
+End Namespace ' DevelopmentTests
 
 Namespace ToStringTests
 

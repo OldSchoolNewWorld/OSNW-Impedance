@@ -11,10 +11,10 @@ Option Infer Off
 ' impedance. It is not intended to select specific capacitance or inductance
 ' values. The goal is to be able to lay out a single-element, or an L-section,
 ' and select a reactance value for each component. Those reactance values could
-' then be used to select appropriate component values based on frequency.
+' then be used to select appropriate component values, based on frequency.
 
 ' The comments here relate to solving conjugate matches on a Smith Chart that
-' has a horizontal resonance line, with R=0 on the left.
+' has a horizontal resonance line, with R=0 at the left.
 
 ' Smith-Chart - University of Utah
 ' https://my.ece.utah.edu/~ece5321/ZY_chart.pdf
@@ -59,11 +59,11 @@ Option Infer Off
 Public Enum TransformationStyles
 
     ''' <summary>
-    ''' The default value.
+    ''' The default value. No transformation takes place.
     ''' </summary>
     None
 
-    ' Define single-element arrangements.
+    ' Define the four single-element arrangements.
 
     ''' <summary>
     ''' Source &lt;-- ShuntCap &lt;-- Load
@@ -132,7 +132,7 @@ Public Enum TransformationStyles
     '
     '
     ' Futures could include the addition of the ability to insert:
-    '   PI, T, M, LC band-pass, and LC notch filter sections.
+    '   PI, T, LC series/tank band pass, LC notch, and M filter sections.
     '   Shunt or series, parallel tank or series-resonant, sections to construct
     '     band-pass or notch filters.
     '   Feedline segments to cause impedance rotation or quarter-wave impedance
@@ -150,7 +150,7 @@ End Enum ' TransformationStyles
 Public Structure Transformation
 
     ''' <summary>
-    ''' 
+    ''' Specifies the transformation style to be used.
     ''' </summary>
     Public Style As TransformationStyles
 
