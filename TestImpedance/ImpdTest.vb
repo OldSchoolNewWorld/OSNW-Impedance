@@ -3,9 +3,12 @@ Option Strict On
 Option Compare Binary
 Option Infer Off
 
+Imports System.Data
 Imports System.Globalization
+Imports System.Net.Mime.MediaTypeNames
 Imports System.Net.Security
 Imports System.Runtime
+Imports ImpdTest.GeometryTests
 Imports OSNW.Numerics
 Imports Xunit
 Imports OsnwImpd = OSNW.Numerics.Impedance
@@ -179,14 +182,39 @@ Namespace DevelopmentTests
 
     Public Class TryMatchArbitraryTests
 
+        ''' <summary>
+        ''' PROCESSES ONE INTERSECTION.
+        ''' </summary>
+        ''' <param name="mainCirc">xxxxxxxxxx</param>
+        ''' <param name="loadZ">xxxxxxxxxx</param>
+        ''' <param name="intersection">xxxxxxxxxx</param>
+        ''' <returns>xxxxxxxxxx</returns>
+        Private Function GetMatchArbitraryImageDeltaB(
+            ByVal mainCirc As SmithMainCircle, ByVal loadZ As Impedance,
+            ByVal intersection As OSNW.Numerics.PointD) As System.Double
+
+            Dim ImageLocX As System.Double = intersection.X
+            Dim ImageLocY As System.Double = intersection.Y
+            '            Dim ImageZ As Impedance =
+            '                mainCirc.GetZFromPlot(ImageLocX, ImageLocY)
+            Dim ImageY As Admittance =
+                mainCirc.GetYFromPlot(ImageLocX, ImageLocY)
+            Dim DeltaB As System.Double =
+                ImageY.Susceptance - loadZ.ToAdmittance().Susceptance
+            Return DeltaB
+        End Function ' GetMatchArbitraryImageDeltaB
+
+
+
+
         Public Function MatchArbitrary(z0 As System.Double, loadZ As Impedance,
                                        targetZ As Impedance) As System.Boolean
 
-            ' REF: Smith Chart Full Presentation
-            '   https://amris.mbi.ufl.edu/wordpress/files/2021/01/SmithChart_FullPresentation.pdf
+            ' REF: Smith Chart Full Presentation, page 26.
+            ' https://amris.mbi.ufl.edu/wordpress/files/2021/01/SmithChart_FullPresentation.pdf
 
-            ' Set up stuff that may be useful.
-            Dim Y0 As Double = 1.0 / z0
+            ' Set up useful values.
+            'Dim Y0 As Double = 1.0 / z0
             Dim LoadR As Double = loadZ.Resistance
             Dim LoadX As Double = loadZ.Reactance
             Dim LoadY As Admittance = loadZ.ToAdmittance()
@@ -196,13 +224,15 @@ Namespace DevelopmentTests
             Dim TargetX As Double = targetZ.Reactance
             Dim TargetY As Admittance = targetZ.ToAdmittance()
             Dim TargetG As Double = TargetY.Conductance
-            Dim TargetB As Double = TargetY.Susceptance
+            'Dim TargetB As Double = TargetY.Susceptance
+
+            ' The first move is CW or CCW on the LoadG circle to the TargetR circle.
 
             ' Determine the circles and their intersections.
             'Dim MainCirc As New SmithMainCircle(4.0, 5.0, 4.0, z0) ' Test data.
             Dim MainCirc As New SmithMainCircle(1.0, 1.0, 1.0, z0) ' Arbitrary.
-            Dim CircR As New RCircle(MainCirc, z0)
-            Dim CircG As New GCircle(MainCirc, Y0)
+            Dim CircG As New GCircle(MainCirc, LoadG)
+            Dim CircR As New RCircle(MainCirc, TargetR)
             Dim Intersections _
                 As System.Collections.Generic.List(Of OSNW.Numerics.PointD) =
                      GenericCircle.GetIntersections(CircR, CircG)
@@ -227,58 +257,127 @@ Namespace DevelopmentTests
             ' resonance line. Check for reasonable equality when using floating
             ' point values.
             Dim Offset0 As System.Double =
-            System.Math.Abs(Intersections(0).Y - MainCirc.GridCenterY)
+                System.Math.Abs(Intersections(0).Y - MainCirc.GridCenterY)
             Dim Offset1 As System.Double =
-            System.Math.Abs(Intersections(1).Y - MainCirc.GridCenterY)
+                System.Math.Abs(Intersections(1).Y - MainCirc.GridCenterY)
             If Not Impedance.EqualEnough(Offset1, Offset0) Then
                 'Dim CaughtBy As System.Reflection.MethodBase =
                 '    System.Reflection.MethodBase.GetCurrentMethod
                 Throw New System.ApplicationException("Y offsets do not match.")
             End If
 
-
-
-
-
-
-            '' Move CW or CCW on the TargetG circle to the LoadR circle.
-            'Dim ImageR As System.Double = LoadR
-            'Dim ImageX As System.Double =???
-            'Dim ImageG As System.Double = TargetG
-            'Dim ImageB As System.Double =???
-
-
             ' There are now two intersection points, with one above and one below
             ' the resonance line. The X values match. The Y values are the same
             ' distance above and below the resonance line.
 
             ' Expect two valid solutions, one to each intersection.
-            Dim Transformation0 As Transformation
-            If Not Me.InsideGEqualsY0(
-                MainCirc, Intersections(0), Transformation0) Then
+            ' Move CW or CCW on the LoadG circle to the LoadR circle.
 
+            ' Set up useful values.
+            Dim DeltaB As System.Double
+            Dim DeltaY As Admittance
+            Dim DeltaZ As Impedance
+            Dim ImageZ As Impedance
+            Dim ImageX As System.Double
+            Dim DeltaX As System.Double
+            Dim Style As TransformationStyles
+            'Dim ImageR As System.Double = TargetR
+            'Dim ImageY As New Admittance(999, 999)
+            'Dim ImageG As System.Double = TargetG
+            'Dim ImageB As System.Double = 999
+
+            DeltaB = GetMatchArbitraryImageDeltaB(MainCirc, loadZ, Intersections(1))
+            DeltaY = New Admittance(0, DeltaB)
+            DeltaZ = DeltaY.ToImpedance
+            ImageZ = Impedance.AddShuntImpedance(loadZ, DeltaZ)
+            ImageX = ImageZ.Reactance
+            DeltaX = TargetX - ImageX
+
+            If Intersections(1).Y > MainCirc.GridCenterY Then
+                ' CCW on a G-circle needs a shunt inductor
+                ' CCW on an R-circle needs a series capacitor
+                Style = TransformationStyles.ShuntIndSeriesCap
+            ElseIf Intersections(1).Y < MainCirc.GridCenterY Then
+                ' CW on a G-circle needs a shunt capacitor
+                ' CW on an R-circle needs a series inductor
+                Style = TransformationStyles.ShuntCapSeriesInd
+            Else ' Intersections(1).Y = MainCirc.GridCenterY
+                '
+                '
+                '
+                ' Where might this happen? Account for special cases. Maybe if the
+                ' load and target are on the R=Z0 and G=Y0 circles?
+                '
                 'Dim CaughtBy As System.Reflection.MethodBase =
                 '    System.Reflection.MethodBase.GetCurrentMethod
-                Throw New System.ApplicationException("Transformation 0 failed.")
+                Throw New System.ApplicationException("Intersections(0).Y = 0.0")
+                '
+                '
+                '
             End If
-            Dim Transformation1 As Transformation
-            If Not Me.InsideGEqualsY0(
-                MainCirc, Intersections(1), Transformation1) Then
+            Dim Transformation1 As New Transformation With {
+                .Style = Style,
+                .Value1 = DeltaZ.Reactance,
+                .Value2 = DeltaX}
 
-                'Dim CaughtBy As System.Reflection.MethodBase =
-                '    System.Reflection.MethodBase.GetCurrentMethod
-                Throw New System.ApplicationException("Transformation 1 failed.")
-            End If
+            'If Not Me.InsideGEqualsY0(
+            '    MainCirc, Intersections(0), Transformation0) Then
+
+            '    'Dim CaughtBy As System.Reflection.MethodBase =
+            '    '    System.Reflection.MethodBase.GetCurrentMethod
+            '    Throw New System.ApplicationException("Transformation 0 failed.")
+            'End If
+
+            'DeltaB = GetMatchArbitraryImageDeltaB(MainCirc, loadZ, Intersections(1))
+            'If Intersections(1).Y > 0.0 Then
+            '    ' CW    | R-circle | series inductor
+            '    ' CW    | G-circle | shunt capacitor
+            '    ' CCW   | R-circle | series capacitor
+            '    ' CCW   | G-circle | shunt inductor
+            '    '
+            '    ' CCW on an R-circle needs a series capacitor.
+
+            '    '
+            '    '
+            '    '
+            '    '
+            'ElseIf Intersections(1).Y < 0.0 Then
+            '    ' CW    | R-circle | series inductor
+            '    ' CW    | G-circle | shunt capacitor
+            '    ' CCW   | R-circle | series capacitor
+            '    ' CCW   | G-circle | shunt inductor
+            '    '
+            '    ' CW on an R-circle needs a series inductor.
+
+            '    '
+            '    '
+            '    '
+            '    '
+            'Else ' Intersections(1).Y = 0.0
+            '    '
+            '    '
+            '    '
+            '    '
+            '    '
+            'End If
+            'Dim Transformation1 As Transformation
+            'If Not Me.InsideGEqualsY0(
+            '    MainCirc, Intersections(1), Transformation1) Then
+
+            '    'Dim CaughtBy As System.Reflection.MethodBase =
+            '    '    System.Reflection.MethodBase.GetCurrentMethod
+            '    Throw New System.ApplicationException("Transformation 1 failed.")
+            'End If
 
             ' THESE CHECKS CAN BE DELETED/COMMENTED AFTER THE Transformation
             ' RESULTS ARE KNOWN TO BE CORRECT.
             ' There should now be two valid solutions that match to Z=Z0+j0.0.
-            ' Check first solution.
-            If Not ValidateTransformation(MainCirc, Transformation0) Then
-                Return False
-            End If
+            '' Check first solution.
+            'If Not loadZ.ValidateTransformation(MainCirc, Transformation0) Then
+            '    Return False
+            'End If
             ' Check second solution.
-            If Not ValidateTransformation(MainCirc, Transformation1) Then
+            If Not loadZ.ValidateTransformation(MainCirc, Transformation1) Then
                 Return False
             End If
 
@@ -286,7 +385,6 @@ Namespace DevelopmentTests
             Return True
 
         End Function ' MatchArbitrary
-    xxxx
 
 
         '<InlineData(  Z0,        R,         X)> ' Model
@@ -329,14 +427,16 @@ Namespace DevelopmentTests
         '<InlineData( 1.0,    1/3.0,    0.0000)> ' M1: Inside G=Y0 circle, on line.
         '<InlineData(75.0,  25.0000,    0.0000)> ' M75: Inside G=Y0 circle, on line. Z0=75.
 
+        '<InlineData(100.0, 100.0, 100.0, 50.0, 20.0)> ' AMRIS.
+        '<InlineData(1, 1 / 3.0, 1 / 3.0, 1 / 3.0, 0.0000)> ' L1 to M1.
+        '<InlineData(75, 25.0, 25.0, 25.0, 0.0000)> ' L75 to M75.
         <Theory>
-        <InlineData(1, 1 / 3.0, 1 / 3.0, 1 / 3.0, 0.0000)> ' L1 to M1.
-        <InlineData(75, 25.0, 25.0, 25.0, 0.0000)> ' L75 to M75.
+        <InlineData(1, 1.0, 1.0, 0.5, 0.2)> ' L75 to AMRIS.
         Sub TestMatchArbitrary(z0 As Double, loadr As Double, loadX As Double, targetR As Double, targetX As Double)
 
             Dim Y0 As Double = 1.0 / z0
-            Dim loadZ As Impedance = New Impedance(loadr, loadX)
-            Dim targetz As Impedance = New Impedance(targetR, targetX)
+            Dim loadZ As New Impedance(loadr, loadX)
+            Dim targetz As New Impedance(targetR, targetX)
 
             Assert.True(MatchArbitrary(z0, loadZ, targetz))
 

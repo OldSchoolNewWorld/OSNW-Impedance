@@ -189,7 +189,7 @@ Partial Public Structure Impedance
     ''' which the current instance should be matched. It should have a practical
     ''' value with regard to the impedance values involved.
     ''' </remarks>
-    Private Function ValidateTransformation(ByVal mainCirc As SmithMainCircle,
+    Public Function ValidateTransformation(ByVal mainCirc As SmithMainCircle,
         ByVal aTransformation As Transformation) As System.Boolean
 
         Dim z0 As System.Double = mainCirc.Z0
