@@ -189,7 +189,6 @@ Public Structure Impedance
     ''' <param name="refVal">Specifies a base value for comparison.</param>
     ''' <returns><c>True</c> if the values are reasonably close in value;
     ''' otherwise, <c>False</c>.</returns>
-    ''' <exception cref="ArgumentOutOfRangeException"></exception>
     ''' <exception cref="System.ArgumentOutOfRangeException">When either
     ''' parameter is zero.</exception>
     ''' <remarks>
@@ -222,6 +221,48 @@ Public Structure Impedance
 
         Return System.Math.Abs(otherVal - refVal) <
             System.Math.Abs(refVal * DIFFFACTOR)
+
+    End Function ' EqualEnough
+
+    ''' <summary>
+    ''' Check for reasonable equality when using floating point values.
+    ''' </summary>
+    ''' <param name="otherVal">Specifies the value to be compared to
+    ''' <paramref name="refVal"/>.</param>
+    ''' <param name="refVal">Specifies a base value for comparison.</param>
+    ''' <returns><c>True</c> if the values are reasonably close in value;
+    ''' otherwise, <c>False</c>.</returns>
+    ''' <remarks>
+    ''' <c>EqualEnough()</c> does the comparison based on scale, not on an
+    ''' absolute numeric difference.
+    ''' There is no way to scale a comparison to zero. When a zero reference
+    ''' would cause a failure here, this uses <see cref="EqualEnoughZero"/>.
+    ''' </remarks>
+    Public Shared Function EqualEnough(ByVal z0 As System.Double,
+        ByVal otherVal As Impedance, ByVal refVal As Impedance) _
+        As System.Boolean
+
+        Dim NearlyZero As System.Double = z0 * 0.000001
+
+        ' REF: Precision and complex numbers
+        ' <see href="https://github.com/dotnet/docs/blob/main/docs/fundamentals/runtime-libraries/system-numerics-complex.md#precision-and-complex-numbers"/>
+
+        ' No input checking. otherVal and refVal are presumed to have been
+        ' checked when created.
+
+        If Not EqualEnough(otherVal.Resistance, refVal.Resistance) Then
+            Return False
+        End If
+        If EqualEnoughZero(otherVal.Reactance, NearlyZero) OrElse
+            EqualEnoughZero(refVal.Reactance, NearlyZero) Then
+
+            ' Both reactances must be nearly zero.
+            Return EqualEnoughZero(otherVal.Reactance, NearlyZero) AndAlso
+                EqualEnoughZero(refVal.Reactance, NearlyZero)
+        Else
+            ' Not zero; reactances must match.
+            Return EqualEnough(otherVal.Reactance, refVal.Reactance)
+        End If
 
     End Function ' EqualEnough
 

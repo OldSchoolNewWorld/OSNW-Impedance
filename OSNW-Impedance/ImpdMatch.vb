@@ -190,7 +190,8 @@ Partial Public Structure Impedance
     ''' value with regard to the impedance values involved.
     ''' </remarks>
     Public Function ValidateTransformation(ByVal mainCirc As SmithMainCircle,
-        ByVal aTransformation As Transformation) As System.Boolean
+        ByVal ExpectZ As Impedance, ByVal aTransformation As Transformation) _
+        As System.Boolean
 
         Dim z0 As System.Double = mainCirc.Z0
         Dim NearlyZero As System.Double = z0 * 0.000001
@@ -204,14 +205,19 @@ Partial Public Structure Impedance
             ' CW    | G-circle | shunt capacitor
             ' CW    | R-circle | series inductor
 
-            FixupZ = New Admittance(0.0, aTransformation.Value1).ToImpedance
+            '            FixupZ = New Impedance(0.0, aTransformation.Value1)
+            '            WorkZ = Impedance.AddShuntImpedance(Me, FixupZ)
+
+            '            FixupZ = New Impedance(0.0, aTransformation.Value2)
+            '            WorkZ = Impedance.AddSeriesImpedance(WorkZ, FixupZ)
+
+            FixupZ = New Impedance(0.0, aTransformation.Value1)
             WorkZ = Impedance.AddShuntImpedance(Me, FixupZ)
 
             FixupZ = New Impedance(0.0, aTransformation.Value2)
             WorkZ = Impedance.AddSeriesImpedance(WorkZ, FixupZ)
 
-            If Not (Impedance.EqualEnough(WorkZ.Resistance, z0) AndAlso
-                Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero)) Then
+            If Not Impedance.EqualEnough(mainCirc.Z0, WorkZ, ExpectZ) Then
                 Throw New System.ApplicationException(
                     "ShuntCapSeriesInd" & MSGTDNRT)
             End If
@@ -223,7 +229,13 @@ Partial Public Structure Impedance
             ' CW    | G-circle | shunt capacitor
             ' CCW   | R-circle | series capacitor
 
-            FixupZ = New Admittance(0.0, aTransformation.Value1).ToImpedance
+            '            FixupZ = New Admittance(0.0, aTransformation.Value1).ToImpedance
+            '            WorkZ = Impedance.AddShuntImpedance(Me, FixupZ)
+
+            '            FixupZ = New Impedance(0.0, aTransformation.Value2)
+            '            WorkZ = Impedance.AddSeriesImpedance(WorkZ, FixupZ)
+
+            FixupZ = New Impedance(0.0, aTransformation.Value1)
             WorkZ = Impedance.AddShuntImpedance(Me, FixupZ)
 
             FixupZ = New Impedance(0.0, aTransformation.Value2)
@@ -909,12 +921,13 @@ Partial Public Structure Impedance
         ' THESE CHECKS CAN BE DELETED/COMMENTED AFTER THE Transformation
         ' RESULTS ARE KNOWN TO BE CORRECT.
         ' There should now be two valid solutions that match to Z=Z0+j0.0.
+        Dim ExpectZ As New Impedance(mainCirc.Z0, 0)
         ' Check first solution.
-        If Not ValidateTransformation(mainCirc, Transformation0) Then
+        If Not ValidateTransformation(mainCirc, ExpectZ, Transformation0) Then
             Return False
         End If
         ' Check second solution.
-        If Not ValidateTransformation(mainCirc, Transformation1) Then
+        If Not ValidateTransformation(mainCirc, ExpectZ, Transformation1) Then
             Return False
         End If
 
@@ -978,28 +991,31 @@ Partial Public Structure Impedance
                 mainCirc.GetYFromPlot(OneIntersection.X, OneIntersection.Y)
             Dim DeltaB As System.Double =
                 ImageY.Susceptance - Y.Susceptance
+            Dim DeltaY As New Admittance(0, DeltaB)
+            Dim DeltaZ As Impedance = DeltaY.ToImpedance
             Dim ImageZ As Impedance =
                 mainCirc.GetZFromPlot(OneIntersection.X, OneIntersection.Y)
             Dim DeltaX As System.Double = -ImageZ.Reactance
 
             ' Set up the transformation.
             Dim Trans As New Transformation
-            If OneIntersection.Y > mainCirc.GridCenterY Then
-                ' The short first move. Now CCW on R-Circle.
-                Trans.Style = TransformationStyles.ShuntCapSeriesCap
-            Else
-                ' The long first move. Now CW on R-Circle.
-                Trans.Style = TransformationStyles.ShuntCapSeriesInd
-            End If
             With Trans
-                .Value1 = DeltaB
+                If OneIntersection.Y > mainCirc.GridCenterY Then
+                    ' The short first move. Now CCW on R-Circle.
+                    .Style = TransformationStyles.ShuntCapSeriesCap
+                Else
+                    ' The long first move. Now CW on R-Circle.
+                    .Style = TransformationStyles.ShuntCapSeriesInd
+                End If
+                .Value1 = DeltaZ.Reactance
                 .Value2 = DeltaX
             End With
 
             ' THIS CHECK CAN BE DELETED/COMMENTED AFTER THE Transformation
             ' RESULTS ARE KNOWN TO BE CORRECT.
             ' There should now be a valid solution that matches to Z=Z0+j0.0.
-            If Not ValidateTransformation(mainCirc, Trans) Then
+            If Not ValidateTransformation(
+                mainCirc, New Impedance(mainCirc.Z0, 0), Trans) Then
                 Return False
             End If
 
@@ -1088,7 +1104,8 @@ Partial Public Structure Impedance
             ' THIS CHECK CAN BE DELETED/COMMENTED AFTER THE Transformation
             ' RESULTS ARE KNOWN TO BE CORRECT.
             ' There should now be a valid solution that matches to Z=Z0+j0.0.
-            If Not ValidateTransformation(mainCirc, Trans) Then
+            If Not ValidateTransformation(
+                mainCirc, New Impedance(mainCirc.Z0, 0), Trans) Then
                 Return False
             End If
 
@@ -1240,7 +1257,8 @@ Partial Public Structure Impedance
             ' THIS CHECK CAN BE DELETED/COMMENTED AFTER THE Transformation
             ' RESULTS ARE KNOWN TO BE CORRECT.
             ' There should now be a valid solution that matches to Z=Z0+j0.0.
-            If Not ValidateTransformation(mainCirc, Trans) Then
+            If Not ValidateTransformation(
+                mainCirc, New Impedance(mainCirc.Z0, 0), Trans) Then
                 Return False
             End If
 
@@ -1331,7 +1349,8 @@ Partial Public Structure Impedance
             ' THIS CHECK CAN BE DELETED/COMMENTED AFTER THE Transformation
             ' RESULTS ARE KNOWN TO BE CORRECT.
             ' There should now be a valid solution that matches to Z=Z0+j0.0.
-            If Not ValidateTransformation(mainCirc, Trans) Then
+            If Not ValidateTransformation(
+                mainCirc, New Impedance(mainCirc.Z0, 0), Trans) Then
                 Return False
             End If
 
