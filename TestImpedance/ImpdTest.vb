@@ -229,8 +229,8 @@ Namespace DevelopmentTests
             ' The first move is CW or CCW on the LoadG circle to the TargetR circle.
 
             ' Determine the circles and their intersections.
-            'Dim MainCirc As New SmithMainCircle(4.0, 5.0, 4.0, z0) ' Test data.
-            Dim MainCirc As New SmithMainCircle(1.0, 1.0, 1.0, z0) ' Arbitrary.
+            Dim MainCirc As New SmithMainCircle(4.0, 5.0, 4.0, z0) ' Test data.
+            '            Dim MainCirc As New SmithMainCircle(1.0, 1.0, 1.0, z0) ' Arbitrary.
             Dim CircG As New GCircle(MainCirc, LoadG)
             Dim CircR As New RCircle(MainCirc, TargetR)
             Dim Intersections _

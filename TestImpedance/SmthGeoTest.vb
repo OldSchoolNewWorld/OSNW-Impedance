@@ -368,26 +368,25 @@ Namespace GeometryTests
         End Sub
 
         <Theory>
-        <InlineData(2.0, 8.0, 1.5, 4.5, 8.0, 1, 3.5, 8, 3.5, 8)> ' Outside tangent.
-        <InlineData(4.5, 8.0, 1, 2.0, 8.0, 1.5, 3.5, 8, 3.5, 8)> ' Outside tangent.
-        <InlineData(2.0, 8.0, 1.5, 2.0, 5.5, 1, 2.0, 6.5, 2.0, 6.5)> ' Outside tangent.
-        <InlineData(2.0, 5.5, 1, 2.0, 8.0, 1.5, 2.0, 6.5, 2.0, 6.5)> ' Outside tangent.
-        <InlineData(2.0, 8.0, 1.5, 3.0, 8.0, 0.5, 3.5, 8, 3.5, 8)> ' Inside tangent.
+        <InlineData(2.0, 8.0, 1.5, 4.5, 8.0, 1, 3.5, 8)> ' Outside tangent.
+        <InlineData(4.5, 8.0, 1, 2.0, 8.0, 1.5, 3.5, 8)> ' Outside tangent.
+        <InlineData(2.0, 8.0, 1.5, 2.0, 5.5, 1, 2.0, 6.5)> ' Outside tangent.
+        <InlineData(2.0, 5.5, 1, 2.0, 8.0, 1.5, 2.0, 6.5)> ' Outside tangent.
+        <InlineData(2.0, 8.0, 1.5, 3.0, 8.0, 0.5, 3.5, 8)> ' Inside tangent.
         Sub GetIntersections_OneIntersection_Succeeds(
             c1X As Double, c1Y As Double, c1R As Double,
             c2X As Double, c2Y As Double, c2R As Double,
-            expect1x As Double, expect1y As Double,
-            expect2x As Double, expect2y As Double)
+            expect1x As Double, expect1y As Double)
 
             ' Testing via GetIntersections(otherCircle As GenericCircle) exercises all three overloads.
             Dim C1 As New GenericCircle(c1X, c1Y, c1R)
             Dim C2 As New GenericCircle(c2X, c2Y, c2R)
             Dim Intersections As System.Collections.Generic.List(Of OSNW.Numerics.PointD) = C1.GetIntersections(C2)
-            Assert.Equal(2, Intersections.Count)
+            Assert.Equal(1, Intersections.Count)
             Assert.Equal(expect1x, Intersections(0).X, 0.01)
             Assert.Equal(expect1y, Intersections(0).Y, 0.01)
-            Assert.Equal(expect2x, Intersections(1).X, 0.01)
-            Assert.Equal(expect2y, Intersections(1).Y, 0.01)
+            '            Assert.Equal(expect2x, Intersections(1).X, 0.01)
+            '            Assert.Equal(expect2y, Intersections(1).Y, 0.01)
         End Sub
 
         <Theory>

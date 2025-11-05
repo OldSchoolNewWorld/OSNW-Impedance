@@ -139,6 +139,36 @@ Public Class GenericCircle
             Return Intersections
         End If
 
+        ' CHECK ON TANGENT CIRCLES STACKED VERTICALLY.
+        ' Check if the circles are outside tangent to each other.
+        If Impedance.EqualEnough(c1R + c2R, DeltaCtr) Then
+            ' One intersection point.
+
+            Dim C1Frac As System.Double = c1R / DeltaCtr
+            Intersections.Add(New OSNW.Numerics.PointD(
+                                  c1X + C1Frac * DeltaX,
+                                  c1Y + C1Frac * DeltaY))
+            Return Intersections
+        End If
+
+        ' Check if the circles are inside tangent to each other.
+        If Impedance.EqualEnough(c1R - c2R, DeltaCtr) OrElse
+            Impedance.EqualEnough(c2R - c1R, DeltaCtr) Then
+            ' One intersection point.
+
+            '
+            '
+            '
+            '
+            '
+
+            Intersections.Add(New OSNW.Numerics.PointD(
+                                  999,
+                                  999))
+            Return Intersections
+
+        End If
+
         ' Calculate intersection points.
         Dim OnceA As System.Double =
             (c1R * c1R - c2R * c2R + DeltaCtr * DeltaCtr) / (2 * DeltaCtr)

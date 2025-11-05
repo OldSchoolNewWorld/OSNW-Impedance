@@ -1,4 +1,8 @@
 ﻿'TODO:
+' Provide for matching to arbitrary impedances (Rtarget, Xtarget) vs. only characteristic impedances?
+'   An example is shown page 26 of the link below.
+'   https://amris.mbi.ufl.edu/wordpress/files/2021/01/SmithChart_FullPresentation.pdf
+'   Does that example indicate an alternative approach to matching an impedance on the R=Z0 circle?
 ' Convert from building an array to building a list of suggested solutions.
 ' Should infinity be allowed or rejected for admittance and susceptance inputs?
 ' Add De/Serialization to Admittance?????
@@ -8,10 +12,6 @@
 ' Allow both "i" and "j" to match the .NET result? Add tests for both i and j.
 '   Wait, where does .NET indicate anything about allowing "j" for Complex aside from "Format a complex
 '     number"? Complex only has ToString() and TryFormat() - nothing about standard form.
-' Provide for matching to arbitrary impedances (Rtarget, Xtarget) vs. only characteristic impedances?
-'   An example is shown page 26 of the link below.
-'   https://amris.mbi.ufl.edu/wordpress/files/2021/01/SmithChart_FullPresentation.pdf
-'   Does that example indicate an alternative approach to matching an impedance on the R=Z0 circle?
 
 Option Explicit On
 Option Strict On
