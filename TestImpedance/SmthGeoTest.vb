@@ -369,10 +369,11 @@ Namespace GeometryTests
 
         <Theory>
         <InlineData(2.0, 8.0, 1.5, 4.5, 8.0, 1, 3.5, 8)> ' Outside tangent.
-        <InlineData(4.5, 8.0, 1, 2.0, 8.0, 1.5, 3.5, 8)> ' Outside tangent.
+        <InlineData(4.5, 8.0, 1, 2.0, 8.0, 1.5, 3.5, 8)> ' Outside tangent. Reversed.
         <InlineData(2.0, 8.0, 1.5, 2.0, 5.5, 1, 2.0, 6.5)> ' Outside tangent.
-        <InlineData(2.0, 5.5, 1, 2.0, 8.0, 1.5, 2.0, 6.5)> ' Outside tangent.
+        <InlineData(2.0, 5.5, 1, 2.0, 8.0, 1.5, 2.0, 6.5)> ' Outside tangent. Reversed.
         <InlineData(2.0, 8.0, 1.5, 3.0, 8.0, 0.5, 3.5, 8)> ' Inside tangent.
+        <InlineData(3.0, 8.0, 0.5, 2.0, 8.0, 1.5, 3.5, 8)> ' Inside tangent. Reversed.
         Sub GetIntersections_OneIntersection_Succeeds(
             c1X As Double, c1Y As Double, c1R As Double,
             c2X As Double, c2Y As Double, c2R As Double,
