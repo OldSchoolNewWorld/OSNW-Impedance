@@ -111,7 +111,7 @@ Partial Public Module ComplexExtensions
     '    public string ToString([StringSyntax(StringSyntaxAttribute.NumericFormat)] string? format, IFormatProvider? provider)
     ''' <summary>
     ''' Converts the value of the current complex number to its equivalent
-    ''' string representation in standard form by using the specified layout
+    ''' string representation in standard form, using the specified layout
     ''' format, numeric format, and culture-specific format information for its
     ''' real and imaginary parts.
     ''' </summary>
@@ -145,7 +145,7 @@ Partial Public Module ComplexExtensions
     '    public override string ToString()
     ''' <summary>
     ''' Converts the value of the current complex number to its equivalent
-    ''' string representation in standard form by using the specified layout
+    ''' string representation in standard form, using the specified layout
     ''' format information, and using the default numeric format and
     ''' culture-specific format for its real and imaginary parts.
     ''' </summary>
@@ -171,7 +171,7 @@ Partial Public Module ComplexExtensions
     '    public string ToString([StringSyntax(StringSyntaxAttribute.NumericFormat)] string? format)
     ''' <summary>
     ''' Converts the value of the current complex number to its equivalent
-    ''' string representation in standard form by using the specified layout
+    ''' string representation in standard form, using the specified layout
     ''' format and numeric format information, and using the default
     ''' culture-specific format information, for its real and imaginary parts.
     ''' </summary>
@@ -201,7 +201,7 @@ Partial Public Module ComplexExtensions
     '    public string ToString(IFormatProvider? provider)
     ''' <summary>
     ''' Converts the value of the current complex number to its equivalent
-    ''' string representation in standard form by using the specified layout
+    ''' string representation in standard form, using the specified layout
     ''' format and culture-specific format information, and using the
     ''' default numeric format, for its real and imaginary parts.
     ''' </summary>
@@ -230,7 +230,7 @@ Partial Public Module ComplexExtensions
     '    public override string ToString()
     ''' <summary>
     ''' Converts the value of the current complex number to its equivalent
-    ''' string representation in standard form by using the default layout
+    ''' string representation in standard form, using the default layout
     ''' format, numeric format, and culture-specific format information for its
     ''' real and imaginary parts.
     ''' </summary>

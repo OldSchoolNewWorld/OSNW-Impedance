@@ -36,4 +36,8 @@ Public Structure PointD
         Me.Y = y
     End Sub ' New
 
+    Public Overrides Function ToString() As System.String
+        Return String.Format("({0}, {1})", Me.X, Me.Y)
+    End Function ' ToString
+
 End Structure ' PointD

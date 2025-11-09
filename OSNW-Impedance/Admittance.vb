@@ -228,8 +228,8 @@ Public Structure Admittance
     '    public string ToString([StringSyntax(StringSyntaxAttribute.NumericFormat)] string? format, IFormatProvider? provider)
     ''' <summary>
     ''' Converts the value of the current Admittance to its equivalent string
-    ''' representation in Cartesian form by using the specified numeric format
-    ''' and culture-specific format information for its resistance and reactance
+    ''' representation in Cartesian form, using the specified numeric format and
+    ''' culture-specific format information for its resistance and reactance
     ''' parts.
     ''' </summary>
     ''' <param name="format">A standard or custom numeric format string.</param>
@@ -259,7 +259,7 @@ Public Structure Admittance
     '    public string ToString([StringSyntax(StringSyntaxAttribute.NumericFormat)] string? format)
     ''' <summary>
     ''' Converts the value of the current Admittance to its equivalent string
-    ''' representation in Cartesian form by using the specified numeric format
+    ''' representation in Cartesian form, using the specified numeric format
     ''' information, and using the default culture-specific format information,
     ''' for its resistance and reactance parts.
     ''' </summary>
@@ -276,7 +276,7 @@ Public Structure Admittance
     '    public string ToString(IFormatProvider? provider)
     ''' <summary>
     ''' Converts the value of the current Admittance to its equivalent string
-    ''' representation in Cartesian form by using the specified culture-specific
+    ''' representation in Cartesian form, using the specified culture-specific
     ''' format information, and using the default numeric format, for its
     ''' resistance and reactance parts.
     ''' </summary>
@@ -292,7 +292,7 @@ Public Structure Admittance
     '    public override string ToString()
     ''' <summary>
     ''' Converts the value of the current Admittance to its equivalent string
-    ''' representation in Cartesian form by using the default numeric format and
+    ''' representation in Cartesian form, using the default numeric format and
     ''' culture-specific format information for its resistance and reactance
     ''' parts.
     ''' </summary>
@@ -329,7 +329,7 @@ Public Structure Admittance
     '    public string ToString([StringSyntax(StringSyntaxAttribute.NumericFormat)] string? format, IFormatProvider? provider)
     ''' <summary>
     ''' Converts the value of the current <c>Admittance</c> to its equivalent
-    ''' string representation in standard form by using the specified layout
+    ''' string representation in standard form, using the specified layout
     ''' format, numeric format, and culture-specific format information for its
     ''' real and imaginary parts.
     ''' </summary>
@@ -360,7 +360,7 @@ Public Structure Admittance
     '    public override string ToString()
     ''' <summary>
     ''' Converts the value of the current <c>Admittance</c> to its equivalent
-    ''' string representation in standard form by using the specified layout
+    ''' string representation in standard form, using the specified layout
     ''' format information, and using the default numeric format and
     ''' culture-specific format for its real and imaginary parts.
     ''' </summary>
@@ -379,7 +379,7 @@ Public Structure Admittance
     '    public string ToString([StringSyntax(StringSyntaxAttribute.NumericFormat)] string? format)
     ''' <summary>
     ''' Converts the value of the current <c>Admittance</c> to its equivalent
-    ''' string representation in standard form by using the specified layout
+    ''' string representation in standard form, using the specified layout
     ''' format and numeric format information, and using the default
     ''' culture-specific format information, for its real and imaginary parts.
     ''' </summary>
@@ -401,7 +401,7 @@ Public Structure Admittance
     '    public string ToString(IFormatProvider? provider)
     ''' <summary>
     ''' Converts the value of the current <c>Admittance</c> to its equivalent
-    ''' string representation in standard form by using the specified layout
+    ''' string representation in standard form, using the specified layout
     ''' format and culture-specific format information, and using the
     ''' default numeric format, for its real and imaginary parts.
     ''' </summary>
@@ -423,9 +423,9 @@ Public Structure Admittance
     '    public override string ToString()
     ''' <summary>
     ''' Converts the value of the current <c>Admittance</c> to its equivalent
-    ''' string representation in standard form by using the default layout
-    ''' format, numeric format, and culture-specific format information for its
-    ''' real and imaginary parts.
+    ''' string representation in standard form, using the default layout format,
+    ''' numeric format, and culture-specific format information for its real and
+    ''' imaginary parts.
     ''' </summary>
     ''' <returns>The current <c>Admittance</c> expressed in standard form.</returns>
     Public Function ToStandardString() As System.String

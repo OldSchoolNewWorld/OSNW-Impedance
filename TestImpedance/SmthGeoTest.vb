@@ -13,7 +13,7 @@ Namespace GeometryTests
         Const Precision As Double = 0.0005
         Const INF As Double = Double.PositiveInfinity
 
-        '<InlineData(ChartX, ChartY, ChartRad,      Z0,        R, RadiusR)> ' Model
+        '<InlineData(ChartX, ChartY, ChartRad,   Z0,        R, RadiusR)> ' Model
         <Theory>
         <InlineData(4.0, 5.0, 2.0, 1.0, INF, 0.0000)> ' C: At the open circuit point on the right.
         <InlineData(4.0, 5.0, 2.0, 1.0, 1.0, 1.0)> ' D1: At the center.

@@ -1,4 +1,5 @@
 ﻿'TODO:
+' Create looped test of tangency with reversed checks.
 ' Provide for matching to arbitrary impedances (Rtarget, Xtarget) vs. only characteristic impedances?
 '   An example is shown page 26 of the link below.
 '   https://amris.mbi.ufl.edu/wordpress/files/2021/01/SmithChart_FullPresentation.pdf
@@ -433,8 +434,8 @@ Public Structure Impedance
     '    public string ToString([StringSyntax(StringSyntaxAttribute.NumericFormat)] string? format, IFormatProvider? provider)
     ''' <summary>
     ''' Converts the value of the current Impedance to its equivalent string
-    ''' representation in Cartesian form by using the specified numeric format
-    ''' and culture-specific format information for its resistance and reactance
+    ''' representation in Cartesian form, using the specified numeric format and
+    ''' culture-specific format information for its resistance and reactance
     ''' parts.
     ''' </summary>
     ''' <param name="format">A standard or custom numeric format string.</param>
@@ -463,7 +464,7 @@ Public Structure Impedance
     '    public string ToString([StringSyntax(StringSyntaxAttribute.NumericFormat)] string? format)
     ''' <summary>
     ''' Converts the value of the current Impedance to its equivalent string
-    ''' representation in Cartesian form by using the specified numeric format
+    ''' representation in Cartesian form, using the specified numeric format
     ''' information, and using the default culture-specific format information,
     ''' for its resistance and reactance parts.
     ''' </summary>
@@ -480,7 +481,7 @@ Public Structure Impedance
     '    public string ToString(IFormatProvider? provider)
     ''' <summary>
     ''' Converts the value of the current Impedance to its equivalent string
-    ''' representation in Cartesian form by using the specified culture-specific
+    ''' representation in Cartesian form, using the specified culture-specific
     ''' format information, and using the default numeric format, for its
     ''' resistance and reactance parts.
     ''' </summary>
@@ -496,7 +497,7 @@ Public Structure Impedance
     '    public override string ToString()
     ''' <summary>
     ''' Converts the value of the current Impedance to its equivalent string
-    ''' representation in Cartesian form by using the default numeric format and
+    ''' representation in Cartesian form, using the default numeric format and
     ''' culture-specific format information for its resistance and reactance
     ''' parts.
     ''' </summary>
@@ -533,7 +534,7 @@ Public Structure Impedance
     '    public string ToString([StringSyntax(StringSyntaxAttribute.NumericFormat)] string? format, IFormatProvider? provider)
     ''' <summary>
     ''' Converts the value of the current Impedance to its equivalent
-    ''' string representation in standard form by using the specified layout
+    ''' string representation in standard form, using the specified layout
     ''' format, numeric format, and culture-specific format information for its
     ''' real and imaginary parts.
     ''' </summary>
@@ -564,7 +565,7 @@ Public Structure Impedance
     '    public override string ToString()
     ''' <summary>
     ''' Converts the value of the current Impedance to its equivalent
-    ''' string representation in standard form by using the specified layout
+    ''' string representation in standard form, using the specified layout
     ''' format information, and using the default numeric format and
     ''' culture-specific format for its real and imaginary parts.
     ''' </summary>
@@ -583,7 +584,7 @@ Public Structure Impedance
     '    public string ToString([StringSyntax(StringSyntaxAttribute.NumericFormat)] string? format)
     ''' <summary>
     ''' Converts the value of the current Impedance to its equivalent
-    ''' string representation in standard form by using the specified layout
+    ''' string representation in standard form, using the specified layout
     ''' format and numeric format information, and using the default
     ''' culture-specific format information, for its real and imaginary parts.
     ''' </summary>
@@ -605,7 +606,7 @@ Public Structure Impedance
     '    public string ToString(IFormatProvider? provider)
     ''' <summary>
     ''' Converts the value of the current Impedance to its equivalent
-    ''' string representation in standard form by using the specified layout
+    ''' string representation in standard form, using the specified layout
     ''' format and culture-specific format information, and using the
     ''' default numeric format, for its real and imaginary parts.
     ''' </summary>
@@ -627,9 +628,9 @@ Public Structure Impedance
     '    public override string ToString()
     ''' <summary>
     ''' Converts the value of the current Impedance to its equivalent
-    ''' string representation in standard form by using the default layout
-    ''' format, numeric format, and culture-specific format information for its
-    ''' real and imaginary parts.
+    ''' string representation in standard form, using the default layout format,
+    ''' numeric format, and culture-specific format information for its real and
+    ''' imaginary parts.
     ''' </summary>
     ''' <returns>The current Impedance expressed in standard form.</returns>
     Public Function ToStandardString() As System.String

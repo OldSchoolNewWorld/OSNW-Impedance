@@ -155,6 +155,7 @@ Public Class GenericCircle
         ' or two intersections.
 
         ' Check if the circles are outside-tangent to each other.
+        '        BAD Right HERE
         If Impedance.EqualEnough(c1R + c2R, DeltaCtr) Then
             ' One intersection point.
             Dim C1Frac As System.Double = c1R / DeltaCtr
@@ -287,6 +288,16 @@ Public Class GenericCircle
         End With
 
     End Sub ' New
+
+    ''' <summary>
+    ''' Converts the value of the current GenericCircle to its equivalent string
+    ''' representation in Cartesian form, using the default numeric format and
+    ''' culture-specific format information for its parts.
+    ''' </summary>
+    ''' <returns>The current GenericCircle expressed in Cartesian form.</returns>
+    Public Overrides Function ToString() As System.String
+        Return $"Center: ({Me.GridCenterX}, {Me.GridCenterY}), Radius: {Me.GridRadius}"
+    End Function ' ToString
 
 End Class ' GenericCircle
 
@@ -508,6 +519,16 @@ Public Class SmithMainCircle
     End Property
 
     ''' <summary>
+    ''' Converts the value of the current SmithMainCircle to its equivalent
+    ''' string representation in Cartesian form, using the default numeric
+    ''' format and culture-specific format information for its parts.
+    ''' </summary>
+    ''' <returns>The current GenericCircle expressed in Cartesian form.</returns>
+    Public Overrides Function ToString() As System.String
+        Return $"Z0: {Me.Z0}, Center: ({Me.GridCenterX}, {Me.GridCenterY}), Radius: {Me.GridRadius}"
+    End Function ' ToString
+
+    ''' <summary>
     ''' Returns whether point (plotX, plotY) falls inside the outer circle.
     ''' </summary>
     ''' <param name="plotX">Specifies the X-coordinate of the point on the
@@ -570,6 +591,7 @@ Public Class SmithMainCircle
         'Return AnsRadius
 
         'Return (1 / ((resistance / Me.Z0) + 1)) * Me.GridRadius
+
         Return Me.GridRadius / ((resistance / Me.Z0) + 1.0)
 
     End Function ' GetRadiusR
