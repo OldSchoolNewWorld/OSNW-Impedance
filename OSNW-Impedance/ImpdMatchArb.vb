@@ -281,17 +281,138 @@ Partial Public Structure Impedance
 
     End Function ' MatchArbFirstOnR
 
+
+
+    ''' <summary>
+    ''' xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    ''' </summary>
+    ''' <returns></returns>
+    Public Shared Function MatchArbitraryIntersection(
+        ByVal oneIntersection As OSNW.Numerics.PointD,
+        ByVal MainCirc As SmithMainCircle, ByVal loadZ As Impedance, ByVal sourceZ As Impedance,
+        ByRef transformations As Transformation()) _
+        As System.Boolean
+
+        '
+        '
+        ' At least for now,
+        ' On getting this far,
+        Return False
+        '
+        '
+        '
+
+        'xxxxxxxxxxxxxxxxxxxxxxxxxx
+        ' xxxxxxxx First, move CW or CCW on the LoadG circle to the LoadR circle.
+        ' or
+        ' xxxxxxxx First, move CW or CCW on the LoadR circle to the LoadG circle.
+        'xxxxxxxxxxxxxxxxxxxxxxxxxx
+
+        ' First, move CW or CCW on the LoadG circle to the LoadR circle.
+
+
+        If Not MatchArbFirstOnG(MainCirc,
+                 loadZ, sourceZ, transformations) Then
+
+            '
+            '
+            ' At least for now,
+            ' On getting this far,
+            Return False
+            '
+            '
+        End If
+
+
+        '
+        '
+        '
+        '
+        '
+
+
+
+
+
+
+        ' First, move CW or CCW on the LoadR circle to the LoadG circle.
+        If Not MatchArbFirstOnG(MainCirc,
+                 loadZ, sourceZ, transformations) Then
+
+            '
+            '
+            ' At least for now,
+            ' On getting this far,
+            Return False
+            '
+            '
+        End If
+        '
+        '
+        '
+        '
+        '
+
+
+
+        '' Calculate the image admittance at the intersection point.
+
+        'DeltaB = GetMatchArbitraryImageDeltaB(MainCirc, loadZ, oneIntersection)
+        'DeltaY = New Admittance(0, DeltaB)
+        'DeltaZ = DeltaY.ToImpedance
+        'ImageZ = Impedance.AddShuntImpedance(loadZ, DeltaZ)
+        'ImageX = ImageZ.Reactance
+        'DeltaX = SourceX - ImageX
+        'If oneIntersection.Y > MainCirc.GridCenterY Then
+        '    ' CCW on a G-circle needs a shunt inductor
+        '    ' CCW on an R-circle needs a series capacitor
+        '    Style = TransformationStyles.ShuntIndSeriesCap
+        'ElseIf oneIntersection.Y < MainCirc.GridCenterY Then
+        '    ' CW on a G-circle needs a shunt capacitor
+        '    ' CW on an R-circle needs a series inductor
+        '    Style = TransformationStyles.ShuntCapSeriesInd
+        'Else ' OneIntersection.Y = MainCirc.GridCenterY
+        '    '
+        '    '
+        '    '
+        '    ' Where might this happen? Account for special cases. Maybe if the
+        '    ' load and source are on the R=Z0 and G=Y0 circles?
+        '    '
+        '    'Dim CaughtBy As System.Reflection.MethodBase =
+        '    '    System.Reflection.MethodBase.GetCurrentMethod
+        '    Throw New System.ApplicationException("OneIntersection.Y = 0.0")
+        '    '
+        '    '
+        '    '
+        'End If
+        'Dim Transformation As New Transformation With {
+        '            .Style = Style,
+        '            .Value1 = DeltaZ.Reactance,
+        '            .Value2 = DeltaX}
+        ''If Not Me.InsideGEqualsY0(
+        ''    MainCirc, OneIntersection, Transformation) Then
+        ''    'Dim CaughtBy As System.Reflection.MethodBase =
+        ''    '    System.Reflection.MethodBase.GetCurrentMethod
+        ''    Throw New System.ApplicationException("Transformation failed.")
+        ''End If
+        ''
+
+
+
+    End Function ' MatchArbitraryIntersection
+    '    xxxx
+
     ''' <summary>
     ''' Attempts to obtain a conjugate match from the specified load
     ''' <c>Impedance</c> to the specified arbitrary source <c>Impedance</c>, on
     ''' the specified <c>SmithMainCircle</c>.
     ''' </summary>
-    ''' <param name="MainCirc">Specifies a <c>SmithMainCircle</c> in which the
-    ''' match is to be made.</param>
     ''' <param name="loadZ">Specifies the <c>Impedance</c> to match to
     ''' <paramref name="sourceZ"/>.</param>
     ''' <param name="sourceZ">Specifies the <c>Impedance</c> to which
     ''' <paramref name="loadZ"/> should be matched.</param>
+    ''' <param name="MainCirc">Specifies a <c>SmithMainCircle</c> in which the
+    ''' match is to be made.</param>
     ''' <param name="transformations">Specifies an array of
     ''' <see cref="Transformation"/>s that can be used to match a load
     ''' <c>Impedance</c> to match a source <c>Impedance</c>.</param>
@@ -306,8 +427,9 @@ Partial Public Structure Impedance
     ''' A succcessful process might result in an empty
     ''' <paramref name="transformations"/>.
     ''' </remarks>
-    Public Shared Function MatchArbitrary(ByVal MainCirc As SmithMainCircle,
+    Public Shared Function MatchArbitrary(
         ByVal loadZ As Impedance, ByVal sourceZ As Impedance,
+        ByVal MainCirc As SmithMainCircle,
         ByRef transformations As Transformation()) _
         As System.Boolean
 
@@ -363,16 +485,6 @@ Partial Public Structure Impedance
             .Append($"; {NameOf(SourceCircG)}: {SourceCircG}")
         End With
 
-        ' Move
-        '     CW or CCW on the LoadG circle to the SourceR circle; there may be
-        '     either one or two intersections.
-        '     Then CW or CCW on the SourceR circle to SourceZ.
-        ' or
-        ' Move
-        '     CW or CCW on the LoadR circle to the SourceG circle; there may be
-        '     either one or two intersections.
-        '     Then CW or CCW on the SourceG circle to SourceZ.
-
         ' Determine the circle intersection(s).
         Dim Intersections _
             As System.Collections.Generic.List(Of OSNW.Numerics.PointD) =
@@ -423,6 +535,16 @@ Partial Public Structure Impedance
         ' is one above, and one below, the resonance line; the X values match;
         ' the Y values are the same distance above and below the resonance line.
 
+        ' Move
+        '     CW or CCW on the LoadG circle to the SourceR circle; there may be
+        '     either one or two intersections.
+        '     Then CW or CCW on the SourceR circle to SourceZ.
+        ' or
+        ' Move
+        '     CW or CCW on the LoadR circle to the SourceG circle; there may be
+        '     either one or two intersections.
+        '     Then CW or CCW on the SourceG circle to SourceZ.
+
         ' Set up useful values. CONSOLIDATE/REMOVE LATER AS ABLE.
         Dim Style As TransformationStyles
         Dim DeltaB As System.Double
@@ -436,74 +558,31 @@ Partial Public Structure Impedance
         Dim ImageY As New Admittance(999, 999)
         Dim ImageZ As Impedance
 
-        If Intersections.Count.Equals(1) OrElse Intersections.Count.Equals(2) Then
-
-            'xxxxxxxxxxxxxxxxxxxxxxxxxx
-            ' xxxxxxxx First, move CW or CCW on the LoadG circle to the LoadR circle.
-            ' or
-            ' xxxxxxxx First, move CW or CCW on the LoadR circle to the LoadG circle.
-            'xxxxxxxxxxxxxxxxxxxxxxxxxx
-
-            ' First, move CW or CCW on the LoadG circle to the LoadR circle.
-            '
-            '
-            '
-            '
-            '
-
-            ' First, move CW or CCW on the LoadR circle to the LoadG circle.
-            '
-            '
-            '
-            '
-            '
-
+        If Intersections.Count.Equals(1) OrElse
+            Intersections.Count.Equals(2) Then
 
             For Each OneIntersection As OSNW.Numerics.PointD In Intersections
-
-
-
-                ' Calculate the image admittance at the intersection point.
-
-                DeltaB = GetMatchArbitraryImageDeltaB(MainCirc, loadZ, OneIntersection)
-                DeltaY = New Admittance(0, DeltaB)
-                DeltaZ = DeltaY.ToImpedance
-                ImageZ = Impedance.AddShuntImpedance(loadZ, DeltaZ)
-                ImageX = ImageZ.Reactance
-                DeltaX = SourceX - ImageX
-                If OneIntersection.Y > MainCirc.GridCenterY Then
-                    ' CCW on a G-circle needs a shunt inductor
-                    ' CCW on an R-circle needs a series capacitor
-                    Style = TransformationStyles.ShuntIndSeriesCap
-                ElseIf OneIntersection.Y < MainCirc.GridCenterY Then
-                    ' CW on a G-circle needs a shunt capacitor
-                    ' CW on an R-circle needs a series inductor
-                    Style = TransformationStyles.ShuntCapSeriesInd
-                Else ' OneIntersection.Y = MainCirc.GridCenterY
+                If MatchArbitraryIntersection(OneIntersection, MainCirc, loadZ, sourceZ, transformations) Then
                     '
                     '
                     '
-                    ' Where might this happen? Account for special cases. Maybe if the
-                    ' load and source are on the R=Z0 and G=Y0 circles?
+                    ' At least for now,
+                    ' On getting this far,
+                    Return False
                     '
-                    'Dim CaughtBy As System.Reflection.MethodBase =
-                    '    System.Reflection.MethodBase.GetCurrentMethod
-                    Throw New System.ApplicationException("OneIntersection.Y = 0.0")
+                    '
+                    '
+                Else
+                    '
+                    '
+                    '
+                    ' At least for now,
+                    ' On getting this far,
+                    Return False
                     '
                     '
                     '
                 End If
-                Dim Transformation As New Transformation With {
-                    .Style = Style,
-                    .Value1 = DeltaZ.Reactance,
-                    .Value2 = DeltaX}
-                'If Not Me.InsideGEqualsY0(
-                '    MainCirc, OneIntersection, Transformation) Then
-                '    'Dim CaughtBy As System.Reflection.MethodBase =
-                '    '    System.Reflection.MethodBase.GetCurrentMethod
-                '    Throw New System.ApplicationException("Transformation failed.")
-                'End If
-                '
             Next
 
             '
@@ -516,7 +595,7 @@ Partial Public Structure Impedance
             '
 
         Else
-            ' There are either no intersecions or an invalid number of intersections.
+            ' There are either no intersections or an invalid number of intersections.
             Return False
         End If
 
@@ -560,7 +639,7 @@ Partial Public Structure Impedance
 
         ' Dim MainCirc As New SmithMainCircle(1.0, 1.0, 1.0, z0) ' Arbitrary.
         Dim MainCirc As New SmithMainCircle(4.0, 5.0, 4.0, z0) ' Test data.
-        Return MatchArbitrary(MainCirc, loadZ, sourceZ, transformations)
+        Return MatchArbitrary(loadZ, sourceZ, MainCirc, transformations)
     End Function ' MatchArbitrary
 
 End Structure ' Impedance
