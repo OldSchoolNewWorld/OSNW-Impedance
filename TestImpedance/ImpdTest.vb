@@ -355,12 +355,12 @@ Namespace DevelopmentTests
         '        DeltaX = TargetX - ImageX
 
         '        If Intersections(1).Y > MainCirc.GridCenterY Then
-        '            ' CCW on a G-circle needs a shunt inductor
-        '            ' CCW on an R-circle needs a series capacitor
+        '            ' CCW on a G-circle needs a shunt inductor.
+        '            ' CCW on an R-circle needs a series capacitor.
         '            Style = TransformationStyles.ShuntIndSeriesCap
         '        ElseIf Intersections(1).Y < MainCirc.GridCenterY Then
-        '            ' CW on a G-circle needs a shunt capacitor
-        '            ' CW on an R-circle needs a series inductor
+        '            ' CW on a G-circle needs a shunt capacitor.
+        '            ' CW on an R-circle needs a series inductor.
         '            Style = TransformationStyles.ShuntCapSeriesInd
         '        Else ' Intersections(1).Y = MainCirc.GridCenterY
         '            '

@@ -2,9 +2,6 @@
 Option Strict On
 Option Compare Binary
 Option Infer Off
-Imports System.ComponentModel.Design
-
-
 
 ' This document contains items related to matching a load impedance to an
 ' arbitrary source impedance.
@@ -14,148 +11,103 @@ Partial Public Structure Impedance
     ''' <summary>
     ''' xxxxxxxxxx
     ''' </summary>
-    ''' <param name="MainCirc">xxxxxxxxxx</param>
+    ''' <param name="mainCirc">xxxxxxxxxx</param>
+    ''' <param name="oneIntersection">xxxxxxxxxx</param>
     ''' <param name="loadZ">xxxxxxxxxx</param>
-    ''' <param name="targetZ">xxxxxxxxxx</param>
+    ''' <param name="sourceZ">xxxxxxxxxx</param>
     ''' <param name="transformations">xxxxxxxxxx</param>
-    ''' <returns>xxxxxxxxxx</returns>
-    Public Shared Function MatchArbFirstOnG(ByVal MainCirc As SmithMainCircle,
-        ByVal loadZ As Impedance, ByVal targetZ As Impedance,
+    ''' <returns></returns>
+    Public Shared Function MatchArbFirstOnG(ByVal mainCirc As SmithMainCircle,
+        ByVal oneIntersection As OSNW.Numerics.PointD,
+        ByVal loadZ As Impedance, ByVal sourceZ As Impedance,
         ByRef transformations As Transformation()) _
         As System.Boolean
 
-        '
-        '
-        ' At least for now,
-        ' On getting this far,
-        Return False
-        '
-        '
-        '
-
-        '' Set up useful values.
-        'Dim Z0 As Double = MainCirc.Z0
+        ' Set up useful local values. CONSOLIDATE/REMOVE LATER AS ABLE.
+        'Dim Z0 As Double = mainCirc.Z0
         'Dim Y0 As Double = 1.0 / Z0
         'Dim LoadR As Double = loadZ.Resistance
         'Dim LoadX As Double = loadZ.Reactance
-        'Dim LoadCircR As New RCircle(MainCirc, LoadR)
-        'Dim LoadY As Admittance = loadZ.ToAdmittance()
+        'Dim LoadCircR As New RCircle(mainCirc, LoadR)
+        Dim LoadY As Admittance = loadZ.ToAdmittance()
         'Dim LoadG As Double = LoadY.Conductance
-        'Dim LoadB As Double = LoadY.Susceptance
-        'Dim LoadCircG As New GCircle(MainCirc, LoadG)
-        'Dim TargetR As Double = targetZ.Resistance
-        'Dim TargetX As Double = targetZ.Reactance
-        'Dim TargetCircR As New RCircle(MainCirc, TargetR)
-        'Dim TargetY As Admittance = targetZ.ToAdmittance()
-        'Dim TargetG As Double = TargetY.Conductance
-        'Dim TargetB As Double = TargetY.Susceptance
-        'Dim TargetCircG As New GCircle(MainCirc, TargetG)
+        Dim LoadB As Double = LoadY.Susceptance
+        'Dim LoadCircG As New GCircle(mainCirc, LoadG)
+        'Dim SourceR As Double = sourceZ.Resistance
+        Dim SourceX As Double = sourceZ.Reactance
+        'Dim SourceCircR As New RCircle(mainCirc, SourceR)
+        'Dim SourceY As Admittance = sourceZ.ToAdmittance()
+        'Dim SourceG As Double = SourceY.Conductance
+        'Dim SourceB As Double = SourceY.Susceptance
+        'Dim SourceCircG As New GCircle(mainCirc, SourceG)
 
-        '' Determine the circle intersection(s).
-        'Dim Intersections _
-        '    As System.Collections.Generic.List(Of OSNW.Numerics.PointD) =
-        '           GenericCircle.GetIntersections(TargetCircR, LoadCircG)
-
-        '' THESE CHECKS CAN BE DELETED/COMMENTED AFTER THE GetIntersections()
-        '' RESULTS ARE KNOWN TO BE CORRECT.
-        '' There should now be either one or two intersection points. With
-        '' two, there should be one above, and one below, the resonance line.
-        'If Intersections.Count < 1 OrElse Intersections.Count > 2 Then
-        '    'Dim CaughtBy As System.Reflection.MethodBase =
-        '    '    System.Reflection.MethodBase.GetCurrentMethod
-        '    Throw New System.ApplicationException(Impedance.MSGIIC)
-        'End If
-        'If Intersections.Count.Equals(2) Then
-        '    ' The X values should match. Check for reasonable equality when using
-        '    ' floating point values.
-        '    If Not Impedance.EqualEnough(Intersections(0).X, Intersections(0).X) Then
-        '        'Dim CaughtBy As System.Reflection.MethodBase =
-        '        '    System.Reflection.MethodBase.GetCurrentMethod
-        '        Throw New System.ApplicationException("X values do not match.")
-        '    End If
-        '    ' The Y values should be the same distance above and below the
-        '    ' resonance line. Check for reasonable equality when using floating
-        '    ' point values.
-        '    Dim Offset0 As System.Double =
-        '            System.Math.Abs(Intersections(0).Y - MainCirc.GridCenterY)
-        '    Dim Offset1 As System.Double =
-        '            System.Math.Abs(Intersections(1).Y - MainCirc.GridCenterY)
-        '    If Not Impedance.EqualEnough(Offset1, Offset0) Then
-        '        'Dim CaughtBy As System.Reflection.MethodBase =
-        '        '    System.Reflection.MethodBase.GetCurrentMethod
-        '        Throw New System.ApplicationException("Y offsets do not match.")
-        '    End If
-        'End If
-
-        '' There are now either one or two intersection points. With two, there
-        '' is one above, and one below, the resonance line; the X values match;
-        '' the Y values are the same distance above and below the resonance line.
-
-        '' Set up useful values.
-        'Dim Style As TransformationStyles
-        'Dim DeltaB As System.Double
-        'Dim DeltaX As System.Double
-        'Dim DeltaY As Admittance
-        'Dim DeltaZ As Impedance
+        ' Set up useful local values. CONSOLIDATE/REMOVE LATER AS ABLE.
+        Dim PD As PlotDetails =
+            mainCirc.GetDetailsFromPlot(oneIntersection.X, oneIntersection.Y)
+        'Dim ImageZ As Impedance = PD.Impedance
+        Dim ImageY As Admittance = PD.Admittance
+        Dim DeltaB As System.Double
         'Dim ImageR As System.Double = TargetR
-        'Dim ImageX As System.Double
+        Dim ImageX As System.Double
         'Dim ImageG As System.Double = TargetG
-        'Dim ImageB As System.Double = 999
-        'Dim ImageY As New Admittance(999, 999)
-        'Dim ImageZ As Impedance
+        Dim ImageB As System.Double = ImageY.Susceptance
+        Dim DeltaX As System.Double
+        Dim DeltaY As Admittance
+        Dim DeltaZ As Impedance
+        Dim Style As TransformationStyles
 
-        'If Intersections.Count.Equals(1) Then
-        '    ' With one intersection, expect one valid solution. That will
-        '    ' only happen when the two circles are tangent at a point on the
-        '    ' resonance line.
-        '    ' xxxxxxxx Move CW or CCW on the LoadG circle to the LoadR circle.
+        ' Determine the changes to take place.
+        DeltaB = ImageB - LoadB
+        DeltaY = New Admittance(0, DeltaB)
+        DeltaZ = DeltaY.ToImpedance
+        DeltaX = SourceX - ImageX
 
-        '    '
-        '    '
-        '    '
-        '    '
-        '    '
+        ' Set up the transformation.
+        Dim Trans As New Transformation
+        With Trans
+            If DeltaB < 0.0 Then
+                ' CCW on a G-circle needs a shunt inductor.
+                If DeltaX < 0.0 Then
+                    ' CCW on a R-circle needs a series capacitor.
+                    .Style = TransformationStyles.ShuntIndSeriesCap
+                Else
+                    ' CW on a R-circle needs a series inductor.
+                    .Style = TransformationStyles.ShuntIndSeriesInd
+                End If
+            Else
+                ' CW on a G-circle needs a shunt capacitor.
+                If DeltaX < 0.0 Then
+                    ' CCW on a R-circle needs a series capacitor.
+                    .Style = TransformationStyles.ShuntCapSeriesCap
+                Else
+                    ' CW on a R-circle needs a series inductor.
+                    .Style = TransformationStyles.ShuntCapSeriesInd
+                End If
+            End If
+            .Value1 = DeltaZ.Reactance
+            .Value2 = DeltaX
+        End With
 
-        '    ' At least for now,
-        '    ' On getting this far,
-        '    Return False
+        ' Add to the array of transformations.
+        Dim CurrTransCount As System.Int32 = transformations.Length
+        ReDim Preserve transformations(CurrTransCount)
+        transformations(CurrTransCount) = Trans
 
-
-
-        'Else
-        '    ' With two intersections, expect two valid solutions, one to
-        '    ' each intersection.
-        '    ' xxxxxxxx Move CW or CCW on the LoadG circle to the LoadR circle.
-
-
-
-        '    ' At least for now,
-        '    ' On getting this far,
-        '    Return False
-
-        'End If
-
-        ''
-        ''
-        '' At least for now,
-        '' On getting this far,
-        'Return False
-        ''
-        ''
-        ''
+        ' On getting this far,
+        Return True
 
     End Function ' MatchArbFirstOnG
 
     ''' <summary>
     ''' xxxxxxxxxx
     ''' </summary>
-    ''' <param name="MainCirc">xxxxxxxxxx</param>
+    ''' <param name="mainCirc">xxxxxxxxxx</param>
     ''' <param name="loadZ">xxxxxxxxxx</param>
-    ''' <param name="targetZ">xxxxxxxxxx</param>
+    ''' <param name="sourceZ">xxxxxxxxxx</param>
     ''' <param name="transformations">xxxxxxxxxx</param>
     ''' <returns>xxxxxxxxxx</returns>
-    Public Shared Function MatchArbFirstOnR(ByVal MainCirc As SmithMainCircle,
-        ByVal loadZ As Impedance, ByVal targetZ As Impedance,
+    Public Shared Function MatchArbFirstOnR(ByVal mainCirc As SmithMainCircle,
+        ByVal loadZ As Impedance, ByVal sourceZ As Impedance,
         ByRef transformations As Transformation()) _
         As System.Boolean
 
@@ -169,27 +121,27 @@ Partial Public Structure Impedance
         '
 
         '' Set up useful values.
-        'Dim Z0 As Double = MainCirc.Z0
+        'Dim Z0 As Double = mainCirc.Z0
         'Dim Y0 As Double = 1.0 / Z0
         'Dim LoadR As Double = loadZ.Resistance
         'Dim LoadX As Double = loadZ.Reactance
-        'Dim LoadCircR As New RCircle(MainCirc, LoadR)
+        'Dim LoadCircR As New RCircle(mainCirc, LoadR)
         'Dim LoadY As Admittance = loadZ.ToAdmittance()
         'Dim LoadG As Double = LoadY.Conductance
         'Dim LoadB As Double = LoadY.Susceptance
-        'Dim LoadCircG As New GCircle(MainCirc, LoadG)
-        'Dim TargetR As Double = targetZ.Resistance
-        'Dim TargetX As Double = targetZ.Reactance
-        'Dim TargetCircR As New RCircle(MainCirc, TargetR)
-        'Dim TargetY As Admittance = targetZ.ToAdmittance()
-        'Dim TargetG As Double = TargetY.Conductance
-        'Dim TargetB As Double = TargetY.Susceptance
-        'Dim TargetCircG As New GCircle(MainCirc, TargetG)
+        'Dim LoadCircG As New GCircle(mainCirc, LoadG)
+        'Dim sourceR As Double = sourceZ.Resistance
+        'Dim sourceX As Double = sourceZ.Reactance
+        'Dim sourceCircR As New RCircle(mainCirc, sourceR)
+        'Dim sourceY As Admittance = sourceZ.ToAdmittance()
+        'Dim sourceG As Double = sourceY.Conductance
+        'Dim sourceB As Double = sourceY.Susceptance
+        'Dim sourceCircG As New GCircle(mainCirc, sourceG)
 
         '' Determine the circle intersection(s).
         'Dim Intersections _
         '    As System.Collections.Generic.List(Of OSNW.Numerics.PointD) =
-        '           GenericCircle.GetIntersections(TargetCircR, LoadCircG)
+        '           GenericCircle.GetIntersections(sourceCircR, LoadCircG)
 
         '' THESE CHECKS CAN BE DELETED/COMMENTED AFTER THE GetIntersections()
         '' RESULTS ARE KNOWN TO BE CORRECT.
@@ -212,9 +164,9 @@ Partial Public Structure Impedance
         '    ' resonance line. Check for reasonable equality when using floating
         '    ' point values.
         '    Dim Offset0 As System.Double =
-        '            System.Math.Abs(Intersections(0).Y - MainCirc.GridCenterY)
+        '            System.Math.Abs(Intersections(0).Y - mainCirc.GridCenterY)
         '    Dim Offset1 As System.Double =
-        '            System.Math.Abs(Intersections(1).Y - MainCirc.GridCenterY)
+        '            System.Math.Abs(Intersections(1).Y - mainCirc.GridCenterY)
         '    If Not Impedance.EqualEnough(Offset1, Offset0) Then
         '        'Dim CaughtBy As System.Reflection.MethodBase =
         '        '    System.Reflection.MethodBase.GetCurrentMethod
@@ -232,9 +184,9 @@ Partial Public Structure Impedance
         'Dim DeltaX As System.Double
         'Dim DeltaY As Admittance
         'Dim DeltaZ As Impedance
-        'Dim ImageR As System.Double = TargetR
+        'Dim ImageR As System.Double = sourceR
         'Dim ImageX As System.Double
-        'Dim ImageG As System.Double = TargetG
+        'Dim ImageG As System.Double = sourceG
         'Dim ImageB As System.Double = 999
         'Dim ImageY As New Admittance(999, 999)
         'Dim ImageZ As Impedance
@@ -281,138 +233,90 @@ Partial Public Structure Impedance
 
     End Function ' MatchArbFirstOnR
 
-
-
     ''' <summary>
-    ''' xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    ''' xxxxxxxxxxxxxxxxxxxxxxxxxx
     ''' </summary>
-    ''' <returns></returns>
+    ''' <returns>xxxxxxxxxxxxxxxxxxxxxxxxxx</returns>
     Public Shared Function MatchArbitraryIntersection(
-        ByVal oneIntersection As OSNW.Numerics.PointD,
-        ByVal MainCirc As SmithMainCircle, ByVal loadZ As Impedance, ByVal sourceZ As Impedance,
-        ByRef transformations As Transformation()) _
+        ByVal mainCirc As SmithMainCircle,
+        ByVal oneIntersection As OSNW.Numerics.PointD, ByVal loadZ As Impedance,
+        ByVal sourceZ As Impedance, ByRef transformations As Transformation()) _
         As System.Boolean
 
-        '
-        '
-        ' At least for now,
+        ' Set up useful local values. CONSOLIDATE/REMOVE LATER AS ABLE.
+        Dim Z0 As Double = mainCirc.Z0
+        Dim Y0 As Double = 1.0 / Z0
+        Dim LoadR As Double = loadZ.Resistance
+        Dim LoadX As Double = loadZ.Reactance
+        Dim LoadPosX As Double
+        Dim LoadPosY As Double
+        mainCirc.GetPlotXY(LoadR, LoadX, LoadPosX, LoadPosY)
+        Dim LoadY As Admittance = loadZ.ToAdmittance()
+        Dim LoadG As Double = LoadY.Conductance
+        Dim LoadB As Double = LoadY.Susceptance
+        Dim LoadCircR As New RCircle(mainCirc, LoadR)
+        Dim LoadCircG As New GCircle(mainCirc, LoadG)
+        Dim SourceR As Double = sourceZ.Resistance
+        Dim SourceX As Double = sourceZ.Reactance
+        Dim SourcePosX As Double
+        Dim SourcePosY As Double
+        mainCirc.GetPlotXY(SourceR, SourceX, SourcePosX, SourcePosY)
+        Dim SourceY As Admittance = sourceZ.ToAdmittance()
+        Dim SourceG As Double = SourceY.Conductance
+        Dim SourceB As Double = SourceY.Susceptance
+        Dim SourceCircR As New RCircle(mainCirc, SourceR)
+        Dim SourceCircG As New GCircle(mainCirc, SourceG)
+
+        Dim ImageR As System.Double = 999
+        Dim ImageX As System.Double = 999
+        Dim ImageG As System.Double = 999
+        Dim ImageB As System.Double = 999
+        Dim ImageY As Admittance
+        Dim ImageZ As Impedance
+
+
+
+        ' ISN'T THIS SUPPOSED TO TO BOTH G- AND R-FIRST?
+        If LoadB < ImageB Then
+            If Not MatchArbFirstOnG(mainCirc, oneIntersection,
+                 loadZ, sourceZ, transformations) Then
+
+                Return False
+            End If
+        ElseIf LoadB > ImageB Then
+            If Not MatchArbFirstOnR(mainCirc,
+                 loadZ, sourceZ, transformations) Then
+
+                Return False
+            End If
+        Else
+            ' ImageG = (LoadG)
+
+            '
+            '
+            ' At least for now,
+            ' On getting this far,
+            Return False
+            '
+            '
+        End If
+
         ' On getting this far,
-        Return False
-        '
-        '
-        '
-
-        'xxxxxxxxxxxxxxxxxxxxxxxxxx
-        ' xxxxxxxx First, move CW or CCW on the LoadG circle to the LoadR circle.
-        ' or
-        ' xxxxxxxx First, move CW or CCW on the LoadR circle to the LoadG circle.
-        'xxxxxxxxxxxxxxxxxxxxxxxxxx
-
-        ' First, move CW or CCW on the LoadG circle to the LoadR circle.
-
-
-        If Not MatchArbFirstOnG(MainCirc,
-                 loadZ, sourceZ, transformations) Then
-
-            '
-            '
-            ' At least for now,
-            ' On getting this far,
-            Return False
-            '
-            '
-        End If
-
-
-        '
-        '
-        '
-        '
-        '
-
-
-
-
-
-
-        ' First, move CW or CCW on the LoadR circle to the LoadG circle.
-        If Not MatchArbFirstOnG(MainCirc,
-                 loadZ, sourceZ, transformations) Then
-
-            '
-            '
-            ' At least for now,
-            ' On getting this far,
-            Return False
-            '
-            '
-        End If
-        '
-        '
-        '
-        '
-        '
-
-
-
-        '' Calculate the image admittance at the intersection point.
-
-        'DeltaB = GetMatchArbitraryImageDeltaB(MainCirc, loadZ, oneIntersection)
-        'DeltaY = New Admittance(0, DeltaB)
-        'DeltaZ = DeltaY.ToImpedance
-        'ImageZ = Impedance.AddShuntImpedance(loadZ, DeltaZ)
-        'ImageX = ImageZ.Reactance
-        'DeltaX = SourceX - ImageX
-        'If oneIntersection.Y > MainCirc.GridCenterY Then
-        '    ' CCW on a G-circle needs a shunt inductor
-        '    ' CCW on an R-circle needs a series capacitor
-        '    Style = TransformationStyles.ShuntIndSeriesCap
-        'ElseIf oneIntersection.Y < MainCirc.GridCenterY Then
-        '    ' CW on a G-circle needs a shunt capacitor
-        '    ' CW on an R-circle needs a series inductor
-        '    Style = TransformationStyles.ShuntCapSeriesInd
-        'Else ' OneIntersection.Y = MainCirc.GridCenterY
-        '    '
-        '    '
-        '    '
-        '    ' Where might this happen? Account for special cases. Maybe if the
-        '    ' load and source are on the R=Z0 and G=Y0 circles?
-        '    '
-        '    'Dim CaughtBy As System.Reflection.MethodBase =
-        '    '    System.Reflection.MethodBase.GetCurrentMethod
-        '    Throw New System.ApplicationException("OneIntersection.Y = 0.0")
-        '    '
-        '    '
-        '    '
-        'End If
-        'Dim Transformation As New Transformation With {
-        '            .Style = Style,
-        '            .Value1 = DeltaZ.Reactance,
-        '            .Value2 = DeltaX}
-        ''If Not Me.InsideGEqualsY0(
-        ''    MainCirc, OneIntersection, Transformation) Then
-        ''    'Dim CaughtBy As System.Reflection.MethodBase =
-        ''    '    System.Reflection.MethodBase.GetCurrentMethod
-        ''    Throw New System.ApplicationException("Transformation failed.")
-        ''End If
-        ''
-
-
+        Return True
 
     End Function ' MatchArbitraryIntersection
-    '    xxxx
 
     ''' <summary>
     ''' Attempts to obtain a conjugate match from the specified load
     ''' <c>Impedance</c> to the specified arbitrary source <c>Impedance</c>, on
-    ''' the specified <c>SmithMainCircle</c>.
+    ''' the specified <c>SmithmainCircle</c>.
     ''' </summary>
+    ''' <param name="mainCirc">Specifies a <c>SmithmainCircle</c> in which the
+    ''' match is to be made.</param>
     ''' <param name="loadZ">Specifies the <c>Impedance</c> to match to
     ''' <paramref name="sourceZ"/>.</param>
     ''' <param name="sourceZ">Specifies the <c>Impedance</c> to which
     ''' <paramref name="loadZ"/> should be matched.</param>
-    ''' <param name="MainCirc">Specifies a <c>SmithMainCircle</c> in which the
-    ''' match is to be made.</param>
     ''' <param name="transformations">Specifies an array of
     ''' <see cref="Transformation"/>s that can be used to match a load
     ''' <c>Impedance</c> to match a source <c>Impedance</c>.</param>
@@ -428,8 +332,8 @@ Partial Public Structure Impedance
     ''' <paramref name="transformations"/>.
     ''' </remarks>
     Public Shared Function MatchArbitrary(
+        ByVal mainCirc As SmithMainCircle,
         ByVal loadZ As Impedance, ByVal sourceZ As Impedance,
-        ByVal MainCirc As SmithMainCircle,
         ByRef transformations As Transformation()) _
         As System.Boolean
 
@@ -437,28 +341,28 @@ Partial Public Structure Impedance
         ' https://amris.mbi.ufl.edu/wordpress/files/2021/01/SmithChart_FullPresentation.pdf
 
         ' Set up useful local values. CONSOLIDATE/REMOVE LATER AS ABLE.
-        Dim Z0 As Double = MainCirc.Z0
+        Dim Z0 As Double = mainCirc.Z0
         Dim Y0 As Double = 1.0 / Z0
         Dim LoadR As Double = loadZ.Resistance
         Dim LoadX As Double = loadZ.Reactance
         Dim LoadPosX As Double
         Dim LoadPosY As Double
-        MainCirc.GetPlotXY(LoadR, LoadX, LoadPosX, LoadPosY)
+        mainCirc.GetPlotXY(LoadR, LoadX, LoadPosX, LoadPosY)
         Dim LoadY As Admittance = loadZ.ToAdmittance()
         Dim LoadG As Double = LoadY.Conductance
         Dim LoadB As Double = LoadY.Susceptance
-        Dim LoadCircR As New RCircle(MainCirc, LoadR)
-        Dim LoadCircG As New GCircle(MainCirc, LoadG)
+        Dim LoadCircR As New RCircle(mainCirc, LoadR)
+        Dim LoadCircG As New GCircle(mainCirc, LoadG)
         Dim SourceR As Double = sourceZ.Resistance
         Dim SourceX As Double = sourceZ.Reactance
         Dim SourcePosX As Double
         Dim SourcePosY As Double
-        MainCirc.GetPlotXY(SourceR, SourceX, SourcePosX, SourcePosY)
+        mainCirc.GetPlotXY(SourceR, SourceX, SourcePosX, SourcePosY)
         Dim SourceY As Admittance = sourceZ.ToAdmittance()
         Dim SourceG As Double = SourceY.Conductance
         Dim SourceB As Double = SourceY.Susceptance
-        Dim SourceCircR As New RCircle(MainCirc, SourceR)
-        Dim SourceCircG As New GCircle(MainCirc, SourceG)
+        Dim SourceCircR As New RCircle(mainCirc, SourceR)
+        Dim SourceCircG As New GCircle(mainCirc, SourceG)
 
         ' ===== FOR DIAGNOSTIC PURPOSES ONLY. =====
         Dim BaseDiagInfo As New System.Text.StringBuilder
@@ -509,10 +413,21 @@ Partial Public Structure Impedance
             '    System.Reflection.MethodBase.GetCurrentMethod
             Throw New System.ApplicationException(Impedance.MSGIIC)
         End If
+        If Intersections.Count.Equals(1) Then
+            ' The tangency should be on the resonance line.
+            If Not Impedance.EqualEnough(Intersections(0).Y,
+                                         mainCirc.GridCenterY) Then
+                'Dim CaughtBy As System.Reflection.MethodBase =
+                '    System.Reflection.MethodBase.GetCurrentMethod
+                Throw New System.ApplicationException(
+                    "The tangency is not on the resonance line.")
+            End If
+        End If
         If Intersections.Count.Equals(2) Then
-            ' The X values should match. Check for reasonable equality when using
-            ' floating point values.
-            If Not Impedance.EqualEnough(Intersections(0).X, Intersections(0).X) Then
+            ' The X values should match. Check for reasonable equality when
+            ' using floating point values.
+            If Not Impedance.EqualEnough(Intersections(0).X,
+                                         Intersections(0).X) Then
                 'Dim CaughtBy As System.Reflection.MethodBase =
                 '    System.Reflection.MethodBase.GetCurrentMethod
                 Throw New System.ApplicationException("X values do not match.")
@@ -521,9 +436,9 @@ Partial Public Structure Impedance
             ' resonance line. Check for reasonable equality when using floating
             ' point values.
             Dim Offset0 As System.Double =
-                    System.Math.Abs(Intersections(0).Y - MainCirc.GridCenterY)
+                    System.Math.Abs(Intersections(0).Y - mainCirc.GridCenterY)
             Dim Offset1 As System.Double =
-                    System.Math.Abs(Intersections(1).Y - MainCirc.GridCenterY)
+                    System.Math.Abs(Intersections(1).Y - mainCirc.GridCenterY)
             If Not Impedance.EqualEnough(Offset1, Offset0) Then
                 'Dim CaughtBy As System.Reflection.MethodBase =
                 '    System.Reflection.MethodBase.GetCurrentMethod
@@ -531,76 +446,33 @@ Partial Public Structure Impedance
             End If
         End If
 
-        ' There are now either one or two intersection points. With two, there
+        ' There are now either one or two intersection points. With one, the two
+        ' circles are tagent at a point on the resonance line. With two: there
         ' is one above, and one below, the resonance line; the X values match;
         ' the Y values are the same distance above and below the resonance line.
 
-        ' Move
-        '     CW or CCW on the LoadG circle to the SourceR circle; there may be
-        '     either one or two intersections.
-        '     Then CW or CCW on the SourceR circle to SourceZ.
-        ' or
-        ' Move
-        '     CW or CCW on the LoadR circle to the SourceG circle; there may be
-        '     either one or two intersections.
-        '     Then CW or CCW on the SourceG circle to SourceZ.
+        '' Set up useful values. CONSOLIDATE/REMOVE LATER AS ABLE.
+        'Dim Style As TransformationStyles
+        'Dim DeltaB As System.Double
+        'Dim DeltaX As System.Double
+        'Dim DeltaY As Admittance
+        'Dim DeltaZ As Impedance
+        'Dim ImageR As System.Double = SourceR
+        'Dim ImageX As System.Double
+        'Dim ImageG As System.Double = SourceG
+        'Dim ImageB As System.Double = 999
+        'Dim ImageY As New Admittance(999, 999)
+        'Dim ImageZ As Impedance
 
-        ' Set up useful values. CONSOLIDATE/REMOVE LATER AS ABLE.
-        Dim Style As TransformationStyles
-        Dim DeltaB As System.Double
-        Dim DeltaX As System.Double
-        Dim DeltaY As Admittance
-        Dim DeltaZ As Impedance
-        Dim ImageR As System.Double = SourceR
-        Dim ImageX As System.Double
-        Dim ImageG As System.Double = SourceG
-        Dim ImageB As System.Double = 999
-        Dim ImageY As New Admittance(999, 999)
-        Dim ImageZ As Impedance
-
-        If Intersections.Count.Equals(1) OrElse
-            Intersections.Count.Equals(2) Then
-
-            For Each OneIntersection As OSNW.Numerics.PointD In Intersections
-                If MatchArbitraryIntersection(OneIntersection, MainCirc, loadZ, sourceZ, transformations) Then
-                    '
-                    '
-                    '
-                    ' At least for now,
-                    ' On getting this far,
-                    Return False
-                    '
-                    '
-                    '
-                Else
-                    '
-                    '
-                    '
-                    ' At least for now,
-                    ' On getting this far,
-                    Return False
-                    '
-                    '
-                    '
-                End If
-            Next
-
-            '
-            '
-            ' At least for now,
-            ' On getting this far,
-            Return False
-            '
-            '
-            '
-
-        Else
-            ' There are either no intersections or an invalid number of intersections.
-            Return False
-        End If
+        For Each OneIntersection As OSNW.Numerics.PointD In Intersections
+            If Not MatchArbitraryIntersection(mainCirc, OneIntersection, loadZ,
+                                              sourceZ, transformations) Then
+                Return False
+            End If
+        Next
 
         ' On getting this far,
-        Return False
+        Return True
 
     End Function ' MatchArbitrary
 
@@ -639,7 +511,7 @@ Partial Public Structure Impedance
 
         ' Dim MainCirc As New SmithMainCircle(1.0, 1.0, 1.0, z0) ' Arbitrary.
         Dim MainCirc As New SmithMainCircle(4.0, 5.0, 4.0, z0) ' Test data.
-        Return MatchArbitrary(loadZ, sourceZ, MainCirc, transformations)
+        Return MatchArbitrary(MainCirc, loadZ, sourceZ, transformations)
     End Function ' MatchArbitrary
 
 End Structure ' Impedance
