@@ -274,31 +274,41 @@ Partial Public Structure Impedance
         Dim ImageY As Admittance
         Dim ImageZ As Impedance
 
+        '' ISN'T THIS SUPPOSED TO TO BOTH G- AND R-FIRST FOR THE ONE INTERSECTION?
+        'If LoadB < ImageB Then
+        '    If Not MatchArbFirstOnG(mainCirc, oneIntersection,
+        '         loadZ, sourceZ, transformations) Then
 
+        '        Return False
+        '    End If
+        'ElseIf LoadB > ImageB Then
+        '    If Not MatchArbFirstOnR(mainCirc,
+        '         loadZ, sourceZ, transformations) Then
 
-        ' ISN'T THIS SUPPOSED TO TO BOTH G- AND R-FIRST?
-        If LoadB < ImageB Then
-            If Not MatchArbFirstOnG(mainCirc, oneIntersection,
+        '        Return False
+        '    End If
+        'Else
+        '    ' ImageG = (LoadG)
+
+        '    '
+        '    '
+        '    ' At least for now,
+        '    ' On getting this far,
+        '    Return False
+        '    '
+        '    '
+        'End If
+
+        ' ISN'T THIS SUPPOSED TO TO BOTH G- AND R-FIRST FOR THE ONE INTERSECTION?
+        If Not MatchArbFirstOnG(mainCirc, oneIntersection,
                  loadZ, sourceZ, transformations) Then
 
-                Return False
-            End If
-        ElseIf LoadB > ImageB Then
-            If Not MatchArbFirstOnR(mainCirc,
-                 loadZ, sourceZ, transformations) Then
-
-                Return False
-            End If
-        Else
-            ' ImageG = (LoadG)
-
-            '
-            '
-            ' At least for now,
-            ' On getting this far,
             Return False
-            '
-            '
+        End If
+        If Not MatchArbFirstOnR(mainCirc,
+                 loadZ, sourceZ, transformations) Then
+
+            Return False
         End If
 
         ' On getting this far,
