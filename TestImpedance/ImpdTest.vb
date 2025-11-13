@@ -460,49 +460,20 @@ Namespace DevelopmentTests
 
 
 
-        '<InlineData(  Z0,        R,         X)> ' Model
-        '<InlineData( 1.0,   0.0000,    0.0000)> ' A: At the short circuit point. Omit - covered by B.
-        '<InlineData( 1.0,   0.0000,     1/2.0)> ' B: Anywhere else on the perimeter. R=0.0.
-        '<InlineData( 1.0,      INF,    0.0000)> ' C: At the open circuit point on the right.
-        '<InlineData( 1.0,   1.0000,    0.0000)> ' D1: At the center.
-        '<InlineData(75.0,  75.0000,    0.0000)> ' D75: At the center. Z0=75.
+
+
         '<InlineData( 1.0,   1.0000,    1.0000)> ' E1: On R=Z0 circle, above resonance line. Only needs reactance.
         '<InlineData(50.0,  50.0000,   50.0000)> ' E50: On R=Z0 circle, above resonance line. Only needs reactance. Z0=50.
-        '<InlineData( 1.0,   1.0000,   -2.0000)> ' F1: On R=Z0 circle, below resonance line. Only needs reactance.
-        '<InlineData(50.0,  50.0000, -100.0000)> ' F50: On R=Z0 circle, below resonance line. Only needs reactance. Z0=50.
-        '<InlineData( 1.0,   2.0000,     1/2.0)> ' G1: Inside R=Z0 circle, above resonance line.
-        '<InlineData(50.0, 100.0000,   25.0000)> ' G50: Inside R=Z0 circle, above resonance line. Z0=50.
-        '<InlineData( 1.0,   3.0000,    0.0000)> ' H1: Inside R=Z0 circle, on line.
-        '<InlineData(50.0, 150.0000,    0.0000)> ' H50: Inside R=Z0 circle, on line. Z0=50.
         '<InlineData( 1.0,   2.0000,   -2.0000)> ' I1: Inside R=Z0 circle, below resonance line.
         '<InlineData(50.0, 100.0000, -100.0000)> ' I50: Inside R=Z0 circle, below resonance line. Z0=50.
-        '<InlineData( 1.0,    1/2.0,     1/2.0)> ' J1: On G=Y0 circle, above resonance line. Only needs reactance.
-        '<InlineData(50.0,  25.0000,   25.0000)> ' J50: On G=Y0 circle, above resonance line. Only needs reactance. Z0=50.
-        '<InlineData( 1.0,    1/2.0,    -1/2.0)> ' K1: On G=Y0 circle, below resonance line. Only needs reactance.
-        '<InlineData(50.0,  25.0000,  -25.0000)> ' K50: On G=Y0 circle, below resonance line. Only needs reactance. Z0=50.
         '<InlineData( 1.0,    1/3.0,     1/3.0)> ' L1: Inside G=Y0 circle, above resonance line.
         '<InlineData(75.0,  25.0000,   25.0000)> ' L75: Inside G=Y0 circle, above resonance line. Z0=75.
         '<InlineData( 1.0,    1/3.0,    0.0000)> ' M1: Inside G=Y0 circle, on line.
         '<InlineData(75.0,  25.0000,    0.0000)> ' M75: Inside G=Y0 circle, on line. Z0=75.
-        '<InlineData( 1.0,    1/2.0,    -1/3.0)> ' N1: Inside G=Y0 circle, below line.
-        '<InlineData(75.0,  37.5000,  -25.0000)> ' N75: Inside G=Y0 circle, below line. Z0=75.
         '<InlineData( 1.0,   0.2000,    1.4000)> ' O1: In the top center.
         '<InlineData(50.0,  10.0000,   70.0000)> ' O50: In the top center. Z0=50.
         '<InlineData( 1.0,   0.4000,   -0.8000)> ' P1: In the bottom center.
         '<InlineData(50.0,  20.0000,  -40.0000)> ' P50: In the bottom center. Z0=50.
-        '<InlineData( 1.0,  -0.0345,    0.4138)> ' Q: Outside of main circle. Invalid.
-        '<InlineData( 1.0,  -2.0000,       999)> ' R: NormR<=0. Invalid.
-
-
-        '<InlineData( 1.0,   1.0000,    1.0000)> ' E1: On R=Z0 circle, above resonance line. Only needs reactance.
-        '<InlineData(50.0,  50.0000,   50.0000)> ' E50: On R=Z0 circle, above resonance line. Only needs reactance. Z0=50.
-        '<InlineData( 1.0,   2.0000,   -2.0000)> ' I1: Inside R=Z0 circle, below resonance line.
-        '<InlineData(50.0, 100.0000, -100.0000)> ' I50: Inside R=Z0 circle, below resonance line. Z0=50.
-        '<InlineData( 1.0,    1/3.0,     1/3.0)> ' L1: Inside G=Y0 circle, above resonance line.
-        '<InlineData(75.0,  25.0000,   25.0000)> ' L75: Inside G=Y0 circle, above resonance line. Z0=75.
-        '<InlineData( 1.0,    1/3.0,    0.0000)> ' M1: Inside G=Y0 circle, on line.
-        '<InlineData(75.0,  25.0000,    0.0000)> ' M75: Inside G=Y0 circle, on line. Z0=75.
-
 
         <Theory>
         <InlineData(1, 1.0, 1.0, 0.5, 0.2)> ' L75 to AMRIS.
@@ -511,11 +482,13 @@ Namespace DevelopmentTests
         <InlineData(75, 50.0, 50.0, 100.0, -100.0)> ' E50 to I50.
         <InlineData(1, 1 / 3.0, 1 / 3.0, 1 / 3.0, 0.0000)> ' L1 to M1.
         <InlineData(75, 25.0, 25.0, 25.0, 0.0000)> ' L75 to M75.
-        Sub TestMatchArbitrary(z0 As Double, loadr As Double, loadX As Double, targetR As Double, targetX As Double)
+        <InlineData(1.0, 0.2, 1.4, 0.4, -0.8)> ' O1 to P1.
+        <InlineData(50.0, 10.0, 70.0, 20.0, -40.0)> ' O50 to P50.
+        Sub TestMatchArbitrary(z0 As Double, loadr As Double, loadX As Double, sourceR As Double, sourceX As Double)
 
             Dim Y0 As Double = 1.0 / z0
             Dim loadZ As New Impedance(loadr, loadX)
-            Dim targetz As New Impedance(targetR, targetX)
+            Dim targetz As New Impedance(sourceR, sourceX)
             Dim transformations As Transformation() = Array.Empty(Of Transformation)
 
             Assert.True(MatchArbitrary(z0, loadZ, targetz, transformations))

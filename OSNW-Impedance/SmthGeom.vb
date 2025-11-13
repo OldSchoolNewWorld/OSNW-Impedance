@@ -241,6 +241,19 @@ Public Class GenericCircle
     End Function ' GetIntersections
 
     ''' <summary>
+    ''' xxxxxxxxxx
+    ''' </summary>
+    ''' <param name="circle1">xxxxxxxxxx</param>
+    ''' <param name="circle2">xxxxxxxxxx</param>
+    ''' <returns>xxxxxxxxxx</returns>
+    Public Shared Function CirclesIntersect(ByVal circle1 As GenericCircle,
+        ByVal circle2 As GenericCircle) As System.Boolean
+
+        ' xxxxxxxxxx NO TEST HAS BEEN ADDED FOR THIS. xxxxxxxxxx
+        Return circle1.GetIntersections(circle2).Count > 0
+    End Function ' CirclesIntersect
+
+    ''' <summary>
     ''' A default constructor that creates a new instance of the
     ''' <c>GenericCircle</c> class with default center coordinates and radius.
     ''' </summary>
