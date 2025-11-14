@@ -501,6 +501,17 @@ Partial Public Structure Impedance
             Return False
         End If
 
+        ' ===== FOR DIAGNOSTIC PURPOSES ONLY. =====
+        Dim TransformationDiagInfo As New System.Text.StringBuilder
+        TransformationDiagInfo.Append($"FirstOnG:")
+        For Each OneTransformation As Transformation In transformations
+            With TransformationDiagInfo
+                .Append($" {NameOf(OneTransformation.Style)}: {OneTransformation.Style}")
+                .Append($"; Value1: {OneTransformation.Value1}")
+                .Append($"; Value2: {OneTransformation.Value2}")
+            End With
+        Next
+
         ' On getting this far,
         Return True
 
@@ -589,7 +600,7 @@ Partial Public Structure Impedance
             .Append($"; {NameOf(SourceCircG)}: {SourceCircG}")
         End With
 
-        ' Try each approach to finding a match.
+        ' Try each approach to finding a match, only if the circles intersect.
         If GenericCircle.CirclesIntersect(LoadCircG, SourceCircR) Then
             If Not MatchArbFirstOnG(
                 mainCirc, loadZ, sourceZ, transformations) Then
@@ -604,6 +615,17 @@ Partial Public Structure Impedance
                 Return False
             End If
         End If
+
+        ' ===== FOR DIAGNOSTIC PURPOSES ONLY. =====
+        Dim TransformationDiagInfo As New System.Text.StringBuilder
+        For Each OneTransformation As Transformation In transformations
+            With TransformationDiagInfo
+                .Append($" {NameOf(OneTransformation.Style)}:" &
+                        $" {OneTransformation.Style}")
+                .Append($"; Value1: {OneTransformation.Value1}")
+                .Append($"; Value2: {OneTransformation.Value2}")
+            End With
+        Next
 
         ' On getting this far,
         Return True
