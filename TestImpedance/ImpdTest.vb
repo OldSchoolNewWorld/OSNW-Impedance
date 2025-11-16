@@ -452,28 +452,11 @@ Namespace DevelopmentTests
 
         'End Function ' MatchArbitrary
 
-        Public Function MatchArbitrary(z0 As System.Double, loadZ As Impedance, targetZ As Impedance,
+        Public Function MatchArbitrary(z0 As System.Double, loadZ As Impedance, sourceZ As Impedance,
             ByRef transformations As Transformation()) As System.Boolean
 
-            Return OsnwImpd.MatchArbitrary(z0, loadZ, targetZ, transformations)
+            Return OsnwImpd.MatchArbitrary(z0, loadZ, sourceZ, transformations)
         End Function
-
-
-
-
-
-        '<InlineData( 1.0,   1.0000,    1.0000)> ' E1: On R=Z0 circle, above resonance line. Only needs reactance.
-        '<InlineData(50.0,  50.0000,   50.0000)> ' E50: On R=Z0 circle, above resonance line. Only needs reactance. Z0=50.
-        '<InlineData( 1.0,   2.0000,   -2.0000)> ' I1: Inside R=Z0 circle, below resonance line.
-        '<InlineData(50.0, 100.0000, -100.0000)> ' I50: Inside R=Z0 circle, below resonance line. Z0=50.
-        '<InlineData( 1.0,    1/3.0,     1/3.0)> ' L1: Inside G=Y0 circle, above resonance line.
-        '<InlineData(75.0,  25.0000,   25.0000)> ' L75: Inside G=Y0 circle, above resonance line. Z0=75.
-        '<InlineData( 1.0,    1/3.0,    0.0000)> ' M1: Inside G=Y0 circle, on line.
-        '<InlineData(75.0,  25.0000,    0.0000)> ' M75: Inside G=Y0 circle, on line. Z0=75.
-        '<InlineData( 1.0,   0.2000,    1.4000)> ' O1: In the top center.
-        '<InlineData(50.0,  10.0000,   70.0000)> ' O50: In the top center. Z0=50.
-        '<InlineData( 1.0,   0.4000,   -0.8000)> ' P1: In the bottom center.
-        '<InlineData(50.0,  20.0000,  -40.0000)> ' P50: In the bottom center. Z0=50.
 
         <Theory>
         <InlineData(1, 1.0, 1.0, 0.5, 0.2)> ' L75 to AMRIS.
@@ -484,14 +467,13 @@ Namespace DevelopmentTests
         <InlineData(75, 25.0, 25.0, 25.0, 0.0000)> ' L75 to M75.
         <InlineData(1.0, 0.2, 1.4, 0.4, -0.8)> ' O1 to P1.
         <InlineData(50.0, 10.0, 70.0, 20.0, -40.0)> ' O50 to P50.
-        Sub TestMatchArbitrary(z0 As Double, loadr As Double, loadX As Double, sourceR As Double, sourceX As Double)
+        Sub TestMatchArbitrary(z0 As Double, loadR As Double, loadX As Double, sourceR As Double, sourceX As Double)
 
-            Dim Y0 As Double = 1.0 / z0
-            Dim loadZ As New Impedance(loadr, loadX)
-            Dim targetz As New Impedance(sourceR, sourceX)
-            Dim transformations As Transformation() = Array.Empty(Of Transformation)
+            Dim LoadZ As New Impedance(loadR, loadX)
+            Dim SourceZ As New Impedance(sourceR, sourceX)
+            Dim Transformations As Transformation() = Array.Empty(Of Transformation)
 
-            Assert.True(MatchArbitrary(z0, loadZ, targetz, transformations))
+            Assert.True(MatchArbitrary(z0, LoadZ, SourceZ, Transformations))
 
         End Sub
 

@@ -241,11 +241,14 @@ Partial Public Structure Impedance
             FixupZ = New Impedance(0.0, aTransformation.Value2)
             WorkZ = Impedance.AddSeriesImpedance(WorkZ, FixupZ)
 
+            ' THIS NEXT CHECK FOR ZERO IS ONLY VALID WHEN TRYING TO DO A ZO MATCH.
+            ' IT FAILS WHEN TRYING TO MATCH AN ARBITRARY SOURCE.
             If Not (Impedance.EqualEnough(WorkZ.Resistance, z0) AndAlso
                 Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero)) Then
                 Throw New System.ApplicationException(
                     "ShuntCapSeriesCap" & MSGTDNRT)
             End If
+            xxxx
 
         ElseIf aTransformation.Style.Equals(
             TransformationStyles.ShuntIndSeriesCap) Then
