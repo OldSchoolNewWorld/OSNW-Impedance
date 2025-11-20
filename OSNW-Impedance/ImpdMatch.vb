@@ -197,6 +197,7 @@ Partial Public Structure Impedance
         Dim NearlyZero As System.Double = z0 * 0.000001
         Dim FixupZ As Impedance
         Dim WorkZ As Impedance
+        Dim TestPassed As System.Boolean = True ' For now.
 
         If aTransformation.Style.Equals(
             TransformationStyles.ShuntCapSeriesInd) Then
@@ -217,7 +218,21 @@ Partial Public Structure Impedance
             FixupZ = New Impedance(0.0, aTransformation.Value2)
             WorkZ = Impedance.AddSeriesImpedance(WorkZ, FixupZ)
 
-            If Not Impedance.EqualEnough(mainCirc.Z0, WorkZ, ExpectZ) Then
+            If Not (Impedance.EqualEnough(WorkZ.Resistance, ExpectZ.Resistance)) Then
+                TestPassed = False
+            End If
+            If Impedance.EqualEnoughZero(ExpectZ.Reactance, NearlyZero) Then
+                ' This wants a Z0 match.
+                If Not Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero) Then
+                    TestPassed = False
+                End If
+            Else
+                ' This wants a match to an arbitrary load.
+                If Not Impedance.EqualEnough(WorkZ.Reactance, ExpectZ.Reactance) Then
+                    TestPassed = False
+                End If
+            End If
+            If Not TestPassed Then
                 Throw New System.ApplicationException(
                     "ShuntCapSeriesInd" & MSGTDNRT)
             End If
@@ -241,14 +256,24 @@ Partial Public Structure Impedance
             FixupZ = New Impedance(0.0, aTransformation.Value2)
             WorkZ = Impedance.AddSeriesImpedance(WorkZ, FixupZ)
 
-            ' THIS NEXT CHECK FOR ZERO IS ONLY VALID WHEN TRYING TO DO A ZO MATCH.
-            ' IT FAILS WHEN TRYING TO MATCH AN ARBITRARY SOURCE.
-            If Not (Impedance.EqualEnough(WorkZ.Resistance, z0) AndAlso
-                Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero)) Then
+            If Not (Impedance.EqualEnough(WorkZ.Resistance, ExpectZ.Resistance)) Then
+                TestPassed = False
+            End If
+            If Impedance.EqualEnoughZero(ExpectZ.Reactance, NearlyZero) Then
+                ' This wants a Z0 match.
+                If Not Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero) Then
+                    TestPassed = False
+                End If
+            Else
+                ' This wants a match to an arbitrary load.
+                If Not Impedance.EqualEnough(WorkZ.Reactance, ExpectZ.Reactance) Then
+                    TestPassed = False
+                End If
+            End If
+            If Not TestPassed Then
                 Throw New System.ApplicationException(
                     "ShuntCapSeriesCap" & MSGTDNRT)
             End If
-            xxxx
 
         ElseIf aTransformation.Style.Equals(
             TransformationStyles.ShuntIndSeriesCap) Then
@@ -282,8 +307,21 @@ Partial Public Structure Impedance
             FixupZ = New Impedance(0.0, aTransformation.Value2)
             WorkZ = Impedance.AddSeriesImpedance(WorkZ, FixupZ)
 
-            If Not (Impedance.EqualEnough(WorkZ.Resistance, z0) AndAlso
-                Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero)) Then
+            If Not (Impedance.EqualEnough(WorkZ.Resistance, ExpectZ.Resistance)) Then
+                TestPassed = False
+            End If
+            If Impedance.EqualEnoughZero(ExpectZ.Reactance, NearlyZero) Then
+                ' This wants a Z0 match.
+                If Not Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero) Then
+                    TestPassed = False
+                End If
+            Else
+                ' This wants a match to an arbitrary load.
+                If Not Impedance.EqualEnough(WorkZ.Reactance, ExpectZ.Reactance) Then
+                    TestPassed = False
+                End If
+            End If
+            If Not TestPassed Then
                 Throw New System.ApplicationException(
                     "ShuntIndSeriesInd" & MSGTDNRT)
             End If
@@ -301,8 +339,21 @@ Partial Public Structure Impedance
             FixupZ = New Admittance(0.0, aTransformation.Value2).ToImpedance
             WorkZ = Impedance.AddShuntImpedance(WorkZ, FixupZ)
 
-            If Not (Impedance.EqualEnough(WorkZ.Resistance, z0) AndAlso
-                Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero)) Then
+            If Not (Impedance.EqualEnough(WorkZ.Resistance, ExpectZ.Resistance)) Then
+                TestPassed = False
+            End If
+            If Impedance.EqualEnoughZero(ExpectZ.Reactance, NearlyZero) Then
+                ' This wants a Z0 match.
+                If Not Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero) Then
+                    TestPassed = False
+                End If
+            Else
+                ' This wants a match to an arbitrary load.
+                If Not Impedance.EqualEnough(WorkZ.Reactance, ExpectZ.Reactance) Then
+                    TestPassed = False
+                End If
+            End If
+            If Not TestPassed Then
                 Throw New System.ApplicationException(
                     "SeriesCapShuntInd" & MSGTDNRT)
             End If
@@ -316,12 +367,30 @@ Partial Public Structure Impedance
 
             FixupZ = New Impedance(0.0, aTransformation.Value1)
             WorkZ = Impedance.AddSeriesImpedance(Me, FixupZ)
+            'xxxxxx WorkZ matches I3
 
-            FixupZ = New Admittance(0.0, aTransformation.Value2).ToImpedance
+            'FixupZ = New Admittance(0.0, aTransformation.Value2).ToImpedance
+            'WorkZ = Impedance.AddShuntImpedance(WorkZ, FixupZ)
+            Dim FixupY As Admittance = New Admittance(0.0, aTransformation.Value2)
+            FixupZ = FixupY.ToImpedance
             WorkZ = Impedance.AddShuntImpedance(WorkZ, FixupZ)
 
-            If Not (Impedance.EqualEnough(WorkZ.Resistance, z0) AndAlso
-                Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero)) Then
+            ' xxxxxxxxxx this fails for both R and X
+            If Not (Impedance.EqualEnough(WorkZ.Resistance, ExpectZ.Resistance)) Then
+                TestPassed = False
+            End If
+            If Impedance.EqualEnoughZero(ExpectZ.Reactance, NearlyZero) Then
+                ' This wants a Z0 match.
+                If Not Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero) Then
+                    TestPassed = False
+                End If
+            Else
+                ' This wants a match to an arbitrary load.
+                If Not Impedance.EqualEnough(WorkZ.Reactance, ExpectZ.Reactance) Then
+                    TestPassed = False
+                End If
+            End If
+            If Not TestPassed Then
                 Throw New System.ApplicationException(
                     "SeriesCapShuntCap" & MSGTDNRT)
             End If
@@ -339,8 +408,21 @@ Partial Public Structure Impedance
             FixupZ = New Admittance(0.0, aTransformation.Value2).ToImpedance
             WorkZ = Impedance.AddShuntImpedance(WorkZ, FixupZ)
 
-            If Not (Impedance.EqualEnough(WorkZ.Resistance, z0) AndAlso
-                Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero)) Then
+            If Not (Impedance.EqualEnough(WorkZ.Resistance, ExpectZ.Resistance)) Then
+                TestPassed = False
+            End If
+            If Impedance.EqualEnoughZero(ExpectZ.Reactance, NearlyZero) Then
+                ' This wants a Z0 match.
+                If Not Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero) Then
+                    TestPassed = False
+                End If
+            Else
+                ' This wants a match to an arbitrary load.
+                If Not Impedance.EqualEnough(WorkZ.Reactance, ExpectZ.Reactance) Then
+                    TestPassed = False
+                End If
+            End If
+            If Not TestPassed Then
                 Throw New System.ApplicationException(
                     "SeriesIndShuntCap" & MSGTDNRT)
             End If
@@ -361,8 +443,21 @@ Partial Public Structure Impedance
             FixupZ = New Admittance(0.0, aTransformation.Value2).ToImpedance
             WorkZ = Impedance.AddShuntImpedance(WorkZ, FixupZ)
 
-            If Not (Impedance.EqualEnough(WorkZ.Resistance, z0) AndAlso
-                Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero)) Then
+            If Not (Impedance.EqualEnough(WorkZ.Resistance, ExpectZ.Resistance)) Then
+                TestPassed = False
+            End If
+            If Impedance.EqualEnoughZero(ExpectZ.Reactance, NearlyZero) Then
+                ' This wants a Z0 match.
+                If Not Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero) Then
+                    TestPassed = False
+                End If
+            Else
+                ' This wants a match to an arbitrary load.
+                If Not Impedance.EqualEnough(WorkZ.Reactance, ExpectZ.Reactance) Then
+                    TestPassed = False
+                End If
+            End If
+            If Not TestPassed Then
                 Throw New System.ApplicationException(
                     "SeriesIndShuntInd" & MSGTDNRT)
             End If

@@ -860,7 +860,12 @@ Public Structure Impedance
 
         ' No input checking. loadZ and addZ are presumed to have been checked
         ' when created.
-        Return (loadZ.ToAdmittance() + addZ.ToAdmittance()).ToImpedance
+        '        Return (loadZ.ToAdmittance() + addZ.ToAdmittance()).ToImpedance
+        Dim LoadY As Admittance = loadZ.ToAdmittance
+        Dim AddY As Admittance = addZ.ToAdmittance
+        Dim SumY As Admittance = LoadY + AddY
+        Dim SumZ As Impedance = SumY.ToImpedance
+        Return SumZ
     End Function ' AddShuntImpedance
 
     '''' <summary>

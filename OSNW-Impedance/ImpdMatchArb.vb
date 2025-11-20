@@ -194,6 +194,7 @@ Partial Public Structure Impedance
 
         ' THESE CHECKS CAN BE DELETED/COMMENTED AFTER THE Transformation
         ' RESULTS ARE KNOWN TO BE CORRECT.
+        'xxxxxxxxxxxxxx it fails here
         If Not loadZ.ValidateTransformation(mainCirc, sourceZ, Trans) Then
             Return False
         End If
@@ -480,6 +481,7 @@ Partial Public Structure Impedance
         'Dim ImageZ As Impedance
 
         For Each OneIntersection As OSNW.Numerics.PointD In Intersections
+            'xxxxxxxxxxxxxx it fails here
             If Not MatchArbitraryIntersectionFirstOnR(
                 mainCirc, OneIntersection, loadZ, sourceZ, transformations) Then
 
