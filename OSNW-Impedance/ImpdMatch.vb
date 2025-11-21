@@ -206,15 +206,8 @@ Partial Public Structure Impedance
             ' CW    | G-circle | shunt capacitor
             ' CW    | R-circle | series inductor
 
-            '            FixupZ = New Impedance(0.0, aTransformation.Value1)
-            '            WorkZ = Impedance.AddShuntImpedance(Me, FixupZ)
-
-            '            FixupZ = New Impedance(0.0, aTransformation.Value2)
-            '            WorkZ = Impedance.AddSeriesImpedance(WorkZ, FixupZ)
-
             FixupZ = New Impedance(0.0, aTransformation.Value1)
             WorkZ = Impedance.AddShuntImpedance(Me, FixupZ)
-
             FixupZ = New Impedance(0.0, aTransformation.Value2)
             WorkZ = Impedance.AddSeriesImpedance(WorkZ, FixupZ)
 
@@ -244,15 +237,8 @@ Partial Public Structure Impedance
             ' CW    | G-circle | shunt capacitor
             ' CCW   | R-circle | series capacitor
 
-            '            FixupZ = New Admittance(0.0, aTransformation.Value1).ToImpedance
-            '            WorkZ = Impedance.AddShuntImpedance(Me, FixupZ)
-
-            '            FixupZ = New Impedance(0.0, aTransformation.Value2)
-            '            WorkZ = Impedance.AddSeriesImpedance(WorkZ, FixupZ)
-
             FixupZ = New Impedance(0.0, aTransformation.Value1)
             WorkZ = Impedance.AddShuntImpedance(Me, FixupZ)
-
             FixupZ = New Impedance(0.0, aTransformation.Value2)
             WorkZ = Impedance.AddSeriesImpedance(WorkZ, FixupZ)
 
@@ -282,16 +268,28 @@ Partial Public Structure Impedance
             ' CCW   | G-circle | shunt inductor
             ' CCW   | R-circle | series capacitor
 
-            FixupZ = New Admittance(0.0, aTransformation.Value1).ToImpedance
+            FixupZ = New Impedance(0.0, aTransformation.Value1)
             WorkZ = Impedance.AddShuntImpedance(Me, FixupZ)
-
             FixupZ = New Impedance(0.0, aTransformation.Value2)
             WorkZ = Impedance.AddSeriesImpedance(WorkZ, FixupZ)
 
-            If Not (Impedance.EqualEnough(WorkZ.Resistance, z0) AndAlso
-                Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero)) Then
+            If Not (Impedance.EqualEnough(WorkZ.Resistance, ExpectZ.Resistance)) Then
+                TestPassed = False
+            End If
+            If Impedance.EqualEnoughZero(ExpectZ.Reactance, NearlyZero) Then
+                ' This wants a Z0 match.
+                If Not Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero) Then
+                    TestPassed = False
+                End If
+            Else
+                ' This wants a match to an arbitrary load.
+                If Not Impedance.EqualEnough(WorkZ.Reactance, ExpectZ.Reactance) Then
+                    TestPassed = False
+                End If
+            End If
+            If Not TestPassed Then
                 Throw New System.ApplicationException(
-                    "ShuntIndSeriesCap" & MSGTDNRT)
+                    "ShuntCapSeriesInd" & MSGTDNRT)
             End If
 
         ElseIf aTransformation.Style.Equals(
@@ -301,9 +299,8 @@ Partial Public Structure Impedance
             ' CCW   | G-circle | shunt inductor
             ' CW    | R-circle | series inductor
 
-            FixupZ = New Admittance(0.0, aTransformation.Value1).ToImpedance
+            FixupZ = New Impedance(0.0, aTransformation.Value1)
             WorkZ = Impedance.AddShuntImpedance(Me, FixupZ)
-
             FixupZ = New Impedance(0.0, aTransformation.Value2)
             WorkZ = Impedance.AddSeriesImpedance(WorkZ, FixupZ)
 
@@ -335,8 +332,7 @@ Partial Public Structure Impedance
 
             FixupZ = New Impedance(0.0, aTransformation.Value1)
             WorkZ = Impedance.AddSeriesImpedance(Me, FixupZ)
-
-            FixupZ = New Admittance(0.0, aTransformation.Value2).ToImpedance
+            FixupZ = New Impedance(0.0, aTransformation.Value2)
             WorkZ = Impedance.AddShuntImpedance(WorkZ, FixupZ)
 
             If Not (Impedance.EqualEnough(WorkZ.Resistance, ExpectZ.Resistance)) Then
@@ -367,15 +363,9 @@ Partial Public Structure Impedance
 
             FixupZ = New Impedance(0.0, aTransformation.Value1)
             WorkZ = Impedance.AddSeriesImpedance(Me, FixupZ)
-            'xxxxxx WorkZ matches I3
-
-            'FixupZ = New Admittance(0.0, aTransformation.Value2).ToImpedance
-            'WorkZ = Impedance.AddShuntImpedance(WorkZ, FixupZ)
-            Dim FixupY As Admittance = New Admittance(0.0, aTransformation.Value2)
-            FixupZ = FixupY.ToImpedance
+            FixupZ = New Impedance(0.0, aTransformation.Value2)
             WorkZ = Impedance.AddShuntImpedance(WorkZ, FixupZ)
 
-            ' xxxxxxxxxx this fails for both R and X
             If Not (Impedance.EqualEnough(WorkZ.Resistance, ExpectZ.Resistance)) Then
                 TestPassed = False
             End If
@@ -404,8 +394,7 @@ Partial Public Structure Impedance
 
             FixupZ = New Impedance(0.0, aTransformation.Value1)
             WorkZ = Impedance.AddSeriesImpedance(Me, FixupZ)
-
-            FixupZ = New Admittance(0.0, aTransformation.Value2).ToImpedance
+            FixupZ = New Impedance(0.0, aTransformation.Value2)
             WorkZ = Impedance.AddShuntImpedance(WorkZ, FixupZ)
 
             If Not (Impedance.EqualEnough(WorkZ.Resistance, ExpectZ.Resistance)) Then
@@ -439,8 +428,7 @@ Partial Public Structure Impedance
 
             FixupZ = New Impedance(0.0, aTransformation.Value1)
             WorkZ = Impedance.AddSeriesImpedance(Me, FixupZ)
-
-            FixupZ = New Admittance(0.0, aTransformation.Value2).ToImpedance
+            FixupZ = New Impedance(0.0, aTransformation.Value2)
             WorkZ = Impedance.AddShuntImpedance(WorkZ, FixupZ)
 
             If Not (Impedance.EqualEnough(WorkZ.Resistance, ExpectZ.Resistance)) Then

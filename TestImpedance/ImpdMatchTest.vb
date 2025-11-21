@@ -413,7 +413,9 @@ Namespace MatchArbitraryTests
         <InlineData(1, 1 / 3.0, 1 / 3.0, 1 / 3.0, 0.0000)> ' L1 to M1.
         <InlineData(75, 25.0, 25.0, 25.0, 0.0000)> ' L75 to M75.
         <InlineData(1.0, 0.2, 1.4, 0.4, -0.8)> ' O1 to P1.
+        <InlineData(1.0, 0.4, -0.8, 0.2, 1.4)> ' P1 to O1.
         <InlineData(50.0, 10.0, 70.0, 20.0, -40.0)> ' O50 to P50.
+        <InlineData(50.0, 20.0, -40.0, 10.0, 70.0)> ' P50 to O50.
         Public Sub TestMatchArbitrary(z0 As Double, loadR As Double, loadX As Double, sourceR As Double, sourceX As Double)
 
             Dim LoadZ As New Impedance(loadR, loadX)

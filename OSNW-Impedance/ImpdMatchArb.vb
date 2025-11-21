@@ -481,7 +481,6 @@ Partial Public Structure Impedance
         'Dim ImageZ As Impedance
 
         For Each OneIntersection As OSNW.Numerics.PointD In Intersections
-            'xxxxxxxxxxxxxx it fails here
             If Not MatchArbitraryIntersectionFirstOnR(
                 mainCirc, OneIntersection, loadZ, sourceZ, transformations) Then
 
