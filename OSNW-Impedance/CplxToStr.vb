@@ -69,9 +69,9 @@ Partial Public Module ComplexExtensions
             SignChar = CHARPLUS
         End If
         If (standardizationStyle And StandardizationStyles.Open) > 0 Then
-                ImaginarySign = $" {SignChar} " ' With spaces.
-            Else
-                ImaginarySign = $"{SignChar}" ' Without spaces.
+            ImaginarySign = $" {SignChar} " ' With spaces.
+        Else
+            ImaginarySign = $"{SignChar}" ' Without spaces.
         End If
 
         ' Construct the result.

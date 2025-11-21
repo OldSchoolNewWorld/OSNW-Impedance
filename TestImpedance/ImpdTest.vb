@@ -3,13 +3,7 @@ Option Strict On
 Option Compare Binary
 Option Infer Off
 
-Imports System.Data
 Imports System.Globalization
-Imports System.Net.Mime.MediaTypeNames
-Imports System.Net.Security
-Imports System.Runtime
-Imports System.Text
-Imports ImpdTest.GeometryTests
 Imports OSNW.Numerics
 Imports Xunit
 Imports OsnwImpd = OSNW.Numerics.Impedance

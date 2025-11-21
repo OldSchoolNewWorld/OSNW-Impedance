@@ -3,7 +3,6 @@ Option Strict On
 Option Compare Binary
 Option Infer Off
 
-Imports System.Runtime
 Imports OSNW.Numerics
 Imports Xunit
 
