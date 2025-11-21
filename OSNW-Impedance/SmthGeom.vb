@@ -760,7 +760,7 @@ Public Class SmithMainCircle
                 GenericCircle.GetIntersections(RCirc, XCirc)
 
             ' The R- and X-circles will intersect at two distinct points, with
-            ' one above, and one below, the resonance line.
+            ' one at the open circuit point.
             If Intersections.Count <> 2 Then
                 'Dim CaughtBy As System.Reflection.MethodBase =
                 '    System.Reflection.MethodBase.GetCurrentMethod
@@ -772,9 +772,16 @@ Public Class SmithMainCircle
             ' be the solution. Due to the use of floating point values, and
             ' maybe not finding a Y value exactly on the resonance line, assume
             ' the closest Y to be the one on the resonance line.
+
+
+
+            '            Dim Diff0 As System.Double =
+            '                System.Math.Abs(Intersections(0).Y - Me.GridCenterY)
+            '            Dim Diff1 As System.Double =
+            '                System.Math.Abs(Intersections(1).Y - Me.GridCenterY)
+            '            If Diff0 < Diff1 Then
             If System.Math.Abs(Intersections(0).Y - Me.GridCenterY) <
                 System.Math.Abs(Intersections(1).Y - Me.GridCenterY) Then
-
                 plotX = Intersections(1).X
                 plotY = Intersections(1).Y
             Else
