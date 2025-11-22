@@ -2,6 +2,9 @@
 Option Strict On
 Option Compare Binary
 Option Infer Off
+Imports System.Reflection.Metadata.Ecma335
+
+
 
 
 
@@ -26,21 +29,21 @@ Partial Public Structure Impedance
         As System.Boolean
 
         ' Set up useful local values. CONSOLIDATE/REMOVE LATER AS ABLE.
-        'Dim Z0 As Double = mainCirc.Z0
-        'Dim Y0 As Double = 1.0 / Z0
-        'Dim LoadR As Double = loadZ.Resistance
-        'Dim LoadX As Double = loadZ.Reactance
+        'Dim Z0 As System.Double = mainCirc.Z0
+        'Dim Y0 As System.Double = 1.0 / Z0
+        'Dim LoadR As System.Double = loadZ.Resistance
+        'Dim LoadX As System.Double = loadZ.Reactance
         'Dim LoadCircR As New RCircle(mainCirc, LoadR)
         Dim LoadY As Admittance = loadZ.ToAdmittance()
-        'Dim LoadG As Double = LoadY.Conductance
-        Dim LoadB As Double = LoadY.Susceptance
+        'Dim LoadG As System.Double = LoadY.Conductance
+        Dim LoadB As System.Double = LoadY.Susceptance
         'Dim LoadCircG As New GCircle(mainCirc, LoadG)
-        'Dim SourceR As Double = sourceZ.Resistance
-        Dim SourceX As Double = sourceZ.Reactance
+        'Dim SourceR As System.Double = sourceZ.Resistance
+        Dim SourceX As System.Double = sourceZ.Reactance
         'Dim SourceCircR As New RCircle(mainCirc, SourceR)
         'Dim SourceY As Admittance = sourceZ.ToAdmittance()
-        'Dim SourceG As Double = SourceY.Conductance
-        'Dim SourceB As Double = SourceY.Susceptance
+        'Dim SourceG As System.Double = SourceY.Conductance
+        'Dim SourceB As System.Double = SourceY.Susceptance
         'Dim SourceCircG As New GCircle(mainCirc, SourceG)
 
         ' Set up useful local values. CONSOLIDATE/REMOVE LATER AS ABLE.
@@ -121,21 +124,21 @@ Partial Public Structure Impedance
         As System.Boolean
 
         ' Set up useful local values. CONSOLIDATE/REMOVE LATER AS ABLE.
-        'Dim Z0 As Double = mainCirc.Z0
-        'Dim Y0 As Double = 1.0 / Z0
-        'Dim LoadR As Double = loadZ.Resistance
-        Dim LoadX As Double = loadZ.Reactance
+        'Dim Z0 As System.Double = mainCirc.Z0
+        'Dim Y0 As System.Double = 1.0 / Z0
+        'Dim LoadR As System.Double = loadZ.Resistance
+        Dim LoadX As System.Double = loadZ.Reactance
         'Dim LoadCircR As New RCircle(mainCirc, LoadR)
         'Dim LoadY As Admittance = loadZ.ToAdmittance()
-        'Dim LoadG As Double = LoadY.Conductance
-        'Dim LoadB As Double = LoadY.Susceptance
+        'Dim LoadG As System.Double = LoadY.Conductance
+        'Dim LoadB As System.Double = LoadY.Susceptance
         'Dim LoadCircG As New GCircle(mainCirc, LoadG)
-        'Dim SourceR As Double = sourceZ.Resistance
-        'Dim SourceX As Double = sourceZ.Reactance
+        'Dim SourceR As System.Double = sourceZ.Resistance
+        'Dim SourceX As System.Double = sourceZ.Reactance
         'Dim SourceCircR As New RCircle(mainCirc, SourceR)
         Dim SourceY As Admittance = sourceZ.ToAdmittance()
-        'Dim SourceG As Double = SourceY.Conductance
-        Dim SourceB As Double = SourceY.Susceptance
+        'Dim SourceG As System.Double = SourceY.Conductance
+        Dim SourceB As System.Double = SourceY.Susceptance
         'Dim SourceCircG As New GCircle(mainCirc, SourceG)
 
         ' Set up useful local values. CONSOLIDATE/REMOVE LATER AS ABLE.
@@ -222,26 +225,26 @@ Partial Public Structure Impedance
         As System.Boolean
 
         ' Set up useful local values. CONSOLIDATE/REMOVE LATER AS ABLE.
-        Dim Z0 As Double = mainCirc.Z0
-        Dim Y0 As Double = 1.0 / Z0
-        Dim LoadR As Double = loadZ.Resistance
-        Dim LoadX As Double = loadZ.Reactance
-        Dim LoadPosX As Double
-        Dim LoadPosY As Double
+        Dim Z0 As System.Double = mainCirc.Z0
+        Dim Y0 As System.Double = 1.0 / Z0
+        Dim LoadR As System.Double = loadZ.Resistance
+        Dim LoadX As System.Double = loadZ.Reactance
+        Dim LoadPosX As System.Double
+        Dim LoadPosY As System.Double
         mainCirc.GetPlotXY(LoadR, LoadX, LoadPosX, LoadPosY)
         Dim LoadY As Admittance = loadZ.ToAdmittance()
-        Dim LoadG As Double = LoadY.Conductance
-        Dim LoadB As Double = LoadY.Susceptance
+        Dim LoadG As System.Double = LoadY.Conductance
+        Dim LoadB As System.Double = LoadY.Susceptance
         Dim LoadCircR As New RCircle(mainCirc, LoadR)
         Dim LoadCircG As New GCircle(mainCirc, LoadG)
-        Dim SourceR As Double = sourceZ.Resistance
-        Dim SourceX As Double = sourceZ.Reactance
-        Dim SourcePosX As Double
-        Dim SourcePosY As Double
+        Dim SourceR As System.Double = sourceZ.Resistance
+        Dim SourceX As System.Double = sourceZ.Reactance
+        Dim SourcePosX As System.Double
+        Dim SourcePosY As System.Double
         mainCirc.GetPlotXY(SourceR, SourceX, SourcePosX, SourcePosY)
         Dim SourceY As Admittance = sourceZ.ToAdmittance()
-        Dim SourceG As Double = SourceY.Conductance
-        Dim SourceB As Double = SourceY.Susceptance
+        Dim SourceG As System.Double = SourceY.Conductance
+        Dim SourceB As System.Double = SourceY.Susceptance
         Dim SourceCircR As New RCircle(mainCirc, SourceR)
         Dim SourceCircG As New GCircle(mainCirc, SourceG)
 
@@ -364,26 +367,26 @@ Partial Public Structure Impedance
         As System.Boolean
 
         ' Set up useful local values. CONSOLIDATE/REMOVE LATER AS ABLE.
-        Dim Z0 As Double = mainCirc.Z0
-        Dim Y0 As Double = 1.0 / Z0
-        Dim LoadR As Double = loadZ.Resistance
-        Dim LoadX As Double = loadZ.Reactance
-        Dim LoadPosX As Double
-        Dim LoadPosY As Double
+        Dim Z0 As System.Double = mainCirc.Z0
+        Dim Y0 As System.Double = 1.0 / Z0
+        Dim LoadR As System.Double = loadZ.Resistance
+        Dim LoadX As System.Double = loadZ.Reactance
+        Dim LoadPosX As System.Double
+        Dim LoadPosY As System.Double
         mainCirc.GetPlotXY(LoadR, LoadX, LoadPosX, LoadPosY)
         Dim LoadY As Admittance = loadZ.ToAdmittance()
-        Dim LoadG As Double = LoadY.Conductance
-        Dim LoadB As Double = LoadY.Susceptance
+        Dim LoadG As System.Double = LoadY.Conductance
+        Dim LoadB As System.Double = LoadY.Susceptance
         Dim LoadCircR As New RCircle(mainCirc, LoadR)
         Dim LoadCircG As New GCircle(mainCirc, LoadG)
-        Dim SourceR As Double = sourceZ.Resistance
-        Dim SourceX As Double = sourceZ.Reactance
-        Dim SourcePosX As Double
-        Dim SourcePosY As Double
+        Dim SourceR As System.Double = sourceZ.Resistance
+        Dim SourceX As System.Double = sourceZ.Reactance
+        Dim SourcePosX As System.Double
+        Dim SourcePosY As System.Double
         mainCirc.GetPlotXY(SourceR, SourceX, SourcePosX, SourcePosY)
         Dim SourceY As Admittance = sourceZ.ToAdmittance()
-        Dim SourceG As Double = SourceY.Conductance
-        Dim SourceB As Double = SourceY.Susceptance
+        Dim SourceG As System.Double = SourceY.Conductance
+        Dim SourceB As System.Double = SourceY.Susceptance
         Dim SourceCircR As New RCircle(mainCirc, SourceR)
         Dim SourceCircG As New GCircle(mainCirc, SourceG)
 
@@ -503,26 +506,26 @@ Partial Public Structure Impedance
         As System.Boolean
 
         ' Set up useful local values. CONSOLIDATE/REMOVE LATER AS ABLE.
-        Dim Z0 As Double = mainCirc.Z0
-        Dim Y0 As Double = 1.0 / Z0
-        Dim LoadR As Double = loadZ.Resistance
-        Dim LoadX As Double = loadZ.Reactance
-        Dim LoadPosX As Double
-        Dim LoadPosY As Double
+        Dim Z0 As System.Double = mainCirc.Z0
+        Dim Y0 As System.Double = 1.0 / Z0
+        Dim LoadR As System.Double = loadZ.Resistance
+        Dim LoadX As System.Double = loadZ.Reactance
+        Dim LoadPosX As System.Double
+        Dim LoadPosY As System.Double
         mainCirc.GetPlotXY(LoadR, LoadX, LoadPosX, LoadPosY)
         Dim LoadY As Admittance = loadZ.ToAdmittance()
-        Dim LoadG As Double = LoadY.Conductance
-        Dim LoadB As Double = LoadY.Susceptance
+        Dim LoadG As System.Double = LoadY.Conductance
+        Dim LoadB As System.Double = LoadY.Susceptance
         Dim LoadCircR As New RCircle(mainCirc, LoadR)
         Dim LoadCircG As New GCircle(mainCirc, LoadG)
-        Dim SourceR As Double = sourceZ.Resistance
-        Dim SourceX As Double = sourceZ.Reactance
-        Dim SourcePosX As Double
-        Dim SourcePosY As Double
+        Dim SourceR As System.Double = sourceZ.Resistance
+        Dim SourceX As System.Double = sourceZ.Reactance
+        Dim SourcePosX As System.Double
+        Dim SourcePosY As System.Double
         mainCirc.GetPlotXY(SourceR, SourceX, SourcePosX, SourcePosY)
         Dim SourceY As Admittance = sourceZ.ToAdmittance()
-        Dim SourceG As Double = SourceY.Conductance
-        Dim SourceB As Double = SourceY.Susceptance
+        Dim SourceG As System.Double = SourceY.Conductance
+        Dim SourceB As System.Double = SourceY.Susceptance
         Dim SourceCircR As New RCircle(mainCirc, SourceR)
         Dim SourceCircG As New GCircle(mainCirc, SourceG)
 
@@ -576,26 +579,26 @@ Partial Public Structure Impedance
         As System.Boolean
 
         ' Set up useful local values. CONSOLIDATE/REMOVE LATER AS ABLE.
-        Dim Z0 As Double = mainCirc.Z0
-        Dim Y0 As Double = 1.0 / Z0
-        Dim LoadR As Double = loadZ.Resistance
-        Dim LoadX As Double = loadZ.Reactance
-        Dim LoadPosX As Double
-        Dim LoadPosY As Double
+        Dim Z0 As System.Double = mainCirc.Z0
+        Dim Y0 As System.Double = 1.0 / Z0
+        Dim LoadR As System.Double = loadZ.Resistance
+        Dim LoadX As System.Double = loadZ.Reactance
+        Dim LoadPosX As System.Double
+        Dim LoadPosY As System.Double
         mainCirc.GetPlotXY(LoadR, LoadX, LoadPosX, LoadPosY)
         Dim LoadY As Admittance = loadZ.ToAdmittance()
-        Dim LoadG As Double = LoadY.Conductance
-        Dim LoadB As Double = LoadY.Susceptance
+        Dim LoadG As System.Double = LoadY.Conductance
+        Dim LoadB As System.Double = LoadY.Susceptance
         Dim LoadCircR As New RCircle(mainCirc, LoadR)
         Dim LoadCircG As New GCircle(mainCirc, LoadG)
-        Dim SourceR As Double = sourceZ.Resistance
-        Dim SourceX As Double = sourceZ.Reactance
-        Dim SourcePosX As Double
-        Dim SourcePosY As Double
+        Dim SourceR As System.Double = sourceZ.Resistance
+        Dim SourceX As System.Double = sourceZ.Reactance
+        Dim SourcePosX As System.Double
+        Dim SourcePosY As System.Double
         mainCirc.GetPlotXY(SourceR, SourceX, SourcePosX, SourcePosY)
         Dim SourceY As Admittance = sourceZ.ToAdmittance()
-        Dim SourceG As Double = SourceY.Conductance
-        Dim SourceB As Double = SourceY.Susceptance
+        Dim SourceG As System.Double = SourceY.Conductance
+        Dim SourceB As System.Double = SourceY.Susceptance
         Dim SourceCircR As New RCircle(mainCirc, SourceR)
         Dim SourceCircG As New GCircle(mainCirc, SourceG)
 
@@ -657,9 +660,6 @@ Partial Public Structure Impedance
     ''' <paramref name="transformations"/>, the components to construct the
     ''' match.</returns>
     ''' <remarks>
-    ''' <para> An assumption is made that the calling code has determined that
-    ''' the <c>Impedance</c>s lie in valid positions. Failure to meet that
-    ''' assumption could result in invalid, or incomplete, results.</para>
     ''' A succcessful process might result in an empty
     ''' <paramref name="transformations"/>.
     ''' </remarks>
@@ -669,59 +669,40 @@ Partial Public Structure Impedance
         ByRef transformations As Transformation()) _
         As System.Boolean
 
-        ' REF: Smith Chart Full Presentation, page 26.
+        ' REF: Smith Chart Full Presentation, page 26 shows a geometric
+        ' approach.
         ' https://amris.mbi.ufl.edu/wordpress/files/2021/01/SmithChart_FullPresentation.pdf
 
-        ' Set up useful local values. CONSOLIDATE/REMOVE LATER AS ABLE.
-        Dim Z0 As Double = mainCirc.Z0
-        Dim Y0 As Double = 1.0 / Z0
-        Dim LoadR As Double = loadZ.Resistance
-        Dim LoadX As Double = loadZ.Reactance
-        Dim LoadPosX As Double
-        Dim LoadPosY As Double
-        mainCirc.GetPlotXY(LoadR, LoadX, LoadPosX, LoadPosY)
-        Dim LoadY As Admittance = loadZ.ToAdmittance()
-        Dim LoadG As Double = LoadY.Conductance
-        Dim LoadB As Double = LoadY.Susceptance
-        Dim LoadCircR As New RCircle(mainCirc, LoadR)
-        Dim LoadCircG As New GCircle(mainCirc, LoadG)
-        Dim SourceR As Double = sourceZ.Resistance
-        Dim SourceX As Double = sourceZ.Reactance
-        Dim SourcePosX As Double
-        Dim SourcePosY As Double
-        mainCirc.GetPlotXY(SourceR, SourceX, SourcePosX, SourcePosY)
-        Dim SourceY As Admittance = sourceZ.ToAdmittance()
-        Dim SourceG As Double = SourceY.Conductance
-        Dim SourceB As Double = SourceY.Susceptance
-        Dim SourceCircR As New RCircle(mainCirc, SourceR)
-        Dim SourceCircG As New GCircle(mainCirc, SourceG)
+        ' Input checking.
+        ' Leave this here for now. Bad values should have been rejected in New()
+        ' and this should not be needed unless some reason is discovered that
+        ' requires extremes to be allowed. Maybe that could happen if an image
+        ' impedance has extreme values that cancel or for some other interim
+        ' state. Maybe if a match is being made to an image impedance or a
+        ' situation involving active components that can effectively have a
+        ' negative resitance value.
+        ' Check for a short- or open-circuit or for invalid resistances.
+        Dim LoadR As System.Double = loadZ.Resistance
+        Dim SourceR As System.Double = sourceZ.Resistance
+        If LoadR <= 0.0 OrElse System.Double.IsInfinity(LoadR) OrElse
+            SourceR <= 0.0 OrElse System.Double.IsInfinity(SourceR) Then
 
-        ' ===== FOR DIAGNOSTIC PURPOSES ONLY. =====
-        Dim BaseDiagInfo As New System.Text.StringBuilder
-        With BaseDiagInfo
-            .Append($"{NameOf(Y0)}: {Y0}")
-            .Append($"; {NameOf(LoadR)}: {LoadR}")
-            .Append($"; {NameOf(LoadX)}: {LoadX}")
-            .Append($"; {NameOf(LoadY)}: {LoadY.ToComplex}")
-            .Append($"; {NameOf(LoadG)}: {LoadG}")
-            .Append($"; {NameOf(LoadB)}: {LoadB}")
-            .Append($"; {NameOf(SourceR)}: {SourceR}")
-            .Append($"; {NameOf(SourceX)}: {SourceX}")
-            .Append($"; {NameOf(SourceY)}: {SourceY.ToComplex}")
-            .Append($"; {NameOf(SourceG)}: {SourceG}")
-            .Append($"; {NameOf(SourceB)}: {SourceB}")
-        End With
+            transformations = Nothing
+            Return False
+        End If
 
-        ' ===== FOR DIAGNOSTIC PURPOSES ONLY. =====
-        Dim CircleDiagInfo As New System.Text.StringBuilder
-        With CircleDiagInfo
-            .Append($"{NameOf(LoadCircR)}: {LoadCircR}")
-            .Append($"; {NameOf(LoadCircG)}: {LoadCircG}")
-            .Append($"; {NameOf(SourceCircR)}: {SourceCircR}")
-            .Append($"; {NameOf(SourceCircG)}: {SourceCircG}")
-        End With
+        ' Check if a match is needed.
+        If Impedance.EqualEnough(mainCirc.Z0, loadZ, sourceZ) Then
+            ' Leave transformations as the incoming empty array.
+            ' Possible alternative: return TransformationStyles.None.
+            Return True
+        End If
 
         ' Try each approach to finding a match, only if the circles intersect.
+
+        Dim LoadG As System.Double = loadZ.ToAdmittance().Conductance
+        Dim LoadCircG As New GCircle(mainCirc, LoadG)
+        Dim SourceCircR As New RCircle(mainCirc, SourceR)
         If GenericCircle.CirclesIntersect(LoadCircG, SourceCircR) Then
             If Not MatchArbFirstOnG(
                 mainCirc, loadZ, sourceZ, transformations) Then
@@ -729,6 +710,10 @@ Partial Public Structure Impedance
                 Return False
             End If
         End If
+
+        Dim LoadCircR As New RCircle(mainCirc, LoadR)
+        Dim SourceG As System.Double = sourceZ.ToAdmittance().Conductance
+        Dim SourceCircG As New GCircle(mainCirc, SourceG)
         If GenericCircle.CirclesIntersect(LoadCircR, SourceCircG) Then
             If Not MatchArbFirstOnR(
                 mainCirc, loadZ, sourceZ, transformations) Then
@@ -736,17 +721,6 @@ Partial Public Structure Impedance
                 Return False
             End If
         End If
-
-        ' ===== FOR DIAGNOSTIC PURPOSES ONLY. =====
-        Dim TransformationDiagInfo As New System.Text.StringBuilder
-        For Each OneTransformation As Transformation In transformations
-            With TransformationDiagInfo
-                .Append($" {NameOf(OneTransformation.Style)}:" &
-                        $" {OneTransformation.Style}")
-                .Append($"; Value1: {OneTransformation.Value1}")
-                .Append($"; Value2: {OneTransformation.Value2}")
-            End With
-        Next
 
         ' On getting this far,
         Return True

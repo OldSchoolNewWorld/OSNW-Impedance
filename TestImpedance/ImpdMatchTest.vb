@@ -407,16 +407,26 @@ Namespace MatchArbitraryTests
     Public Class TestMatchArbitraryAny
 
         <Theory>
-        <InlineData(1, 1.0, 1.0, 0.5, 0.2)> ' L75 to AMRIS.
-        <InlineData(100.0, 100.0, 100.0, 50.0, 20.0)> ' AMRIS.
+        <InlineData(1, 1.0, 1.0, 0.5, 0.2)> ' L1 to AMRIS1.
+        <InlineData(1, 0.5, 0.2, 1.0, 1.0)> ' AMRIS1 to L1.
+        <InlineData(100.0, 100.0, 100.0, 50.0, 20.0)> ' AMRIS100.
+        <InlineData(100.0, 50.0, 20.0, 100.0, 100.0)> ' AMRIS100 reverse.
         <InlineData(1, 1.0, 1.0, 2.0, -2.0)> ' E1 to I1.
+        <InlineData(1, 2.0, -2.0, 1.0, 1.0)> ' I1 to E1.
         <InlineData(75, 50.0, 50.0, 100.0, -100.0)> ' E50 to I50.
+        <InlineData(75, 100.0, -100.0, 50.0, 50.0)> ' I50 to E50.
         <InlineData(1, 1 / 3.0, 1 / 3.0, 1 / 3.0, 0.0000)> ' L1 to M1.
+        <InlineData(1, 1 / 3.0, 0.0000, 1 / 3.0, 1 / 3.0)> ' M1 to L1.
         <InlineData(75, 25.0, 25.0, 25.0, 0.0000)> ' L75 to M75.
+        <InlineData(75, 25.0, 0.0000, 25.0, 25.0)> ' M75 to L75.
         <InlineData(1.0, 0.2, 1.4, 0.4, -0.8)> ' O1 to P1.
         <InlineData(1.0, 0.4, -0.8, 0.2, 1.4)> ' P1 to O1.
         <InlineData(50.0, 10.0, 70.0, 20.0, -40.0)> ' O50 to P50.
         <InlineData(50.0, 20.0, -40.0, 10.0, 70.0)> ' P50 to O50.
+        <InlineData(1.0, 1.0, 1.0, 1 / 2.0, 1 / 2.0)> ' E1 to J1.
+        <InlineData(1.0, 1 / 2.0, 1 / 2.0, 1.0, 1.0)> ' J1 to E1.
+        <InlineData(50.0, 50.0, 50.0, 25.0, 25.0)> ' E50 to J50.
+        <InlineData(50.0, 25.0, 25.0, 50.0, 50.0)> ' J50 to E50.
         Public Sub TestMatchArbitrary(z0 As Double, loadR As Double, loadX As Double, sourceR As Double, sourceX As Double)
 
             Dim LoadZ As New Impedance(loadR, loadX)
