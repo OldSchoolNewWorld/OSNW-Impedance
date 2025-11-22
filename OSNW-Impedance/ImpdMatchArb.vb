@@ -48,15 +48,15 @@ Partial Public Structure Impedance
             mainCirc.GetDetailsFromPlot(oneIntersection.X, oneIntersection.Y)
         Dim ImageZ As Impedance = PD.Impedance
         Dim ImageY As Admittance = PD.Admittance
-        Dim DeltaB As System.Double = 999
+        Dim DeltaB As System.Double
         'Dim ImageR As System.Double = TargetR
         Dim ImageX As System.Double = ImageZ.Reactance
         'Dim ImageG As System.Double = TargetG
         Dim ImageB As System.Double = ImageY.Susceptance
-        Dim DeltaX As System.Double = 999
+        Dim DeltaX As System.Double
         Dim DeltaY As Admittance
         Dim DeltaZ As Impedance
-        Dim Style As TransformationStyles
+        'Dim Style As TransformationStyles
 
         ' Determine the changes to take place.
         DeltaB = ImageB - LoadB
@@ -226,8 +226,8 @@ Partial Public Structure Impedance
         Dim Y0 As Double = 1.0 / Z0
         Dim LoadR As Double = loadZ.Resistance
         Dim LoadX As Double = loadZ.Reactance
-        Dim LoadPosX As Double = 999
-        Dim LoadPosY As Double = 999
+        Dim LoadPosX As Double
+        Dim LoadPosY As Double
         mainCirc.GetPlotXY(LoadR, LoadX, LoadPosX, LoadPosY)
         Dim LoadY As Admittance = loadZ.ToAdmittance()
         Dim LoadG As Double = LoadY.Conductance
@@ -236,8 +236,8 @@ Partial Public Structure Impedance
         Dim LoadCircG As New GCircle(mainCirc, LoadG)
         Dim SourceR As Double = sourceZ.Resistance
         Dim SourceX As Double = sourceZ.Reactance
-        Dim SourcePosX As Double = 999
-        Dim SourcePosY As Double = 999
+        Dim SourcePosX As Double
+        Dim SourcePosY As Double
         mainCirc.GetPlotXY(SourceR, SourceX, SourcePosX, SourcePosY)
         Dim SourceY As Admittance = sourceZ.ToAdmittance()
         Dim SourceG As Double = SourceY.Conductance
@@ -249,8 +249,8 @@ Partial Public Structure Impedance
         Dim ImageX As System.Double = 999
         Dim ImageG As System.Double = 999
         Dim ImageB As System.Double = 999
-        Dim ImageY As Admittance
-        Dim ImageZ As Impedance
+        'Dim ImageY As Admittance
+        'Dim ImageZ As Impedance
 
         ' Determine the circle intersection(s).
         Dim Intersections _
@@ -391,8 +391,8 @@ Partial Public Structure Impedance
         Dim ImageX As System.Double = 999
         Dim ImageG As System.Double = 999
         Dim ImageB As System.Double = 999
-        Dim ImageY As Admittance
-        Dim ImageZ As Impedance
+        'Dim ImageY As Admittance
+        'Dim ImageZ As Impedance
 
         ' Determine the circle intersection(s).
         Dim Intersections _
@@ -530,8 +530,8 @@ Partial Public Structure Impedance
         Dim ImageX As System.Double = 999
         Dim ImageG As System.Double = 999
         Dim ImageB As System.Double = 999
-        Dim ImageY As Admittance
-        Dim ImageZ As Impedance
+        'Dim ImageY As Admittance
+        'Dim ImageZ As Impedance
 
         If Not MatchArbFirstOnG(mainCirc, oneIntersection,
                  loadZ, sourceZ, transformations) Then
@@ -599,12 +599,12 @@ Partial Public Structure Impedance
         Dim SourceCircR As New RCircle(mainCirc, SourceR)
         Dim SourceCircG As New GCircle(mainCirc, SourceG)
 
-        Dim ImageR As System.Double = 999
-        Dim ImageX As System.Double = 999
-        Dim ImageG As System.Double = 999
-        Dim ImageB As System.Double = 999
-        Dim ImageY As Admittance
-        Dim ImageZ As Impedance
+        'Dim ImageR As System.Double
+        'Dim ImageX As System.Double
+        'Dim ImageG As System.Double
+        'Dim ImageB As System.Double
+        'Dim ImageY As Admittance
+        'Dim ImageZ As Impedance
 
         If Not MatchArbFirstOnR(mainCirc, oneIntersection,
                  loadZ, sourceZ, transformations) Then

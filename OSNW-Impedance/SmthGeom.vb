@@ -122,8 +122,10 @@ Public Class GenericCircle
         If c1R <= 0 OrElse c2R <= 0 Then
             'Dim CaughtBy As System.Reflection.MethodBase =
             '    System.Reflection.MethodBase.GetCurrentMethod
+            Dim ErrMsg As System.String = String.Format(
+                "{0}={1}, {2}={3}", NameOf(c1R), c1R, NameOf(c2R), c2R)
             Throw New System.ArgumentOutOfRangeException(
-                "c1R or c2R", Impedance.MSGVMBGTZ)
+                ErrMsg, Impedance.MSGVMBGTZ)
         End If
 
         Dim Intersections _

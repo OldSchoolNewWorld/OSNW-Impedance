@@ -1425,7 +1425,7 @@ Partial Public Structure Impedance
                 mainCirc.GetYFromPlot(OneIntersection.X, OneIntersection.Y)
             Dim DeltaB As System.Double =
                 ImageY.Susceptance - Y.Susceptance
-            Dim FixupY As Admittance = New Admittance(0.0, DeltaB)
+            Dim FixupY As New Admittance(0.0, DeltaB)
             Dim FixupZ As Impedance = FixupY.ToImpedance
             Dim ImageZ As Impedance =
                 mainCirc.GetZFromPlot(OneIntersection.X, OneIntersection.Y)
