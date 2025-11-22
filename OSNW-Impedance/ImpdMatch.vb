@@ -1717,7 +1717,7 @@ Partial Public Structure Impedance
                     NameOf(TrySelectMatchLayout))
         End If
 
-        Return Me.InRemainder(z0, transformations)
+        Return Me.InRemainder(Z0, transformations)
 
         ' GETTING HERE MEANS THAT NO CASES MATCHED.
         Return False ' DEFAULT UNTIL IMPLEMENTED.

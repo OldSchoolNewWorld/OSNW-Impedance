@@ -9,20 +9,36 @@ Option Infer Off
 Partial Public Structure Impedance
 
     ''' <summary>
-    ''' xxxxxxxxxx
+    ''' Attempts to obtain a conjugate match from the specified load
+    ''' <c>Impedance</c> to the specified arbitrary source <c>Impedance</c>, on
+    ''' the specified <c>SmithMainCircle</c>.
+    ''' This method attempts to find a match by first moving, on a G-circle,
+    ''' from the load impedance to an image impedance at a specified Cartesian
+    ''' coordinate, then moving, on an R-circle, from the image impedance to the
+    ''' source impedance.
     ''' </summary>
-    ''' <param name="mainCirc">xxxxxxxxxx</param>
-    ''' <param name="oneIntersection">xxxxxxxxxx</param>
-    ''' <param name="loadZ">xxxxxxxxxx</param>
-    ''' <param name="sourceZ">xxxxxxxxxx</param>
-    ''' <param name="transformations">xxxxxxxxxx</param>
-    ''' <returns></returns>
+    ''' <param name="mainCirc">Specifies a <c>SmithMainCircle</c> in which the
+    ''' match is to be made.</param>
+    ''' <param name="oneIntersection">Specifies the Cartesian coordinate of the
+    ''' image impedance.</param>
+    ''' <param name="loadZ">Specifies the <c>Impedance</c> to match to
+    ''' <paramref name="sourceZ"/>.</param>
+    ''' <param name="sourceZ">Specifies the <c>Impedance</c> to which
+    ''' <paramref name="loadZ"/> should be matched.</param>
+    ''' <param name="transformations">Specifies an array of
+    ''' <see cref="Transformation"/>s that can be used to match a load
+    ''' <c>Impedance</c> to a source <c>Impedance</c>.</param>
+    ''' <returns> Returns <c>True</c> if the process succeeds; otherwise,
+    ''' <c>False</c>. Also returns, by reference in
+    ''' <paramref name="transformations"/>, the components to construct the
+    ''' match.</returns>
     Public Shared Function MatchArbFirstOnG(ByVal mainCirc As SmithMainCircle,
         ByVal oneIntersection As OSNW.Numerics.PointD,
         ByVal loadZ As Impedance, ByVal sourceZ As Impedance,
         ByRef transformations As Transformation()) _
         As System.Boolean
 
+        ' Find out about the image impedance.
         Dim PD As PlotDetails =
             mainCirc.GetDetailsFromPlot(oneIntersection.X, oneIntersection.Y)
 
@@ -69,19 +85,36 @@ Partial Public Structure Impedance
     End Function ' MatchArbFirstOnG
 
     ''' <summary>
-    ''' xxxxxxxxxx
+    ''' Attempts to obtain a conjugate match from the specified load
+    ''' <c>Impedance</c> to the specified arbitrary source <c>Impedance</c>, on
+    ''' the specified <c>SmithMainCircle</c>.
+    ''' This method attempts to find a match by first moving, on an R-circle,
+    ''' from the load impedance to an image impedance at a specified Cartesian
+    ''' coordinate, then moving, on a G-circle, from the image impedance to the
+    ''' source impedance.
     ''' </summary>
-    ''' <param name="mainCirc">xxxxxxxxxx</param>
-    ''' <param name="loadZ">xxxxxxxxxx</param>
-    ''' <param name="sourceZ">xxxxxxxxxx</param>
-    ''' <param name="transformations">xxxxxxxxxx</param>
-    ''' <returns>xxxxxxxxxx</returns>
+    ''' <param name="mainCirc">Specifies a <c>SmithMainCircle</c> in which the
+    ''' match is to be made.</param>
+    ''' <param name="oneIntersection">Specifies the Cartesian coordinate of the
+    ''' image impedance.</param>
+    ''' <param name="loadZ">Specifies the <c>Impedance</c> to match to
+    ''' <paramref name="sourceZ"/>.</param>
+    ''' <param name="sourceZ">Specifies the <c>Impedance</c> to which
+    ''' <paramref name="loadZ"/> should be matched.</param>
+    ''' <param name="transformations">Specifies an array of
+    ''' <see cref="Transformation"/>s that can be used to match a load
+    ''' <c>Impedance</c> to a source <c>Impedance</c>.</param>
+    ''' <returns> Returns <c>True</c> if the process succeeds; otherwise,
+    ''' <c>False</c>. Also returns, by reference in
+    ''' <paramref name="transformations"/>, the components to construct the
+    ''' match.</returns>
     Public Shared Function MatchArbFirstOnR(ByVal mainCirc As SmithMainCircle,
         ByVal oneIntersection As OSNW.Numerics.PointD,
         ByVal loadZ As Impedance, ByVal sourceZ As Impedance,
         ByRef transformations As Transformation()) _
         As System.Boolean
 
+        ' Find out about the image impedance.
         Dim PD As PlotDetails =
             mainCirc.GetDetailsFromPlot(oneIntersection.X, oneIntersection.Y)
 
@@ -130,13 +163,29 @@ Partial Public Structure Impedance
     End Function ' MatchArbFirstOnR
 
     ''' <summary>
-    ''' xxxxxxxxxx
+    ''' Attempts to obtain a conjugate match(es) from the specified load
+    ''' <c>Impedance</c> to the specified arbitrary source <c>Impedance</c>, on
+    ''' the specified <c>SmithMainCircle</c>.
+    ''' This method attempts to find match(es) by first moving, on a G-circle,
+    ''' from the load impedance to an image impedance, then moving, on an
+    ''' R-circle, from the image impedance to the source impedance.
     ''' </summary>
-    ''' <param name="mainCirc">xxxxxxxxxx</param>
-    ''' <param name="loadZ">xxxxxxxxxx</param>
-    ''' <param name="sourceZ">xxxxxxxxxx</param>
-    ''' <param name="transformations">xxxxxxxxxx</param>
-    ''' <returns>xxxxxxxxxx</returns>
+    ''' <param name="mainCirc">Specifies a <c>SmithMainCircle</c> in which the
+    ''' match is to be made.</param>
+    ''' <param name="loadZ">Specifies the <c>Impedance</c> to match to
+    ''' <paramref name="sourceZ"/>.</param>
+    ''' <param name="sourceZ">Specifies the <c>Impedance</c> to which
+    ''' <paramref name="loadZ"/> should be matched.</param>
+    ''' <param name="transformations">Specifies an array of
+    ''' <see cref="Transformation"/>s that can be used to match a load
+    ''' <c>Impedance</c> to a source <c>Impedance</c>.</param>
+    ''' <returns> Returns <c>True</c> if the process succeeds; otherwise,
+    ''' <c>False</c>. Also returns, by reference in
+    ''' <paramref name="transformations"/>, the components to construct the
+    ''' match.</returns>
+    ''' <remarks>
+    ''' A succcessful process might result in no transformation being done.
+    ''' </remarks>
     Public Shared Function MatchArbFirstOnG(ByVal mainCirc As SmithMainCircle,
         ByVal loadZ As Impedance, ByVal sourceZ As Impedance,
         ByRef transformations As Transformation()) _
@@ -181,13 +230,29 @@ Partial Public Structure Impedance
     End Function ' MatchArbFirstOnG
 
     ''' <summary>
-    ''' xxxxxxxxxx
+    ''' Attempts to obtain a conjugate match(es) from the specified load
+    ''' <c>Impedance</c> to the specified arbitrary source <c>Impedance</c>, on
+    ''' the specified <c>SmithMainCircle</c>.
+    ''' This method attempts to find match(es) by first moving, on an R-circle,
+    ''' from the load impedance to an image impedance, then moving, on a
+    ''' G-circle, from the image impedance to the source impedance.
     ''' </summary>
-    ''' <param name="mainCirc">xxxxxxxxxx</param>
-    ''' <param name="loadZ">xxxxxxxxxx</param>
-    ''' <param name="sourceZ">xxxxxxxxxx</param>
-    ''' <param name="transformations">xxxxxxxxxx</param>
-    ''' <returns>xxxxxxxxxx</returns>
+    ''' <param name="mainCirc">Specifies a <c>SmithMainCircle</c> in which the
+    ''' match is to be made.</param>
+    ''' <param name="loadZ">Specifies the <c>Impedance</c> to match to
+    ''' <paramref name="sourceZ"/>.</param>
+    ''' <param name="sourceZ">Specifies the <c>Impedance</c> to which
+    ''' <paramref name="loadZ"/> should be matched.</param>
+    ''' <param name="transformations">Specifies an array of
+    ''' <see cref="Transformation"/>s that can be used to match a load
+    ''' <c>Impedance</c> to a source <c>Impedance</c>.</param>
+    ''' <returns> Returns <c>True</c> if the process succeeds; otherwise,
+    ''' <c>False</c>. Also returns, by reference in
+    ''' <paramref name="transformations"/>, the components to construct the
+    ''' match.</returns>
+    ''' <remarks>
+    ''' A succcessful process might result in no transformation being done.
+    ''' </remarks>
     Public Shared Function MatchArbFirstOnR(ByVal mainCirc As SmithMainCircle,
         ByVal loadZ As Impedance, ByVal sourceZ As Impedance,
         ByRef transformations As Transformation()) _
@@ -235,7 +300,7 @@ Partial Public Structure Impedance
     ''' <summary>
     ''' Attempts to obtain a conjugate match from the specified load
     ''' <c>Impedance</c> to the specified arbitrary source <c>Impedance</c>, on
-    ''' the specified <c>SmithmainCircle</c>.
+    ''' the specified <c>SmithMainCircle</c>.
     ''' </summary>
     ''' <param name="mainCirc">Specifies a <c>SmithMainCircle</c> in which the
     ''' match is to be made.</param>
@@ -245,7 +310,7 @@ Partial Public Structure Impedance
     ''' <paramref name="loadZ"/> should be matched.</param>
     ''' <param name="transformations">Specifies an array of
     ''' <see cref="Transformation"/>s that can be used to match a load
-    ''' <c>Impedance</c> to match a source <c>Impedance</c>.</param>
+    ''' <c>Impedance</c> to a source <c>Impedance</c>.</param>
     ''' <returns> Returns <c>True</c> if the process succeeds; otherwise,
     ''' <c>False</c>. Also returns, by reference in
     ''' <paramref name="transformations"/>, the components to construct the
@@ -335,7 +400,7 @@ Partial Public Structure Impedance
     ''' <paramref name="loadZ"/> should be matched.</param>
     ''' <param name="transformations">Specifies an array of
     ''' <see cref="Transformation"/>s that can be used to match a load
-    ''' <c>Impedance</c> to match a source <c>Impedance</c>.</param>
+    ''' <c>Impedance</c> to a source <c>Impedance</c>.</param>
     ''' <returns> Returns <c>True</c> if the process succeeds; otherwise,
     ''' <c>False</c>. Also returns, by reference in
     ''' <paramref name="transformations"/>, the components to construct the
