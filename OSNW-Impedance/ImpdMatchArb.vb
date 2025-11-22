@@ -224,51 +224,12 @@ Partial Public Structure Impedance
         ByRef transformations As Transformation()) _
         As System.Boolean
 
-        ' Set up useful local values. CONSOLIDATE/REMOVE LATER AS ABLE.
-        Dim Z0 As System.Double = mainCirc.Z0
-        Dim Y0 As System.Double = 1.0 / Z0
-        Dim LoadR As System.Double = loadZ.Resistance
-        Dim LoadX As System.Double = loadZ.Reactance
-        Dim LoadPosX As System.Double
-        Dim LoadPosY As System.Double
-        mainCirc.GetPlotXY(LoadR, LoadX, LoadPosX, LoadPosY)
-        Dim LoadY As Admittance = loadZ.ToAdmittance()
-        Dim LoadG As System.Double = LoadY.Conductance
-        Dim LoadB As System.Double = LoadY.Susceptance
-        Dim LoadCircR As New RCircle(mainCirc, LoadR)
-        Dim LoadCircG As New GCircle(mainCirc, LoadG)
-        Dim SourceR As System.Double = sourceZ.Resistance
-        Dim SourceX As System.Double = sourceZ.Reactance
-        Dim SourcePosX As System.Double
-        Dim SourcePosY As System.Double
-        mainCirc.GetPlotXY(SourceR, SourceX, SourcePosX, SourcePosY)
-        Dim SourceY As Admittance = sourceZ.ToAdmittance()
-        Dim SourceG As System.Double = SourceY.Conductance
-        Dim SourceB As System.Double = SourceY.Susceptance
-        Dim SourceCircR As New RCircle(mainCirc, SourceR)
-        Dim SourceCircG As New GCircle(mainCirc, SourceG)
-
-        Dim ImageR As System.Double = 999
-        Dim ImageX As System.Double = 999
-        Dim ImageG As System.Double = 999
-        Dim ImageB As System.Double = 999
-        'Dim ImageY As Admittance
-        'Dim ImageZ As Impedance
-
         ' Determine the circle intersection(s).
+        Dim LoadCircG As New GCircle(mainCirc, loadZ.ToAdmittance().Conductance)
+        Dim SourceCircR As New RCircle(mainCirc, sourceZ.Resistance)
         Dim Intersections _
             As System.Collections.Generic.List(Of OSNW.Numerics.PointD) =
                    GenericCircle.GetIntersections(LoadCircG, SourceCircR)
-
-        ' ===== FOR DIAGNOSTIC PURPOSES ONLY. =====
-        Dim IntersectionsDiagInfo As New System.Text.StringBuilder
-        With IntersectionsDiagInfo
-            .Append($"{NameOf(Intersections.Count)}: {Intersections.Count}")
-            .Append($"; Intersection: {Intersections(0)}")
-            If Intersections.Count.Equals(2) Then
-                .Append($"; Intersection: {Intersections(1)}")
-            End If
-        End With
 
         ' The circles do intersect. That is not useful at the perimeter.
         If Intersections.Count.Equals(1) AndAlso
@@ -280,65 +241,10 @@ Partial Public Structure Impedance
             Return True
         End If
 
-        ' THESE CHECKS CAN BE DELETED/COMMENTED AFTER THE GetIntersections()
-        ' RESULTS ARE KNOWN TO BE CORRECT.
-        ' There should now be either one or two intersection points. With
-        ' two, there should be one above, and one below, the resonance line.
-        If Intersections.Count < 1 OrElse Intersections.Count > 2 Then
-            'Dim CaughtBy As System.Reflection.MethodBase =
-            '    System.Reflection.MethodBase.GetCurrentMethod
-            Throw New System.ApplicationException(Impedance.MSGIIC)
-        End If
-        If Intersections.Count.Equals(1) Then
-            ' The tangency should be on the resonance line.
-            If Not Impedance.EqualEnough(Intersections(0).Y,
-                                         mainCirc.GridCenterY) Then
-                'Dim CaughtBy As System.Reflection.MethodBase =
-                '    System.Reflection.MethodBase.GetCurrentMethod
-                Throw New System.ApplicationException(
-                    "The tangency is not on the resonance line.")
-            End If
-        End If
-        If Intersections.Count.Equals(2) Then
-            ' The X values should match. Check for reasonable equality when
-            ' using floating point values.
-            If Not Impedance.EqualEnough(Intersections(0).X,
-                                         Intersections(0).X) Then
-                'Dim CaughtBy As System.Reflection.MethodBase =
-                '    System.Reflection.MethodBase.GetCurrentMethod
-                Throw New System.ApplicationException("X values do not match.")
-            End If
-            ' The Y values should be the same distance above and below the
-            ' resonance line. Check for reasonable equality when using floating
-            ' point values.
-            Dim Offset0 As System.Double =
-                    System.Math.Abs(Intersections(0).Y - mainCirc.GridCenterY)
-            Dim Offset1 As System.Double =
-                    System.Math.Abs(Intersections(1).Y - mainCirc.GridCenterY)
-            If Not Impedance.EqualEnough(Offset1, Offset0) Then
-                'Dim CaughtBy As System.Reflection.MethodBase =
-                '    System.Reflection.MethodBase.GetCurrentMethod
-                Throw New System.ApplicationException("Y offsets do not match.")
-            End If
-        End If
-
         ' There are now either one or two intersection points. With one, the two
-        ' circles are tagent at a point on the resonance line. With two: there
+        ' circles are tangent at a point on the resonance line. With two: there
         ' is one above, and one below, the resonance line; the X values match;
         ' the Y values are the same distance above and below the resonance line.
-
-        '' Set up useful values. CONSOLIDATE/REMOVE LATER AS ABLE.
-        'Dim Style As TransformationStyles
-        'Dim DeltaB As System.Double
-        'Dim DeltaX As System.Double
-        'Dim DeltaY As Admittance
-        'Dim DeltaZ As Impedance
-        'Dim ImageR As System.Double = SourceR
-        'Dim ImageX As System.Double
-        'Dim ImageG As System.Double = SourceG
-        'Dim ImageB As System.Double = 999
-        'Dim ImageY As New Admittance(999, 999)
-        'Dim ImageZ As Impedance
 
         For Each OneIntersection As OSNW.Numerics.PointD In Intersections
             If Not MatchArbitraryIntersectionFirstOnG(
@@ -366,51 +272,13 @@ Partial Public Structure Impedance
         ByRef transformations As Transformation()) _
         As System.Boolean
 
-        ' Set up useful local values. CONSOLIDATE/REMOVE LATER AS ABLE.
-        Dim Z0 As System.Double = mainCirc.Z0
-        Dim Y0 As System.Double = 1.0 / Z0
-        Dim LoadR As System.Double = loadZ.Resistance
-        Dim LoadX As System.Double = loadZ.Reactance
-        Dim LoadPosX As System.Double
-        Dim LoadPosY As System.Double
-        mainCirc.GetPlotXY(LoadR, LoadX, LoadPosX, LoadPosY)
-        Dim LoadY As Admittance = loadZ.ToAdmittance()
-        Dim LoadG As System.Double = LoadY.Conductance
-        Dim LoadB As System.Double = LoadY.Susceptance
-        Dim LoadCircR As New RCircle(mainCirc, LoadR)
-        Dim LoadCircG As New GCircle(mainCirc, LoadG)
-        Dim SourceR As System.Double = sourceZ.Resistance
-        Dim SourceX As System.Double = sourceZ.Reactance
-        Dim SourcePosX As System.Double
-        Dim SourcePosY As System.Double
-        mainCirc.GetPlotXY(SourceR, SourceX, SourcePosX, SourcePosY)
-        Dim SourceY As Admittance = sourceZ.ToAdmittance()
-        Dim SourceG As System.Double = SourceY.Conductance
-        Dim SourceB As System.Double = SourceY.Susceptance
-        Dim SourceCircR As New RCircle(mainCirc, SourceR)
-        Dim SourceCircG As New GCircle(mainCirc, SourceG)
-
-        Dim ImageR As System.Double = 999
-        Dim ImageX As System.Double = 999
-        Dim ImageG As System.Double = 999
-        Dim ImageB As System.Double = 999
-        'Dim ImageY As Admittance
-        'Dim ImageZ As Impedance
-
         ' Determine the circle intersection(s).
+        Dim LoadCircR As New RCircle(mainCirc, loadZ.Resistance)
+        Dim SourceCircG As New GCircle(mainCirc,
+                                       sourceZ.ToAdmittance().Conductance)
         Dim Intersections _
             As System.Collections.Generic.List(Of OSNW.Numerics.PointD) =
                    GenericCircle.GetIntersections(LoadCircR, SourceCircG)
-
-        ' ===== FOR DIAGNOSTIC PURPOSES ONLY. =====
-        Dim IntersectionsDiagInfo As New System.Text.StringBuilder
-        With IntersectionsDiagInfo
-            .Append($"{NameOf(Intersections.Count)}: {Intersections.Count}")
-            .Append($"; Intersection: {Intersections(0)}")
-            If Intersections.Count.Equals(2) Then
-                .Append($"; Intersection: {Intersections(1)}")
-            End If
-        End With
 
         ' The circles do intersect. That is not useful at the perimeter.
         If Intersections.Count.Equals(1) AndAlso
@@ -422,65 +290,10 @@ Partial Public Structure Impedance
             Return True
         End If
 
-        ' THESE CHECKS CAN BE DELETED/COMMENTED AFTER THE GetIntersections()
-        ' RESULTS ARE KNOWN TO BE CORRECT.
-        ' There should now be either one or two intersection points. With
-        ' two, there should be one above, and one below, the resonance line.
-        If Intersections.Count < 1 OrElse Intersections.Count > 2 Then
-            'Dim CaughtBy As System.Reflection.MethodBase =
-            '    System.Reflection.MethodBase.GetCurrentMethod
-            Throw New System.ApplicationException(Impedance.MSGIIC)
-        End If
-        If Intersections.Count.Equals(1) Then
-            ' The tangency should be on the resonance line.
-            If Not Impedance.EqualEnough(Intersections(0).Y,
-                                         mainCirc.GridCenterY) Then
-                'Dim CaughtBy As System.Reflection.MethodBase =
-                '    System.Reflection.MethodBase.GetCurrentMethod
-                Throw New System.ApplicationException(
-                    "The tangency is not on the resonance line.")
-            End If
-        End If
-        If Intersections.Count.Equals(2) Then
-            ' The X values should match. Check for reasonable equality when
-            ' using floating point values.
-            If Not Impedance.EqualEnough(Intersections(0).X,
-                                         Intersections(0).X) Then
-                'Dim CaughtBy As System.Reflection.MethodBase =
-                '    System.Reflection.MethodBase.GetCurrentMethod
-                Throw New System.ApplicationException("X values do not match.")
-            End If
-            ' The Y values should be the same distance above and below the
-            ' resonance line. Check for reasonable equality when using floating
-            ' point values.
-            Dim Offset0 As System.Double =
-                    System.Math.Abs(Intersections(0).Y - mainCirc.GridCenterY)
-            Dim Offset1 As System.Double =
-                    System.Math.Abs(Intersections(1).Y - mainCirc.GridCenterY)
-            If Not Impedance.EqualEnough(Offset1, Offset0) Then
-                'Dim CaughtBy As System.Reflection.MethodBase =
-                '    System.Reflection.MethodBase.GetCurrentMethod
-                Throw New System.ApplicationException("Y offsets do not match.")
-            End If
-        End If
-
         ' There are now either one or two intersection points. With one, the two
-        ' circles are tagent at a point on the resonance line. With two: there
+        ' circles are tangent at a point on the resonance line. With two: there
         ' is one above, and one below, the resonance line; the X values match;
         ' the Y values are the same distance above and below the resonance line.
-
-        '' Set up useful values. CONSOLIDATE/REMOVE LATER AS ABLE.
-        'Dim Style As TransformationStyles
-        'Dim DeltaB As System.Double
-        'Dim DeltaX As System.Double
-        'Dim DeltaY As Admittance
-        'Dim DeltaZ As Impedance
-        'Dim ImageR As System.Double = SourceR
-        'Dim ImageX As System.Double
-        'Dim ImageG As System.Double = SourceG
-        'Dim ImageB As System.Double = 999
-        'Dim ImageY As New Admittance(999, 999)
-        'Dim ImageZ As Impedance
 
         For Each OneIntersection As OSNW.Numerics.PointD In Intersections
             If Not MatchArbitraryIntersectionFirstOnR(
