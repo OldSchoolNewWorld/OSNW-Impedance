@@ -856,7 +856,9 @@ Partial Public Structure Impedance
             ' Second move, to the center.
             Dim ImageY As Admittance =
                 mainCirc.GetYFromPlot(intersection.X, intersection.Y)
-            Dim DiffFinalY As System.Double = -ImageY.Susceptance
+            Dim DiffFinalG As System.Double = -ImageY.Susceptance
+            Dim FinalY As New Admittance(0.0, DiffFinalG)
+            Dim FinalX As Impedance = FinalY.ToImpedance
 
             ' Select the transformations, based on the location of the
             ' intersection relative to the resonance line.
@@ -866,10 +868,15 @@ Partial Public Structure Impedance
                 ' Use a series inductor to move CW on the R-circle to the G=Y0
                 ' circle, then use a shunt capacitor to move CW on the G=Y0
                 ' circle to the center.
+                '               transformation = New Transformation With {
+                '                   .Style = TransformationStyles.SeriesIndShuntCap,
+                '                   .Value1 = DiffImageX,
+                '                   .Value2 = DiffFinalY
+                '               }
                 transformation = New Transformation With {
                     .Style = TransformationStyles.SeriesIndShuntCap,
                     .Value1 = DiffImageX,
-                    .Value2 = DiffFinalY
+                    .Value2 = FinalX.Reactance
                 }
             Else
                 ' Intersection below the resonance line.
@@ -880,7 +887,7 @@ Partial Public Structure Impedance
                 transformation = New Transformation With {
                     .Style = TransformationStyles.SeriesCapShuntInd,
                     .Value1 = DiffImageX,
-                    .Value2 = DiffFinalY
+                    .Value2 = FinalX.Reactance
                 }
             End If
 
@@ -1172,6 +1179,8 @@ Partial Public Structure Impedance
             Dim ImageY As Admittance =
                 mainCirc.GetYFromPlot(OneIntersection.X, OneIntersection.Y)
             Dim DeltaB As System.Double = -ImageY.Susceptance
+            Dim FinalY As New Admittance(0.0, DeltaB)
+            Dim FinalZ As Impedance = FinalY.ToImpedance
 
             ' Set up the transformation.
             Dim Trans As New Transformation
@@ -1184,7 +1193,7 @@ Partial Public Structure Impedance
             End If
             With Trans
                 .Value1 = DeltaX
-                .Value2 = DeltaB
+                .Value2 = FinalZ.Reactance
             End With
 
             ' THIS CHECK CAN BE DELETED/COMMENTED AFTER THE Transformation
@@ -1325,6 +1334,8 @@ Partial Public Structure Impedance
             Dim ImageY As Admittance =
                 mainCirc.GetYFromPlot(OneIntersection.X, OneIntersection.Y)
             Dim DeltaB As System.Double = -ImageY.Susceptance
+            Dim FinalY As New Admittance(0.0, DeltaB)
+            Dim FinalZ As Impedance = FinalY.ToImpedance
 
             ' Set up the transformation.
             Dim Trans As New Transformation
@@ -1337,7 +1348,7 @@ Partial Public Structure Impedance
             End If
             With Trans
                 .Value1 = DeltaX
-                .Value2 = DeltaB
+                .Value2 = FinalZ.Reactance
             End With
 
             ' THIS CHECK CAN BE DELETED/COMMENTED AFTER THE Transformation
@@ -1414,6 +1425,8 @@ Partial Public Structure Impedance
                 mainCirc.GetYFromPlot(OneIntersection.X, OneIntersection.Y)
             Dim DeltaB As System.Double =
                 ImageY.Susceptance - Y.Susceptance
+            Dim FixupY As Admittance = New Admittance(0.0, DeltaB)
+            Dim FixupZ As Impedance = FixupY.ToImpedance
             Dim ImageZ As Impedance =
                 mainCirc.GetZFromPlot(OneIntersection.X, OneIntersection.Y)
             Dim DeltaX As System.Double = -ImageZ.Reactance
@@ -1428,7 +1441,7 @@ Partial Public Structure Impedance
                 Trans.Style = TransformationStyles.ShuntIndSeriesInd
             End If
             With Trans
-                .Value1 = DeltaB
+                .Value1 = FixupZ.Reactance
                 .Value2 = DeltaX
             End With
 

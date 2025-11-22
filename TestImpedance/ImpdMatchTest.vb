@@ -273,6 +273,8 @@ Namespace TrySelectMatchLayoutTests
 
         '<InlineData(     Z0,        R,       X)> ' Model
         <Theory>
+        <InlineData(1.0, 1 / 3.0, 1 / 3.0)> ' L1: Inside G=Y0 circle, above resonance line.
+        <InlineData(75.0, 25.0, 25.0)> ' L75: Inside G=Y0 circle, above resonance line. Z0=75.
         <InlineData(1.0, 1 / 3.0, 0.0000)> ' M1: Inside G=Y0 circle, on line.
         <InlineData(75.0, 25.0, 0.0000)> ' M75: Inside G=Y0 circle, on line.
         <InlineData(1.0, 1 / 2.0, -1 / 3.0)> ' N1: Inside G=Y0 circle, below line.
