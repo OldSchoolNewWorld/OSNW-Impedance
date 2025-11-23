@@ -163,132 +163,6 @@ Partial Public Structure Impedance
     End Function ' MatchArbFirstOnR
 
     ''' <summary>
-    ''' Attempts to obtain a conjugate match(es) from the specified load
-    ''' <c>Impedance</c> to the specified arbitrary source <c>Impedance</c>, on
-    ''' the specified <c>SmithMainCircle</c>.
-    ''' This method attempts to find match(es) by first moving, on a G-circle,
-    ''' from the load impedance to an image impedance, then moving, on an
-    ''' R-circle, from the image impedance to the source impedance.
-    ''' </summary>
-    ''' <param name="mainCirc">Specifies a <c>SmithMainCircle</c> in which the
-    ''' match is to be made.</param>
-    ''' <param name="loadZ">Specifies the <c>Impedance</c> to match to
-    ''' <paramref name="sourceZ"/>.</param>
-    ''' <param name="sourceZ">Specifies the <c>Impedance</c> to which
-    ''' <paramref name="loadZ"/> should be matched.</param>
-    ''' <param name="Intersections">xxxxxxxxxx</param>
-    ''' <param name="transformations">Specifies an array of
-    ''' <see cref="Transformation"/>s that can be used to match a load
-    ''' <c>Impedance</c> to a source <c>Impedance</c>.</param>
-    ''' <returns> Returns <c>True</c> if the process succeeds; otherwise,
-    ''' <c>False</c>. Also returns, by reference in
-    ''' <paramref name="transformations"/>, the components to construct the
-    ''' match.</returns>
-    ''' <remarks>
-    ''' A succcessful process might result in no transformation being done.
-    ''' </remarks>
-    Public Shared Function MatchArbFirstOnG(ByVal mainCirc As SmithMainCircle,
-        ByVal loadZ As Impedance, ByVal sourceZ As Impedance,
-        ByVal Intersections _
-            As System.Collections.Generic.List(Of OSNW.Numerics.PointD),
-        ByRef transformations As Transformation()) _
-        As System.Boolean
-
-        ' The circles are assumed to intersect (from MatchArbitrary(
-        ' SmithMainCircle, Impedance, Impedance, Transformation())). That is not
-        ' useful at the perimeter.
-
-        If Intersections.Count.Equals(1) AndAlso
-             Impedance.EqualEnough(Intersections(0).X,
-                                   mainCirc.GridLeftEdgeX) Then
-
-            ' They intersect at the perimeter.
-            ' No update to transformations.
-            Return True
-        End If
-
-        ' There are now either one or two intersection points. With one, the two
-        ' circles are tangent at a point on the resonance line. With two: there
-        ' is one above, and one below, the resonance line; the X values match;
-        ' the Y values are the same distance above and below the resonance line.
-
-        For Each OneIntersection As OSNW.Numerics.PointD In Intersections
-            If Not MatchArbFirstOnG(mainCirc, OneIntersection,
-                                    loadZ, sourceZ, transformations) Then
-
-                Return False
-            End If
-        Next
-
-        ' On getting this far,
-        Return True
-
-    End Function ' MatchArbFirstOnG
-
-    ''' <summary>
-    ''' Attempts to obtain a conjugate match(es) from the specified load
-    ''' <c>Impedance</c> to the specified arbitrary source <c>Impedance</c>, on
-    ''' the specified <c>SmithMainCircle</c>.
-    ''' This method attempts to find match(es) by first moving, on an R-circle,
-    ''' from the load impedance to an image impedance, then moving, on a
-    ''' G-circle, from the image impedance to the source impedance.
-    ''' </summary>
-    ''' <param name="mainCirc">Specifies a <c>SmithMainCircle</c> in which the
-    ''' match is to be made.</param>
-    ''' <param name="loadZ">Specifies the <c>Impedance</c> to match to
-    ''' <paramref name="sourceZ"/>.</param>
-    ''' <param name="sourceZ">Specifies the <c>Impedance</c> to which
-    ''' <paramref name="loadZ"/> should be matched.</param>
-    ''' <param name="Intersections">xxxxxxxxxx</param>
-    ''' <param name="transformations">Specifies an array of
-    ''' <see cref="Transformation"/>s that can be used to match a load
-    ''' <c>Impedance</c> to a source <c>Impedance</c>.</param>
-    ''' <returns> Returns <c>True</c> if the process succeeds; otherwise,
-    ''' <c>False</c>. Also returns, by reference in
-    ''' <paramref name="transformations"/>, the components to construct the
-    ''' match.</returns>
-    ''' <remarks>
-    ''' A succcessful process might result in no transformation being done.
-    ''' </remarks>
-    Public Shared Function MatchArbFirstOnR(ByVal mainCirc As SmithMainCircle,
-        ByVal loadZ As Impedance, ByVal sourceZ As Impedance,
-        ByVal Intersections _
-            As System.Collections.Generic.List(Of OSNW.Numerics.PointD),
-        ByRef transformations As Transformation()) _
-        As System.Boolean
-
-        ' The circles are assumed intersect (from MatchArbitrary(
-        ' SmithMainCircle, Impedance, Impedance, Transformation())). That is not
-        ' useful at the perimeter.
-
-        If Intersections.Count.Equals(1) AndAlso
-             Impedance.EqualEnough(Intersections(0).X,
-                                   mainCirc.GridRightEdgeX) Then
-
-            ' They intersect at the perimeter.
-            ' No update to transformations.
-            Return True
-        End If
-
-        ' There are now either one or two intersection points. With one, the two
-        ' circles are tangent at a point on the resonance line. With two: there
-        ' is one above, and one below, the resonance line; the X values match;
-        ' the Y values are the same distance above and below the resonance line.
-
-        For Each OneIntersection As OSNW.Numerics.PointD In Intersections
-            If Not MatchArbFirstOnR(mainCirc, OneIntersection,
-                                    loadZ, sourceZ, transformations) Then
-
-                Return False
-            End If
-        Next
-
-        ' On getting this far,
-        Return True
-
-    End Function ' MatchArbFirstOnR
-
-    ''' <summary>
     ''' Attempts to obtain a conjugate match from the specified load
     ''' <c>Impedance</c> to the specified arbitrary source <c>Impedance</c>, on
     ''' the specified <c>SmithMainCircle</c>.
@@ -323,9 +197,7 @@ Partial Public Structure Impedance
         ' Leave this here, at least for now. Bad values should have been
         ' rejected in New(Double, Double), and this should not be needed unless
         ' some reason is discovered that requires extremes to be allowed. Maybe
-        ' that could happen if an image impedance has extreme values that cancel
-        ' or for some other interim state. Maybe if a match is being made to an
-        ' image impedance or a situation involving active components that can
+        ' that could happen in a situation involving active components that can
         ' effectively have a negative resitance value.
         ' Check for a short- or open-circuit or for invalid resistances.
         Dim LoadR As System.Double = loadZ.Resistance
@@ -337,9 +209,9 @@ Partial Public Structure Impedance
             Return False
         End If
 
-        ' Check if a match is needed.
+        ' Check whether a match is needed.
         If Impedance.EqualEnough(mainCirc.Z0, loadZ, sourceZ) Then
-            ' Add the inaction to the array of transformations.
+            ' Not needed. Add the inaction to the array of transformations.
             Dim Trans As New Transformation With
                 {.Style = TransformationStyles.None}
             Dim CurrTransCount As System.Int32 = transformations.Length
@@ -350,7 +222,6 @@ Partial Public Structure Impedance
 
         ' Only if the relevant circles intersect, try each geometric approach to
         ' finding a match.
-
         Dim Intersections _
             As New System.Collections.Generic.List(Of OSNW.Numerics.PointD)
 
@@ -360,11 +231,29 @@ Partial Public Structure Impedance
         If GenericCircle.CirclesIntersect(
             LoadCircG, SourceCircR, Intersections) Then
 
-            If Not MatchArbFirstOnG(
-                mainCirc, loadZ, sourceZ, Intersections, transformations) Then
+            ' The circles intersect. That is not useful at the perimeter.
+            If Intersections.Count.Equals(1) AndAlso
+             Impedance.EqualEnough(Intersections(0).X,
+                                   mainCirc.GridLeftEdgeX) Then
 
-                Return False
+                ' They intersect at the perimeter. No update to transformations.
+                Return True
             End If
+
+            ' There are now either one or two intersection points. With one, the
+            ' circles are tangent at a point on the resonance line. With two,
+            ' there is one above, and one below, the resonance line; the X
+            ' values match; the Y values are the same distance above and below
+            ' the resonance line.
+
+            For Each OneIntersection As OSNW.Numerics.PointD In Intersections
+                If Not MatchArbFirstOnG(mainCirc, OneIntersection,
+                                        loadZ, sourceZ, transformations) Then
+
+                    Return False
+                End If
+            Next
+
         End If
 
         ' Try first on an R-circle, then on a G-circle.
@@ -374,11 +263,29 @@ Partial Public Structure Impedance
         If GenericCircle.CirclesIntersect(
             LoadCircR, SourceCircG, Intersections) Then
 
-            If Not MatchArbFirstOnR(
-                mainCirc, loadZ, sourceZ, Intersections, transformations) Then
+            ' The circles intersect. That is not useful at the perimeter.
+            If Intersections.Count.Equals(1) AndAlso
+             Impedance.EqualEnough(Intersections(0).X,
+                                   mainCirc.GridRightEdgeX) Then
 
-                Return False
+                ' They intersect at the perimeter. No update to transformations.
+                Return True
             End If
+
+            ' There are now either one or two intersection points. With one, the
+            ' circles are tangent at a point on the resonance line. With two,
+            ' there is one above, and one below, the resonance line; the X
+            ' values match; the Y values are the same distance above and below
+            ' the resonance line.
+
+            For Each OneIntersection As OSNW.Numerics.PointD In Intersections
+                If Not MatchArbFirstOnR(mainCirc, OneIntersection,
+                                        loadZ, sourceZ, transformations) Then
+
+                    Return False
+                End If
+            Next
+
         End If
 
         ' On getting this far,
