@@ -176,6 +176,7 @@ Partial Public Structure Impedance
     ''' <paramref name="sourceZ"/>.</param>
     ''' <param name="sourceZ">Specifies the <c>Impedance</c> to which
     ''' <paramref name="loadZ"/> should be matched.</param>
+    ''' <param name="Intersections">xxxxxxxxxx</param>
     ''' <param name="transformations">Specifies an array of
     ''' <see cref="Transformation"/>s that can be used to match a load
     ''' <c>Impedance</c> to a source <c>Impedance</c>.</param>
@@ -188,19 +189,14 @@ Partial Public Structure Impedance
     ''' </remarks>
     Public Shared Function MatchArbFirstOnG(ByVal mainCirc As SmithMainCircle,
         ByVal loadZ As Impedance, ByVal sourceZ As Impedance,
+        ByVal Intersections _
+            As System.Collections.Generic.List(Of OSNW.Numerics.PointD),
         ByRef transformations As Transformation()) _
         As System.Boolean
 
         ' The circles are assumed to intersect (from MatchArbitrary(
         ' SmithMainCircle, Impedance, Impedance, Transformation())). That is not
         ' useful at the perimeter.
-
-        ' Determine the circle intersection(s).
-        Dim LoadCircG As New GCircle(mainCirc, loadZ.ToAdmittance().Conductance)
-        Dim SourceCircR As New RCircle(mainCirc, sourceZ.Resistance)
-        Dim Intersections _
-            As System.Collections.Generic.List(Of OSNW.Numerics.PointD) =
-                   GenericCircle.GetIntersections(LoadCircG, SourceCircR)
 
         If Intersections.Count.Equals(1) AndAlso
              Impedance.EqualEnough(Intersections(0).X,
@@ -243,6 +239,7 @@ Partial Public Structure Impedance
     ''' <paramref name="sourceZ"/>.</param>
     ''' <param name="sourceZ">Specifies the <c>Impedance</c> to which
     ''' <paramref name="loadZ"/> should be matched.</param>
+    ''' <param name="Intersections">xxxxxxxxxx</param>
     ''' <param name="transformations">Specifies an array of
     ''' <see cref="Transformation"/>s that can be used to match a load
     ''' <c>Impedance</c> to a source <c>Impedance</c>.</param>
@@ -255,20 +252,14 @@ Partial Public Structure Impedance
     ''' </remarks>
     Public Shared Function MatchArbFirstOnR(ByVal mainCirc As SmithMainCircle,
         ByVal loadZ As Impedance, ByVal sourceZ As Impedance,
+        ByVal Intersections _
+            As System.Collections.Generic.List(Of OSNW.Numerics.PointD),
         ByRef transformations As Transformation()) _
         As System.Boolean
 
         ' The circles are assumed intersect (from MatchArbitrary(
         ' SmithMainCircle, Impedance, Impedance, Transformation())). That is not
         ' useful at the perimeter.
-
-        ' Determine the circle intersection(s).
-        Dim LoadCircR As New RCircle(mainCirc, loadZ.Resistance)
-        Dim SourceCircG As New GCircle(mainCirc,
-                                       sourceZ.ToAdmittance().Conductance)
-        Dim Intersections _
-            As System.Collections.Generic.List(Of OSNW.Numerics.PointD) =
-                   GenericCircle.GetIntersections(LoadCircR, SourceCircG)
 
         If Intersections.Count.Equals(1) AndAlso
              Impedance.EqualEnough(Intersections(0).X,
@@ -360,13 +351,17 @@ Partial Public Structure Impedance
         ' Only if the relevant circles intersect, try each geometric approach to
         ' finding a match.
 
+        Dim Intersections _
+            As New System.Collections.Generic.List(Of OSNW.Numerics.PointD)
+
         ' Try first on a G-circle, then on an R-circle.
-        Dim LoadG As System.Double = loadZ.ToAdmittance().Conductance
-        Dim LoadCircG As New GCircle(mainCirc, LoadG)
+        Dim LoadCircG As New GCircle(mainCirc, loadZ.ToAdmittance().Conductance)
         Dim SourceCircR As New RCircle(mainCirc, SourceR)
-        If GenericCircle.CirclesIntersect(LoadCircG, SourceCircR) Then
+        If GenericCircle.CirclesIntersect(
+            LoadCircG, SourceCircR, Intersections) Then
+
             If Not MatchArbFirstOnG(
-                mainCirc, loadZ, sourceZ, transformations) Then
+                mainCirc, loadZ, sourceZ, Intersections, transformations) Then
 
                 Return False
             End If
@@ -374,11 +369,13 @@ Partial Public Structure Impedance
 
         ' Try first on an R-circle, then on a G-circle.
         Dim LoadCircR As New RCircle(mainCirc, LoadR)
-        Dim SourceG As System.Double = sourceZ.ToAdmittance().Conductance
-        Dim SourceCircG As New GCircle(mainCirc, SourceG)
-        If GenericCircle.CirclesIntersect(LoadCircR, SourceCircG) Then
+        Dim SourceCircG As New GCircle(mainCirc,
+                                       sourceZ.ToAdmittance().Conductance)
+        If GenericCircle.CirclesIntersect(
+            LoadCircR, SourceCircG, Intersections) Then
+
             If Not MatchArbFirstOnR(
-                mainCirc, loadZ, sourceZ, transformations) Then
+                mainCirc, loadZ, sourceZ, Intersections, transformations) Then
 
                 Return False
             End If
