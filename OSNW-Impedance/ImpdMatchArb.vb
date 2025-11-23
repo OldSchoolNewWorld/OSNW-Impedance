@@ -191,7 +191,7 @@ Partial Public Structure Impedance
         ByRef transformations As Transformation()) _
         As System.Boolean
 
-        ' The circles are assumed intersect (from MatchArbitrary(
+        ' The circles are assumed to intersect (from MatchArbitrary(
         ' SmithMainCircle, Impedance, Impedance, Transformation())). That is not
         ' useful at the perimeter.
 
@@ -358,8 +358,9 @@ Partial Public Structure Impedance
         End If
 
         ' Only if the relevant circles intersect, try each geometric approach to
-        ' finding a match,.
+        ' finding a match.
 
+        ' Try first on a G-circle, then on an R-circle.
         Dim LoadG As System.Double = loadZ.ToAdmittance().Conductance
         Dim LoadCircG As New GCircle(mainCirc, LoadG)
         Dim SourceCircR As New RCircle(mainCirc, SourceR)
@@ -371,6 +372,7 @@ Partial Public Structure Impedance
             End If
         End If
 
+        ' Try first on an R-circle, then on a G-circle.
         Dim LoadCircR As New RCircle(mainCirc, LoadR)
         Dim SourceG As System.Double = sourceZ.ToAdmittance().Conductance
         Dim SourceCircG As New GCircle(mainCirc, SourceG)
