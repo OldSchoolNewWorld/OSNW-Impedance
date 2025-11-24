@@ -1,6 +1,6 @@
 ﻿'TODO:
 ' Create looped test of tangency with reversed checks?
-' Convert from building an array to building a list of suggested solutions.
+' Convert from building an array, to building a list, of suggested solutions.
 ' Should infinity be allowed or rejected for admittance and susceptance inputs?
 ' Add De/Serialization to Admittance?????
 '   "the strings should be generated and parsed by using the conventions of the invariant culture."
