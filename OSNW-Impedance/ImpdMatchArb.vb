@@ -234,7 +234,7 @@ Partial Public Structure Impedance
             ' The circles intersect. That is not useful at the perimeter.
             If Intersections.Count.Equals(1) AndAlso
              Impedance.EqualEnough(Intersections(0).X,
-                                   mainCirc.GridLeftEdgeX) Then
+                                   mainCirc.GridLeftEdgeX, IMPDTOLERANCE) Then
 
                 ' They intersect at the perimeter. No update to transformations.
                 Return True
@@ -265,8 +265,8 @@ Partial Public Structure Impedance
 
             ' The circles intersect. That is not useful at the perimeter.
             If Intersections.Count.Equals(1) AndAlso
-             Impedance.EqualEnough(Intersections(0).X,
-                                   mainCirc.GridRightEdgeX) Then
+                Impedance.EqualEnough(Intersections(0).X,
+                    mainCirc.GridRightEdgeX, IMPDTOLERANCE) Then
 
                 ' They intersect at the perimeter. No update to transformations.
                 Return True

@@ -96,6 +96,19 @@ Public Structure Impedance
     Public Const MSGUEEZ As System.String = MSGCHZV & " Use EqualEnoughZero()."
     Public Const MSGTDNRT As String = " transformation did not reach target."
 
+    ' These set practical limits on the precision of equality in mathematical
+    ' operations ralated to impedances. They are intended to prevent issues
+    ' arising from floating point precision limitations. This should account for
+    ' practical applications where component values have limited precision.
+    Const IMPDTOLERANCE As System.Double = 0.000001
+    Const IMPDTOLERANCE0 As System.Double = 0.000001
+
+    ' This sets a practical limit on the precision of equality in graphical
+    ' operations. It is intended to prevent issues arising from floating point
+    ' precision limitations. This should account for indistinguishable sub-pixel
+    ' differences on any current monitor or printer.
+    Const GRAPHICTOLERANCE As System.Double = 0.0001
+
 #Region "Fields and Properties"
 
     ''' <summary>
@@ -160,6 +173,8 @@ Public Structure Impedance
 
     ''' <summary>
     ''' Check for reasonable equality to zero when using floating point values.
+    ''' Any value less than <paramref name="zeroTolerance"/> from zero is
+    ''' considered to be equal to zero.
     ''' </summary>
     ''' <param name="value">Specifies the value to be compared to zero.</param>
     ''' <param name="zeroTolerance">Specifies an acceptable offset from
@@ -184,23 +199,26 @@ Public Structure Impedance
     ''' <param name="otherVal">Specifies the value to be compared to
     ''' <paramref name="refVal"/>.</param>
     ''' <param name="refVal">Specifies a base value for comparison.</param>
+    ''' <param name="factor">Specifies a ratio for the minimum difference that
+    ''' excludes equality.</param>
     ''' <returns><c>True</c> if the values are reasonably close in value;
     ''' otherwise, <c>False</c>.</returns>
     ''' <exception cref="System.ArgumentOutOfRangeException">When either
     ''' parameter is zero.</exception>
     ''' <remarks>
     ''' <c>EqualEnough()</c> does the comparison based on scale, not on an
-    ''' absolute numeric difference.
+    ''' absolute numeric difference. The control value is
+    ''' <paramref name="factor"/> multiplied by <paramref name="refVal"/>, to
+    ''' determine the minimum difference that excludes equality.
     ''' There is no way to scale a comparison to zero. When a zero reference
     ''' would cause a failure here, use <see cref="EqualEnoughZero"/>.
     ''' </remarks>
     Public Shared Function EqualEnough(ByVal otherVal As System.Double,
-        ByVal refVal As System.Double) As System.Boolean
+        ByVal refVal As System.Double, ByVal factor As System.Double) _
+        As System.Boolean
 
         ' REF: Precision and complex numbers
         ' <see href="https://github.com/dotnet/docs/blob/main/docs/fundamentals/runtime-libraries/system-numerics-complex.md#precision-and-complex-numbers"/>
-
-        Const DIFFFACTOR As System.Double = 0.001
 
         ' Input checking.
         If refVal.Equals(0.0) Then
@@ -217,7 +235,7 @@ Public Structure Impedance
         End If
 
         Return System.Math.Abs(otherVal - refVal) <
-            System.Math.Abs(refVal * DIFFFACTOR)
+            System.Math.Abs(refVal * factor)
 
     End Function ' EqualEnough
 
@@ -247,7 +265,8 @@ Public Structure Impedance
         ' No input checking. otherVal and refVal are presumed to have been
         ' checked when created.
 
-        If Not EqualEnough(otherVal.Resistance, refVal.Resistance) Then
+        If Not EqualEnough(otherVal.Resistance, refVal.Resistance,
+                           IMPDTOLERANCE) Then
             Return False
         End If
         If EqualEnoughZero(otherVal.Reactance, NearlyZero) OrElse
@@ -258,7 +277,8 @@ Public Structure Impedance
                 EqualEnoughZero(refVal.Reactance, NearlyZero)
         Else
             ' Not zero; reactances must match.
-            Return EqualEnough(otherVal.Reactance, refVal.Reactance)
+            Return EqualEnough(otherVal.Reactance, refVal.Reactance,
+                               IMPDTOLERANCE)
         End If
 
     End Function ' EqualEnough

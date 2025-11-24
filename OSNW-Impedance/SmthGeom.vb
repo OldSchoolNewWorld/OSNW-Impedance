@@ -110,13 +110,15 @@ Public Class GenericCircle
     ''' <param name="c2X">Specifies the X-coordinate of circle 2.</param>
     ''' <param name="c2Y">Specifies the Y-coordinate of circle 2.</param>
     ''' <param name="c2R">Specifies the radius of circle 1.</param>
-    ''' <returns>A list of intersection points as
-    ''' <see cref="OSNW.Numerics.PointD"/> objects.</returns>
+    ''' <returns>A list of 0, 1, or 2 intersection points as
+    ''' <see cref="OSNW.Numerics.PointD"/> structure(s).</returns>
     Public Shared Function GetIntersections(ByVal c1X As System.Double,
         ByVal c1Y As System.Double, ByVal c1R As System.Double,
         ByVal c2X As System.Double, ByVal c2Y As System.Double,
         ByVal c2R As System.Double) _
         As System.Collections.Generic.List(Of OSNW.Numerics.PointD)
+
+        ' DEV: This is the worker for the related routines.
 
         ' Input checking.
         If c1R <= 0 OrElse c2R <= 0 Then
@@ -132,8 +134,8 @@ Public Class GenericCircle
             As New System.Collections.Generic.List(Of OSNW.Numerics.PointD)
 
         ' Concentric circles would have zero or infinite intersection points.
-        If Impedance.EqualEnough(c1X, c2X) AndAlso
-            Impedance.EqualEnough(c1Y, c2Y) Then
+        If Impedance.EqualEnough(c1X, c2X, Impedance.GRAPHICTOLERANCE) AndAlso
+            Impedance.EqualEnough(c1Y, c2Y, Impedance.GRAPHICTOLERANCE) Then
 
             Return Intersections ' Still empty.
         End If
@@ -152,25 +154,25 @@ Public Class GenericCircle
             Return Intersections ' Still empty.
         End If
 
-        ' On getting this far, the circles are neither isolated nor having one
+        ' On getting this far, the circles are neither isolated nor have one
         ' separately contained within the other. There should now be either one
         ' or two intersections.
 
         ' Check if the circles are outside-tangent to each other.
-        '        BAD Right HERE
-        If Impedance.EqualEnough(c1R + c2R, DeltaCtr) Then
+        If Impedance.EqualEnough(c1R + c2R, DeltaCtr,
+                                 Impedance.GRAPHICTOLERANCE) Then
             ' One intersection point.
             Dim C1Frac As System.Double = c1R / DeltaCtr
             Intersections.Add(New OSNW.Numerics.PointD(
-                                  c1X + C1Frac * DeltaX,
-                                  c1Y + C1Frac * DeltaY))
+                              c1X + C1Frac * DeltaX, c1Y + C1Frac * DeltaY))
             Return Intersections
         End If
 
         ' Check if the circles are inside-tangent to each other.
         ' Two circles of the same radius cannot be inside-tangent to each other.
-        If Not Impedance.EqualEnough(c1R, c2R) Then
-            If Impedance.EqualEnough(Math.Abs(c1R - c2R), DeltaCtr) Then
+        If Not Impedance.EqualEnough(c1R, c2R, Impedance.GRAPHICTOLERANCE) Then
+            If Impedance.EqualEnough(Math.Abs(c1R - c2R), DeltaCtr,
+                                     Impedance.GRAPHICTOLERANCE) Then
                 ' They are inside-tangent.
                 If c1R > c2R Then
                     Dim C1Frac As System.Double = c1R / DeltaCtr
@@ -245,8 +247,10 @@ Public Class GenericCircle
     ''' <summary>
     ''' xxxxxxxxxx
     ''' </summary>
-    ''' <param name="circle1">xxxxxxxxxx</param>
-    ''' <param name="circle2">xxxxxxxxxx</param>
+    ''' <param name="circle1">Specifies the <c>GenericCircle</c> to consider for
+    ''' intersection with <paramref name="circle2"/>.</param>
+    ''' <param name="circle2">Specifies the <c>GenericCircle</c> to consider for
+    ''' intersection with <paramref name="circle1"/>.</param>
     ''' <returns>xxxxxxxxxx</returns>
     Public Shared Function CirclesIntersect(ByVal circle1 As GenericCircle,
         ByVal circle2 As GenericCircle) As System.Boolean
@@ -258,8 +262,10 @@ Public Class GenericCircle
     ''' <summary>
     ''' xxxxxxxxxx
     ''' </summary>
-    ''' <param name="circle1">xxxxxxxxxx</param>
-    ''' <param name="circle2">xxxxxxxxxx</param>
+    ''' <param name="circle1">Specifies the <c>GenericCircle</c> to consider for
+    ''' intersection with <paramref name="circle2"/>.</param>
+    ''' <param name="circle2">Specifies the <c>GenericCircle</c> to consider for
+    ''' intersection with <paramref name="circle1"/>.</param>
     ''' <param name="intersections">xxxxxxxxxx</param>
     ''' <returns>xxxxxxxxxx</returns>
     Public Shared Function CirclesIntersect(
@@ -636,10 +642,12 @@ Public Class SmithMainCircle
     ''' <returns>The radius of the X-circle in generic "units".</returns>
     ''' <exception cref="ArgumentOutOfRangeException">when
     ''' <paramref name="reactance"/> is zero.</exception>
-    Public Function GetRadiusX(ByVal reactance As System.Double) As System.Double
+    Public Function GetRadiusX(ByVal reactance As System.Double) _
+        As System.Double
 
-        Const TOLERANCE As System.Double = 0.0001
-        If Impedance.EqualEnoughZero(reactance, Me.GridRadius * TOLERANCE) Then
+        If Impedance.EqualEnoughZero(
+            reactance, Me.GridRadius * Impedance.IMPDTOLERANCE0) Then
+
             'Dim CaughtBy As System.Reflection.MethodBase =
             '    System.Reflection.MethodBase.GetCurrentMethod
             Throw New System.ArgumentOutOfRangeException(
@@ -691,10 +699,12 @@ Public Class SmithMainCircle
     ''' <returns>The radius of the B-circle in generic "units".</returns>
     ''' <exception cref="ArgumentOutOfRangeException">when
     ''' <paramref name="susceptance"/> is zero.</exception>
-    Public Function GetRadiusB(ByVal susceptance As System.Double) As System.Double
+    Public Function GetRadiusB(ByVal susceptance As System.Double) _
+        As System.Double
 
-        Const TOLERANCE As System.Double = 0.0001
-        If Impedance.EqualEnoughZero(susceptance, Me.GridRadius * TOLERANCE) Then
+        If Impedance.EqualEnoughZero(
+            susceptance, Me.GridRadius * Impedance.IMPDTOLERANCE) Then
+
             'Dim CaughtBy As System.Reflection.MethodBase =
             '    System.Reflection.MethodBase.GetCurrentMethod
             Throw New System.ArgumentOutOfRangeException(
@@ -765,8 +775,8 @@ Public Class SmithMainCircle
             ' Create the R-circle that passes through the impedance plot.
             Dim RCirc As New RCircle(Me, resistance)
 
-            Const TOLERANCE As System.Double = 0.0001
-            If Impedance.EqualEnoughZero(reactance, Me.Z0 * TOLERANCE) Then
+            If Impedance.EqualEnoughZero(reactance,
+                                         Me.Z0 * Impedance.IMPDTOLERANCE0) Then
                 ' The circle intersection approach further below will not work
                 ' due to the infinite radius of the X-circle.
                 plotX = Me.GridRightEdgeX - RCirc.GridDiameter
@@ -852,7 +862,8 @@ Public Class SmithMainCircle
         Dim RadiusR As System.Double
 
         ' Check for the special case with the plot ON the resonance line.
-        If Impedance.EqualEnough(plotY, Me.GridCenterY) Then
+        If Impedance.EqualEnough(plotY, Me.GridCenterY,
+                                 Impedance.GRAPHICTOLERANCE) Then
             ' From GetRadiusR:
             '     RadiusR = Me.GridRadius / ((resistance / Me.Z0) + 1)
             '     RadiusR * ((resistance / Me.Z0) + 1) = Me.GridRadius

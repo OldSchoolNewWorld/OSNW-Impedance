@@ -285,6 +285,8 @@ Namespace TryParseStandardTests
 
     Public Class TestTryParseStandardDefault
 
+        Const IMPDTOLERANCE As System.Double = Impedance.IMPDTOLERANCE
+
         <Theory>
         <InlineData("111111.125+555555.6875j", CultureTestVals.SAMERESISTANCE, CultureTestVals.SAMEREACTANCE)>
         <InlineData("111111.125+j555555.6875", CultureTestVals.SAMERESISTANCE, CultureTestVals.SAMEREACTANCE)> ' A+iB, j in middle.
@@ -297,10 +299,10 @@ Namespace TryParseStandardTests
             If Not OSNW.Numerics.Impedance.TryParseStandard(standardStr, Nothing, Nothing, Impd) Then
                 Assert.Fail("Failed to parse.")
             End If
-            '        Const TOLERANCE As System.Double = 0.000001
+            '        Const XXTOLERANCEXX As System.Double = 0.000001
             '        If Impedance.EqualEnough(reactance, TOLERANCE) Then
-            Assert.True(Impedance.EqualEnough(resistance, Impd.Resistance) AndAlso
-                        Impedance.EqualEnough(reactance, Impd.Reactance))
+            Assert.True(Impedance.EqualEnough(resistance, Impd.Resistance, IMPDTOLERANCE) AndAlso
+                        Impedance.EqualEnough(reactance, Impd.Reactance, IMPDTOLERANCE))
         End Sub
 
         <Fact>
@@ -335,14 +337,16 @@ Namespace TryParseStandardTests
             End If
 
             Assert.True(Impedance.EqualEnoughZero(Impd.Resistance, NearlyZero) OrElse
-                        Not (Impedance.EqualEnough(Impd.Resistance, resistance) AndAlso
-                             Impedance.EqualEnough(Impd.Reactance, reactance)))
+                        Not (Impedance.EqualEnough(Impd.Resistance, resistance, IMPDTOLERANCE) AndAlso
+                             Impedance.EqualEnough(Impd.Reactance, reactance, IMPDTOLERANCE)))
 
         End Sub
 
     End Class ' TestTryParseStandardDefault
 
     Public Class TestTryParseStandardDefaultMixed
+
+        Const IMPDTOLERANCE As System.Double = Impedance.IMPDTOLERANCE
 
         <Theory>
         <InlineData("111111.125+j555555.6875", CultureTestVals.SAMERESISTANCE, CultureTestVals.SAMEREACTANCE)> ' A+Bi.
@@ -357,14 +361,15 @@ Namespace TryParseStandardTests
             If Not OSNW.Numerics.Impedance.TryParseStandard(standardStr, Nothing, Nothing, Impd) Then
                 Assert.Fail("Failed to parse.")
             End If
-            Assert.True(Impedance.EqualEnough(Impd.Resistance, resistance) AndAlso
-                        Impedance.EqualEnough(Impd.Reactance, reactance))
+            Assert.True(Impedance.EqualEnough(Impd.Resistance, resistance, IMPDTOLERANCE) AndAlso
+                        Impedance.EqualEnough(Impd.Reactance, reactance, IMPDTOLERANCE))
         End Sub
 
     End Class ' TestTryParseStandardDefaultMixed
 
     Public Class TestTryParseStandardEnforceStandardization
 
+        Const IMPDTOLERANCE As System.Double = Impedance.IMPDTOLERANCE
         Const TightEnforcement As OsnwNumSS =
             OsnwNumSS.EnforceSequence Or OsnwNumSS.EnforceSpacing
 
@@ -381,8 +386,8 @@ Namespace TryParseStandardTests
             If Not OSNW.Numerics.Impedance.TryParseStandard(standardStr, stdStyle, Nothing, Impd) Then
                 Assert.Fail("Failed to parse.")
             End If
-            Assert.True(Impedance.EqualEnough(Impd.Resistance, resistance) AndAlso
-                        Impedance.EqualEnough(Impd.Reactance, reactance))
+            Assert.True(Impedance.EqualEnough(Impd.Resistance, resistance, IMPDTOLERANCE) AndAlso
+                        Impedance.EqualEnough(Impd.Reactance, reactance, IMPDTOLERANCE))
         End Sub
 
         <Theory>
@@ -400,6 +405,8 @@ Namespace TryParseStandardTests
     End Class ' TestTryParseStandardEnforceStandardization
 
     Public Class TestTryParseStandardCulture
+
+        Const IMPDTOLERANCE As System.Double = Impedance.IMPDTOLERANCE
 
         <Theory>
         <InlineData("111111.125+j555555.6875", CultureTestVals.SAMERESISTANCE, CultureTestVals.SAMEREACTANCE, 0)>
@@ -429,8 +436,8 @@ Namespace TryParseStandardTests
                 Assert.Fail("Failed to parse.")
             End If
 
-            Assert.True(Impedance.EqualEnough(Impd.Resistance, resistance) AndAlso
-                        Impedance.EqualEnough(Impd.Reactance, reactance))
+            Assert.True(Impedance.EqualEnough(Impd.Resistance, resistance, IMPDTOLERANCE) AndAlso
+                        Impedance.EqualEnough(Impd.Reactance, reactance, IMPDTOLERANCE))
 
         End Sub
 
