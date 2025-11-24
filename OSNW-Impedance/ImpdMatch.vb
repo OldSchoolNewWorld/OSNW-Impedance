@@ -492,8 +492,9 @@ Partial Public Structure Impedance
         ' Test data E: On R=Z0 circle, above resonance line. Only needs reactance.
         ' Test data F: On R=Z0 circle, below resonance line. Only needs reactance.
 
+        Const TOLERANCE As System.Double = 0.000001
         Dim CurrentX As System.Double = Me.Reactance
-        If CurrentX.Equals(0.0) Then
+        If Impedance.EqualEnoughZero(CurrentX, TOLERANCE) Then
             ' This happens at two places.
 
             If System.Double.IsInfinity(Me.Resistance) Then
@@ -566,11 +567,12 @@ Partial Public Structure Impedance
         ' J: On G=Y0 circle, above resonance line. Only needs reactance.
         ' K: On G=Y0 circle, below resonance line. Only needs reactance.
 
+        Const TOLERANCE As System.Double = 0.000001
         Dim CurrentB As System.Double = Me.ToAdmittance().Susceptance
-        If CurrentB.Equals(0.0) Then
+        If Impedance.EqualEnoughZero(CurrentB, TOLERANCE) Then
             ' This happens at two places.
 
-            If Me.Resistance.Equals(0.0) Then
+            If Impedance.EqualEnoughZero(Me.Resistance, TOLERANCE) Then
                 ' Test data A: At the short circuit point.
                 Return False
             End If
@@ -1642,6 +1644,8 @@ Partial Public Structure Impedance
         ' Q: Outside of main circle. Invalid.
         ' R: NormR<=0. Invalid.
 
+        Const TOLERANCE As System.Double = 0.000001
+
         Dim Z0 As System.Double = mainCirc.Z0
         Dim CurrentR As System.Double = Me.Resistance
         Dim Y0 As System.Double = 1.0 / Z0
@@ -1655,17 +1659,21 @@ Partial Public Structure Impedance
         ' MADE TO AN IMAGE IMPEDANCE OR A SITUATION INVOLVING ACTIVE COMPONENTS
         ' THAT CAN EFFECTIVELY HAVE A NEGATIVE RESITANCE VALUE.
         ' Check for a short- or open-circuit.
-        If CurrentR.Equals(0.0) OrElse System.Double.IsInfinity(CurrentR) Then
+        If Impedance.EqualEnoughZero(CurrentR, TOLERANCE) OrElse
+            System.Double.IsInfinity(CurrentR) Then
             ' A: At the short circuit point. Omit - covered by B.
             ' B: Anywhere else on the perimeter. R=0.0.
             ' C: At the open circuit point on the right.
+
             transformations = Nothing
             Return False
         End If
 
-        If CurrentR.Equals(Z0) AndAlso Me.Reactance.Equals(0.0) Then
+        If Impedance.EqualEnough(CurrentR, Z0) AndAlso
+            Impedance.EqualEnoughZero(Me.Reactance, TOLERANCE) Then
             ' D: At the center.
             ' Leave transformations as the incoming empty array.
+
             Return True
         End If
 
@@ -1679,7 +1687,7 @@ Partial Public Structure Impedance
             '     G50: Inside R=Z0 circle, above resonance line. Z0=50.
             '     H1: Inside R=Z0 circle, on line.
             '     I1: Inside R=Z0 circle, below resonance line.
-            If CurrentR.Equals(Z0) Then
+            If Impedance.EqualEnough(CurrentR, Z0) Then
                 Return Me.OnREqualsZ0(transformations) ' E, F.
             Else
                 Return Me.InsideREqualsZ0(Z0, transformations) 'G, H, I.
@@ -1694,7 +1702,7 @@ Partial Public Structure Impedance
             '     L75: Inside G=Y0 circle, above resonance line. Z0=75.
             '     M1: Inside G=Y0 circle, on line.
             '     N1: Inside G=Y0 circle, below line.
-            If Me.ToAdmittance().Conductance.Equals(Y0) Then
+            If Impedance.EqualEnough(Me.ToAdmittance().Conductance, Y0) Then
                 Return Me.OnGEqualsY0(Z0, transformations) ' J, K.
             Else
                 Return Me.InsideGEqualsY0(mainCirc, transformations) ' L, M, N.
@@ -1705,7 +1713,7 @@ Partial Public Structure Impedance
         ' On getting this far, the impedance will, usually, fall into either
         ' the top or bottom center section.
         Dim NormX As System.Double = Me.Reactance / Z0
-        If NormX.Equals(0.0) Then
+        If Impedance.EqualEnoughZero(NormX, TOLERANCE) Then
             ' Z is ON the resonance line.
 
             ' Should this case have been caught above? Yes, it would be in or
@@ -1713,8 +1721,8 @@ Partial Public Structure Impedance
             Dim CaughtBy As System.Reflection.MethodBase =
                     System.Reflection.MethodBase.GetCurrentMethod
             Throw New ApplicationException(
-                    """NormX.Equals(0.0)"" should never be matched in " &
-                    NameOf(TrySelectMatchLayout))
+                    """EqualEnoughZero(NormX, TOLERANCE)"" should never be" &
+                    " matched in " & NameOf(TrySelectMatchLayout))
         End If
 
         Return Me.InRemainder(Z0, transformations)

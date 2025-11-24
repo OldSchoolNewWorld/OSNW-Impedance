@@ -568,7 +568,7 @@ Public Structure Admittance
         '        System.Reflection.MethodBase.GetCurrentMethod
         '    Throw New System.ArgumentOutOfRangeException(NameOf(conductance),
         '                                                 MSGCHNV)
-        'ElseIf conductance.Equals(0.0) Then
+        'ElseIf Impedance.EqualEnoughZero(conductance, TOLERANCE) Then
         '    Dim CaughtBy As System.Reflection.MethodBase =
         '        System.Reflection.MethodBase.GetCurrentMethod
         '    Throw New System.ArgumentOutOfRangeException(NameOf(conductance),

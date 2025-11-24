@@ -1,9 +1,5 @@
 ﻿'TODO:
-' Create looped test of tangency with reversed checks.
-' Provide for matching to arbitrary impedances (Rtarget, Xtarget) vs. only characteristic impedances?
-'   An example is shown page 26 of the link below.
-'   https://amris.mbi.ufl.edu/wordpress/files/2021/01/SmithChart_FullPresentation.pdf
-'   Does that example indicate an alternative approach to matching an impedance on the R=Z0 circle?
+' Create looped test of tangency with reversed checks?
 ' Convert from building an array to building a list of suggested solutions.
 ' Should infinity be allowed or rejected for admittance and susceptance inputs?
 ' Add De/Serialization to Admittance?????
@@ -277,16 +273,18 @@ Public Structure Impedance
     ''' <param name="obj">The object to compare with the current object.</param>
     ''' <returns><c>True</c> if the specified object is equal to the current
     ''' object; otherwise, <c>False</c>.</returns>
+    ''' <remarks><seealso cref="EqualEnough(Double, Impedance, Impedance)"/></remarks>
     Public Overrides Function Equals(
         <System.Diagnostics.CodeAnalysis.NotNullWhen(True)>
             ByVal obj As System.Object) As System.Boolean
 
-        '' This may have to be changed to determine equality within some
-        '' reasonable bounds. See 
-        '' <see href="https://github.com/dotnet/docs/blob/main/docs/fundamentals/runtime-libraries/system-numerics-complex.md#precision-and-complex-numbers"/>
+        ' This may have to be changed to determine equality within some
+        ' reasonable bounds. See 
+        ' <see href="https://github.com/dotnet/docs/blob/main/docs/fundamentals/runtime-libraries/system-numerics-complex.md#precision-and-complex-numbers"/>
+        ' That is now available via EqualEnough(value, refVal) above.
         Return (TypeOf obj Is Impedance) AndAlso
             DirectCast(Me, IEquatable(Of Impedance)).Equals(
-            DirectCast(obj, Impedance))
+                DirectCast(obj, Impedance))
     End Function ' Equals
 
     ' public bool Equals(Complex value)
@@ -942,7 +940,7 @@ Public Structure Impedance
         '        System.Reflection.MethodBase.GetCurrentMethod
         '    Throw New System.ArgumentOutOfRangeException(NameOf(resistance),
         '                                                 MSGCHNV)
-        'ElseIf resistance.Equals(0.0) Then
+        'ElseIf Impedance.EqualEnoughZero(resistance, TOLERANCE) Then
         '    Dim CaughtBy As System.Reflection.MethodBase =
         '        System.Reflection.MethodBase.GetCurrentMethod
         '    Throw New System.ArgumentOutOfRangeException(NameOf(resistance),

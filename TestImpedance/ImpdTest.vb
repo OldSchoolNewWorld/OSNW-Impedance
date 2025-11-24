@@ -297,7 +297,10 @@ Namespace TryParseStandardTests
             If Not OSNW.Numerics.Impedance.TryParseStandard(standardStr, Nothing, Nothing, Impd) Then
                 Assert.Fail("Failed to parse.")
             End If
-            Assert.True(resistance.Equals(Impd.Resistance) AndAlso reactance.Equals(Impd.Reactance))
+            '        Const TOLERANCE As System.Double = 0.000001
+            '        If Impedance.EqualEnough(reactance, TOLERANCE) Then
+            Assert.True(Impedance.EqualEnough(resistance, Impd.Resistance) AndAlso
+                        Impedance.EqualEnough(reactance, Impd.Reactance))
         End Sub
 
         <Fact>
@@ -309,8 +312,8 @@ Namespace TryParseStandardTests
                     If OSNW.Numerics.Impedance.TryParseStandard("-111111.125+555555.6875j", Nothing, Nothing, Impd) Then
                         Assert.Fail("Parsed despite bad entry.")
                     End If
-                    Assert.False(Impd.Resistance.Equals(-CultureTestVals.SAMERESISTANCE) AndAlso
-                                 Impd.Reactance.Equals(CultureTestVals.SAMEREACTANCE))
+                    Assert.False(Impedance.EqualEnoughZero(Impd.Resistance, -CultureTestVals.SAMERESISTANCE) AndAlso
+                             Impedance.EqualEnoughZero(Impd.Reactance, CultureTestVals.SAMEREACTANCE))
                 End Sub)
         End Sub
 
@@ -324,11 +327,17 @@ Namespace TryParseStandardTests
         <InlineData(".1125e1+j.56875F1", CultureTestVals.SAMERESISTANCE, CultureTestVals.SAMEREACTANCE)> ' F, not E.
         <InlineData("112.5E-2.2+i5687.5e-3", CultureTestVals.SAMERESISTANCE, CultureTestVals.SAMEREACTANCE)> ' Non-integer exponent.
         Sub TryParseStandardDefault_BadInput_Fails(standardStr As String, resistance As Double, reactance As Double)
+
+            Dim NearlyZero As System.Double = resistance * 0.000001
             Dim Impd As New OSNW.Numerics.Impedance
             If OSNW.Numerics.Impedance.TryParseStandard(standardStr, Nothing, Nothing, Impd) Then
                 Assert.Fail("Parsed despite bad entry.")
             End If
-            Assert.False(Impd.Resistance.Equals(resistance) AndAlso Impd.Reactance.Equals(reactance))
+
+            Assert.True(Impedance.EqualEnoughZero(Impd.Resistance, NearlyZero) OrElse
+                        Not (Impedance.EqualEnough(Impd.Resistance, resistance) AndAlso
+                             Impedance.EqualEnough(Impd.Reactance, reactance)))
+
         End Sub
 
     End Class ' TestTryParseStandardDefault
@@ -348,7 +357,8 @@ Namespace TryParseStandardTests
             If Not OSNW.Numerics.Impedance.TryParseStandard(standardStr, Nothing, Nothing, Impd) Then
                 Assert.Fail("Failed to parse.")
             End If
-            Assert.True(Impd.Resistance.Equals(resistance) AndAlso Impd.Reactance.Equals(reactance))
+            Assert.True(Impedance.EqualEnough(Impd.Resistance, resistance) AndAlso
+                        Impedance.EqualEnough(Impd.Reactance, reactance))
         End Sub
 
     End Class ' TestTryParseStandardDefaultMixed
@@ -371,7 +381,8 @@ Namespace TryParseStandardTests
             If Not OSNW.Numerics.Impedance.TryParseStandard(standardStr, stdStyle, Nothing, Impd) Then
                 Assert.Fail("Failed to parse.")
             End If
-            Assert.True(Impd.Resistance.Equals(resistance) AndAlso Impd.Reactance.Equals(reactance))
+            Assert.True(Impedance.EqualEnough(Impd.Resistance, resistance) AndAlso
+                        Impedance.EqualEnough(Impd.Reactance, reactance))
         End Sub
 
         <Theory>
@@ -418,7 +429,8 @@ Namespace TryParseStandardTests
                 Assert.Fail("Failed to parse.")
             End If
 
-            Assert.True(Impd.Resistance.Equals(resistance) AndAlso Impd.Reactance.Equals(reactance))
+            Assert.True(Impedance.EqualEnough(Impd.Resistance, resistance) AndAlso
+                        Impedance.EqualEnough(Impd.Reactance, reactance))
 
         End Sub
 

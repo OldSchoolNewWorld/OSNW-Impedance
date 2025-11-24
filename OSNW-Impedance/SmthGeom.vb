@@ -638,7 +638,8 @@ Public Class SmithMainCircle
     ''' <paramref name="reactance"/> is zero.</exception>
     Public Function GetRadiusX(ByVal reactance As System.Double) As System.Double
 
-        If reactance.Equals(0.0) Then
+        Const TOLERANCE As System.Double = 0.0001
+        If Impedance.EqualEnoughZero(reactance, Me.GridRadius * TOLERANCE) Then
             'Dim CaughtBy As System.Reflection.MethodBase =
             '    System.Reflection.MethodBase.GetCurrentMethod
             Throw New System.ArgumentOutOfRangeException(
@@ -692,7 +693,8 @@ Public Class SmithMainCircle
     ''' <paramref name="susceptance"/> is zero.</exception>
     Public Function GetRadiusB(ByVal susceptance As System.Double) As System.Double
 
-        If susceptance.Equals(0.0) Then
+        Const TOLERANCE As System.Double = 0.0001
+        If Impedance.EqualEnoughZero(susceptance, Me.GridRadius * TOLERANCE) Then
             'Dim CaughtBy As System.Reflection.MethodBase =
             '    System.Reflection.MethodBase.GetCurrentMethod
             Throw New System.ArgumentOutOfRangeException(
@@ -763,7 +765,8 @@ Public Class SmithMainCircle
             ' Create the R-circle that passes through the impedance plot.
             Dim RCirc As New RCircle(Me, resistance)
 
-            If reactance.Equals(0.0) Then
+            Const TOLERANCE As System.Double = 0.0001
+            If Impedance.EqualEnoughZero(reactance, Me.Z0 * TOLERANCE) Then
                 ' The circle intersection approach further below will not work
                 ' due to the infinite radius of the X-circle.
                 plotX = Me.GridRightEdgeX - RCirc.GridDiameter
@@ -849,7 +852,7 @@ Public Class SmithMainCircle
         Dim RadiusR As System.Double
 
         ' Check for the special case with the plot ON the resonance line.
-        If plotY.Equals(Me.GridCenterY) Then
+        If Impedance.EqualEnough(plotY, Me.GridCenterY) Then
             ' From GetRadiusR:
             '     RadiusR = Me.GridRadius / ((resistance / Me.Z0) + 1)
             '     RadiusR * ((resistance / Me.Z0) + 1) = Me.GridRadius
