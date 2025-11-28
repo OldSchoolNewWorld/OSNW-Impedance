@@ -2,6 +2,9 @@
 Option Strict On
 Option Compare Binary
 Option Infer Off
+Imports System.Net.Security
+
+
 
 ' This document contains items related to matching a load impedance to an
 ' arbitrary source impedance.
@@ -38,33 +41,94 @@ Partial Public Structure Impedance
         ByRef transformations As Transformation()) _
         As System.Boolean
 
-        ' Find out about the image impedance.
-        Dim PD As PlotDetails =
+        ' Find out about the intersection/image impedance.
+        Dim ImagePD As PlotDetails =
             mainCirc.GetDetailsFromPlot(oneIntersection.X, oneIntersection.Y)
 
-        ' Set up the transformation.
+        Dim LoadR As System.Double = loadZ.Resistance
+        Dim ImageZ As Impedance = ImagePD.Impedance
+        Dim ImageR As System.Double = ImageZ.Resistance
+        Dim LoadX As System.Double = loadZ.Reactance
+        Dim SourceX As System.Double = sourceZ.Reactance
+        Dim DeltaX As System.Double
+
+        Dim CurrTransCount As System.Int32 = transformations.Length
         Dim Trans As New Transformation
+
+        '        ' Eventually, use these values?
+        '        ImageX = IntersectPD.Impedance.Reactance
+        '        ImageB = IntersectPD.Admittance.Susceptance
+
+        ' If the load is already on the R=SourceR circle, no transformation is
+        ' needed to get there.
+        If Impedance.EqualEnough(LoadR, ImageR, IMPDTOLERANCE) Then
+
+            ' Only need to move on the R-circle.
+            With Trans
+                DeltaX = SourceX - LoadX
+                If DeltaX < 0.0 Then
+                    ' CCW on an R-circle needs a series capacitor.
+                    .Style = TransformationStyles.SeriesCap
+                Else
+                    ' CW on an R-circle needs a series inductor.
+                    .Style = TransformationStyles.SeriesInd
+                End If
+                .Value1 = DeltaX
+            End With
+
+            ' Add to the array of transformations.
+            ReDim Preserve transformations(CurrTransCount)
+            transformations(CurrTransCount) = Trans
+
+            ' On getting this far,
+            Return True
+
+        End If
+
+        ' On getting this far,
+        ' Need to move on the G-circle first, to the image point, then on the R-circle to the source.
+
+        Dim ImageY As Admittance = ImagePD.Admittance
+        Dim ImageB As System.Double = ImageY.Susceptance
+        Dim LoadY As Admittance = loadZ.ToAdmittance()
+        Dim LoadB As System.Double = LoadY.Susceptance
+        Dim DeltaB As System.Double
+        Dim ImageX As System.Double = ImageZ.Reactance
+
+        'Dim SourceY As Admittance = sourceZ.ToAdmittance()
+        'Dim SourceB As System.Double = SourceY.Susceptance
+        'Dim ImageG As System.Double = ImageY.Conductance
+        'Dim SourceR As System.Double = sourceZ.Resistance
+        'Dim SourceG As System.Double = SourceY.Conductance
+        'Dim LoadG As System.Double = LoadY.Conductance
+        'Dim DeltaZ As New Impedance(999.99, 999.99)
+        'Dim DeltaR As System.Double = DeltaZ.Resistance
+        'Dim DeltaG As System.Double = DeltaY.Conductance
+
         With Trans
-            Dim ImageB As System.Double = PD.Admittance.Susceptance
-            Dim LoadB As System.Double = loadZ.ToAdmittance().Susceptance
-            Dim DeltaB As System.Double = ImageB - LoadB
-            Dim ImageX As System.Double = PD.Impedance.Reactance
-            Dim DeltaX As System.Double = sourceZ.Reactance - ImageX
+            DeltaB = ImageB - LoadB
+            DeltaX = sourceZ.Reactance - ImageX
             If DeltaB < 0.0 Then
                 ' CCW on a G-circle needs a shunt inductor.
-                If DeltaX < 0.0 Then
+                If Impedance.EqualEnoughZero(DeltaX, IMPDTOLERANCE0) Then
+                    ' No movement on R-circle needed.
+                    .Style = TransformationStyles.ShuntInd
+                ElseIf DeltaX < 0.0 Then
                     ' CCW on a R-circle needs a series capacitor.
                     .Style = TransformationStyles.ShuntIndSeriesCap
-                Else
+                Else ' DeltaX > 0.0
                     ' CW on a R-circle needs a series inductor.
                     .Style = TransformationStyles.ShuntIndSeriesInd
                 End If
-            Else
+            Else ' Deltab > 0.0
                 ' CW on a G-circle needs a shunt capacitor.
-                If DeltaX < 0.0 Then
+                If Impedance.EqualEnoughZero(DeltaX, IMPDTOLERANCE0) Then
+                    ' No movement on R-circle needed.
+                    .Style = TransformationStyles.ShuntCap
+                ElseIf DeltaX < 0.0 Then
                     ' CCW on a R-circle needs a series capacitor.
                     .Style = TransformationStyles.ShuntCapSeriesCap
-                Else
+                Else ' DeltaX > 0.0
                     ' CW on a R-circle needs a series inductor.
                     .Style = TransformationStyles.ShuntCapSeriesInd
                 End If
@@ -75,7 +139,6 @@ Partial Public Structure Impedance
         End With
 
         ' Add to the array of transformations.
-        Dim CurrTransCount As System.Int32 = transformations.Length
         ReDim Preserve transformations(CurrTransCount)
         transformations(CurrTransCount) = Trans
 
@@ -114,46 +177,106 @@ Partial Public Structure Impedance
         ByRef transformations As Transformation()) _
         As System.Boolean
 
-        ' Find out about the image impedance.
-        Dim PD As PlotDetails =
+        ' Find out about the intersection/image impedance.
+        Dim ImagePD As PlotDetails =
             mainCirc.GetDetailsFromPlot(oneIntersection.X, oneIntersection.Y)
 
-        ' Set up the transformation.
+        Dim LoadR As System.Double = loadZ.Resistance
+        Dim ImageZ As Impedance = ImagePD.Impedance
+        Dim ImageR As System.Double = ImageZ.Resistance
+        Dim ImageX As System.Double = ImageZ.Reactance
+        Dim LoadX As System.Double = loadZ.Reactance
+        Dim DeltaX As System.Double
+
+        Dim CurrTransCount As System.Int32 = transformations.Length
         Dim Trans As New Transformation
+
+        '        ' Eventually, use these values?
+        '        ImageX = IntersectPD.Impedance.Reactance
+        '        ImageB = IntersectPD.Admittance.Susceptance
+
+        ' If the load is already on the R=SourceR circle, no transformation is
+        ' needed to get there.
+        If Impedance.EqualEnough(LoadR, ImageR, IMPDTOLERANCE) Then
+
+            ' Only need to move on the R-circle.
+            With Trans
+                DeltaX = ImageX - LoadX
+                If DeltaX < 0.0 Then
+                    ' CCW on a R-circle needs a series capacitor.
+                    .Style = TransformationStyles.SeriesCap
+                Else
+                    ' CW on a R-circle needs a series inductor.
+                    .Style = TransformationStyles.SeriesInd
+                End If
+                .Value1 = DeltaX
+            End With
+
+            ' Add to the array of transformations.
+            ReDim Preserve transformations(CurrTransCount)
+            transformations(CurrTransCount) = Trans
+
+            ' On getting this far,
+            Return True
+
+        End If
+
+        ' On getting this far,
+        ' Need to move on the R-circle first, to the image point, then on the G-circle to the source.
+
+        Dim ImageB As System.Double = ImagePD.Admittance.Susceptance
+        Dim LoadY As Admittance = loadZ.ToAdmittance()
+        Dim LoadB As System.Double = LoadY.Susceptance
+        Dim DeltaB As System.Double
+
+
+        'Dim SourceX As System.Double = sourceZ.Reactance
+        'Dim LoadG As System.Double = LoadY.Conductance
+        'Dim ImageY As Admittance = ImagePD.Admittance
+        'Dim ImageG As System.Double = ImageY.Conductance
+        'Dim DeltaZ As Impedance
+        'Dim SourceB As System.Double
+        'Dim DeltaY As Admittance
+        'Dim SourceR As System.Double = sourceZ.Resistance
+        'Dim SourceY As Admittance = sourceZ.ToAdmittance()
+        'Dim SourceG As System.Double = SourceY.Conductance
+        'Dim DeltaR As System.Double = DeltaZ.Resistance
+        'Dim DeltaG As System.Double = DeltaY.Conductance
+
         With Trans
-            Dim ImageX As System.Double = PD.Impedance.Reactance
-            Dim LoadX As System.Double = loadZ.Reactance
-            Dim DeltaX As System.Double = ImageX - LoadX
-            Dim SourceB As System.Double = sourceZ.ToAdmittance().Susceptance
-            Dim ImageB As System.Double = PD.Admittance.Susceptance
-            Dim DeltaB As System.Double = SourceB - ImageB
+            DeltaX = ImageX - loadZ.Reactance
+            DeltaB = ImageB - LoadB
             If DeltaX < 0.0 Then
-                ' CCW on a R-circle needs a series capacitor
-                If DeltaB < 0.0 Then
-                    ' CCW on a G-circle needs a shunt inductor
+                ' CCW on a R-circle needs a series capacitor.
+                If Impedance.EqualEnoughZero(DeltaB, IMPDTOLERANCE0) Then
+                    ' No movement on G-circle needed.
+                    .Style = TransformationStyles.SeriesCap
+                ElseIf DeltaB < 0.0 Then
+                    ' CCW on a G-circle needs a shunt inductor.
                     .Style = TransformationStyles.SeriesCapShuntInd
                 Else
-                    ' CW on a G-circle needs a shunt capacitor
+                    ' CW on a G-circle needs a shunt capacitor.
                     .Style = TransformationStyles.SeriesCapShuntCap
                 End If
             Else
-                ' CW on a R-circle needs a series inductor
-                If DeltaB < 0.0 Then
-                    ' CCW on a G-circle needs a shunt inductor
+                ' CW on a R-circle needs a series inductor.
+                If Impedance.EqualEnoughZero(DeltaB, IMPDTOLERANCE0) Then
+                    ' No movement on G-circle needed.
+                    .Style = TransformationStyles.SeriesInd
+                ElseIf DeltaB < 0.0 Then
+                    ' CCW on a G-circle needs a shunt inductor.
                     .Style = TransformationStyles.SeriesIndShuntInd
                 Else
-                    ' CW on a G-circle needs a shunt capacitor
+                    ' CW on a G-circle needs a shunt capacitor.
                     .Style = TransformationStyles.SeriesIndShuntCap
                 End If
             End If
             .Value1 = DeltaX
-            Dim DeltaY As New Admittance(0, DeltaB)
-            Dim DeltaZ As Impedance = DeltaY.ToImpedance
-            .Value2 = DeltaZ.Reactance
+            .Value2 = New Admittance(0, DeltaB).ToImpedance().Reactance
+
         End With
 
         ' Add to the array of transformations.
-        Dim CurrTransCount As System.Int32 = transformations.Length
         ReDim Preserve transformations(CurrTransCount)
         transformations(CurrTransCount) = Trans
 
@@ -279,11 +402,20 @@ Partial Public Structure Impedance
             ' the resonance line.
 
             For Each OneIntersection As OSNW.Numerics.PointD In Intersections
+
                 If Not MatchArbFirstOnR(mainCirc, OneIntersection,
                                         loadZ, sourceZ, transformations) Then
 
                     Return False
                 End If
+
+                ' THESE TESTS CAN BE DELETED OR SUPPRESSED AFTER ALL WORKS OK.
+                For Each OneTrans As Transformation In transformations
+                    If Not loadZ.ValidateTransformation(mainCirc, sourceZ, OneTrans) Then
+                        Return False
+                    End If
+                Next
+
             Next
 
         End If

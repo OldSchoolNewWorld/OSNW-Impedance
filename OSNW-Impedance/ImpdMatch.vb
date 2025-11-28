@@ -195,21 +195,62 @@ Partial Public Structure Impedance
 
         Dim z0 As System.Double = mainCirc.Z0
         Dim NearlyZero As System.Double = z0 * 0.000001
-        Dim FixupZ As Impedance
+        Dim DeltaZ As Impedance
         Dim WorkZ As Impedance
         Dim TestPassed As System.Boolean = True ' For now.
 
-        If aTransformation.Style.Equals(
-            TransformationStyles.ShuntCapSeriesInd) Then
+        If aTransformation.Style.Equals(TransformationStyles.ShuntCap) Then
+            Throw New System.NotImplementedException(
+                "Single-element transformations not yet implemented.")
+        ElseIf aTransformation.Style.Equals(TransformationStyles.SeriesInd) Then
+
+            ' To go | On a     | Use a
+            ' CW    | R-circle | series inductor
+
+            DeltaZ = New Impedance(0.0, aTransformation.Value1)
+            WorkZ = Impedance.AddSeriesImpedance(Me, DeltaZ)
+
+            If Not Impedance.EqualEnough(WorkZ.Resistance, ExpectZ.Resistance,
+                                         IMPDTOLERANCE) Then
+                TestPassed = False
+            End If
+            If Impedance.EqualEnoughZero(ExpectZ.Reactance, NearlyZero) Then
+                ' This wants a Z0 match.
+                If Not Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero) Then
+                    TestPassed = False
+                End If
+            Else
+                ' This wants a match to an arbitrary load.
+                If Not Impedance.EqualEnough(WorkZ.Reactance, ExpectZ.Reactance,
+                                             IMPDTOLERANCE) Then
+                    TestPassed = False
+                End If
+            End If
+            If Not TestPassed Then
+                Throw New System.ApplicationException(
+                        "SeriesInd" & MSGTDNRT)
+            End If
+
+            ' On getting this far,
+            Return True
+
+        ElseIf aTransformation.Style.Equals(TransformationStyles.ShuntInd) Then
+            Throw New System.NotImplementedException(
+                "Single-element transformations not yet implemented.")
+        ElseIf aTransformation.Style.Equals(TransformationStyles.SeriesCap) Then
+            Throw New System.NotImplementedException(
+                "Single-element transformations not yet implemented.")
+        ElseIf aTransformation.Style.Equals(
+             TransformationStyles.ShuntCapSeriesInd) Then
 
             ' To go | On a     | Use a
             ' CW    | G-circle | shunt capacitor
             ' CW    | R-circle | series inductor
 
-            FixupZ = New Impedance(0.0, aTransformation.Value1)
-            WorkZ = Impedance.AddShuntImpedance(Me, FixupZ)
-            FixupZ = New Impedance(0.0, aTransformation.Value2)
-            WorkZ = Impedance.AddSeriesImpedance(WorkZ, FixupZ)
+            DeltaZ = New Impedance(0.0, aTransformation.Value1)
+            WorkZ = Impedance.AddShuntImpedance(Me, DeltaZ)
+            DeltaZ = New Impedance(0.0, aTransformation.Value2)
+            WorkZ = Impedance.AddSeriesImpedance(WorkZ, DeltaZ)
 
             If Not Impedance.EqualEnough(WorkZ.Resistance, ExpectZ.Resistance,
                                          IMPDTOLERANCE) Then
@@ -240,10 +281,10 @@ Partial Public Structure Impedance
             ' CW    | G-circle | shunt capacitor
             ' CCW   | R-circle | series capacitor
 
-            FixupZ = New Impedance(0.0, aTransformation.Value1)
-            WorkZ = Impedance.AddShuntImpedance(Me, FixupZ)
-            FixupZ = New Impedance(0.0, aTransformation.Value2)
-            WorkZ = Impedance.AddSeriesImpedance(WorkZ, FixupZ)
+            DeltaZ = New Impedance(0.0, aTransformation.Value1)
+            WorkZ = Impedance.AddShuntImpedance(Me, DeltaZ)
+            DeltaZ = New Impedance(0.0, aTransformation.Value2)
+            WorkZ = Impedance.AddSeriesImpedance(WorkZ, DeltaZ)
 
             If Not Impedance.EqualEnough(WorkZ.Resistance, ExpectZ.Resistance,
                                          IMPDTOLERANCE) Then
@@ -273,10 +314,10 @@ Partial Public Structure Impedance
             ' CCW   | G-circle | shunt inductor
             ' CCW   | R-circle | series capacitor
 
-            FixupZ = New Impedance(0.0, aTransformation.Value1)
-            WorkZ = Impedance.AddShuntImpedance(Me, FixupZ)
-            FixupZ = New Impedance(0.0, aTransformation.Value2)
-            WorkZ = Impedance.AddSeriesImpedance(WorkZ, FixupZ)
+            DeltaZ = New Impedance(0.0, aTransformation.Value1)
+            WorkZ = Impedance.AddShuntImpedance(Me, DeltaZ)
+            DeltaZ = New Impedance(0.0, aTransformation.Value2)
+            WorkZ = Impedance.AddSeriesImpedance(WorkZ, DeltaZ)
 
             If Not Impedance.EqualEnough(WorkZ.Resistance, ExpectZ.Resistance,
                                          IMPDTOLERANCE) Then
@@ -306,10 +347,10 @@ Partial Public Structure Impedance
             ' CCW   | G-circle | shunt inductor
             ' CW    | R-circle | series inductor
 
-            FixupZ = New Impedance(0.0, aTransformation.Value1)
-            WorkZ = Impedance.AddShuntImpedance(Me, FixupZ)
-            FixupZ = New Impedance(0.0, aTransformation.Value2)
-            WorkZ = Impedance.AddSeriesImpedance(WorkZ, FixupZ)
+            DeltaZ = New Impedance(0.0, aTransformation.Value1)
+            WorkZ = Impedance.AddShuntImpedance(Me, DeltaZ)
+            DeltaZ = New Impedance(0.0, aTransformation.Value2)
+            WorkZ = Impedance.AddSeriesImpedance(WorkZ, DeltaZ)
 
             If Not Impedance.EqualEnough(WorkZ.Resistance, ExpectZ.Resistance,
                                          IMPDTOLERANCE) Then
@@ -339,10 +380,10 @@ Partial Public Structure Impedance
             ' CCW   | R-circle | series capacitor
             ' CCW   | G-circle | shunt inductor
 
-            FixupZ = New Impedance(0.0, aTransformation.Value1)
-            WorkZ = Impedance.AddSeriesImpedance(Me, FixupZ)
-            FixupZ = New Impedance(0.0, aTransformation.Value2)
-            WorkZ = Impedance.AddShuntImpedance(WorkZ, FixupZ)
+            DeltaZ = New Impedance(0.0, aTransformation.Value1)
+            WorkZ = Impedance.AddSeriesImpedance(Me, DeltaZ)
+            DeltaZ = New Impedance(0.0, aTransformation.Value2)
+            WorkZ = Impedance.AddShuntImpedance(WorkZ, DeltaZ)
 
             If Not Impedance.EqualEnough(WorkZ.Resistance, ExpectZ.Resistance,
                                          IMPDTOLERANCE) Then
@@ -372,10 +413,10 @@ Partial Public Structure Impedance
             ' CCW   | R-circle | series capacitor
             ' CW    | G-circle | shunt capacitor
 
-            FixupZ = New Impedance(0.0, aTransformation.Value1)
-            WorkZ = Impedance.AddSeriesImpedance(Me, FixupZ)
-            FixupZ = New Impedance(0.0, aTransformation.Value2)
-            WorkZ = Impedance.AddShuntImpedance(WorkZ, FixupZ)
+            DeltaZ = New Impedance(0.0, aTransformation.Value1)
+            WorkZ = Impedance.AddSeriesImpedance(Me, DeltaZ)
+            DeltaZ = New Impedance(0.0, aTransformation.Value2)
+            WorkZ = Impedance.AddShuntImpedance(WorkZ, DeltaZ)
 
             If Not Impedance.EqualEnough(WorkZ.Resistance, ExpectZ.Resistance,
                                          IMPDTOLERANCE) Then
@@ -405,10 +446,10 @@ Partial Public Structure Impedance
             ' CW    | R-circle | series inductor
             ' CW    | G-circle | shunt capacitor
 
-            FixupZ = New Impedance(0.0, aTransformation.Value1)
-            WorkZ = Impedance.AddSeriesImpedance(Me, FixupZ)
-            FixupZ = New Impedance(0.0, aTransformation.Value2)
-            WorkZ = Impedance.AddShuntImpedance(WorkZ, FixupZ)
+            DeltaZ = New Impedance(0.0, aTransformation.Value1)
+            WorkZ = Impedance.AddSeriesImpedance(Me, DeltaZ)
+            DeltaZ = New Impedance(0.0, aTransformation.Value2)
+            WorkZ = Impedance.AddShuntImpedance(WorkZ, DeltaZ)
 
             If Not Impedance.EqualEnough(WorkZ.Resistance, ExpectZ.Resistance,
                                          IMPDTOLERANCE) Then
@@ -441,10 +482,10 @@ Partial Public Structure Impedance
             ' CW    | R-circle | series inductor
             ' CCW   | G-circle | shunt inductor
 
-            FixupZ = New Impedance(0.0, aTransformation.Value1)
-            WorkZ = Impedance.AddSeriesImpedance(Me, FixupZ)
-            FixupZ = New Impedance(0.0, aTransformation.Value2)
-            WorkZ = Impedance.AddShuntImpedance(WorkZ, FixupZ)
+            DeltaZ = New Impedance(0.0, aTransformation.Value1)
+            WorkZ = Impedance.AddSeriesImpedance(Me, DeltaZ)
+            DeltaZ = New Impedance(0.0, aTransformation.Value2)
+            WorkZ = Impedance.AddShuntImpedance(WorkZ, DeltaZ)
 
             If Not Impedance.EqualEnough(WorkZ.Resistance, ExpectZ.Resistance,
                                          IMPDTOLERANCE) Then
