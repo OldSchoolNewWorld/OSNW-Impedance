@@ -183,26 +183,18 @@ Partial Public Structure Impedance
         Dim ImagePD As PlotDetails =
             mainCirc.GetDetailsFromPlot(oneIntersection.X, oneIntersection.Y)
 
-        Dim ImageZ As Impedance = ImagePD.Impedance
-        Dim ImageX As System.Double = ImageZ.Reactance
-        Dim SourceX As System.Double = sourceZ.Reactance
-        Dim LoadX As System.Double = loadZ.Reactance
+        Dim ImageX As System.Double = ImagePD.Impedance.Reactance
         Dim DeltaX As System.Double
-
         Dim CurrTransCount As System.Int32 = transformations.Length
         Dim Trans As New Transformation
 
-        '        ' Eventually, use these values?
-        '        ImageX = IntersectPD.Impedance.Reactance
-        '        ImageB = IntersectPD.Admittance.Susceptance
+        ' At an intersection, the load is already on the G=SourceG circle, no
+        ' transformation is needed to get there. Only need to move on the
+        ' R-circle.
+        If Impedance.EqualEnough(ImageX, sourceZ.Reactance, IMPDTOLERANCE) Then
 
-        ' If the load is xxxxxx already on the R=SourceR circle, no transformation is
-        ' needed to get there.
-        If Impedance.EqualEnough(ImageX, SourceX, IMPDTOLERANCE) Then
-
-            ' Only need to move on the R-circle.
             With Trans
-                DeltaX = ImageX - LoadX
+                DeltaX = ImageX - loadZ.Reactance
                 If DeltaX < 0.0 Then
                     ' CCW on a R-circle needs a series capacitor.
                     .Style = TransformationStyles.SeriesCap
@@ -223,30 +215,13 @@ Partial Public Structure Impedance
         End If
 
         ' On getting this far,
-        ' Need to move on the R-circle first, to the image point, then on the G-circle to the source.
-
-        Dim SourceY As Admittance = sourceZ.ToAdmittance()
-        Dim SourceB As System.Double = SourceY.Susceptance
-        Dim ImageB As System.Double = ImagePD.Admittance.Susceptance
-        Dim DeltaB As System.Double
-
-        'Dim LoadY As Admittance = loadZ.ToAdmittance()
-        'Dim LoadB As System.Double = LoadY.Susceptance
-        'Dim SourceR As System.Double = sourceZ.Resistance
-        'Dim LoadR As System.Double = loadZ.Resistance
-        'Dim ImageR As System.Double = ImageZ.Resistance
-        'Dim LoadG As System.Double = LoadY.Conductance
-        'Dim ImageY As Admittance = ImagePD.Admittance
-        'Dim ImageG As System.Double = ImageY.Conductance
-        'Dim DeltaZ As Impedance
-        'Dim DeltaY As Admittance
-        'Dim SourceG As System.Double = SourceY.Conductance
-        'Dim DeltaR As System.Double = DeltaZ.Resistance
-        'Dim DeltaG As System.Double = DeltaY.Conductance
-
+        ' Move on the R-circle first, to the image point, then on the G-circle
+        ' to the source.
         With Trans
             DeltaX = ImageX - loadZ.Reactance
-            DeltaB = sourceB - ImageB
+            Dim DeltaB As System.Double =
+                sourceZ.ToAdmittance().Susceptance -
+                ImagePD.Admittance.Susceptance
             If DeltaX < 0.0 Then
                 ' CCW on a R-circle needs a series capacitor.
                 If Impedance.EqualEnoughZero(DeltaB, IMPDTOLERANCE0) Then
