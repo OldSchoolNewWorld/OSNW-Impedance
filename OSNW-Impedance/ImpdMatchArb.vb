@@ -3,6 +3,7 @@ Option Strict On
 Option Compare Binary
 Option Infer Off
 Imports System.Diagnostics.Tracing
+Imports System.Drawing
 Imports System.Net.Mime.MediaTypeNames
 Imports System.Net.Security
 Imports System.Runtime
@@ -51,9 +52,13 @@ Partial Public Structure Impedance
         Dim LoadR As System.Double = loadZ.Resistance
         Dim ImageZ As Impedance = ImagePD.Impedance
         Dim ImageR As System.Double = ImageZ.Resistance
-        Dim LoadX As System.Double = loadZ.Reactance
         Dim SourceX As System.Double = sourceZ.Reactance
+        Dim LoadX As System.Double = loadZ.Reactance
         Dim DeltaX As System.Double
+
+
+
+
 
         Dim CurrTransCount As System.Int32 = transformations.Length
         Dim Trans As New Transformation
@@ -76,6 +81,9 @@ Partial Public Structure Impedance
                     ' CW on an R-circle needs a series inductor.
                     .Style = TransformationStyles.SeriesInd
                 End If
+
+
+
                 .Value1 = DeltaX
             End With
 
@@ -89,7 +97,8 @@ Partial Public Structure Impedance
         End If
 
         ' On getting this far,
-        ' Need to move on the G-circle first, to the image point, then on the R-circle to the source.
+        ' Need to move on the G-circle first, to the image point, then on the R-circle
+        ' to the source.
 
         Dim ImageY As Admittance = ImagePD.Admittance
         Dim ImageB As System.Double = ImageY.Susceptance
@@ -98,12 +107,13 @@ Partial Public Structure Impedance
         Dim DeltaB As System.Double
         Dim ImageX As System.Double = ImageZ.Reactance
 
+        'Dim LoadG As System.Double = LoadY.Conductance
         'Dim SourceY As Admittance = sourceZ.ToAdmittance()
+        'Dim SourceG As System.Double = SourceY.Conductance
         'Dim SourceB As System.Double = SourceY.Susceptance
+        'Dim DeltaY As Admittance
         'Dim ImageG As System.Double = ImageY.Conductance
         'Dim SourceR As System.Double = sourceZ.Resistance
-        'Dim SourceG As System.Double = SourceY.Conductance
-        'Dim LoadG As System.Double = LoadY.Conductance
         'Dim DeltaZ As New Impedance(999.99, 999.99)
         'Dim DeltaR As System.Double = DeltaZ.Resistance
         'Dim DeltaG As System.Double = DeltaY.Conductance
@@ -140,6 +150,8 @@ Partial Public Structure Impedance
             .Value1 = DeltaY.ToImpedance.Reactance
             .Value2 = DeltaX
         End With
+
+
 
         ' Add to the array of transformations.
         ReDim Preserve transformations(CurrTransCount)
@@ -184,65 +196,41 @@ Partial Public Structure Impedance
         Dim ImagePD As PlotDetails =
             mainCirc.GetDetailsFromPlot(oneIntersection.X, oneIntersection.Y)
 
-        Dim LoadR As System.Double = loadZ.Resistance
-        Dim SourceR As System.Double = sourceZ.Resistance
-        Dim SourceX As System.Double = ImagePD.Impedance.Reactance
-        Dim LoadX As System.Double = loadZ.Reactance
+        Dim LoadY As Admittance = loadZ.ToAdmittance
+        Dim LoadG As System.Double = LoadY.Conductance
+        Dim ImageG As System.Double = ImagePD.Admittance.Conductance
+        Dim SourceY As Admittance = sourceZ.ToAdmittance
+        Dim SourceB As System.Double = SourceY.Susceptance
+        Dim LoadB As System.Double = LoadY.Susceptance
+        Dim DeltaB As System.Double
+        Dim DeltaY As Admittance
+        Dim DeltaZ As Impedance
         Dim DeltaX As System.Double
 
         Dim CurrTransCount As System.Int32 = transformations.Length
         Dim Trans As New Transformation
 
-        If Impedance.EqualEnough(LoadR, SourceR, IMPDTOLERANCE) Then
 
-            ' Only need to move on the R-circle.
+
+
+
+        ' If the load is already on the G=SourceG circle, no transformation is
+        ' needed to get there.
+        If Impedance.EqualEnough(LoadG, ImageG, IMPDTOLERANCE) Then
+
+            ' Only need to move on the G-circle.
             With Trans
-                DeltaX = SourceX - LoadX
-                If DeltaX < 0.0 Then
-                    ' CCW on an R-circle needs a series capacitor.
+                DeltaB = SourceB - LoadB
+                If DeltaB < 0.0 Then
+                    ' CCW on a G-circle needs a shunt inductor.
                     .Style = TransformationStyles.SeriesCap
                 Else
                     ' CW on an R-circle needs a series inductor.
                     .Style = TransformationStyles.SeriesInd
                 End If
-                .Value1 = DeltaX
-            End With
-
-            ' Add to the array of transformations.
-            ReDim Preserve transformations(CurrTransCount)
-            transformations(CurrTransCount) = Trans
-
-            ' On getting this far,
-            Return True
-
-        End If
-
-
-
-
-
-        Dim ImageX As System.Double = ImagePD.Impedance.Reactance
-        'Dim ImageR As System.Double = ImagePD.Impedance.Resistance
-
-
-
-
-
-
-        ' At an intersection, the load is already on the G=SourceG circle, no
-        ' transformation is needed to get there. Only need to move on the
-        ' R-circle.
-        If Impedance.EqualEnough(ImageX, sourceZ.Reactance, IMPDTOLERANCE) Then
-
-            With Trans
-                DeltaX = ImageX - loadZ.Reactance
-                If DeltaX < 0.0 Then
-                    ' CCW on a R-circle needs a series capacitor.
-                    .Style = TransformationStyles.SeriesCap
-                Else
-                    ' CW on a R-circle needs a series inductor.
-                    .Style = TransformationStyles.SeriesInd
-                End If
+                DeltaY = New Admittance(0.0, DeltaB)
+                DeltaZ = DeltaY.ToImpedance
+                DeltaX = DeltaZ.Reactance
                 .Value1 = DeltaX
             End With
 
@@ -258,9 +246,28 @@ Partial Public Structure Impedance
         ' On getting this far,
         ' Move on the R-circle first, to the image point, then on the G-circle
         ' to the source.
+
+        'Dim LoadR As System.Double = loadZ.Resistance
+        'Dim SourceR As System.Double = sourceZ.Resistance
+        'Dim SourceX As System.Double = ImagePD.Impedance.Reactance
+        'Dim LoadX As System.Double = loadZ.Reactance
+        'Dim DeltaX As System.Double
+
+        Dim ImageX As System.Double = ImagePD.Impedance.Reactance
+        'Dim ImageR As System.Double = ImagePD.Impedance.Resistance
+
+
+
+
+
+
+
+
+
+
         With Trans
             DeltaX = ImageX - loadZ.Reactance
-            Dim DeltaB As System.Double =
+            DeltaB =
                 sourceZ.ToAdmittance().Susceptance -
                 ImagePD.Admittance.Susceptance
             If DeltaX < 0.0 Then

@@ -200,16 +200,45 @@ Partial Public Structure Impedance
         Dim TestPassed As System.Boolean = True ' For now.
 
         If aTransformation.Style.Equals(TransformationStyles.ShuntCap) Then
-            Throw New System.NotImplementedException(
-                "Single-element transformations not yet implemented.")
+
+            ' A shunt capacitor moves CW on a G-circle.
+
+            DeltaZ = New Impedance(0.0, aTransformation.Value1)
+            WorkZ = Impedance.AddShuntImpedance(Me, DeltaZ)
+
+            ' xxxxxxxxxxxx TESTS CAN BE REMOVED WHEN ALL IS OK.
+            If Not Impedance.EqualEnough(WorkZ.Resistance, ExpectZ.Resistance,
+                                         IMPDTOLERANCE) Then
+                TestPassed = False
+            End If
+            If Impedance.EqualEnoughZero(ExpectZ.Reactance, NearlyZero) Then
+                ' This wants a Z0 match.
+                If Not Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero) Then
+                    TestPassed = False
+                End If
+            Else
+                ' This wants a match to an arbitrary load.
+                If Not Impedance.EqualEnough(WorkZ.Reactance, ExpectZ.Reactance,
+                                             IMPDTOLERANCE) Then
+                    TestPassed = False
+                End If
+            End If
+            If Not TestPassed Then
+                Throw New System.ApplicationException(
+                        "ShuntCap" & MSGTDNRT)
+            End If
+
+            ' On getting this far,
+            Return True
+
         ElseIf aTransformation.Style.Equals(TransformationStyles.SeriesInd) Then
 
-            ' To go | On a     | Use a
-            ' CW    | R-circle | series inductor
+            ' A series inductor moves CW on an R-circle.
 
             DeltaZ = New Impedance(0.0, aTransformation.Value1)
             WorkZ = Impedance.AddSeriesImpedance(Me, DeltaZ)
 
+            ' xxxxxxxxxxxx TESTS CAN BE REMOVED WHEN ALL IS OK.
             If Not Impedance.EqualEnough(WorkZ.Resistance, ExpectZ.Resistance,
                                          IMPDTOLERANCE) Then
                 TestPassed = False
@@ -235,16 +264,45 @@ Partial Public Structure Impedance
             Return True
 
         ElseIf aTransformation.Style.Equals(TransformationStyles.ShuntInd) Then
-            Throw New System.NotImplementedException(
-                "Single-element transformations not yet implemented.")
+
+            ' A shunt inductor moves CCW on a G-circle.
+
+            DeltaZ = New Impedance(0.0, aTransformation.Value1)
+            WorkZ = Impedance.AddShuntImpedance(Me, DeltaZ)
+
+            ' xxxxxxxxxxxx TESTS CAN BE REMOVED WHEN ALL IS OK.
+            If Not Impedance.EqualEnough(WorkZ.Resistance, ExpectZ.Resistance,
+                                         IMPDTOLERANCE) Then
+                TestPassed = False
+            End If
+            If Impedance.EqualEnoughZero(ExpectZ.Reactance, NearlyZero) Then
+                ' This wants a Z0 match.
+                If Not Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero) Then
+                    TestPassed = False
+                End If
+            Else
+                ' This wants a match to an arbitrary load.
+                If Not Impedance.EqualEnough(WorkZ.Reactance, ExpectZ.Reactance,
+                                             IMPDTOLERANCE) Then
+                    TestPassed = False
+                End If
+            End If
+            If Not TestPassed Then
+                Throw New System.ApplicationException(
+                        "ShuntInd" & MSGTDNRT)
+            End If
+
+            ' On getting this far,
+            Return True
+
         ElseIf aTransformation.Style.Equals(TransformationStyles.SeriesCap) Then
 
-            ' To go | On a     | Use a
-            ' CCW   | R-circle | series capacitor
+            ' A series capacitor moves CCW on an R-circle.
 
             DeltaZ = New Impedance(0.0, aTransformation.Value1)
             WorkZ = Impedance.AddSeriesImpedance(Me, DeltaZ)
 
+            ' xxxxxxxxxxxx TESTS CAN BE REMOVED WHEN ALL IS OK.
             If Not Impedance.EqualEnough(WorkZ.Resistance, ExpectZ.Resistance,
                                          IMPDTOLERANCE) Then
                 TestPassed = False
