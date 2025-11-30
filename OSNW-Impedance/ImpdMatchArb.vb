@@ -222,12 +222,19 @@ Partial Public Structure Impedance
             With Trans
                 DeltaB = SourceB - LoadB
                 If DeltaB < 0.0 Then
-                    ' CCW on a G-circle needs a shunt inductor.
-                    .Style = TransformationStyles.SeriesCap
+                    ' CW on a G-circle needs a shunt capacitor.
+                    .Style = TransformationStyles.ShuntCap
                 Else
-                    ' CW on an R-circle needs a series inductor.
-                    .Style = TransformationStyles.SeriesInd
+                    ' CCW on a G-circle needs a shunt inductor.
+                    .Style = TransformationStyles.ShuntInd
                 End If
+
+
+
+
+
+
+
                 DeltaY = New Admittance(0.0, DeltaB)
                 DeltaZ = DeltaY.ToImpedance
                 DeltaX = DeltaZ.Reactance
