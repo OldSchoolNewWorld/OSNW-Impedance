@@ -238,8 +238,37 @@ Partial Public Structure Impedance
             Throw New System.NotImplementedException(
                 "Single-element transformations not yet implemented.")
         ElseIf aTransformation.Style.Equals(TransformationStyles.SeriesCap) Then
-            Throw New System.NotImplementedException(
-                "Single-element transformations not yet implemented.")
+
+            ' To go | On a     | Use a
+            ' CCW   | R-circle | series capacitor
+
+            DeltaZ = New Impedance(0.0, aTransformation.Value1)
+            WorkZ = Impedance.AddSeriesImpedance(Me, DeltaZ)
+
+            If Not Impedance.EqualEnough(WorkZ.Resistance, ExpectZ.Resistance,
+                                         IMPDTOLERANCE) Then
+                TestPassed = False
+            End If
+            If Impedance.EqualEnoughZero(ExpectZ.Reactance, NearlyZero) Then
+                ' This wants a Z0 match.
+                If Not Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero) Then
+                    TestPassed = False
+                End If
+            Else
+                ' This wants a match to an arbitrary load.
+                If Not Impedance.EqualEnough(WorkZ.Reactance, ExpectZ.Reactance,
+                                             IMPDTOLERANCE) Then
+                    TestPassed = False
+                End If
+            End If
+            If Not TestPassed Then
+                Throw New System.ApplicationException(
+                        "SeriesCap" & MSGTDNRT)
+            End If
+
+            ' On getting this far,
+            Return True
+
         ElseIf aTransformation.Style.Equals(
              TransformationStyles.ShuntCapSeriesInd) Then
 

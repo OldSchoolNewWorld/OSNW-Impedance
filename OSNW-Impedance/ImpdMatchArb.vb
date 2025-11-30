@@ -2,6 +2,7 @@
 Option Strict On
 Option Compare Binary
 Option Infer Off
+Imports System.Diagnostics.Tracing
 Imports System.Net.Mime.MediaTypeNames
 Imports System.Net.Security
 Imports System.Runtime
@@ -183,10 +184,50 @@ Partial Public Structure Impedance
         Dim ImagePD As PlotDetails =
             mainCirc.GetDetailsFromPlot(oneIntersection.X, oneIntersection.Y)
 
-        Dim ImageX As System.Double = ImagePD.Impedance.Reactance
+        Dim LoadR As System.Double = loadZ.Resistance
+        Dim SourceR As System.Double = sourceZ.Resistance
+        Dim SourceX As System.Double = ImagePD.Impedance.Reactance
+        Dim LoadX As System.Double = loadZ.Reactance
         Dim DeltaX As System.Double
+
         Dim CurrTransCount As System.Int32 = transformations.Length
         Dim Trans As New Transformation
+
+        If Impedance.EqualEnough(LoadR, SourceR, IMPDTOLERANCE) Then
+
+            ' Only need to move on the R-circle.
+            With Trans
+                DeltaX = SourceX - LoadX
+                If DeltaX < 0.0 Then
+                    ' CCW on an R-circle needs a series capacitor.
+                    .Style = TransformationStyles.SeriesCap
+                Else
+                    ' CW on an R-circle needs a series inductor.
+                    .Style = TransformationStyles.SeriesInd
+                End If
+                .Value1 = DeltaX
+            End With
+
+            ' Add to the array of transformations.
+            ReDim Preserve transformations(CurrTransCount)
+            transformations(CurrTransCount) = Trans
+
+            ' On getting this far,
+            Return True
+
+        End If
+
+
+
+
+
+        Dim ImageX As System.Double = ImagePD.Impedance.Reactance
+        'Dim ImageR As System.Double = ImagePD.Impedance.Resistance
+
+
+
+
+
 
         ' At an intersection, the load is already on the G=SourceG circle, no
         ' transformation is needed to get there. Only need to move on the
