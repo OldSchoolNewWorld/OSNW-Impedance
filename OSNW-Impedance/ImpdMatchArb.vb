@@ -164,16 +164,10 @@ Partial Public Structure Impedance
         Dim SourceB As System.Double = SourceY.Susceptance
         Dim LoadB As System.Double = LoadY.Susceptance
         Dim DeltaB As System.Double
-        Dim DeltaY As Admittance
-        Dim DeltaZ As Impedance
         Dim DeltaX As System.Double
 
         Dim CurrTransCount As System.Int32 = transformations.Length
         Dim Trans As New Transformation
-
-
-
-
 
         ' If the load is already on the G=SourceG circle, no transformation is
         ' needed to get there.
@@ -189,15 +183,8 @@ Partial Public Structure Impedance
                     ' CCW on a G-circle needs a shunt inductor.
                     .Style = TransformationStyles.ShuntInd
                 End If
-
-
-
-
-
-
-
-                DeltaY = New Admittance(0.0, DeltaB)
-                DeltaZ = DeltaY.ToImpedance
+                Dim DeltaY As New Admittance(0.0, DeltaB)
+                Dim DeltaZ As Impedance = DeltaY.ToImpedance
                 DeltaX = DeltaZ.Reactance
                 .Value1 = DeltaX
             End With
@@ -215,23 +202,7 @@ Partial Public Structure Impedance
         ' Move on the R-circle first, to the image point, then on the G-circle
         ' to the source.
 
-        'Dim LoadR As System.Double = loadZ.Resistance
-        'Dim SourceR As System.Double = sourceZ.Resistance
-        'Dim SourceX As System.Double = ImagePD.Impedance.Reactance
-        'Dim LoadX As System.Double = loadZ.Reactance
-        'Dim DeltaX As System.Double
-
         Dim ImageX As System.Double = ImagePD.Impedance.Reactance
-        'Dim ImageR As System.Double = ImagePD.Impedance.Resistance
-
-
-
-
-
-
-
-
-
 
         With Trans
             DeltaX = ImageX - loadZ.Reactance
@@ -265,7 +236,6 @@ Partial Public Structure Impedance
             End If
             .Value1 = DeltaX
             .Value2 = New Admittance(0, DeltaB).ToImpedance().Reactance
-
         End With
 
         ' Add to the array of transformations.
