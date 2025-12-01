@@ -2,6 +2,9 @@
 Option Strict On
 Option Compare Binary
 Option Infer Off
+Imports System.Runtime
+
+
 
 ' This document contains items related to matching a load impedance to an
 ' arbitrary source impedance.
@@ -46,12 +49,13 @@ Partial Public Structure Impedance
         ' the LoadG circle, from the load impedance to the image impedance
         ' and the second move is on the SourceR circle, from the image
         ' impedance to the source impedance.
-        ' There are two special cases to consider:
-        ' 1) If the load impedance is already on the SourceR circle, only the
-        ' G-circle move is needed, and 2) If the load impedance is already on
-        ' the SourceG circle, only the R-circle move is needed.
+        ' There are two special cases to consider: 1) If the load impedance is
+        ' already on the SourceR circle, only the G-circle move is needed, and
+        ' 2) If the load impedance is already on the SourceG circle, only the
+        ' R-circle move is needed.
 
         Dim DeltaX As System.Double
+
 
 
 
@@ -91,11 +95,34 @@ Partial Public Structure Impedance
 
         End If
 
+        'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+        ' Check for the second special case.
+        Dim DeltaB As System.Double =
+            ImagePD.Admittance.Susceptance - loadZ.ToAdmittance().Susceptance
+        Dim LoadG As System.Double = loadZ.ToAdmittance.Conductance
+        Dim SourceG As System.Double = sourceZ.ToAdmittance.Conductance
+        If LoadG = SourceG Then
+            ' No movement on R-circle needed.
+            With Trans
+                If DeltaB < 0.0 Then
+                    ' CCW on a G-circle needs a shunt inductor.
+                    .Style = TransformationStyles.ShuntInd
+                Else ' Deltab > 0.0
+                    .Style = TransformationStyles.ShuntCap
+                End If
+                Dim DeltaY As New Admittance(0, DeltaB)
+                .Value1 = DeltaY.ToImpedance.Reactance
+            End With
+        End If
+
+        'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+
         ' On getting this far,
         ' Need to move on the G-circle first, to the image point, then on the
         ' R-circle to the source.
 
-        Dim DeltaB As System.Double
         Dim ImageZ As Impedance = ImagePD.Impedance
 
         With Trans
@@ -226,11 +253,34 @@ Partial Public Structure Impedance
 
         End If
 
+
+        'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+        Dim ImageX As System.Double = ImagePD.Impedance.Reactance
+
+        ' Check for the second special case.
+        DeltaX = ImageX - loadZ.Reactance
+
+        Dim LoadR As System.Double = loadZ.Resistance
+        Dim SourceR As System.Double = sourceZ.Resistance
+        If LoadR = SourceR Then
+            ' No movement on G-circle needed.
+            With Trans
+                If DeltaX < 0.0 Then
+                    ' CCW on a R-circle needs a series capacitor.
+                    .Style = TransformationStyles.SeriesCap
+                Else ' DeltaX > 0.0
+                    .Style = TransformationStyles.SeriesInd
+                End If
+                .Value1 = DeltaX
+            End With
+
+        End If
+
+        'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
         ' On getting this far,
         ' Move on the R-circle first, to the image point, then on the G-circle
         ' to the source.
-
-        Dim ImageX As System.Double = ImagePD.Impedance.Reactance
 
         With Trans
             DeltaX = ImageX - loadZ.Reactance
@@ -246,7 +296,7 @@ Partial Public Structure Impedance
                 ElseIf DeltaB < 0.0 Then
                     ' CCW on a G-circle needs a shunt inductor.
                     .Style = TransformationStyles.SeriesCapShuntInd
-                Else
+                Else ' DeltaB > 0.0
                     ' CW on a G-circle needs a shunt capacitor.
                     .Style = TransformationStyles.SeriesCapShuntCap
                 End If
@@ -258,7 +308,7 @@ Partial Public Structure Impedance
                 ElseIf DeltaB < 0.0 Then
                     ' CCW on a G-circle needs a shunt inductor.
                     .Style = TransformationStyles.SeriesIndShuntInd
-                Else
+                Else ' DeltaB > 0.0
                     ' CW on a G-circle needs a shunt capacitor.
                     .Style = TransformationStyles.SeriesIndShuntCap
                 End If
