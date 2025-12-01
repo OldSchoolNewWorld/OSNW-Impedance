@@ -82,7 +82,6 @@ Partial Public Structure Impedance
                 End If
 
 
-
                 .Value1 = DeltaX
             End With
 
@@ -94,8 +93,6 @@ Partial Public Structure Impedance
             Return True
 
         End If
-
-        'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
         ' Check for the second special case.
         Dim DeltaB As System.Double =
@@ -109,6 +106,7 @@ Partial Public Structure Impedance
                     ' CCW on a G-circle needs a shunt inductor.
                     .Style = TransformationStyles.ShuntInd
                 Else ' Deltab > 0.0
+                    ' CW on a G-circle needs a shunt capacitor.
                     .Style = TransformationStyles.ShuntCap
                 End If
                 Dim DeltaY As New Admittance(0, DeltaB)
@@ -116,21 +114,16 @@ Partial Public Structure Impedance
             End With
         End If
 
-        'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
-
         ' On getting this far,
         ' Need to move on the G-circle first, to the image point, then on the
         ' R-circle to the source.
 
         Dim ImageZ As Impedance = ImagePD.Impedance
-
         With Trans
             DeltaB = ImagePD.Admittance.Susceptance -
                 loadZ.ToAdmittance().Susceptance
+
             DeltaX = sourceZ.Reactance - ImageZ.Reactance
-
-
             If DeltaB < 0.0 Then
                 ' CCW on a G-circle needs a shunt inductor.
                 If Impedance.EqualEnoughZero(DeltaX, IMPDTOLERANCE0) Then
@@ -228,6 +221,7 @@ Partial Public Structure Impedance
         ' needed to get there. That happens when LoadG is already at SourceG.
         If Impedance.EqualEnough(LoadG, SourceG, IMPDTOLERANCE) Then
 
+
             ' Only need to move on the G-circle.
             With Trans
                 DeltaB = SourceB - LoadB
@@ -239,8 +233,7 @@ Partial Public Structure Impedance
                     .Style = TransformationStyles.ShuntInd
                 End If
                 Dim DeltaY As New Admittance(0.0, DeltaB)
-                Dim DeltaZ As Impedance = DeltaY.ToImpedance
-                DeltaX = DeltaZ.Reactance
+                DeltaX = DeltaY.ToImpedance.Reactance
                 .Value1 = DeltaX
             End With
 
@@ -253,12 +246,8 @@ Partial Public Structure Impedance
 
         End If
 
-
-        'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-        Dim ImageX As System.Double = ImagePD.Impedance.Reactance
-
         ' Check for the second special case.
-        DeltaX = ImageX - loadZ.Reactance
+
 
         Dim LoadR As System.Double = loadZ.Resistance
         Dim SourceR As System.Double = sourceZ.Resistance
@@ -269,25 +258,24 @@ Partial Public Structure Impedance
                     ' CCW on a R-circle needs a series capacitor.
                     .Style = TransformationStyles.SeriesCap
                 Else ' DeltaX > 0.0
+                    ' CW on an R-circle needs a series inductor.
                     .Style = TransformationStyles.SeriesInd
                 End If
+
                 .Value1 = DeltaX
             End With
-
         End If
-
-        'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
         ' On getting this far,
         ' Move on the R-circle first, to the image point, then on the G-circle
         ' to the source.
 
+        Dim ImageX As System.Double = ImagePD.Impedance.Reactance
         With Trans
-            DeltaX = ImageX - loadZ.Reactance
-
             DeltaB =
                 sourceZ.ToAdmittance().Susceptance -
                 ImagePD.Admittance.Susceptance
+            DeltaX = ImageX - loadZ.Reactance
             If DeltaX < 0.0 Then
                 ' CCW on a R-circle needs a series capacitor.
                 If Impedance.EqualEnoughZero(DeltaB, IMPDTOLERANCE0) Then
