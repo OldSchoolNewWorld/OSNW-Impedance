@@ -46,23 +46,23 @@ Partial Public Structure Impedance
         Dim Trans As New Transformation
 
         ' The intended process is to create an L-section. The first move is on
-        ' the LoadG circle, from the load impedance to the image impedance
-        ' and the second move is on the SourceR circle, from the image
+        ' the LoadG-circle, from the load impedance to the image impedance
+        ' and the second move is on the SourceR-circle, from the image
         ' impedance to the source impedance.
         ' There are two special cases to consider: 1) If the load impedance is
-        ' already on the SourceR circle, only the G-circle move is needed, and
-        ' 2) If the load impedance is already on the SourceG circle, only the
-        ' R-circle move is needed.
+        ' already on the SourceR circle, only the SourceR-circle move is needed,
+        ' and 2) If the load impedance is already on the SourceG-circle, only
+        ' the SourceG-circle move is needed.
 
-        ' If the load is already on the SourceR circle, no transformation is
+        ' If the load is already on the SourceR-circle, no transformation is
         ' needed to get there. That happens when LoadR is already at SourceR.
         Dim DeltaX As System.Double
         If Impedance.EqualEnough(
             loadZ.Resistance, sourceZ.Resistance, IMPDTOLERANCE) Then
 
-            ' Only need to move on the R-circle.
+            ' Move only on the SourceR-circle.
+            DeltaX = sourceZ.Reactance - loadZ.Reactance
             With Trans
-                DeltaX = sourceZ.Reactance - loadZ.Reactance
                 If DeltaX < 0.0 Then
                     ' CCW on an R-circle needs a series capacitor.
                     .Style = TransformationStyles.SeriesCap
@@ -81,15 +81,16 @@ Partial Public Structure Impedance
 
         End If
 
-        ' If the load impedance is already on the SourceG circle, only the
-        ' R-circle move is needed. That happens when LoadG is already at
+        ' If the load impedance is already on the SourceG-circle, only the
+        ' SourceG-circle move is needed. That happens when LoadG is already at
         ' SourceG.
         Dim LoadG As System.Double = loadZ.ToAdmittance.Conductance
         Dim SourceG As System.Double = sourceZ.ToAdmittance.Conductance
-        Dim DeltaB As System.Double =
-            ImagePD.Admittance.Susceptance - loadZ.ToAdmittance().Susceptance
+        Dim DeltaB As System.Double
         If LoadG = SourceG Then
-            ' No movement on R-circle needed.
+            ' No movement on R-circle needed. Move only on the SourceG-circle.
+            DeltaB = ImagePD.Admittance.Susceptance -
+                loadZ.ToAdmittance().Susceptance
             With Trans
                 If DeltaB < 0.0 Then
                     ' CCW on a G-circle needs a shunt inductor.
@@ -104,8 +105,8 @@ Partial Public Structure Impedance
         End If
 
         ' On getting this far,
-        ' Need to move on the G-circle first, to the image point, then on the
-        ' R-circle to the source.
+        ' Move on the LoadG-circle first, to the image point, then on the
+        ' SourceR-circle to the source.
         With Trans
             DeltaB = ImagePD.Admittance.Susceptance -
                 loadZ.ToAdmittance().Susceptance
@@ -180,15 +181,15 @@ Partial Public Structure Impedance
         Dim Trans As New Transformation
 
         ' The intended process is to create an L-section. The first move is on
-        ' the LoadR circle, from the load impedance to the image impedance and
-        ' the second move is on the SourceG circle, from the image impedance to
+        ' the LoadR-circle, from the load impedance to the image impedance and
+        ' the second move is on the SourceG-circle, from the image impedance to
         ' the source impedance.
         ' There are two special cases to consider: 1) If the load impedance is
-        ' already on the SourceG circle, only the R-circle move is needed, and
-        ' 2) If the load impedance is already on the SourceR circle, only the
-        ' G-circle move is needed.
+        ' already on the SourceG-circle, only the SourceG-circle move is needed,
+        ' and 2) If the load impedance is already on the SourceR-circle, only
+        ' the SourceR-circle move is needed.
 
-        ' If the load is already on the SourceG circle, no transformation is
+        ' If the load is already on the SourceG-circle, no transformation is
         ' needed to get there. That happens when LoadG is already at SourceG.
         Dim LoadG As System.Double = loadZ.ToAdmittance.Conductance
         Dim SourceG As System.Double = sourceZ.ToAdmittance.Conductance
@@ -196,7 +197,7 @@ Partial Public Structure Impedance
         Dim DeltaX As System.Double
         If Impedance.EqualEnough(LoadG, SourceG, IMPDTOLERANCE) Then
 
-            ' Only need to move on the G-circle.
+            ' Move only on the SourceG-circle.
             With Trans
                 DeltaB = sourceZ.ToAdmittance.Susceptance -
                     loadZ.ToAdmittance.Susceptance
@@ -220,8 +221,8 @@ Partial Public Structure Impedance
 
         End If
 
-        ' If the load impedance is already on the SourceR circle, only the
-        ' G-circle move is needed. That happens when LoadR is already at
+        ' If the load impedance is already on the SourceR-circle, only the
+        ' SourceR-circle move is needed. That happens when LoadR is already at
         ' SourceR.
         Dim LoadR As System.Double = loadZ.Resistance
         Dim SourceR As System.Double = sourceZ.Resistance
@@ -240,13 +241,12 @@ Partial Public Structure Impedance
         End If
 
         ' On getting this far,
-        ' Move on the R-circle first, to the image point, then on the G-circle
-        ' to the source.
+        ' Move on the LoadR-circle first, to the image point, then on the
+        ' SourceG-circle to the source.
+        DeltaX = ImagePD.Impedance.Reactance - loadZ.Reactance
+        DeltaB = sourceZ.ToAdmittance().Susceptance -
+            ImagePD.Admittance.Susceptance
         With Trans
-            DeltaB =
-                sourceZ.ToAdmittance().Susceptance -
-                ImagePD.Admittance.Susceptance
-            DeltaX = ImagePD.Impedance.Reactance - loadZ.Reactance
             If DeltaX < 0.0 Then
                 ' CCW on a R-circle needs a series capacitor.
                 If DeltaB < 0.0 Then
