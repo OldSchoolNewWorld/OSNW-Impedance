@@ -61,7 +61,7 @@ Partial Public Structure Impedance
             loadZ.Resistance, sourceZ.Resistance, IMPDTOLERANCE) Then
 
             ' Move only on the SourceR-circle.
-            DeltaX = sourceZ.Reactance - loadZ.Reactance
+            DeltaX = ImagePD.Impedance.Reactance - loadZ.Reactance
             With Trans
                 If DeltaX < 0.0 Then
                     ' CCW on an R-circle needs a series capacitor.
@@ -73,10 +73,12 @@ Partial Public Structure Impedance
                 .Value1 = DeltaX
             End With
 
-            ' On getting this far,
             ' Add to the array of transformations.
             ReDim Preserve transformations(CurrTransCount)
             transformations(CurrTransCount) = Trans
+            'xxxxxxxxxxxxxx
+            System.Diagnostics.Debug.WriteLine($"  Style={Trans.Style}, Value1={Trans.Value1}, Value2={Trans.Value2}")
+            'xxxxxxxxxxxxxx
             Return True
 
         End If
@@ -88,6 +90,7 @@ Partial Public Structure Impedance
         Dim SourceG As System.Double = sourceZ.ToAdmittance.Conductance
         Dim DeltaB As System.Double
         If LoadG = SourceG Then
+
             ' No movement on R-circle needed. Move only on the SourceG-circle.
             DeltaB = ImagePD.Admittance.Susceptance -
                 loadZ.ToAdmittance().Susceptance
@@ -102,6 +105,15 @@ Partial Public Structure Impedance
                 Dim DeltaY As New Admittance(0, DeltaB)
                 .Value1 = DeltaY.ToImpedance.Reactance
             End With
+
+            ' Add to the array of transformations.
+            ReDim Preserve transformations(CurrTransCount)
+            transformations(CurrTransCount) = Trans
+            'xxxxxxxxxxxxxx
+            System.Diagnostics.Debug.WriteLine($"  Style={Trans.Style}, Value1={Trans.Value1}, Value2={Trans.Value2}")
+            'xxxxxxxxxxxxxx
+            Return True
+
         End If
 
         ' On getting this far,
@@ -139,6 +151,9 @@ Partial Public Structure Impedance
         ' Add to the array of transformations.
         ReDim Preserve transformations(CurrTransCount)
         transformations(CurrTransCount) = Trans
+        'xxxxxxxxxxxxxx
+        System.Diagnostics.Debug.WriteLine($"  Style={Trans.Style}, Value1={Trans.Value1}, Value2={Trans.Value2}")
+        'xxxxxxxxxxxxxx
         Return True
 
     End Function ' MatchArbFirstOnG
@@ -198,9 +213,9 @@ Partial Public Structure Impedance
         If Impedance.EqualEnough(LoadG, SourceG, IMPDTOLERANCE) Then
 
             ' Move only on the SourceG-circle.
-            With Trans
-                DeltaB = sourceZ.ToAdmittance.Susceptance -
+            DeltaB = sourceZ.ToAdmittance.Susceptance -
                     loadZ.ToAdmittance.Susceptance
+            With Trans
                 If DeltaB < 0.0 Then
                     ' CW on a G-circle needs a shunt capacitor.
                     .Style = TransformationStyles.ShuntCap
@@ -213,10 +228,12 @@ Partial Public Structure Impedance
                 .Value1 = DeltaX
             End With
 
-            ' On getting this far,
             ' Add to the array of transformations.
             ReDim Preserve transformations(CurrTransCount)
             transformations(CurrTransCount) = Trans
+            'xxxxxxxxxxxxxx
+            System.Diagnostics.Debug.WriteLine($"  Style={Trans.Style}, Value1={Trans.Value1}, Value2={Trans.Value2}")
+            'xxxxxxxxxxxxxx
             Return True
 
         End If
@@ -227,7 +244,11 @@ Partial Public Structure Impedance
         Dim LoadR As System.Double = loadZ.Resistance
         Dim SourceR As System.Double = sourceZ.Resistance
         If LoadR = SourceR Then
+
             ' No movement on G-circle needed.
+            Dim LoadX As System.Double = loadZ.Reactance
+            Dim SourceX As System.Double = sourceZ.Reactance
+            DeltaX = SourceX - LoadX
             With Trans
                 If DeltaX < 0.0 Then
                     ' CCW on a R-circle needs a series capacitor.
@@ -238,6 +259,15 @@ Partial Public Structure Impedance
                 End If
                 .Value1 = DeltaX
             End With
+
+            ' Add to the array of transformations.
+            ReDim Preserve transformations(CurrTransCount)
+            transformations(CurrTransCount) = Trans
+            'xxxxxxxxxxxxxx
+            System.Diagnostics.Debug.WriteLine($"  Style={Trans.Style}, Value1={Trans.Value1}, Value2={Trans.Value2}")
+            'xxxxxxxxxxxxxx
+            Return True
+
         End If
 
         ' On getting this far,
@@ -270,13 +300,74 @@ Partial Public Structure Impedance
             .Value2 = New Admittance(0, DeltaB).ToImpedance().Reactance
         End With
 
-        ' On getting this far,
         ' Add to the array of transformations.
         ReDim Preserve transformations(CurrTransCount)
         transformations(CurrTransCount) = Trans
+        'xxxxxxxxxxxxxx
+        System.Diagnostics.Debug.WriteLine($"  Style={Trans.Style}, Value1={Trans.Value1}, Value2={Trans.Value2}")
+        'xxxxxxxxxxxxxx
         Return True
 
     End Function ' MatchArbFirstOnR
+
+
+
+    ' THIS CAN BE DELETED OR SUPPRESSED AFTER ALL WORKS OK.
+
+    '<InlineData(  Z0,        R,         X)> ' Model
+
+    '<InlineData(1, 1.0, 1.0, 0.5, 0.2)> ' 
+    '<InlineData(1, 0.5, 0.2, 1.0, 1.0)> ' 
+    '<InlineData(100.0, 100.0, 100.0, 50.0, 20.0)> ' 
+    '<InlineData(100.0, 50.0, 20.0, 100.0, 100.0)> ' 
+    '<InlineData(1, 1.0, 1.0, 2.0, -2.0)> ' 
+    '<InlineData(1, 2.0, -2.0, 1.0, 1.0)> ' 
+    '<InlineData(75, 50.0, 50.0, 100.0, -100.0)> ' 
+    '<InlineData(75, 100.0, -100.0, 50.0, 50.0)> ' 
+    '<InlineData(1, 1 / 3.0, 1 / 3.0, 1 / 3.0, 0.0000)> ' 
+    '<InlineData(1, 1 / 3.0, 0.0000, 1 / 3.0, 1 / 3.0)> ' 
+    '<InlineData(75, 25.0, 25.0, 25.0, 0.0000)> ' 
+    '<InlineData(75, 25.0, 0.0000, 25.0, 25.0)> ' 
+    '<InlineData(1.0, 0.2, 1.4, 0.4, -0.8)> ' 
+    '<InlineData(1.0, 0.4, -0.8, 0.2, 1.4)> ' 
+    '<InlineData(50.0, 10.0, 70.0, 20.0, -40.0)> ' 
+    '<InlineData(50.0, 20.0, -40.0, 10.0, 70.0)> ' 
+    '<InlineData(1.0, 1.0, 1.0, 1 / 2.0, 1 / 2.0)> ' 
+    '<InlineData(1.0, 1 / 2.0, 1 / 2.0, 1.0, 1.0)> ' 
+    '<InlineData(50.0, 50.0, 50.0, 25.0, 25.0)> ' 
+    '<InlineData(50.0, 25.0, 25.0, 50.0, 50.0)> ' 
+
+    '<InlineData( 1.0,   0.0000,    0.0000)> ' A: At the short circuit point. Omit - covered by B.
+    '<InlineData( 1.0,   0.0000,     1/2.0)> ' B: Anywhere else on the perimeter. R=0.0.
+    '<InlineData( 1.0,      INF,    0.0000)> ' C: At the open circuit point on the right.
+    '<InlineData( 1.0,   1.0000,    0.0000)> ' D1: At the center.
+    '<InlineData(75.0,  75.0000,    0.0000)> ' D75: At the center. Z0=75.
+    '<InlineData( 1.0,   1.0000,    1.0000)> ' E1: On R=Z0 circle, above resonance line. Only needs reactance.
+    '<InlineData(50.0,  50.0000,   50.0000)> ' E50: On R=Z0 circle, above resonance line. Only needs reactance. Z0=50.
+    '<InlineData( 1.0,   1.0000,   -2.0000)> ' F1: On R=Z0 circle, below resonance line. Only needs reactance.
+    '<InlineData(50.0,  50.0000, -100.0000)> ' F50: On R=Z0 circle, below resonance line. Only needs reactance. Z0=50.
+    '<InlineData( 1.0,   2.0000,     1/2.0)> ' G1: Inside R=Z0 circle, above resonance line.
+    '<InlineData(50.0, 100.0000,   25.0000)> ' G50: Inside R=Z0 circle, above resonance line. Z0=50.
+    '<InlineData( 1.0,   3.0000,    0.0000)> ' H1: Inside R=Z0 circle, on line.
+    '<InlineData(50.0, 150.0000,    0.0000)> ' H50: Inside R=Z0 circle, on line. Z0=50.
+    '<InlineData( 1.0,   2.0000,   -2.0000)> ' I1: Inside R=Z0 circle, below resonance line.
+    '<InlineData(50.0, 100.0000, -100.0000)> ' I50: Inside R=Z0 circle, below resonance line. Z0=50.
+    '<InlineData( 1.0,    1/2.0,     1/2.0)> ' J1: On G=Y0 circle, above resonance line. Only needs reactance.
+    '<InlineData(50.0,  25.0000,   25.0000)> ' J50: On G=Y0 circle, above resonance line. Only needs reactance. Z0=50.
+    '<InlineData( 1.0,    1/2.0,    -1/2.0)> ' K1: On G=Y0 circle, below resonance line. Only needs reactance.
+    '<InlineData(50.0,  25.0000,  -25.0000)> ' K50: On G=Y0 circle, below resonance line. Only needs reactance. Z0=50.
+    '<InlineData( 1.0,    1/3.0,     1/3.0)> ' L1: Inside G=Y0 circle, above resonance line.
+    '<InlineData(75.0,  25.0000,   25.0000)> ' L75: Inside G=Y0 circle, above resonance line. Z0=75.
+    '<InlineData( 1.0,    1/3.0,    0.0000)> ' M1: Inside G=Y0 circle, on line.
+    '<InlineData(75.0,  25.0000,    0.0000)> ' M75: Inside G=Y0 circle, on line. Z0=75.
+    '<InlineData( 1.0,    1/2.0,    -1/3.0)> ' N1: Inside G=Y0 circle, below line.
+    '<InlineData(75.0,  37.5000,  -25.0000)> ' N75: Inside G=Y0 circle, below line. Z0=75.
+    '<InlineData( 1.0,   0.2000,    1.4000)> ' O1: In the top center.
+    '<InlineData(50.0,  10.0000,   70.0000)> ' O50: In the top center. Z0=50.
+    '<InlineData( 1.0,   0.4000,   -0.8000)> ' P1: In the bottom center.
+    '<InlineData(50.0,  20.0000,  -40.0000)> ' P50: In the bottom center. Z0=50.
+    '<InlineData( 1.0,  -0.0345,    0.4138)> ' Q: Outside of main circle. Invalid.
+    '<InlineData( 1.0,  -2.0000,       999)> ' R: NormR<=0. Invalid.
 
     ''' <summary>
     ''' Attempts to obtain a conjugate match from the specified load
@@ -309,6 +400,10 @@ Partial Public Structure Impedance
         ' approach to finding a match.
         ' https://amris.mbi.ufl.edu/wordpress/files/2021/01/SmithChart_FullPresentation.pdf
 
+        'xxxxxxxxxxxxxx
+        System.Diagnostics.Debug.WriteLine($"Z0:{mainCirc.Z0}; {loadZ} to {sourceZ}:")
+        'xxxxxxxxxxxxxx
+
         ' Input checking.
         ' Leave this here, at least for now. Bad values should have been
         ' rejected in New(Double, Double), and this should not be needed unless
@@ -322,6 +417,9 @@ Partial Public Structure Impedance
             SourceR <= 0.0 OrElse System.Double.IsInfinity(SourceR) Then
 
             ' Leave transformations as is.
+            'xxxxxxxxxxxxxx
+            System.Diagnostics.Debug.WriteLine($"  Invalid input.")
+            'xxxxxxxxxxxxxx
             Return False
         End If
 
@@ -333,6 +431,9 @@ Partial Public Structure Impedance
             Dim CurrTransCount As System.Int32 = transformations.Length
             ReDim Preserve transformations(CurrTransCount)
             transformations(CurrTransCount) = Trans
+            'xxxxxxxxxxxxxx
+            System.Diagnostics.Debug.WriteLine($"  Style={Trans.Style}, Value1={Trans.Value1}, Value2={Trans.Value2}")
+            'xxxxxxxxxxxxxx
             Return True
         End If
 
@@ -414,6 +515,7 @@ Partial Public Structure Impedance
         End If
 
         ' On getting this far,
+        ' THIS CALL CAN BE DELETED OR SUPPRESSED AFTER ALL WORKS OK.
         Return True
 
     End Function ' MatchArbitrary
@@ -451,8 +553,16 @@ Partial Public Structure Impedance
         ByRef transformations As Transformation()) _
         As System.Boolean
 
+        'xxxxxxxxxxxxxx
+        System.Diagnostics.Debug.WriteLine(String.Empty)
+        'xxxxxxxxxxxxxx
+
         ' Input checking.
         If z0 <= 0.0 Then
+            'xxxxxxxxxxxxxx
+            System.Diagnostics.Debug.WriteLine($"Z0:{z0}; {loadZ} to {sourceZ}:")
+            System.Diagnostics.Debug.WriteLine("Z0 is negative")
+            'xxxxxxxxxxxxxx
             Return False
         End If
 
