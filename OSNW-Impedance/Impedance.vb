@@ -1,10 +1,5 @@
 ﻿'TODO:
 ' Remove old methods that only match to the center.
-' PlotDetails:
-'   Done. Add extractions of R, X, G, B.
-'   Done. Needs to be provided with the main circle for the methods related to
-'     reflections, to make them work correctly. Maybe just Z0 will suffice?
-'   Needs to be added to the XML comments for the plotting methods?
 ' Create looped test of tangency with reversed checks?
 ' Convert from building an array, to building a list, of suggested solutions.
 ' Should infinity be allowed or rejected for admittance and susceptance inputs?

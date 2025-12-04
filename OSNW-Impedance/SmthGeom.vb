@@ -624,18 +624,9 @@ Public Class SmithMainCircle
     Public Function PlotXYIsInside(ByVal plotX As System.Double,
         ByVal plotY As System.Double) As System.Boolean
 
-        'Dim FromCenter As System.Double =
-        '    System.Math.Sqrt((plotX - Me.GridCenterX) ^ 2 +
-        '        (plotY - Me.GridCenterY) ^ 2)
-        'If FromCenter >= Me.GridRadius Then
-        '    Return False
-        'End If
-        'Return True
-
         Return System.Math.Sqrt((plotX - Me.GridCenterX) ^ 2 +
                                 (plotY - Me.GridCenterY) ^ 2) <
             Me.GridRadius
-
     End Function ' PlotIsInside
 
     ''' <summary>
@@ -666,13 +657,6 @@ Public Class SmithMainCircle
         ' REF: Mathematical Construction and Properties of the Smith Chart
         ' https://www.allaboutcircuits.com/technical-articles/mathematical-construction-and-properties-of-the-smith-chart/
 
-        'Dim NormR As System.Double = resistance / Me.Z0
-        'Dim Scale As System.Double = 1.0 / (NormR + 1.0)
-        'Dim AnsRadius As System.Double = Scale * Me.GridRadius
-        'Return AnsRadius
-
-        'Return (1 / ((resistance / Me.Z0) + 1)) * Me.GridRadius
-
         Return Me.GridRadius / ((resistance / Me.Z0) + 1.0)
 
     End Function ' GetRadiusR
@@ -701,7 +685,6 @@ Public Class SmithMainCircle
         ' https://www.allaboutcircuits.com/technical-articles/mathematical-construction-and-properties-of-the-smith-chart/
 
         ' Derived like GetRadiusR.
-        'Return (Me.Z0 / Math.Abs(reactance)) * Me.GridRadius
         Return Me.Z0 * Me.GridRadius / Math.Abs(reactance)
 
     End Function ' GetRadiusX
@@ -724,11 +707,6 @@ Public Class SmithMainCircle
             Throw New System.ArgumentOutOfRangeException(
                 NameOf(conductance), Impedance.MSGVMBGTZ)
         End If
-
-        Dim NormG As System.Double = conductance / Me.Y0
-        Dim Scale As System.Double = 1.0 / (NormG + 1.0)
-        Dim AnsRadius As System.Double = Scale * Me.GridRadius
-        Return AnsRadius
 
         Return (1.0 / ((conductance / Me.Y0) + 1.0)) * Me.GridRadius
 
@@ -755,7 +733,6 @@ Public Class SmithMainCircle
         End If
 
         ' Derived like GetRadiusR.
-        'Return (Me.Y0 / Math.Abs(susceptance)) * Me.GridRadius
         Return Me.Y0 * Me.GridRadius / Math.Abs(susceptance)
 
     End Function ' GetRadiusB
@@ -848,13 +825,6 @@ Public Class SmithMainCircle
             ' maybe not finding a Y value exactly on the resonance line, assume
             ' the closest Y to be the one on the resonance line.
 
-
-
-            '            Dim Diff0 As System.Double =
-            '                System.Math.Abs(Intersections(0).Y - Me.GridCenterY)
-            '            Dim Diff1 As System.Double =
-            '                System.Math.Abs(Intersections(1).Y - Me.GridCenterY)
-            '            If Diff0 < Diff1 Then
             If System.Math.Abs(Intersections(0).Y - Me.GridCenterY) <
                 System.Math.Abs(Intersections(1).Y - Me.GridCenterY) Then
                 plotX = Intersections(1).X
@@ -1015,8 +985,7 @@ Public Class SmithMainCircle
     Public Function GetYFromPlot(
         PlotX As System.Double, PlotY As System.Double) As Admittance
 
-        Dim Z As Impedance = Me.GetZFromPlot(PlotX, PlotY)
-        Return Z.ToAdmittance()
+        Return Me.GetZFromPlot(PlotX, PlotY).ToAdmittance()
     End Function ' GetYFromPlot
 
     ''' <summary>
@@ -1035,7 +1004,6 @@ Public Class SmithMainCircle
         ByVal plotX As System.Double, ByVal plotY As System.Double) _
         As PlotDetails
 
-        '        Dim Z As Impedance = GetZFromPlot(plotX, plotY)
         Return New PlotDetails(Me, plotX, plotY)
     End Function ' GetDetailsFromPlot
 
