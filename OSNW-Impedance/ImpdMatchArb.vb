@@ -2,6 +2,9 @@
 Option Strict On
 Option Compare Binary
 Option Infer Off
+Imports System.Net.Mime.MediaTypeNames
+
+
 
 ' This document contains items related to matching a load impedance to an
 ' arbitrary source impedance.
@@ -50,10 +53,12 @@ Partial Public Structure Impedance
         ' and the second move is on the SourceR-circle, from the image
         ' impedance to the source impedance.
 
-        ' If the load already matches the image impedance, no transformation is
-        ' needed to get there.
+        ' If the load susceptance already matches the image susceptance, no
+        ' transformation is needed to get to the image impedance.
+        Dim ImageB As System.Double = ImagePD.Susceptance
+        Dim LoadB As System.Double = loadZ.ToAdmittance.Susceptance
         Dim DeltaX As System.Double
-        If Impedance.EqualEnough(mainCirc.Z0, loadZ, ImagePD.Impedance) Then
+        If EqualEnoughZero(ImageB - LoadB, IMPDTOLERANCE0 * mainCirc.Z0) Then
 
             ' Move only on the SourceR-circle.
             DeltaX = sourceZ.Reactance - loadZ.Reactance
@@ -82,9 +87,9 @@ Partial Public Structure Impedance
         ' On getting this far,
         ' Move on the LoadG-circle first, to the image point, then on the
         ' SourceR-circle to the source.
-        Dim DeltaB As System.Double = ImagePD.Admittance.Susceptance -
+        Dim DeltaB As System.Double = ImagePD.Susceptance -
             loadZ.ToAdmittance().Susceptance
-        DeltaX = sourceZ.Reactance - ImagePD.Impedance.Reactance
+        DeltaX = sourceZ.Reactance - ImagePD.Reactance
         With Trans
             If DeltaB < 0.0 Then
                 ' CCW on a G-circle needs a shunt inductor.
@@ -163,17 +168,17 @@ Partial Public Structure Impedance
         ' the second move is on the SourceG-circle, from the image impedance to
         ' the source impedance.
 
-        ' If the load already matches the image impedance, no transformation is
-        ' needed to get there.
-        Dim LoadG As System.Double = loadZ.ToAdmittance.Conductance
-        Dim ImageG As System.Double = ImagePD.Admittance.Conductance
+        ' If the load reactance already matches the image reactance, no
+        ' transformation is needed to get to the image impedance.
+        Dim ImageX As System.Double = ImagePD.Reactance
+        Dim LoadX As System.Double = loadZ.Reactance
         Dim DeltaB As System.Double
         Dim DeltaX As System.Double
-        If Impedance.EqualEnough(LoadG, imageG, IMPDTOLERANCE) Then
+        If EqualEnoughZero(ImageX - LoadX, IMPDTOLERANCE0 * mainCirc.Z0) Then
 
             ' Move only on the SourceG-circle.
             DeltaB = sourceZ.ToAdmittance.Susceptance -
-                    loadZ.ToAdmittance.Susceptance
+                loadZ.ToAdmittance.Susceptance
             With Trans
                 If DeltaB < 0.0 Then
                     ' CW on a G-circle needs a shunt capacitor.
@@ -182,8 +187,7 @@ Partial Public Structure Impedance
                     ' CCW on a G-circle needs a shunt inductor.
                     .Style = TransformationStyles.ShuntInd
                 End If
-                Dim DeltaY As New Admittance(0.0, DeltaB)
-                DeltaX = DeltaY.ToImpedance.Reactance
+                DeltaX = New Admittance(0.0, DeltaB).ToImpedance.Reactance
                 .Value1 = DeltaX
             End With
 
@@ -192,7 +196,7 @@ Partial Public Structure Impedance
             transformations(CurrTransCount) = Trans
             'xxxxxxxxxxxxxx
             System.Diagnostics.Debug.WriteLine($"  Style={Trans.Style}," &
-                $" Value1={Trans.Value1}, Value2={Trans.Value2}")
+                    $" Value1={Trans.Value1}, Value2={Trans.Value2}")
             'xxxxxxxxxxxxxx
             Return True
 
@@ -201,9 +205,8 @@ Partial Public Structure Impedance
         ' On getting this far,
         ' Move on the LoadR-circle first, to the image point, then on the
         ' SourceG-circle to the source.
-        DeltaX = ImagePD.Impedance.Reactance - loadZ.Reactance
-        DeltaB = sourceZ.ToAdmittance().Susceptance -
-            ImagePD.Admittance.Susceptance
+        DeltaX = ImagePD.Reactance - loadZ.Reactance
+        DeltaB = sourceZ.ToAdmittance().Susceptance - ImagePD.Susceptance
         With Trans
             If DeltaX < 0.0 Then
                 ' CCW on a R-circle needs a series capacitor.
