@@ -385,7 +385,7 @@ Public Class PlotDetails
 
     Private ReadOnly m_Impedance As Impedance
     ''' <summary>
-    ''' Returns the impedance, in ohms, represented by the grid location.
+    ''' Returns the impedance (Z), in ohms, represented by the grid location.
     ''' </summary>
     ''' <returns>The impedance.</returns>
     Public ReadOnly Property Impedance As Impedance
@@ -395,13 +395,55 @@ Public Class PlotDetails
     End Property
 
     ''' <summary>
-    ''' Returns the admittance, in siemens, represented by the grid location.
+    ''' Returns the resistance (R), in ohms, represented by the grid location.
+    ''' </summary>
+    ''' <returns>The resistance.</returns>
+    Public ReadOnly Property Resistance As System.Double
+        Get
+            Return Me.Impedance.Resistance
+        End Get
+    End Property
+
+    ''' <summary>
+    ''' Returns the reactance (X), in ohms, represented by the grid location.
+    ''' </summary>
+    ''' <returns>The reactance.</returns>
+    Public ReadOnly Property Reactance As System.Double
+        Get
+            Return Me.Impedance.Reactance
+        End Get
+    End Property
+
+    ''' <summary>
+    ''' Returns the admittance (Y), in siemens, represented by the grid
+    ''' location.
     ''' </summary>
     ''' <returns>The admittance.</returns>
-    ''' <remarks>The coefficient is a scalar value; it has no dimension.</remarks>
     Public ReadOnly Property Admittance As Admittance
         Get
             Return Me.Impedance.ToAdmittance()
+        End Get
+    End Property
+
+    ''' <summary>
+    ''' Returns the conductance (G), in siemens, represented by the grid
+    ''' location.
+    ''' </summary>
+    ''' <returns>The conductance.</returns>
+    Public ReadOnly Property Conductance As System.Double
+        Get
+            Return Me.Admittance.Conductance
+        End Get
+    End Property
+
+    ''' <summary>
+    ''' Returns the susceptance (B), in siemens, represented by the grid
+    ''' location.
+    ''' </summary>
+    ''' <returns>The susceptance.</returns>
+    Public ReadOnly Property Susceptance As System.Double
+        Get
+            Return Me.Admittance.Susceptance
         End Get
     End Property
 
@@ -481,9 +523,10 @@ Public Class PlotDetails
         ByVal mainCircle As SmithMainCircle, ByVal plotX As System.Double,
         ByVal plotY As System.Double)
 
-        Me.m_Impedance = mainCircle.GetZFromPlot(plotX, plotY)
+        Me.m_MainCircle = mainCircle
         Me.m_PlotX = plotX
         Me.m_PlotX = plotY
+        Me.m_Impedance = mainCircle.GetZFromPlot(plotX, plotY)
     End Sub ' New
 
 End Class ' PlotDetails
@@ -992,7 +1035,7 @@ Public Class SmithMainCircle
         ByVal plotX As System.Double, ByVal plotY As System.Double) _
         As PlotDetails
 
-        Dim Z As Impedance = GetZFromPlot(plotX, plotY)
+        '        Dim Z As Impedance = GetZFromPlot(plotX, plotY)
         Return New PlotDetails(Me, plotX, plotY)
     End Function ' GetDetailsFromPlot
 
