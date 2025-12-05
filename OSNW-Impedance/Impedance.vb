@@ -1,12 +1,13 @@
 ﻿'TODO:
 ' Remove old methods that only match to the center.
-' Create looped test of tangency with reversed checks?
 ' Convert from building an array, to building a list, of suggested solutions.
+' Create looped test of tangency with reversed checks?
 ' Should infinity be allowed or rejected for admittance and susceptance inputs?
 ' Add De/Serialization to Admittance?????
 '   "the strings should be generated and parsed by using the conventions of the invariant culture."
 '   REF: Serialize and deserialize numeric data
 '   https://learn.microsoft.com/en-us/dotnet/fundamentals/runtime-libraries/system-globalization-numberformatinfo#serialize-and-deserialize-numeric-data
+' Add De/Serialization to soultiuon suggestions?????
 ' Allow both "i" and "j" to match the .NET result? Add tests for both i and j.
 '   Wait, where does .NET indicate anything about allowing "j" for Complex aside from "Format a complex
 '     number"? Complex only has ToString() and TryFormat() - nothing about standard form.
@@ -18,6 +19,7 @@ Option Infer Off
 
 Imports System.Diagnostics.CodeAnalysis
 Imports System.Globalization
+Imports System.Numerics
 Imports System.Text.Json.Serialization
 
 ' REF: A Practical Introduction to Impedance Matching.
@@ -172,19 +174,53 @@ Public Structure Impedance
 
 #Region "System.ValueType Implementations"
 
+#Region "EqualEnough Implementations"
+
+    ''' <summary>
+    ''' Check for reasonable equality when using floating point values. A
+    ''' difference of less than <paramref name="maxDiff"/> is considered to
+    ''' establish equality.
+    ''' </summary>
+    ''' <param name="otherVal">Specifies the value to be compared to
+    ''' <paramref name="refVal"/>.</param>
+    ''' <param name="refVal">Specifies a base value for comparison.</param>
+    ''' <param name="maxDiff">Specifies the minimum difference that excludes
+    ''' equality.</param>
+    ''' <returns><c>True</c> if the values are reasonably close in value;
+    ''' otherwise, <c>False</c>.</returns>
+    ''' <remarks>
+    ''' <see cref="EqualEnoughAbsolute(System.Double, System.Double,
+    ''' System.Double)"/> does the comparison based on an absolute numeric
+    ''' difference. The control value is <paramref name="maxDiff"/>. Select
+    ''' <paramref name="maxDiff"/> such that it is a good representation of zero
+    ''' relative to other known or expected values.</remarks>
+    Public Shared Function EqualEnoughAbsolute(ByVal otherVal As System.Double,
+        ByVal refVal As System.Double, ByVal maxDiff As System.Double) _
+        As System.Boolean
+
+        ' REF: Precision and complex numbers
+        ' <see href="https://github.com/dotnet/docs/blob/main/docs/fundamentals/runtime-libraries/system-numerics-complex.md#precision-and-complex-numbers"/>
+
+        ' No input checking.
+
+        Return System.Math.Abs(otherVal - refVal) < maxDiff
+
+    End Function ' EqualEnoughAbsolute
+
     ''' <summary>
     ''' Check for reasonable equality to zero when using floating point values.
     ''' Any value less than <paramref name="zeroTolerance"/> from zero is
     ''' considered to be equal to zero.
     ''' </summary>
     ''' <param name="value">Specifies the value to be compared to zero.</param>
-    ''' <param name="zeroTolerance">Specifies an acceptable offset from
-    ''' zero.</param>
+    ''' <param name="zeroTolerance">Specifies an offset from zero, below which
+    ''' <paramref name="value"/> is assumed to repreent zero.</param>
     ''' <returns><c>True</c> if <paramref name="value"/> is reasonably close to
     ''' zero; otherwise, <c>False</c>.</returns>
     ''' <remarks>Use this when an actual zero reference would cause a failure in
-    ''' <see cref="EqualEnough"/>. Select <paramref name="zeroTolerance"/> such
-    ''' that it is a good representation of zero relative to other known
+    ''' <see cref="EqualEnough(System.Double, System.Double, System.Double)"/>.
+    ''' Select <paramref name="zeroTolerance"/> such that it is a good
+    ''' representation of zero relative to other known or expected
     ''' values.</remarks>
     Public Shared Function EqualEnoughZero(ByVal value As System.Double,
         ByVal zeroTolerance As System.Double) As System.Boolean
@@ -207,12 +243,14 @@ Public Structure Impedance
     ''' <exception cref="System.ArgumentOutOfRangeException">When either
     ''' parameter is zero.</exception>
     ''' <remarks>
-    ''' <c>EqualEnough()</c> does the comparison based on scale, not on an
+    ''' <see cref="EqualEnough(System.Double, System.Double, System.Double)"/>
+    ''' does the comparison based on scale, Not on an
     ''' absolute numeric difference. The control value is
     ''' <paramref name="factor"/> multiplied by <paramref name="refVal"/>, to
-    ''' determine the minimum difference that excludes equality.
-    ''' There is no way to scale a comparison to zero. When a zero reference
-    ''' would cause a failure here, use <see cref="EqualEnoughZero"/>.
+    ''' determine the minimum difference that excludes equality. There is no way
+    ''' to scale a comparison to zero. When a zero reference would cause a
+    ''' failure here, use <see cref="EqualEnoughZero(System.Double,
+    ''' System.Double)"/>.
     ''' </remarks>
     Public Shared Function EqualEnough(ByVal otherVal As System.Double,
         ByVal refVal As System.Double, ByVal factor As System.Double) _
@@ -236,29 +274,35 @@ Public Structure Impedance
         End If
 
         Return System.Math.Abs(otherVal - refVal) <
-            System.Math.Abs(refVal * factor)
+            System.Math.Abs(factor * refVal)
 
     End Function ' EqualEnough
 
+    '''' <param name="z0">xxxxxxxxxx</param>
+    '''' <returns><c>True</c> if the values are reasonably close in value;
+    '''' otherwise, <c>False</c>.</returns>
+    '''' <remarks>
+    '''' <c>EqualEnough()</c> does the comparison based on scale, not on an
+    '''' absolute numeric difference.
+    '''' There is no way to scale a comparison to zero. When a zero reference
+    '''' would cause a failure here, this uses <see cref="EqualEnoughZero"/>.
+    '''' </remarks>
     ''' <summary>
-    ''' Check for reasonable equality when using floating point values.
+    ''' Check for reasonable equality of two impedances, based on the
+    ''' characteristic impedance of the system. A difference of less than
+    ''' <see cref="IMPDTOLERANCE"/> multiplied by <paramref name="z0"/> is
+    ''' considered to establish equality.
     ''' </summary>
+    ''' <param name="z0">xxxxxxxxxx</param>
     ''' <param name="otherVal">Specifies the value to be compared to
     ''' <paramref name="refVal"/>.</param>
     ''' <param name="refVal">Specifies a base value for comparison.</param>
-    ''' <returns><c>True</c> if the values are reasonably close in value;
-    ''' otherwise, <c>False</c>.</returns>
-    ''' <remarks>
-    ''' <c>EqualEnough()</c> does the comparison based on scale, not on an
-    ''' absolute numeric difference.
-    ''' There is no way to scale a comparison to zero. When a zero reference
-    ''' would cause a failure here, this uses <see cref="EqualEnoughZero"/>.
-    ''' </remarks>
+    ''' <returns>xxxxxxxxxx</returns>
     Public Shared Function EqualEnough(ByVal z0 As System.Double,
         ByVal otherVal As Impedance, ByVal refVal As Impedance) _
         As System.Boolean
 
-        Dim NearlyZero As System.Double = z0 * 0.000001
+        Dim NearlyZero As System.Double = IMPDTOLERANCE * z0
 
         ' REF: Precision and complex numbers
         ' <see href="https://github.com/dotnet/docs/blob/main/docs/fundamentals/runtime-libraries/system-numerics-complex.md#precision-and-complex-numbers"/>
@@ -266,14 +310,14 @@ Public Structure Impedance
         ' No input checking. otherVal and refVal are presumed to have been
         ' checked when created.
 
-        If Not EqualEnough(otherVal.Resistance, refVal.Resistance,
-                           IMPDTOLERANCE) Then
+        If Not EqualEnoughAbsolute(otherVal.Resistance, refVal.Resistance,
+                                   NearlyZero) Then
             Return False
         End If
         If EqualEnoughZero(otherVal.Reactance, NearlyZero) OrElse
             EqualEnoughZero(refVal.Reactance, NearlyZero) Then
 
-            ' Both reactances must be nearly zero.
+            ' There is a zero; both reactances must be nearly zero.
             Return EqualEnoughZero(otherVal.Reactance, NearlyZero) AndAlso
                 EqualEnoughZero(refVal.Reactance, NearlyZero)
         Else
@@ -283,6 +327,8 @@ Public Structure Impedance
         End If
 
     End Function ' EqualEnough
+
+#End Region ' "EqualEnough Implementations"
 
     ' public override bool Equals([NotNullWhen(true)] object? obj)
     ' {

@@ -219,7 +219,7 @@ Partial Public Structure Impedance
             Else
                 ' This wants a match to an arbitrary load.
                 If Not Impedance.EqualEnough(WorkZ.Reactance, ExpectZ.Reactance,
-                                             IMPDTOLERANCE) Then
+                                             z0 * IMPDTOLERANCE) Then
                     TestPassed = False
                 End If
             End If
@@ -240,7 +240,7 @@ Partial Public Structure Impedance
 
             ' xxxxxxxxxxxx TESTS CAN BE REMOVED WHEN ALL IS OK.
             If Not Impedance.EqualEnough(WorkZ.Resistance, ExpectZ.Resistance,
-                                         IMPDTOLERANCE) Then
+                                         z0 * IMPDTOLERANCE) Then
                 TestPassed = False
             End If
             If Impedance.EqualEnoughZero(ExpectZ.Reactance, NearlyZero) Then
@@ -251,7 +251,7 @@ Partial Public Structure Impedance
             Else
                 ' This wants a match to an arbitrary load.
                 If Not Impedance.EqualEnough(WorkZ.Reactance, ExpectZ.Reactance,
-                                             IMPDTOLERANCE) Then
+                                             z0 * IMPDTOLERANCE) Then
                     TestPassed = False
                 End If
             End If
@@ -272,7 +272,7 @@ Partial Public Structure Impedance
 
             ' xxxxxxxxxxxx TESTS CAN BE REMOVED WHEN ALL IS OK.
             If Not Impedance.EqualEnough(WorkZ.Resistance, ExpectZ.Resistance,
-                                         IMPDTOLERANCE) Then
+                                         z0 * IMPDTOLERANCE) Then
                 TestPassed = False
             End If
             If Impedance.EqualEnoughZero(ExpectZ.Reactance, NearlyZero) Then
@@ -283,7 +283,7 @@ Partial Public Structure Impedance
             Else
                 ' This wants a match to an arbitrary load.
                 If Not Impedance.EqualEnough(WorkZ.Reactance, ExpectZ.Reactance,
-                                             IMPDTOLERANCE) Then
+                                             z0 * IMPDTOLERANCE) Then
                     TestPassed = False
                 End If
             End If
@@ -304,7 +304,7 @@ Partial Public Structure Impedance
 
             ' xxxxxxxxxxxx TESTS CAN BE REMOVED WHEN ALL IS OK.
             If Not Impedance.EqualEnough(WorkZ.Resistance, ExpectZ.Resistance,
-                                         IMPDTOLERANCE) Then
+                                         z0 * IMPDTOLERANCE) Then
                 TestPassed = False
             End If
             If Impedance.EqualEnoughZero(ExpectZ.Reactance, NearlyZero) Then
@@ -315,7 +315,7 @@ Partial Public Structure Impedance
             Else
                 ' This wants a match to an arbitrary load.
                 If Not Impedance.EqualEnough(WorkZ.Reactance, ExpectZ.Reactance,
-                                             IMPDTOLERANCE) Then
+                                             z0 * IMPDTOLERANCE) Then
                     TestPassed = False
                 End If
             End If
@@ -340,7 +340,7 @@ Partial Public Structure Impedance
             WorkZ = Impedance.AddSeriesImpedance(WorkZ, DeltaZ)
 
             If Not Impedance.EqualEnough(WorkZ.Resistance, ExpectZ.Resistance,
-                                         IMPDTOLERANCE) Then
+                                         z0 * IMPDTOLERANCE) Then
                 TestPassed = False
             End If
             If Impedance.EqualEnoughZero(ExpectZ.Reactance, NearlyZero) Then
@@ -352,7 +352,7 @@ Partial Public Structure Impedance
             Else
                 ' This wants a match to an arbitrary load.
                 If Not Impedance.EqualEnough(WorkZ.Reactance, ExpectZ.Reactance,
-                                             IMPDTOLERANCE) Then
+                                             z0 * IMPDTOLERANCE) Then
                     TestPassed = False
                 End If
             End If
@@ -374,7 +374,7 @@ Partial Public Structure Impedance
             WorkZ = Impedance.AddSeriesImpedance(WorkZ, DeltaZ)
 
             If Not Impedance.EqualEnough(WorkZ.Resistance, ExpectZ.Resistance,
-                                         IMPDTOLERANCE) Then
+                                         z0 * IMPDTOLERANCE) Then
                 TestPassed = False
             End If
             If Impedance.EqualEnoughZero(ExpectZ.Reactance, NearlyZero) Then
@@ -385,7 +385,7 @@ Partial Public Structure Impedance
             Else
                 ' This wants a match to an arbitrary load.
                 If Not Impedance.EqualEnough(WorkZ.Reactance, ExpectZ.Reactance,
-                                             IMPDTOLERANCE) Then
+                                             z0 * IMPDTOLERANCE) Then
                     TestPassed = False
                 End If
             End If
@@ -407,7 +407,7 @@ Partial Public Structure Impedance
             WorkZ = Impedance.AddSeriesImpedance(WorkZ, DeltaZ)
 
             If Not Impedance.EqualEnough(WorkZ.Resistance, ExpectZ.Resistance,
-                                         IMPDTOLERANCE) Then
+                                         z0 * IMPDTOLERANCE) Then
                 TestPassed = False
             End If
             If Impedance.EqualEnoughZero(ExpectZ.Reactance, NearlyZero) Then
@@ -418,7 +418,7 @@ Partial Public Structure Impedance
             Else
                 ' This wants a match to an arbitrary load.
                 If Not Impedance.EqualEnough(WorkZ.Reactance, ExpectZ.Reactance,
-                                             IMPDTOLERANCE) Then
+                                             z0 * IMPDTOLERANCE) Then
                     TestPassed = False
                 End If
             End If
@@ -440,7 +440,7 @@ Partial Public Structure Impedance
             WorkZ = Impedance.AddSeriesImpedance(WorkZ, DeltaZ)
 
             If Not Impedance.EqualEnough(WorkZ.Resistance, ExpectZ.Resistance,
-                                         IMPDTOLERANCE) Then
+                                         z0 * IMPDTOLERANCE) Then
                 TestPassed = False
             End If
             If Impedance.EqualEnoughZero(ExpectZ.Reactance, NearlyZero) Then
@@ -451,7 +451,7 @@ Partial Public Structure Impedance
             Else
                 ' This wants a match to an arbitrary load.
                 If Not Impedance.EqualEnough(WorkZ.Reactance, ExpectZ.Reactance,
-                                             IMPDTOLERANCE) Then
+                                             z0 * IMPDTOLERANCE) Then
                     TestPassed = False
                 End If
             End If
@@ -473,7 +473,7 @@ Partial Public Structure Impedance
             WorkZ = Impedance.AddShuntImpedance(WorkZ, DeltaZ)
 
             If Not Impedance.EqualEnough(WorkZ.Resistance, ExpectZ.Resistance,
-                                         IMPDTOLERANCE) Then
+                                         z0 * IMPDTOLERANCE) Then
                 TestPassed = False
             End If
             If Impedance.EqualEnoughZero(ExpectZ.Reactance, NearlyZero) Then
@@ -484,7 +484,7 @@ Partial Public Structure Impedance
             Else
                 ' This wants a match to an arbitrary load.
                 If Not Impedance.EqualEnough(WorkZ.Reactance, ExpectZ.Reactance,
-                                             IMPDTOLERANCE) Then
+                                             z0 * IMPDTOLERANCE) Then
                     TestPassed = False
                 End If
             End If
@@ -506,7 +506,7 @@ Partial Public Structure Impedance
             WorkZ = Impedance.AddShuntImpedance(WorkZ, DeltaZ)
 
             If Not Impedance.EqualEnough(WorkZ.Resistance, ExpectZ.Resistance,
-                                         IMPDTOLERANCE) Then
+                                         z0 * IMPDTOLERANCE) Then
                 TestPassed = False
             End If
             If Impedance.EqualEnoughZero(ExpectZ.Reactance, NearlyZero) Then
@@ -517,7 +517,7 @@ Partial Public Structure Impedance
             Else
                 ' This wants a match to an arbitrary load.
                 If Not Impedance.EqualEnough(WorkZ.Reactance, ExpectZ.Reactance,
-                                             IMPDTOLERANCE) Then
+                                             z0 * IMPDTOLERANCE) Then
                     TestPassed = False
                 End If
             End If
@@ -539,7 +539,7 @@ Partial Public Structure Impedance
             WorkZ = Impedance.AddShuntImpedance(WorkZ, DeltaZ)
 
             If Not Impedance.EqualEnough(WorkZ.Resistance, ExpectZ.Resistance,
-                                         IMPDTOLERANCE) Then
+                                         z0 * IMPDTOLERANCE) Then
                 TestPassed = False
             End If
             If Impedance.EqualEnoughZero(ExpectZ.Reactance, NearlyZero) Then
@@ -550,7 +550,7 @@ Partial Public Structure Impedance
             Else
                 ' This wants a match to an arbitrary load.
                 If Not Impedance.EqualEnough(WorkZ.Reactance, ExpectZ.Reactance,
-                                             IMPDTOLERANCE) Then
+                                             z0 * IMPDTOLERANCE) Then
                     TestPassed = False
                 End If
             End If
@@ -575,7 +575,7 @@ Partial Public Structure Impedance
             WorkZ = Impedance.AddShuntImpedance(WorkZ, DeltaZ)
 
             If Not Impedance.EqualEnough(WorkZ.Resistance, ExpectZ.Resistance,
-                                         IMPDTOLERANCE) Then
+                                         z0 * IMPDTOLERANCE) Then
                 TestPassed = False
             End If
             If Impedance.EqualEnoughZero(ExpectZ.Reactance, NearlyZero) Then
@@ -586,7 +586,7 @@ Partial Public Structure Impedance
             Else
                 ' This wants a match to an arbitrary load.
                 If Not Impedance.EqualEnough(WorkZ.Reactance, ExpectZ.Reactance,
-                                             IMPDTOLERANCE) Then
+                                             z0 * IMPDTOLERANCE) Then
                     TestPassed = False
                 End If
             End If
@@ -629,7 +629,8 @@ Partial Public Structure Impedance
     ''' A succcessful process might result in an empty
     ''' <paramref name="transformations"/>.
     ''' </remarks>
-    Private Function OnREqualsZ0(ByRef transformations As Transformation()) _
+    Private Function OnREqualsZ0(
+        ByVal z0 As System.Double, ByRef transformations As Transformation()) _
         As System.Boolean
 
         ' Test data C: At the open circuit point on the right.
@@ -638,7 +639,7 @@ Partial Public Structure Impedance
         ' Test data F: On R=Z0 circle, below resonance line. Only needs reactance.
 
         Dim CurrentX As System.Double = Me.Reactance
-        If Impedance.EqualEnoughZero(CurrentX, IMPDTOLERANCE0) Then
+        If Impedance.EqualEnoughZero(CurrentX, Impedance.IMPDTOLERANCE0 * z0) Then
             ' This happens at two places.
 
             If System.Double.IsInfinity(Me.Resistance) Then
@@ -712,11 +713,12 @@ Partial Public Structure Impedance
         ' K: On G=Y0 circle, below resonance line. Only needs reactance.
 
         Dim CurrentB As System.Double = Me.ToAdmittance().Susceptance
-        If Impedance.EqualEnoughZero(CurrentB, Impedance.IMPDTOLERANCE0) Then
+        If Impedance.EqualEnoughZero(
+            CurrentB, Impedance.IMPDTOLERANCE0 * z0) Then
             ' This happens at two places.
 
-            If Impedance.EqualEnoughZero(Me.Resistance,
-                                         Impedance.IMPDTOLERANCE0) Then
+            If Impedance.EqualEnoughZero(
+                Me.Resistance, Impedance.IMPDTOLERANCE0 * z0) Then
                 ' Test data A: At the short circuit point.
                 Return False
             End If
@@ -1802,7 +1804,7 @@ Partial Public Structure Impedance
         ' MADE TO AN IMAGE IMPEDANCE OR A SITUATION INVOLVING ACTIVE COMPONENTS
         ' THAT CAN EFFECTIVELY HAVE A NEGATIVE RESITANCE VALUE.
         ' Check for a short- or open-circuit.
-        If Impedance.EqualEnoughZero(CurrentR, IMPDTOLERANCE) OrElse
+        If Impedance.EqualEnoughZero(CurrentR, Z0 * IMPDTOLERANCE0) OrElse
             System.Double.IsInfinity(CurrentR) Then
             ' A: At the short circuit point. Omit - covered by B.
             ' B: Anywhere else on the perimeter. R=0.0.
@@ -1812,8 +1814,8 @@ Partial Public Structure Impedance
             Return False
         End If
 
-        If Impedance.EqualEnough(CurrentR, Z0, IMPDTOLERANCE) AndAlso
-            Impedance.EqualEnoughZero(Me.Reactance, IMPDTOLERANCE0) Then
+        If Impedance.EqualEnough(CurrentR, Z0, Z0 * IMPDTOLERANCE) AndAlso
+            Impedance.EqualEnoughZero(Me.Reactance, Z0 * IMPDTOLERANCE0) Then
             ' D: At the center.
             ' Leave transformations as the incoming empty array.
 
@@ -1830,8 +1832,8 @@ Partial Public Structure Impedance
             '     G50: Inside R=Z0 circle, above resonance line. Z0=50.
             '     H1: Inside R=Z0 circle, on line.
             '     I1: Inside R=Z0 circle, below resonance line.
-            If Impedance.EqualEnough(CurrentR, Z0, IMPDTOLERANCE) Then
-                Return Me.OnREqualsZ0(transformations) ' E, F.
+            If Impedance.EqualEnough(CurrentR, Z0, Z0 * IMPDTOLERANCE) Then
+                Return Me.OnREqualsZ0(Z0, transformations) ' E, F.
             Else
                 Return Me.InsideREqualsZ0(Z0, transformations) 'G, H, I.
             End If
@@ -1846,7 +1848,7 @@ Partial Public Structure Impedance
             '     M1: Inside G=Y0 circle, on line.
             '     N1: Inside G=Y0 circle, below line.
             If Impedance.EqualEnough(Me.ToAdmittance().Conductance, Y0,
-                                     IMPDTOLERANCE) Then
+                                     Y0 * IMPDTOLERANCE) Then
                 Return Me.OnGEqualsY0(Z0, transformations) ' J, K.
             Else
                 Return Me.InsideGEqualsY0(mainCirc, transformations) ' L, M, N.
@@ -1857,7 +1859,7 @@ Partial Public Structure Impedance
         ' On getting this far, the impedance will, usually, fall into either
         ' the top or bottom center section.
         Dim NormX As System.Double = Me.Reactance / Z0
-        If Impedance.EqualEnoughZero(NormX, IMPDTOLERANCE) Then
+        If Impedance.EqualEnoughZero(NormX, Z0 * IMPDTOLERANCE0) Then
             ' Z is ON the resonance line.
 
             ' Should this case have been caught above? Yes, it would be in or

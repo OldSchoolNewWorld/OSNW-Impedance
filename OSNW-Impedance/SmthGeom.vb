@@ -724,7 +724,7 @@ Public Class SmithMainCircle
         As System.Double
 
         If Impedance.EqualEnoughZero(
-            susceptance, Me.GridRadius * Impedance.IMPDTOLERANCE) Then
+            susceptance, Me.GridRadius * Impedance.IMPDTOLERANCE0) Then
 
             'Dim CaughtBy As System.Reflection.MethodBase =
             '    System.Reflection.MethodBase.GetCurrentMethod
@@ -795,8 +795,9 @@ Public Class SmithMainCircle
             ' Create the R-circle that passes through the impedance plot.
             Dim RCirc As New RCircle(Me, resistance)
 
-            If Impedance.EqualEnoughZero(reactance,
-                                         Me.Z0 * Impedance.IMPDTOLERANCE0) Then
+            If Impedance.EqualEnoughZero(
+                reactance, Me.GridRadius * Impedance.IMPDTOLERANCE0) Then
+
                 ' The circle intersection approach further below will not work
                 ' due to the infinite radius of the X-circle.
                 plotX = Me.GridRightEdgeX - RCirc.GridDiameter

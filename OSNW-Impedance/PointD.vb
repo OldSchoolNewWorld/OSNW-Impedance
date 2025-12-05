@@ -10,9 +10,9 @@ Option Infer Off
 ''' <remarks>
 ''' This is a very simplified implementation of a double precision version
 ''' of <see cref="System.Drawing.PointF"/>. In almost any practical case, there
-''' is no significant difference between <c>PointF</c> and <c>PointD</c> on a
+''' is no significant difference between <c>PointD</c> and <c>PointF</c> on a
 ''' monitor or printer. Double precision values are only used here to minimize
-''' any impact of doing geometric calculations with floating point values.
+''' any impact of doing calculations with floating point values.
 ''' </remarks>
 Public Structure PointD
 
