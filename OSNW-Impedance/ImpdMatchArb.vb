@@ -96,25 +96,28 @@ Partial Public Structure Impedance
                 If DeltaX < 0.0 Then
                     ' CCW on a R-circle needs a series capacitor.
                     .Style = TransformationStyles.ShuntIndSeriesCap
-                Else ' DeltaX > 0.0
+                ElseIf DeltaX > 0.0 Then
                     ' CW on a R-circle needs a series inductor.
                     .Style = TransformationStyles.ShuntIndSeriesInd
+                Else ' DeltaX = 0.0
+                    .Style = TransformationStyles.ShuntInd
                 End If
-            Else ' Deltab > 0.0
+            Else ' DeltaB > 0.0
                 ' CW on a G-circle needs a shunt capacitor.
                 If DeltaX < 0.0 Then
                     ' CCW on a R-circle needs a series capacitor.
                     .Style = TransformationStyles.ShuntCapSeriesCap
-                Else ' DeltaX > 0.0
+                ElseIf DeltaX > 0.0 Then
                     ' CW on a R-circle needs a series inductor.
                     .Style = TransformationStyles.ShuntCapSeriesInd
+                Else ' DeltaX = 0.0
+                    .Style = TransformationStyles.ShuntCap
                 End If
             End If
             .Value1 = New Admittance(0, DeltaB).ToImpedance.Reactance
             .Value2 = DeltaX
         End With
 
-        ' On getting this far,
         ' Add to the array of transformations.
         ReDim Preserve transformations(CurrTransCount)
         transformations(CurrTransCount) = Trans
@@ -213,18 +216,22 @@ Partial Public Structure Impedance
                 If DeltaB < 0.0 Then
                     ' CCW on a G-circle needs a shunt inductor.
                     .Style = TransformationStyles.SeriesCapShuntInd
-                Else ' DeltaB > 0.0
+                ElseIf DeltaB > 0.0 Then
                     ' CW on a G-circle needs a shunt capacitor.
                     .Style = TransformationStyles.SeriesCapShuntCap
+                Else ' DeltaB = 0.0
+                    .Style = TransformationStyles.SeriesCap
                 End If
             Else ' DeltaX > 0.0
                 ' CW on a R-circle needs a series inductor.
                 If DeltaB < 0.0 Then
                     ' CCW on a G-circle needs a shunt inductor.
                     .Style = TransformationStyles.SeriesIndShuntInd
-                Else ' DeltaB > 0.0
+                ElseIf DeltaB > 0.0 Then
                     ' CW on a G-circle needs a shunt capacitor.
                     .Style = TransformationStyles.SeriesIndShuntCap
+                Else ' DeltaB = 0.0
+                    .Style = TransformationStyles.SeriesInd
                 End If
             End If
             .Value1 = DeltaX
