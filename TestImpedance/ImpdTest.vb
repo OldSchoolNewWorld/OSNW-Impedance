@@ -35,7 +35,7 @@ End Class
 
 '<InlineData(  Z0,        R,         X,    VRC,    PRC,    VTC,    PTC,       AOR,      AOT,    VSWR)> ' Model
 '<Theory>
-'<InlineData( 1.0,   0.0000,    0.0000, 1.0000, 1.0000, 0.0000, 0.0000,       INF,   2.0000,     INF)> ' A: At the short circuit point. Omit - covered by B.
+'<InlineData( 1.0,   0.0000,    0.0000, 1.0000, 1.0000, 0.0000, 0.0000,       INF,   2.0000,     INF)> ' A: At the short circuit point.
 '<InlineData( 1.0,   0.0000,     1/2.0, 1.0000, 1.0000, 0.8944, 0.0000,       INF,      2.8,     INF)> ' B: Anywhere else on the perimeter. R=0.0.
 '<InlineData( 1.0,      INF,    0.0000, 1.0000,    999,    999,    999,       INF,   6.0000,     INF)> ' C: At the open circuit point on the right.
 '<InlineData( 1.0,   1.0000,    0.0000, 0.0000, 0.0000, 1.0000, 1.0000,    0.0000,   0.0000,  1.0000)> ' D1: At the center.
@@ -71,7 +71,7 @@ End Class
 
 '<InlineData(ChartX, ChartY, ChartRad,   Z0,        R,         X,        G,         B,  PlotX,  PlotY, RadiusR, RadiusX, RadiusG, RadiusB, RadiusV)> ' Model
 '<Theory>
-'<InlineData(4.0000, 5.0000,   2.0000,  1.0,   0.0000,    0.0000,   0.0000,    0.0000, 2.0000, 5.0000,  2.0000,     INF,  0.0000,     INF,  2.0000)> ' A: At the short circuit point. Omit - covered by B.
+'<InlineData(4.0000, 5.0000,   2.0000,  1.0,   0.0000,    0.0000,   0.0000,    0.0000, 2.0000, 5.0000,  2.0000,     INF,  0.0000,     INF,  2.0000)> ' A: At the short circuit point.
 '<InlineData(4.0000, 5.0000,   2.0000,  1.0,   0.0000,     1/2.0,   0.0000,   -2.0000,    2.8,    6.6,  2.0000,  4.0000,     INF,  1.0000,  2.0000)> ' B: Anywhere else on the perimeter. R=0.0.
 '<InlineData(4.0000, 5.0000,   2.0000,  1.0,      INF,    0.0000,   0.0000,    0.0000, 6.0000, 5.0000,  0.0000,     INF,  2.0000,     INF,  2.0000)> ' C: At the open circuit point on the right.
 '<InlineData(4.0000, 5.0000,   2.0000,  1.0,   1.0000,    0.0000,   1.0000,    0.0000, 4.0000, 5.0000,  1.0000,     INF,  1.0000,     INF,  0.0000)> ' D1: At the center.
@@ -145,7 +145,7 @@ Namespace DevelopmentTests
                 Assert.True(True)
                 Exit Sub
             End Try
-            Assert.True(False, "Did not fail")
+            Assert.True(False, "Did not fail.")
         End Sub
 
     End Class ' TestUnitTestExceptions
@@ -531,7 +531,7 @@ Namespace MathTests
 
         '<InlineData(       R,       X,       G,        B)> ' Model
         <Theory>
-        <InlineData(0.0000, 0.0000, 0.0000, 0.0000)> ' A: At the short circuit point. Omit - covered by B.
+        <InlineData(0.0000, 0.0000, 0.0000, 0.0000)> ' A: At the short circuit point.
         <InlineData(0.0000, 1 / 2.0, 0.0000, -2.0)> ' B: Anywhere else on the perimeter. R=0.0.
         <InlineData(1.0, 0.0000, 1.0, 0.0000)> ' D1: At the center.
         <InlineData(1.0, 1.0, 0.5, -0.5)> ' E1: On R=Z0 circle, above resonance line.
@@ -585,7 +585,7 @@ Namespace MathTests
         '        Assert.True(True)
         '        Exit Sub
         '    End Try
-        '    Assert.True(False, "Did not fail")
+        '    Assert.True(False, "Did not fail.")
         'End Sub
 
     End Class ' TestToAdmittance

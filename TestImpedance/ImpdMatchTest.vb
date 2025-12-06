@@ -9,7 +9,7 @@ Imports Xunit
 ' The terminology here relates to solving conjugate matches on a Smith Chart.
 
 ' Chart location cases:
-' A: At the short circuit point. Omit - covered by B.
+' A: At the short circuit point.
 ' B: Anywhere else on the perimeter. R=0.0.
 ' C: At the open circuit point on the right.
 ' D: At the center.
@@ -52,7 +52,7 @@ Namespace TrySelectMatchLayoutTests
 
         '<InlineData(    Z0,        R,       X)> ' Model
         <Theory>
-        <InlineData(1.0, 0.0000, 0.0000)> ' A: At the short circuit point. Omit - covered by B.
+        <InlineData(1.0, 0.0000, 0.0000)> ' A: At the short circuit point.
         <InlineData(1.0, 0.0000, 1 / 2.0)> ' B: Anywhere else on the perimeter. R=0.0.
         Public Sub TrySelectMatch_PositionBZeroR_Fails(z0 As Double, r As Double, x As Double)
 
@@ -357,13 +357,47 @@ End Namespace ' TrySelectMatchLayoutTests
 
 Namespace MatchArbitraryTests
 
+    Public Class TestMatchArbitrary_UnlikelyZ0
+
+        Const INF As Double = Double.PositiveInfinity
+
+        '<InlineData(  Z0,        R,         X)> ' Model
+        <Theory>
+        <InlineData(-1.0, 1.0, 0.0000)> ' Negative Z0. Invalid.
+        <InlineData(1.0, INF, 0.0000)> ' C: At the open circuit point on the right.
+        <InlineData(1.0, -0.0345, 0.4138)> ' Q: Outside of main circle. Invalid.
+        <InlineData(1.0, -2.0, 999)> ' R: NormR<=0. Invalid.
+        Public Sub MatchArbitraryZ0_BadInput_ThrowsException(z0 As System.Double, loadR As Double, loadX As Double)
+            Try
+                ' Code that throws the exception.
+                Dim LoadZ As New Impedance(loadR, loadX)
+                Dim SourceZ As New Impedance(z0, 0.0)
+                Dim Transformations As Transformation() = Array.Empty(Of Transformation)
+            Catch ex As Exception
+                Assert.True(True)
+                Exit Sub
+            End Try
+            Assert.True(False, "Did not fail.")
+        End Sub
+
+        '<InlineData(  Z0,        R,         X)> ' Model
+        <Theory>
+        <InlineData(1.0, 0.0000, 0.0000)> ' A: At the short circuit point.
+        <InlineData(1.0, 0.0000, 1 / 2.0)> ' B: Anywhere else on the perimeter. R=0.0.
+        Public Sub MatchArbitraryZ0_BadInput_Fails(z0 As System.Double, loadR As Double, loadX As Double)
+
+            Dim LoadZ As New Impedance(loadR, loadX)
+            Dim SourceZ As New Impedance(z0, 0.0)
+            Dim Transformations As Transformation() = Array.Empty(Of Transformation)
+
+            Assert.False(Impedance.MatchArbitrary(z0, LoadZ, SourceZ, Transformations))
+
+        End Sub
+
+    End Class ' TestMatchArbitrary_UnlikelyZ0
+
     Public Class TestMatchArbitraryZ0
 
-        '<InlineData(1.0, 0.0000, 0.0000)> ' A: At the short circuit point. Omit - covered by B.
-        '<InlineData(1.0, 0.0000, 1 / 2.0)> ' B: Anywhere else on the perimeter. R=0.0.
-        '<InlineData(1.0, INF, 0.0000)> ' C: At the open circuit point on the right.
-        '<InlineData(1.0, -0.0345, 0.4138)> ' Q: Outside of main circle. Invalid.
-        '<InlineData(1.0, -2.0, 999)> ' R: NormR<=0. Invalid.
         '<InlineData(  Z0,        R,         X)> ' Model
         <Theory>
         <InlineData(1.0, 1.0, 0.0000)> ' D1: At the center.
@@ -407,26 +441,26 @@ Namespace MatchArbitraryTests
     Public Class TestMatchArbitraryAny
 
         <Theory>
-        <InlineData(1, 1.0, 1.0, 0.5, 0.2)> ' 
-        <InlineData(1, 0.5, 0.2, 1.0, 1.0)> ' 
-        <InlineData(100.0, 100.0, 100.0, 50.0, 20.0)> ' 
-        <InlineData(100.0, 50.0, 20.0, 100.0, 100.0)> ' 
-        <InlineData(1, 1.0, 1.0, 2.0, -2.0)> ' 
-        <InlineData(1, 2.0, -2.0, 1.0, 1.0)> ' 
-        <InlineData(75, 50.0, 50.0, 100.0, -100.0)> ' 
-        <InlineData(75, 100.0, -100.0, 50.0, 50.0)> ' 
-        <InlineData(1, 1 / 3.0, 1 / 3.0, 1 / 3.0, 0.0000)> ' 
-        <InlineData(1, 1 / 3.0, 0.0000, 1 / 3.0, 1 / 3.0)> ' 
-        <InlineData(75, 25.0, 25.0, 25.0, 0.0000)> ' 
-        <InlineData(75, 25.0, 0.0000, 25.0, 25.0)> ' 
-        <InlineData(1.0, 0.2, 1.4, 0.4, -0.8)> ' 
-        <InlineData(1.0, 0.4, -0.8, 0.2, 1.4)> ' 
-        <InlineData(50.0, 10.0, 70.0, 20.0, -40.0)> ' 
-        <InlineData(50.0, 20.0, -40.0, 10.0, 70.0)> ' 
-        <InlineData(1.0, 1.0, 1.0, 1 / 2.0, 1 / 2.0)> ' 
-        <InlineData(1.0, 1 / 2.0, 1 / 2.0, 1.0, 1.0)> ' 
-        <InlineData(50.0, 50.0, 50.0, 25.0, 25.0)> ' 
-        <InlineData(50.0, 25.0, 25.0, 50.0, 50.0)> ' 
+        <InlineData(1, 1.0, 1.0, 0.5, 0.2)> ' AMRIS1.
+        <InlineData(1, 0.5, 0.2, 1.0, 1.0)> ' AMRIS1 reversed.
+        <InlineData(100.0, 100.0, 100.0, 50.0, 20.0)> ' AMRIS100.
+        <InlineData(100.0, 50.0, 20.0, 100.0, 100.0)> ' AMRIS100 reversed.
+        <InlineData(1, 1.0, 1.0, 2.0, -2.0)> ' E1 to I1.
+        <InlineData(1, 2.0, -2.0, 1.0, 1.0)> ' I1 to E1.
+        <InlineData(75, 50.0, 50.0, 100.0, -100.0)> ' E50 to I50 (75).
+        <InlineData(75, 100.0, -100.0, 50.0, 50.0)> ' I50 to E50 (75).
+        <InlineData(1, 1 / 3.0, 1 / 3.0, 1 / 3.0, 0.0000)> ' L1 to M1.
+        <InlineData(1, 1 / 3.0, 0.0000, 1 / 3.0, 1 / 3.0)> ' M1 to L1.
+        <InlineData(75, 25.0, 25.0, 25.0, 0.0000)> ' L75 to M75.
+        <InlineData(75, 25.0, 0.0000, 25.0, 25.0)> ' M75 to L75.
+        <InlineData(1.0, 0.2, 1.4, 0.4, -0.8)> ' O1 to P1.
+        <InlineData(1.0, 0.4, -0.8, 0.2, 1.4)> ' P1 to O1.
+        <InlineData(50.0, 10.0, 70.0, 20.0, -40.0)> ' O50 to P50.
+        <InlineData(50.0, 20.0, -40.0, 10.0, 70.0)> ' P50 to O50.
+        <InlineData(1.0, 1.0, 1.0, 1 / 2.0, 1 / 2.0)> ' E1 to J1.
+        <InlineData(1.0, 1 / 2.0, 1 / 2.0, 1.0, 1.0)> ' J1 to E1.
+        <InlineData(50.0, 50.0, 50.0, 25.0, 25.0)> ' E50 to J50.
+        <InlineData(50.0, 25.0, 25.0, 50.0, 50.0)> ' J50 to E50.
         Public Sub MatchArbitrary_GoodInput_Succeeds(z0 As Double, loadR As Double, loadX As Double,
                                                      sourceR As Double, sourceX As Double)
 

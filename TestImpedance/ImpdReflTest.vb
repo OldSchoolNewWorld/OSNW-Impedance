@@ -15,7 +15,7 @@ Namespace ReflectionTests
 
         '<InlineData(     Z0,        R,         X,    VRC)> ' Model
         <Theory>
-        <InlineData(1.0, 0.0000, 0.0000, 1.0)> ' A: At the short circuit point. Omit - covered by B.
+        <InlineData(1.0, 0.0000, 0.0000, 1.0)> ' A: At the short circuit point.
         <InlineData(1.0, 0.0000, 1 / 2.0, 1.0)> ' B: Anywhere else on the perimeter. R=0.0.
         <InlineData(1.0, 1.0, 0.0000, 0.0000)> ' D1: At the center.
         <InlineData(75.0, 75.0, 0.0000, 0.0000)> ' D75: At the center. Z0=75.
@@ -85,7 +85,7 @@ Namespace ReflectionTests
         '        Assert.True(True)
         '        Exit Sub
         '    End Try
-        '    Assert.True(False, "Did not fail")
+        '    Assert.True(False, "Did not fail.")
         'End Sub
 
     End Class ' TestVoltageReflectionCoefficient
@@ -97,7 +97,7 @@ Namespace ReflectionTests
 
         '<InlineData(     Z0,        R,         X,    PRC)> ' Model
         <Theory>
-        <InlineData(1.0, 0.0000, 0.0000, 1.0)> ' A: At the short circuit point. Omit - covered by B.
+        <InlineData(1.0, 0.0000, 0.0000, 1.0)> ' A: At the short circuit point.
         <InlineData(1.0, 0.0000, 1 / 2.0, 1.0)> ' B: Anywhere else on the perimeter. R=0.0.
         <InlineData(1.0, 1.0, 0.0000, 0.0000)> ' D1: At the center.
         <InlineData(75.0, 75.0, 0.0000, 0.0000)> ' D75: At the center. Z0=75.
@@ -167,7 +167,7 @@ Namespace ReflectionTests
         '        Assert.True(True)
         '        Exit Sub
         '    End Try
-        '    Assert.True(False, "Did not fail")
+        '    Assert.True(False, "Did not fail.")
         'End Sub
 
     End Class ' TestPowerReflectionCoefficient
@@ -182,7 +182,7 @@ Namespace ReflectionTests
         '<InlineData(1.0, -2.0, 999, 999)> ' R: NormR<=0. Invalid.
         '<InlineData(     Z0,        R,         X,    VTC)> ' Model
         <Theory>
-        <InlineData(1.0, 0.0000, 0.0000, 0.0000)> ' A: At the short circuit point. Omit - covered by B.
+        <InlineData(1.0, 0.0000, 0.0000, 0.0000)> ' A: At the short circuit point.
         <InlineData(1.0, 0.0000, 1 / 2.0, 0.8944)> ' B: Anywhere else on the perimeter. R=0.0.
         <InlineData(1.0, 1.0, 0.0000, 1.0)> ' D1: At the center.
         <InlineData(75.0, 75.0, 0.0000, 1.0)> ' D75: At the center. Z0=75.
@@ -252,7 +252,7 @@ Namespace ReflectionTests
         '        Assert.True(True)
         '        Exit Sub
         '    End Try
-        '    Assert.True(False, "Did not fail")
+        '    Assert.True(False, "Did not fail.")
         'End Sub
 
     End Class ' TestVoltageTransmissionCoefficient
@@ -292,7 +292,7 @@ Namespace ReflectionTests
 
         '<InlineData(Z0, R, X, PTC)> ' Model
         <Theory>
-        <InlineData(1.0, 0.0000, 0.0000, 0.0000)> ' A: At the short circuit point. Omit - covered by B.
+        <InlineData(1.0, 0.0000, 0.0000, 0.0000)> ' A: At the short circuit point.
         <InlineData(1.0, 1.0, 0.0000, 1.0)> ' D1: At the center.
         <InlineData(75.0, 75.0, 0.0000, 1.0)> ' D75: At the center. Z0=75.
         <InlineData(1.0, 3.0, 0.0000, 0.75)> ' H1: Inside R=Z0 circle, on line.
@@ -353,7 +353,7 @@ Namespace ReflectionTests
         '<InlineData(     Z0,        R,       X,       AOR)> ' Model
         <Theory>
         <InlineData(1.0, INF, 0.0000, INF)> ' C: At the open circuit point on the right.
-        <InlineData(1.0, 0.0000, 0.0000, INF)> ' A: At the short circuit point. Omit - covered by B.
+        <InlineData(1.0, 0.0000, 0.0000, INF)> ' A: At the short circuit point.
         <InlineData(1.0, 0.0000, 1 / 2.0, INF)> ' B: Anywhere else on the perimeter. R=0.0.
         <InlineData(1.0, -0.0345, 0.4138, 999)> ' Q: Outside of main circle. Invalid.
         <InlineData(1.0, -2.0, 999, 999)> ' R: NormR<=0. Invalid.
@@ -371,7 +371,7 @@ Namespace ReflectionTests
 
         ''<InlineData(     Z0,        R,       X,       AOR)> ' Model
         '<InlineData(1.0, INF, 0.0000, INF)> ' C: At the open circuit point on the right.
-        '<InlineData(1.0, 0.0000, 0.0000, INF)> ' A: At the short circuit point. Omit - covered by B.
+        '<InlineData(1.0, 0.0000, 0.0000, INF)> ' A: At the short circuit point.
         '<InlineData(1.0, 0.0000, 1 / 2.0, INF)> ' B: Anywhere else on the perimeter. R=0.0.
         '<InlineData(1.0, -0.0345, 0.4138, 999)> ' Q: Outside of main circle. Invalid.
         '<InlineData(1.0, -2.0, 999, 999)> ' R: NormR<=0. Invalid.
@@ -387,7 +387,7 @@ Namespace ReflectionTests
         '        Assert.True(True)
         '        Exit Sub
         '    End Try
-        '    Assert.True(False, "Did not fail")
+        '    Assert.True(False, "Did not fail.")
         'End Sub
 
     End Class ' TestAngleOfReflection
@@ -435,7 +435,7 @@ Namespace ReflectionTests
 
         '<InlineData(     Z0,        R,       X,      AOT)> ' Model
         <Theory>
-        <InlineData(1.0, 0.0000, 0.0000, 2.0)> ' A: At the short circuit point. Omit - covered by B.
+        <InlineData(1.0, 0.0000, 0.0000, 2.0)> ' A: At the short circuit point.
         <InlineData(1.0, 0.0000, 1 / 2.0, 2.8)> ' B: Anywhere else on the perimeter. R=0.0.
         <InlineData(1.0, INF, 0.0000, 6.0)> ' C: At the open circuit point on the right.
         <InlineData(1.0, -0.0345, 0.4138, 2.5)> ' Q: Outside of main circle. Invalid.
@@ -455,7 +455,7 @@ Namespace ReflectionTests
 
         ''<InlineData(     Z0,        R,       X,      AOT)> ' Model
         '<Theory>
-        '<InlineData(1.0, 0.0000, 0.0000, 2.0)> ' A: At the short circuit point. Omit - covered by B.
+        '<InlineData(1.0, 0.0000, 0.0000, 2.0)> ' A: At the short circuit point.
         '<InlineData(1.0, 0.0000, 1 / 2.0, 2.8)> ' B: Anywhere else on the perimeter. R=0.0.
         '<InlineData(1.0, INF, 0.0000, 6.0)> ' C: At the open circuit point on the right.
         '<InlineData(1.0, -0.0345, 0.4138, 2.5)> ' Q: Outside of main circle. Invalid.
@@ -472,7 +472,7 @@ Namespace ReflectionTests
         '        Assert.True(True)
         '        Exit Sub
         '    End Try
-        '    Assert.True(False, "Did not fail")
+        '    Assert.True(False, "Did not fail.")
         'End Sub
 
     End Class ' TestAngleOfTransmission
@@ -484,7 +484,7 @@ Namespace ReflectionTests
 
         '<InlineData(     Z0,        R,         X,    VSWR)> ' Model
         <Theory>
-        <InlineData(1.0, 0.0000, 0.0000, INF)> ' A: At the short circuit point. Omit - covered by B.
+        <InlineData(1.0, 0.0000, 0.0000, INF)> ' A: At the short circuit point.
         <InlineData(1.0, 0.0000, 1 / 2.0, INF)> ' B: Anywhere else on the perimeter. R=0.0.
         <InlineData(1.0, 1.0, 0.0000, 1.0)> ' D1: At the center.
         <InlineData(75.0, 75.0, 0.0000, 1.0)> ' D75: At the center. Z0=75.
@@ -552,7 +552,7 @@ Namespace ReflectionTests
         '        Assert.True(True)
         '        Exit Sub
         '    End Try
-        '    Assert.True(False, "Did not fail")
+        '    Assert.True(False, "Did not fail.")
         'End Sub
 
     End Class ' TestVSWR

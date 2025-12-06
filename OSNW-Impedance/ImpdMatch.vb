@@ -1760,7 +1760,7 @@ Partial Public Structure Impedance
         ' Chart.
 
         ' Chart location cases:
-        ' A: At the short circuit point. Omit - covered by B.
+        ' A: At the short circuit point.
         ' B: Anywhere else on the perimeter. R=0.0.
         ' C: At the open circuit point on the right.
         ' D1: At the center.
@@ -1806,7 +1806,7 @@ Partial Public Structure Impedance
         ' Check for a short- or open-circuit.
         If Impedance.EqualEnoughZero(CurrentR, Z0 * IMPDTOLERANCE0) OrElse
             System.Double.IsInfinity(CurrentR) Then
-            ' A: At the short circuit point. Omit - covered by B.
+            ' A: At the short circuit point.
             ' B: Anywhere else on the perimeter. R=0.0.
             ' C: At the open circuit point on the right.
 

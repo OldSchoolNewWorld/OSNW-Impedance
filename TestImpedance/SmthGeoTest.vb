@@ -52,7 +52,7 @@ Namespace GeometryTests
 
         '<InlineData(ChartX, ChartY, ChartRad,      Z0,        R, RadiusR)> ' Model
         <Theory>
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 2.0)> ' A: At the short circuit point. Omit - covered by B.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 2.0)> ' A: At the short circuit point.
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 2.0)> ' B: Anywhere else on the perimeter. R=0.0.
         <InlineData(4.0, 5.0, 2.0, 1.0, -0.0345, 999)> ' Q: Outside of main circle. Invalid.
         <InlineData(4.0, 5.0, 2.0, 1.0, -2.0, 999)> ' R: NormR<=0. Invalid.
@@ -70,7 +70,7 @@ Namespace GeometryTests
 
         ''<InlineData(ChartX, ChartY, ChartRad,      Z0,        R, RadiusR)> ' Model
         '<Theory>
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 2.0)> ' A: At the short circuit point. Omit - covered by B.
+        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 2.0)> ' A: At the short circuit point.
         '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 2.0)> ' B: Anywhere else on the perimeter. R=0.0.
         '<InlineData(4.0, 5.0, 2.0, 1.0, -0.0345, 999)> ' Q: Outside of main circle. Invalid.
         '<InlineData(4.0, 5.0, 2.0, 1.0, -2.0, 999)> ' R: NormR<=0. Invalid.
@@ -85,7 +85,7 @@ Namespace GeometryTests
         '        Assert.True(True)
         '        Exit Sub
         '    End Try
-        '    Assert.True(False, "Did not fail")
+        '    Assert.True(False, "Did not fail.")
         'End Sub
 
     End Class ' TestGetRadiusR
@@ -130,7 +130,7 @@ Namespace GeometryTests
         '<InlineData(4.0, 5.0, 2.0, 1.0, 999, 999)> ' R: NormR<=0. Invalid.
         '<InlineData(ChartX, ChartY, ChartRad,      Z0,       X, RadiusX)> ' Model
         <Theory>
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, INF)> ' A: At the short circuit point. Omit - covered by B.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, INF)> ' A: At the short circuit point.
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, INF)> ' C: At the open circuit point on the right.
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, INF)> ' D1: At the center.
         <InlineData(4.0, 5.0, 2.0, 75.0, 0.0000, INF)> ' D75: At the center. Z0=75.
@@ -154,7 +154,7 @@ Namespace GeometryTests
         '<InlineData(4.0, 5.0, 2.0, 1.0, 999, 999)> ' R: NormR<=0. Invalid.
         '<InlineData(ChartX, ChartY, ChartRad,      Z0,       X, RadiusX)> ' Model
         '<Theory>
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, INF)> ' A: At the short circuit point. Omit - covered by B.
+        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, INF)> ' A: At the short circuit point.
         '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, INF)> ' C: At the open circuit point on the right.
         '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, INF)> ' D1: At the center.
         '<InlineData(4.0, 5.0, 2.0, 75.0, 0.0000, INF)> ' D75: At the center. Z0=75.
@@ -173,7 +173,7 @@ Namespace GeometryTests
         '        Assert.True(True)
         '        Exit Sub
         '    End Try
-        '    Assert.True(False, "Did not fail")
+        '    Assert.True(False, "Did not fail.")
         'End Sub
 
     End Class ' TestGetRadiusX
@@ -221,7 +221,7 @@ Namespace GeometryTests
 
         '<InlineData(ChartX, ChartY, ChartRad,      Z0,       G, RadiusG)> ' Model
         <Theory>
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 0.0000)> ' A: At the short circuit point. Omit - covered by B.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 0.0000)> ' A: At the short circuit point.
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, INF)> ' B: Anywhere else on the perimeter. R=0.0.
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 2.0)> ' C: At the open circuit point on the right.
         Sub GetRadiusG_BadInput_Fails1(gridCenterX As Double, gridCenterY As Double, gridRadius As Double,
@@ -251,7 +251,7 @@ Namespace GeometryTests
         '        Assert.True(True)
         '        Exit Sub
         '    End Try
-        '    Assert.True(False, "Did not fail")
+        '    Assert.True(False, "Did not fail.")
         'End Sub
 
     End Class ' TestGetRadiusG
@@ -294,7 +294,7 @@ Namespace GeometryTests
 
         '<InlineData(ChartX, ChartY, ChartRad,      Z0,         B, RadiusB)> ' Model
         <Theory>
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, INF)> ' A: At the short circuit point. Omit - covered by B.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, INF)> ' A: At the short circuit point.
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, INF)> ' C: At the open circuit point on the right.
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, INF)> ' D1: At the center.
         <InlineData(4.0, 5.0, 2.0, 75.0, 0.0000, INF)> ' D75: At the center. Z0=75.
@@ -317,7 +317,7 @@ Namespace GeometryTests
         '<InlineData(4.0, 5.0, 2.0, 1.0, 999, 999)> ' Q: Outside of main circle. Invalid.
         '<InlineData(4.0, 5.0, 2.0, 1.0, 999, 999)> ' R: NormR<=0. Invalid.
         '<InlineData(ChartX, ChartY, ChartRad,      Z0,         B, RadiusB)> ' Model
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, INF)> ' A: At the short circuit point. Omit - covered by B.
+        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, INF)> ' A: At the short circuit point.
         '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, INF)> ' C: At the open circuit point on the right.
         '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, INF)> ' D1: At the center.
         '<InlineData(4.0, 5.0, 2.0, 75.0, 0.0000, INF)> ' D75: At the center. Z0=75.
@@ -338,7 +338,7 @@ Namespace GeometryTests
         '        Assert.True(True)
         '        Exit Sub
         '    End Try
-        '    Assert.True(False, "Did not fail")
+        '    Assert.True(False, "Did not fail.")
         'End Sub
 
     End Class ' TestGetRadiusB
@@ -469,7 +469,7 @@ Namespace GeometryTests
 
         '<InlineData(ChartX, ChartY, ChartRad,      Z0,        R,       X,  PlotX,  PlotY)> ' Model
         <Theory>
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 0.0000, 2.0, 5.0)> ' A: At the short circuit point. Omit - covered by B.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 0.0000, 2.0, 5.0)> ' A: At the short circuit point.
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 1 / 2.0, 2.8, 6.6)> ' B: Anywhere else on the perimeter. R=0.0.
         <InlineData(4.0, 5.0, 2.0, 1.0, -0.0345, 0.4138, 2.5, 6.5)> ' Q: Outside of main circle. Invalid.
         <InlineData(4.0, 5.0, 2.0, 1.0, -2.0, 999, 999, 999)> ' R: NormR<=0. Invalid.
@@ -491,14 +491,14 @@ Namespace GeometryTests
                 Assert.Equal(expectPlotX, GridX, Precision)
                 Assert.Equal(expectPlotY, GridY, Precision)
 
-                Assert.True(False, "Did not fail")
+                Assert.True(False, "Did not fail.")
 
             End Sub)
         End Sub
 
         ''<InlineData(ChartX, ChartY, ChartRad,      Z0,        R,       X,  PlotX,  PlotY)> ' Model
         '<Theory>
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 0.0000, 2.0, 5.0)> ' A: At the short circuit point. Omit - covered by B.
+        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 0.0000, 2.0, 5.0)> ' A: At the short circuit point.
         '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 1 / 2.0, 2.8, 6.6)> ' B: Anywhere else on the perimeter. R=0.0.
         '<InlineData(4.0, 5.0, 2.0, 1.0, -0.0345, 0.4138, 2.5, 6.5)> ' Q: Outside of main circle. Invalid.
         '<InlineData(4.0, 5.0, 2.0, 1.0, -2.0, 999, 999, 999)> ' R: NormR<=0. Invalid.
@@ -519,13 +519,13 @@ Namespace GeometryTests
         '        Assert.Equal(expectPlotX, GridX, Precision)
         '        Assert.Equal(expectPlotY, GridY, Precision)
 
-        '        Assert.True(False, "Did not fail")
+        '        Assert.True(False, "Did not fail.")
 
         '    Catch ex As Exception
         '        Assert.True(True)
         '        Exit Sub
         '    End Try
-        '    Assert.True(False, "Did not fail")
+        '    Assert.True(False, "Did not fail.")
         'End Sub
 
     End Class ' TestGetPlotXY
@@ -581,7 +581,7 @@ Namespace GeometryTests
         '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 1 / 2.0, 2.8, 6.6)> ' B: Anywhere else on the perimeter. R=0.0.
         '<InlineData(ChartX, ChartY, ChartRad,      Z0,        R,       X,  PlotX,  PlotY)> ' Model
         <Theory>
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 0.0000, 2.0, 5.0)> ' A: At the short circuit point. Omit - covered by B.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 0.0000, 2.0, 5.0)> ' A: At the short circuit point.
         <InlineData(4.0, 5.0, 2.0, 1.0, INF, 0.0000, 6.0, 5.0)> ' C: At the open circuit point on the right.
         <InlineData(4.0, 5.0, 2.0, 1.0, -0.0345, 0.4138, 2.5, 6.5)> ' Q: Outside of main circle. Invalid.
         <InlineData(4.0, 5.0, 2.0, 1.0, -2.0, 999, 999, 999)> ' R: NormR<=0. Invalid.
@@ -602,7 +602,7 @@ Namespace GeometryTests
 
         ''<InlineData(ChartX, ChartY, ChartRad,      Z0,        R,       X,  PlotX,  PlotY)> ' Model
         '<Theory>
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 0.0000, 2.0, 5.0)> ' A: At the short circuit point. Omit - covered by B.
+        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 0.0000, 2.0, 5.0)> ' A: At the short circuit point.
         '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 1 / 2.0, 2.8, 6.6)> ' B: Anywhere else on the perimeter. R=0.0.
         '<InlineData(4.0, 5.0, 2.0, 1.0, INF, 0.0000, 6.0, 5.0)> ' C: At the open circuit point on the right.
         '<InlineData(4.0, 5.0, 2.0, 1.0, -0.0345, 0.4138, 2.5, 6.5)> ' Q: Outside of main circle. Invalid.
@@ -622,7 +622,7 @@ Namespace GeometryTests
         '        Assert.True(True)
         '        Exit Sub
         '    End Try
-        '    Assert.True(False, "Did not fail")
+        '    Assert.True(False, "Did not fail.")
 
         'End Sub
 
@@ -674,7 +674,7 @@ Namespace GeometryTests
 
         '<InlineData(ChartX, ChartY, ChartRad,      Z0,       G,        B,  PlotX,  PlotY)> ' Model
         <Theory>
-        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 0.0000, 2.0, 5.0)> ' A: At the short circuit point. Omit - covered by B.
+        <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 0.0000, 2.0, 5.0)> ' A: At the short circuit point.
         <InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 0.0000, 6.0, 5.0)> ' C: At the open circuit point on the right.
         <InlineData(4.0, 5.0, 2.0, 1.0, 999, 999, 2.5, 6.5)> ' Q: Outside of main circle. Invalid.
         <InlineData(4.0, 5.0, 2.0, 1.0, 999, 999, 999, 999)> ' R: NormR<=0. Invalid.
@@ -696,7 +696,7 @@ Namespace GeometryTests
 
         ''<InlineData(ChartX, ChartY, ChartRad,      Z0,       G,        B,  PlotX,  PlotY)> ' Model
         '<Theory>
-        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 0.0000, 2.0, 5.0)> ' A: At the short circuit point. Omit - covered by B.
+        '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 0.0000, 2.0, 5.0)> ' A: At the short circuit point.
         '<InlineData(4.0, 5.0, 2.0, 1.0, 0.0000, 0.0000, 6.0, 5.0)> ' C: At the open circuit point on the right.
         '<InlineData(4.0, 5.0, 2.0, 1.0, 999, 999, 2.5, 6.5)> ' Q: Outside of main circle. Invalid.
         '<InlineData(4.0, 5.0, 2.0, 1.0, 999, 999, 999, 999)> ' R: NormR<=0. Invalid.
@@ -715,7 +715,7 @@ Namespace GeometryTests
         '        Assert.True(True)
         '        Exit Sub
         '    End Try
-        '    Assert.True(False, "Did not fail")
+        '    Assert.True(False, "Did not fail.")
         'End Sub
 
     End Class ' TestGetYFromPlot
