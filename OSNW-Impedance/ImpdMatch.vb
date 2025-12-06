@@ -635,8 +635,8 @@ Partial Public Structure Impedance
 
         ' Test data C: At the open circuit point on the right.
         ' Test data D: At the center.
-        ' Test data E: On R=Z0 circle, above resonance line. Only needs reactance.
-        ' Test data F: On R=Z0 circle, below resonance line. Only needs reactance.
+        ' Test data E: On R=Z0 circle, above resonance line.
+        ' Test data F: On R=Z0 circle, below resonance line.
 
         Dim CurrentX As System.Double = Me.Reactance
         If Impedance.EqualEnoughZero(CurrentX, Impedance.IMPDTOLERANCE0 * z0) Then
@@ -709,8 +709,8 @@ Partial Public Structure Impedance
 
         ' A: At the short circuit point.
         ' D: At the center.
-        ' J: On G=Y0 circle, above resonance line. Only needs reactance.
-        ' K: On G=Y0 circle, below resonance line. Only needs reactance.
+        ' J: On G=Y0 circle, above resonance line.
+        ' K: On G=Y0 circle, below resonance line.
 
         Dim CurrentB As System.Double = Me.ToAdmittance().Susceptance
         If Impedance.EqualEnoughZero(
@@ -1766,8 +1766,8 @@ Partial Public Structure Impedance
         ' D1: At the center.
         ' On the R=Z0 circle.
         '     Omit: On the resonance line. Already covered by C or D.
-        '     E: On R=Z0 circle, above resonance line. Only needs reactance.
-        '     F: On R=Z0 circle, below resonance line. Only needs reactance.
+        '     E: On R=Z0 circle, above resonance line.
+        '     F: On R=Z0 circle, below resonance line.
         ' Inside the R=Z0 circle. Two choices: CW or CCW on the G-circle.
         '     G1: Inside R=Z0 circle, above resonance line.
         '     G50: Inside R=Z0 circle, above resonance line. Z0=50.
@@ -1775,8 +1775,8 @@ Partial Public Structure Impedance
         '     I1: Inside R=Z0 circle, below resonance line.
         ' On the G=Y0 circle.
         '     Omit: On the resonance line. Already either A or D.
-        '     J: On G=Y0 circle, above resonance line. Only needs reactance.
-        '     K: On G=Y0 circle, below resonance line. Only needs reactance.
+        '     J: On G=Y0 circle, above resonance line.
+        '     K: On G=Y0 circle, below resonance line.
         ' Inside the G=Y0 circle. Two choices: CW or CCW on the R-circle.
         '     L1: Inside G=Y0 circle, above resonance line.
         '     L75: Inside G=Y0 circle, above resonance line. Z0=75.
@@ -1825,8 +1825,8 @@ Partial Public Structure Impedance
         If CurrentR >= Z0 Then
             ' On the R=Z0 circle.
             '     Omit: On the resonance line. Already covered by C or D.
-            '     E: On R=Z0 circle, above resonance line. Only needs reactance.
-            '     F: On R=Z0 circle, below resonance line. Only needs reactance.
+            '     E: On R=Z0 circle, above resonance line.
+            '     F: On R=Z0 circle, below resonance line.
             ' Inside the R=Z0 circle. Two choices: CW or CCW on the G-circle.
             '     G1: Inside R=Z0 circle, above resonance line.
             '     G50: Inside R=Z0 circle, above resonance line. Z0=50.
@@ -1840,8 +1840,8 @@ Partial Public Structure Impedance
         ElseIf CurrentG >= 1.0 Then
             ' On the G=Y0 circle.
             '     Omit: On the resonance line. Already covered by A or D.
-            '     J: On G=Y0 circle, above resonance line. Only needs reactance.
-            '     K: On G=Y0 circle, below resonance line. Only needs reactance.
+            '     J: On G=Y0 circle, above resonance line.
+            '     K: On G=Y0 circle, below resonance line.
             ' Inside the G=Y0 circle. Two choices: CW or CCW on the R-circle.
             '     L1: Inside G=Y0 circle, above resonance line.
             '     L75: Inside G=Y0 circle, above resonance line. Z0=75.

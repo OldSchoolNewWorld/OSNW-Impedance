@@ -15,8 +15,8 @@ Imports Xunit
 ' D: At the center.
 ' On the R=Z0 circle.
 '   On R=Z0 circle, on the resonance line. Already covered by C or D.
-'   E1: On R=Z0 circle, above resonance line. Only needs reactance.
-'   F1: On R=Z0 circle, below resonance line. Only needs reactance.
+'   E1: On R=Z0 circle, above resonance line.
+'   F1: On R=Z0 circle, below resonance line.
 ' Inside the R=Z0 circle. Two choices: CW or CCW on the G-circle.
 '   G1: Inside R=Z0 circle, above resonance line.
 '   G50: Inside R=Z0 circle, above resonance line. Z0=50.
@@ -24,8 +24,8 @@ Imports Xunit
 '   I1: Inside R=Z0 circle, below resonance line.
 ' On the G=Y0 circle.
 '   On G=Y0 circle, on resonance line. Omit - already either A or D.
-'   J1: On G=Y0 circle, above resonance line. Only needs reactance.
-'   K1: On G=Y0 circle, below resonance line. Only needs reactance.
+'   J1: On G=Y0 circle, above resonance line.
+'   K1: On G=Y0 circle, below resonance line.
 ' Inside the G=Y0 circle. Two choices: CW or CCW on the R-circle.
 ' L1: Inside G=Y0 circle, above resonance line.
 ' L75: Inside G=Y0 circle, above resonance line. Z0=75.
@@ -116,13 +116,13 @@ Namespace TrySelectMatchLayoutTests
     Public Class TestTrySelectMatchLayoutEF
         ' On the R=Z0 circle.
         ' On R=Z0 circle, on the resonance line. Already covered by C or D.
-        ' E: On R=Z0 circle, above resonance line. Only needs reactance.
-        ' F: On R=Z0 circle, below resonance line. Only needs reactance.
+        ' E: On R=Z0 circle, above resonance line.
+        ' F: On R=Z0 circle, below resonance line.
 
         '<InlineData(    Z0,        R,       X)> ' Model
         <Theory>
-        <InlineData(1.0, 1.0, 1.0)> ' E1: On R=Z0 circle, above resonance line. Only needs reactance.
-        <InlineData(50.0, 50.0, 50.0)> ' E50: On R=Z0 circle, above resonance line. Only needs reactance.
+        <InlineData(1.0, 1.0, 1.0)> ' E1: On R=Z0 circle, above resonance line.
+        <InlineData(50.0, 50.0, 50.0)> ' E50: On R=Z0 circle, above resonance line.
         Public Sub TrySelectMatch_PositionE_Succeeds(z0 As Double, r As Double, x As Double)
 
             Dim MainCirc As New SmithMainCircle(4.0, 5.0, 4.0, z0) ' Test data.
@@ -146,8 +146,8 @@ Namespace TrySelectMatchLayoutTests
 
         '<InlineData(    Z0,        R,       X)> ' Model
         <Theory>
-        <InlineData(1.0, 1.0, -2.0)> ' F1: On R=Z0 circle, below resonance line. Only needs reactance.
-        <InlineData(50.0, 50.0, -100.0)> ' F50: On R=Z0 circle, below resonance line. Only needs reactance.
+        <InlineData(1.0, 1.0, -2.0)> ' F1: On R=Z0 circle, below resonance line.
+        <InlineData(50.0, 50.0, -100.0)> ' F50: On R=Z0 circle, below resonance line.
         Public Sub TrySelectMatch_PositionF_Succeeds(z0 As Double, r As Double, x As Double)
 
             Dim MainCirc As New SmithMainCircle(4.0, 5.0, 4.0, z0) ' Test data.
@@ -174,13 +174,13 @@ Namespace TrySelectMatchLayoutTests
     Public Class TestTrySelectMatchLayoutJK
         ' On the G=Y0 circle.
         ' On G=Y0 circle, on resonance line. Omit - already either A or D.
-        ' J1: On G=Y0 circle, above resonance line. Only needs reactance.
-        ' K1: On G=Y0 circle, below resonance line. Only needs reactance.
+        ' J1: On G=Y0 circle, above resonance line.
+        ' K1: On G=Y0 circle, below resonance line.
 
         '<InlineData(    Z0,      G,       B)> ' Model
         <Theory>
-        <InlineData(1.0, 1.0, -1.0)> ' J1: On G=Y0 circle, above resonance line. Only needs reactance.
-        <InlineData(50.0, 0.02, -0.02)> ' J50: On G=Y0 circle, above resonance line. Only needs reactance.
+        <InlineData(1.0, 1.0, -1.0)> ' J1: On G=Y0 circle, above resonance line.
+        <InlineData(50.0, 0.02, -0.02)> ' J50: On G=Y0 circle, above resonance line.
         Public Sub TrySelectMatch_PositionJ_Succeeds(z0 As Double, g As Double, b As Double)
 
             Dim MainCirc As New SmithMainCircle(4.0, 5.0, 4.0, z0) ' Test data.
@@ -205,8 +205,8 @@ Namespace TrySelectMatchLayoutTests
 
         '<InlineData(    Z0,      G,       B)> ' Model
         <Theory>
-        <InlineData(1.0, 1.0, 1.0)> ' K1: On G=Y0 circle, below resonance line. Only needs reactance.
-        <InlineData(50.0, 0.02, 0.02)> ' K50: On G=Y0 circle, below resonance line. Only needs reactance.
+        <InlineData(1.0, 1.0, 1.0)> ' K1: On G=Y0 circle, below resonance line.
+        <InlineData(50.0, 0.02, 0.02)> ' K50: On G=Y0 circle, below resonance line.
         Public Sub TrySelectMatch_PositionK_Succeeds(z0 As Double, g As Double, b As Double)
 
             Dim MainCirc As New SmithMainCircle(4.0, 5.0, 4.0, z0) ' Test data.
@@ -368,20 +368,20 @@ Namespace MatchArbitraryTests
         <Theory>
         <InlineData(1.0, 1.0, 0.0000)> ' D1: At the center.
         <InlineData(75.0, 75.0, 0.0000)> ' D75: At the center. Z0=75.
-        <InlineData(1.0, 1.0, 1.0)> ' E1: On R=Z0 circle, above resonance line. Only needs reactance.
-        <InlineData(50.0, 50.0, 50.0)> ' E50: On R=Z0 circle, above resonance line. Only needs reactance. Z0=50.
-        <InlineData(1.0, 1.0, -2.0)> ' F1: On R=Z0 circle, below resonance line. Only needs reactance.
-        <InlineData(50.0, 50.0, -100.0)> ' F50: On R=Z0 circle, below resonance line. Only needs reactance. Z0=50.
+        <InlineData(1.0, 1.0, 1.0)> ' E1: On R=Z0 circle, above resonance line.
+        <InlineData(50.0, 50.0, 50.0)> ' E50: On R=Z0 circle, above resonance line. Z0=50.
+        <InlineData(1.0, 1.0, -2.0)> ' F1: On R=Z0 circle, below resonance line.
+        <InlineData(50.0, 50.0, -100.0)> ' F50: On R=Z0 circle, below resonance line. Z0=50.
         <InlineData(1.0, 2.0, 1 / 2.0)> ' G1: Inside R=Z0 circle, above resonance line.
         <InlineData(50.0, 100.0, 25.0)> ' G50: Inside R=Z0 circle, above resonance line. Z0=50.
         <InlineData(1.0, 3.0, 0.0000)> ' H1: Inside R=Z0 circle, on line.
         <InlineData(50.0, 150.0, 0.0000)> ' H50: Inside R=Z0 circle, on line. Z0=50.
         <InlineData(1.0, 2.0, -2.0)> ' I1: Inside R=Z0 circle, below resonance line.
         <InlineData(50.0, 100.0, -100.0)> ' I50: Inside R=Z0 circle, below resonance line. Z0=50.
-        <InlineData(1.0, 1 / 2.0, 1 / 2.0)> ' J1: On G=Y0 circle, above resonance line. Only needs reactance.
-        <InlineData(50.0, 25.0, 25.0)> ' J50: On G=Y0 circle, above resonance line. Only needs reactance. Z0=50.
-        <InlineData(1.0, 1 / 2.0, -1 / 2.0)> ' K1: On G=Y0 circle, below resonance line. Only needs reactance.
-        <InlineData(50.0, 25.0, -25.0)> ' K50: On G=Y0 circle, below resonance line. Only needs reactance. Z0=50.
+        <InlineData(1.0, 1 / 2.0, 1 / 2.0)> ' J1: On G=Y0 circle, above resonance line.
+        <InlineData(50.0, 25.0, 25.0)> ' J50: On G=Y0 circle, above resonance line. Z0=50.
+        <InlineData(1.0, 1 / 2.0, -1 / 2.0)> ' K1: On G=Y0 circle, below resonance line.
+        <InlineData(50.0, 25.0, -25.0)> ' K50: On G=Y0 circle, below resonance line. Z0=50.
         <InlineData(1.0, 1 / 3.0, 1 / 3.0)> ' L1: Inside G=Y0 circle, above resonance line.
         <InlineData(75.0, 25.0, 25.0)> ' L75: Inside G=Y0 circle, above resonance line. Z0=75.
         <InlineData(1.0, 1 / 3.0, 0.0000)> ' M1: Inside G=Y0 circle, on line.

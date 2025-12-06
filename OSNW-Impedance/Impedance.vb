@@ -99,17 +99,36 @@ Public Structure Impedance
     Public Const MSGUEEZ As System.String = MSGCHZV & " Use EqualEnoughZero()."
     Public Const MSGTDNRT As String = " transformation did not reach target."
 
-    ' These set practical limits on the precision of equality in mathematical
-    ' operations ralated to impedances. They are intended to prevent issues
-    ' arising from floating point precision limitations. This should account for
-    ' practical applications where component values have limited precision.
+    ''' <summary>
+    ''' This sets a practical limit on the precision of equality detection in
+    ''' mathematical operations related to impedances. It is intended to prevent
+    ''' issues arising from floating point precision limitations. This should
+    ''' account for practical applications where capacitor, inductor, or
+    ''' resistor component values have limited precision. A smaller value
+    ''' DEcreases the liklihood of detecting equality; a larger value INcreases
+    ''' the liklihood of detecting equality.
+    ''' </summary>
     Const IMPDTOLERANCE As System.Double = 0.000001
+
+    ''' <summary>
+    ''' This sets a practical limit on the precision of zero detection in
+    ''' mathematical operations related to impedances. It is intended to prevent
+    ''' issues arising from floating point precision limitations. This should
+    ''' account for practical applications where capacitor, inductor, or
+    ''' resistor component values have limited precision. A smaller value
+    ''' DEcreases the liklihood of zero detection; a larger value INcreases the
+    ''' liklihood of zero detection.
+    ''' </summary>
     Const IMPDTOLERANCE0 As System.Double = 0.000001
 
-    ' This sets a practical limit on the precision of equality in graphical
-    ' operations. It is intended to prevent issues arising from floating point
-    ' precision limitations. This should account for indistinguishable sub-pixel
-    ' differences on any current monitor or printer.
+    ''' <summary>
+    ''' This sets a practical limit on the precision of equality detection in
+    ''' graphics operations. It is intended to prevent issues arising from
+    ''' floating point precision limitations. This should account for
+    ''' indistinguishable, sub-pixel, differences on any current monitor or
+    ''' printer. A smaller value DEcreases the liklihood of detecting equality;
+    ''' a larger value INcreases the liklihood of detecting equality.
+    ''' </summary>
     Const GRAPHICTOLERANCE As System.Double = 0.0001
 
 #Region "Fields and Properties"
