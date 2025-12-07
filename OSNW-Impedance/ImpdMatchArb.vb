@@ -184,11 +184,11 @@ Partial Public Structure Impedance
                 loadZ.ToAdmittance.Susceptance
             With Trans
                 If DeltaB < 0.0 Then
-                    ' CW on a G-circle needs a shunt capacitor.
-                    .Style = TransformationStyles.ShuntCap
-                Else
                     ' CCW on a G-circle needs a shunt inductor.
                     .Style = TransformationStyles.ShuntInd
+                Else
+                    ' CW on a G-circle needs a shunt capacitor.
+                    .Style = TransformationStyles.ShuntCap
                 End If
                 DeltaX = New Admittance(0.0, DeltaB).ToImpedance.Reactance
                 .Value1 = DeltaX
@@ -318,90 +318,78 @@ Partial Public Structure Impedance
             Return True
         End If
 
-        ' Only if the relevant circles intersect, try each geometric approach to
-        ' finding a match.
+        ' Try each geometric approach to finding a match.
+        '        Dim Intersections _
+        '            As New System.Collections.Generic.List(Of OSNW.Numerics.PointD)
         Dim Intersections _
-            As New System.Collections.Generic.List(Of OSNW.Numerics.PointD)
+            As System.Collections.Generic.List(Of OSNW.Numerics.PointD)
 
         ' Try first on a G-circle, then on an R-circle.
         Dim LoadCircG As New GCircle(mainCirc, loadZ.ToAdmittance().Conductance)
         Dim SourceCircR As New RCircle(mainCirc, SourceR)
-        If GenericCircle.CirclesIntersect(
-            LoadCircG, SourceCircR, Intersections) Then
+        Intersections = LoadCircG.GetIntersections(SourceCircR)
 
-            ' The circles intersect. That is not useful at the perimeter.
-            If Intersections.Count.Equals(1) AndAlso
-             Impedance.EqualEnough(Intersections(0).X, mainCirc.GridLeftEdgeX,
-                                   mainCirc.GridRadius * GRAPHICTOLERANCE) Then
+        ' There are now either one or two intersection points. With one, the
+        ' circles are tangent at a point on the resonance line. With two, there
+        ' is one above, and one below, the resonance line; the X values match;
+        ' the Y values are the same distance above and below the resonance line.
 
-                ' They intersect at the perimeter. No update to transformations.
-                Return True
+        For Each OneIntersection As OSNW.Numerics.PointD In Intersections
+
+            If Not MatchArbFirstOnG(mainCirc, OneIntersection, loadZ, sourceZ,
+                                    transformations) Then
+
+                Return False
             End If
 
-            ' There are now either one or two intersection points. With one, the
-            ' circles are tangent at a point on the resonance line. With two,
-            ' there is one above, and one below, the resonance line; the X
-            ' values match; the Y values are the same distance above and below
-            ' the resonance line.
-
-            For Each OneIntersection As OSNW.Numerics.PointD In Intersections
-                If Not MatchArbFirstOnG(mainCirc, OneIntersection,
-                                        loadZ, sourceZ, transformations) Then
-
+            ' THESE TESTS CAN BE DELETED OR SUPPRESSED AFTER ALL WORKS OK.
+            For Each OneTrans As Transformation In transformations
+                If Not loadZ.ValidateTransformation(mainCirc, sourceZ, OneTrans) Then
                     Return False
                 End If
             Next
 
-        End If
+        Next
 
         ' Try first on an R-circle, then on a G-circle.
         Dim LoadCircR As New RCircle(mainCirc, LoadR)
-        Dim SourceCircG As New GCircle(mainCirc,
-                                       sourceZ.ToAdmittance().Conductance)
-        If GenericCircle.CirclesIntersect(
-            LoadCircR, SourceCircG, Intersections) Then
+        Dim SourceCircG As New GCircle(
+            mainCirc, sourceZ.ToAdmittance().Conductance)
+        Intersections = LoadCircR.GetIntersections(SourceCircG)
 
-            ' The circles intersect. That is not useful at the perimeter.
-            If Intersections.Count.Equals(1) AndAlso
-                Impedance.EqualEnough(
-                    Intersections(0).X, mainCirc.GridRightEdgeX,
-                    mainCirc.GridRadius * GRAPHICTOLERANCE) Then
+        ' There are now either one or two intersection points. With one, the
+        ' circles are tangent at a point on the resonance line. With two, there
+        ' is one above, and one below, the resonance line; the X values match;
+        ' the Y values are the same distance above and below the resonance line.
 
-                ' They intersect at the perimeter. No update to transformations.
-                Return True
+        For Each OneIntersection As OSNW.Numerics.PointD In Intersections
+
+            If Not MatchArbFirstOnR(mainCirc, OneIntersection, loadZ, sourceZ,
+                                    transformations) Then
+
+                Return False
             End If
 
-            ' There are now either one or two intersection points. With one, the
-            ' circles are tangent at a point on the resonance line. With two,
-            ' there is one above, and one below, the resonance line; the X
-            ' values match; the Y values are the same distance above and below
-            ' the resonance line.
-
-            For Each OneIntersection As OSNW.Numerics.PointD In Intersections
-
-                If Not MatchArbFirstOnR(mainCirc, OneIntersection,
-                                        loadZ, sourceZ, transformations) Then
-
+            ' THESE TESTS CAN BE DELETED OR SUPPRESSED AFTER ALL WORKS OK.
+            For Each OneTrans As Transformation In transformations
+                If Not loadZ.ValidateTransformation(mainCirc, sourceZ, OneTrans) Then
                     Return False
                 End If
-
-                ' THESE TESTS CAN BE DELETED OR SUPPRESSED AFTER ALL WORKS OK.
-                For Each OneTrans As Transformation In transformations
-                    If Not loadZ.ValidateTransformation(mainCirc, sourceZ, OneTrans) Then
-                        Return False
-                    End If
-                Next
-
             Next
 
-        End If
+        Next
+
+        ' THESE TESTS CAN BE DELETED OR SUPPRESSED AFTER ALL WORKS OK.
+        For Each OneTrans As Transformation In transformations
+            If Not loadZ.ValidateTransformation(mainCirc, sourceZ, OneTrans) Then
+                Return False
+            End If
+        Next
 
         ' On getting this far,
-        ' THIS CALL CAN BE DELETED OR SUPPRESSED AFTER ALL WORKS OK.
         Return True
 
     End Function ' MatchArbitrary
-
     ''' <summary>
     ''' Attempts to obtain a conjugate match from the specified load
     ''' <c>Impedance</c> to the specified arbitrary source <c>Impedance</c> in a
