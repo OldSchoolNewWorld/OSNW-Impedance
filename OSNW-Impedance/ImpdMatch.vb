@@ -35,17 +35,17 @@ Option Infer Off
 ' http://www.antenna-theory.com/tutorial/smith/chart.php
 
 '              Component impact
-' A series inductor moves CW on an R-circle.
-' A shunt inductor moves CCW on a G-circle.
-' A series capacitor moves CCW on an R-circle.
-' A shunt capacitor moves CW on a G-circle.
+' A series inductor moves CW on an R-circler, increasing X..
+' A shunt inductor moves CCW on a G-circle, increasing B.
+' A series capacitor moves CCW on an R-circle, decreasing X.
+' A shunt capacitor moves CW on a G-circle, decreasing B.
 
 '             Component selection
-' To go | On a     | Use a
-' CW    | R-circle | series inductor
-' CW    | G-circle | shunt capacitor
-' CCW   | R-circle | series capacitor
-' CCW   | G-circle | shunt inductor
+' To go | On a(n)  | Use a
+' CW    | R-circle | series inductor, increasing X.
+' CW    | G-circle | shunt capacitor, increasing B.
+' CCW   | R-circle | series capacitor, decreasing X.
+' CCW   | G-circle | shunt inductor, decreasing B.
 
 ''' <summary>
 ''' Represents the circuit layout to be used to match a load impedance to a
