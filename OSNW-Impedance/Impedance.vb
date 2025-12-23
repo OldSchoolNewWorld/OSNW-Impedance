@@ -84,6 +84,7 @@ Public Structure Impedance
 
     Public Const PI As System.Double = System.Double.Pi
     Public Const HALFPI As System.Double = System.Double.Pi / 2.0
+    Public Const BADIMPDVALUE As System.Double = 99999.999
 
     Public Const MSGCHNV As System.String = "Cannot have a negative value."
     Public Const MSGCHZV As System.String = "Cannot have a zero value."

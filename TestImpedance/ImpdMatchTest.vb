@@ -476,8 +476,6 @@ Namespace MatchArbitrary1Tests
 
 End Namespace ' MatchArbitrary1Tests
 
-
-'=====================================
 Namespace MatchArbitrary2Tests
 
     Public Class TestMatchArbitrary2_UnlikelyZ0

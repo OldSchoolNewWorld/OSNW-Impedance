@@ -680,8 +680,7 @@ Partial Public Structure Impedance
         ''' <param name="capacity">xxxxxxxxxx</param>
         Public Sub New(capacity As Integer)
             MyBase.New(capacity)
-            '            Me._count = capacity
-            Dim BadImpedance As New Impedance(999.99, 999.99)
+            Dim BadImpedance As New Impedance(BADIMPDVALUE, BADIMPDVALUE)
             For i As System.Int32 = 0 To capacity - 1
                 Me.Add(BadImpedance)
             Next
@@ -844,55 +843,46 @@ Partial Public Structure Impedance
 
     End Function ' TryLoadImageImpedancesList2
 
-    '''' <summary>
-    '''' Attempts to obtain a conjugate match from the specified load
-    '''' <c>Impedance</c> to the specified arbitrary source <c>Impedance</c>, on
-    '''' the specified <c>SmithMainCircle</c>.
-    '''' This method attempts to find a match by first moving, on a G-circle,
-    '''' from the load impedance to an image impedance at a specified Cartesian
-    '''' coordinate, then moving, on an R-circle, from the image impedance to the
-    '''' source impedance.
-    '''' </summary>
-    '''' <param name="mainCirc">Specifies a <c>SmithMainCircle</c> in which the
-    '''' match is to be made.</param>
-    '''' <param name="oneIntersection">Specifies the Cartesian coordinate of the
-    '''' image impedance.</param>
-    '''' <param name="loadZ">Specifies the <c>Impedance</c> to match to
-    '''' <paramref name="sourceZ"/>.</param>
-    '''' <param name="sourceZ">Specifies the <c>Impedance</c> to which
-    '''' <paramref name="loadZ"/> should be matched.</param>
-    '''' <param name="transformations">Specifies an array of
-    '''' <see cref="Transformation"/>s that can be used to match a load
-    '''' <c>Impedance</c> to a source <c>Impedance</c>.</param>
-    '''' <returns> Returns <c>True</c> if the process succeeds; otherwise,
-    '''' <c>False</c>. Also returns, by reference in
-    '''' <paramref name="transformations"/>, the components to construct the
-    '''' match.</returns>
     ''' <summary>
-    ''' 
+    ''' Attempts to obtain a conjugate match from the specified load
+    ''' <c>Impedance</c> to the specified arbitrary source <c>Impedance</c>, in
+    ''' a system with the specified characteristic impedance.
     ''' </summary>
-    ''' <param name="mainCirc">xxxxxxxxxx</param>
-    ''' <param name="oneImage">xxxxxxxxxx</param>
-    ''' <param name="loadZ">xxxxxxxxxx</param>
-    ''' <param name="sourceZ">xxxxxxxxxx</param>
-    ''' <param name="transformations">xxxxxxxxxx</param>
-    ''' <returns>xxxxxxxxxx</returns>
-    Public Shared Function MatchArbFirstOnG2(ByVal mainCirc As SmithMainCircle,
+    ''' <param name="z0">Specifies the characteristic impedance of the
+    ''' system.</param>
+    ''' <param name="oneImage">Specifies the image impedance to be used in the
+    ''' process.</param>
+    ''' <param name="loadZ">Specifies the <c>Impedance</c> to match to
+    ''' <paramref name="sourceZ"/>.</param>
+    ''' <param name="sourceZ">Specifies the <c>Impedance</c> to which
+    ''' <paramref name="loadZ"/> should be matched.</param>
+    ''' <param name="transformations">Specifies an array of
+    ''' <see cref="Transformation"/>s that can be used to match a load
+    ''' <c>Impedance</c> to a source <c>Impedance</c>.</param>
+    ''' <returns> Returns <c>True</c> if the process succeeds; otherwise,
+    ''' <c>False</c>. Also returns, by reference in
+    ''' <paramref name="transformations"/>, the components to construct the
+    ''' match.</returns>
+    ''' <remarks>
+    ''' This method is analogous to solutions done on a Smith Chart, which
+    ''' attempts to find a match by first moving, on a G-circle, from the load
+    ''' impedance to an image impedance, then moving, on an R-circle, from the
+    ''' image impedance to the source impedance.
+    ''' </remarks>
+    ''' 
+    '''
+    Public Shared Function MatchArbFirstOnG2(ByVal z0 As System.Double,
         ByVal oneImage As Impedance,
         ByVal loadZ As Impedance, ByVal sourceZ As Impedance,
         ByRef transformations As Transformation()) _
         As System.Boolean
 
-        '        ' Find out about the intersection/image impedance.
-        '        Dim ImagePD As PlotDetails =
-        '            mainCirc.GetDetailsFromPlot(oneImage.X, oneImage.Y)
-
         Dim CurrTransCount As System.Int32 = transformations.Length
         Dim Trans As New Transformation
 
-        ' The intended process is to create an L-section. The first move is on
-        ' the LoadG-circle, from the load impedance to the image impedance
-        ' and the second move is on the SourceR-circle, from the image
+        ' The intended process is to create an L-section. The (emulated) first
+        ' move is on the LoadG-circle, from the load impedance to the image
+        ' impedance and the second move is on the SourceR-circle, from the image
         ' impedance to the source impedance.
 
         ' If the load susceptance already matches the image susceptance, no
@@ -900,7 +890,7 @@ Partial Public Structure Impedance
         Dim ImageB As System.Double = oneImage.ToAdmittance.Susceptance
         Dim LoadB As System.Double = loadZ.ToAdmittance.Susceptance
         Dim DeltaX As System.Double
-        If EqualEnoughZero(ImageB - LoadB, IMPDTOLERANCE0 * mainCirc.Z0) Then
+        If EqualEnoughZero(ImageB - LoadB, IMPDTOLERANCE0 * z0) Then
 
             ' Move only on the SourceR-circle.
             DeltaX = sourceZ.Reactance - loadZ.Reactance
@@ -971,56 +961,37 @@ Partial Public Structure Impedance
 
     End Function ' MatchArbFirstOnG2
 
-    '''' <summary>
-    '''' Attempts to obtain a conjugate match from the specified load
-    '''' <c>Impedance</c> to the specified arbitrary source <c>Impedance</c>, on
-    '''' the specified <c>SmithMainCircle</c>.
-    '''' This method attempts to find a match by first moving, on an R-circle,
-    '''' from the load impedance to an image impedance at a specified Cartesian
-    '''' coordinate, then moving, on a G-circle, from the image impedance to the
-    '''' source impedance.
-    '''' </summary>
-    '''' <param name="mainCirc">Specifies a <c>SmithMainCircle</c> in which the
-    '''' match is to be made.</param>
-    '''' <param name="oneIntersection">Specifies the Cartesian coordinate of the
-    '''' image impedance.</param>
-    '''' <param name="loadZ">Specifies the <c>Impedance</c> to match to
-    '''' <paramref name="sourceZ"/>.</param>
-    '''' <param name="sourceZ">Specifies the <c>Impedance</c> to which
-    '''' <paramref name="loadZ"/> should be matched.</param>
-    '''' <param name="transformations">Specifies an array of
-    '''' <see cref="Transformation"/>s that can be used to match a load
-    '''' <c>Impedance</c> to a source <c>Impedance</c>.</param>
-    '''' <returns> Returns <c>True</c> if the process succeeds; otherwise,
-    '''' <c>False</c>. Also returns, by reference in
-    '''' <paramref name="transformations"/>, the components to construct the
-    '''' match.</returns>
-    '''' 
-    '''' 
-    '''' 
     ''' <summary>
-    ''' 
+    ''' Attempts to obtain a conjugate match from the specified load
+    ''' <c>Impedance</c> to the specified arbitrary source <c>Impedance</c>, in
+    ''' a system with the specified characteristic impedance.
     ''' </summary>
-    ''' <param name="mainCirc"></param>
-    ''' <param name="oneImage"></param>
-    ''' <param name="loadZ"></param>
-    ''' <param name="sourceZ"></param>
-    ''' <param name="transformations"></param>
-    ''' <returns></returns>
-    Public Shared Function MatchArbFirstOnR2(ByVal mainCirc As SmithMainCircle,
+    ''' <param name="z0">Specifies the characteristic impedance of the
+    ''' system.</param>
+    ''' <param name="oneImage">Specifies the image impedance to be used in the
+    ''' process.</param>
+    ''' <param name="loadZ">Specifies the <c>Impedance</c> to match to
+    ''' <paramref name="sourceZ"/>.</param>
+    ''' <param name="sourceZ">Specifies the <c>Impedance</c> to which
+    ''' <paramref name="loadZ"/> should be matched.</param>
+    ''' <param name="transformations">Specifies an array of
+    ''' <see cref="Transformation"/>s that can be used to match a load
+    ''' <c>Impedance</c> to a source <c>Impedance</c>.</param>
+    ''' <returns> Returns <c>True</c> if the process succeeds; otherwise,
+    ''' <c>False</c>. Also returns, by reference in
+    ''' <paramref name="transformations"/>, the components to construct the
+    ''' match.</returns>
+    ''' <remarks>
+    ''' This method is analogous to solutions done on a Smith Chart, which
+    ''' attempts to find a match by first moving, on an R-circle, from the load
+    ''' impedance to an image impedance, then moving, on a G-circle, from the
+    ''' image impedance to the source impedance.
+    ''' </remarks>
+    Public Shared Function MatchArbFirstOnR2(ByVal z0 As System.Double,
         ByVal oneImage As Impedance,
         ByVal loadZ As Impedance, ByVal sourceZ As Impedance,
         ByRef transformations As Transformation()) _
         As System.Boolean
-
-
-
-
-
-
-        '        ' Find out about the intersection/image impedance.
-        '        Dim ImagePD As PlotDetails =
-        '            mainCirc.GetDetailsFromPlot(oneIntersection.X, oneIntersection.Y)
 
         Dim CurrTransCount As System.Int32 = transformations.Length
         Dim Trans As New Transformation
@@ -1036,7 +1007,7 @@ Partial Public Structure Impedance
         Dim LoadX As System.Double = loadZ.Reactance
         Dim DeltaB As System.Double
         Dim DeltaX As System.Double
-        If EqualEnoughZero(ImageX - LoadX, IMPDTOLERANCE0 * mainCirc.Z0) Then
+        If EqualEnoughZero(ImageX - LoadX, IMPDTOLERANCE0 * z0) Then
 
             ' Move only on the SourceG-circle.
             DeltaB = sourceZ.ToAdmittance.Susceptance -
@@ -1136,8 +1107,8 @@ Partial Public Structure Impedance
         ByRef transformations As Transformation()) _
         As System.Boolean
 
-        ' REF: Smith Chart Full Presentation, page 26 shows a geometric
-        ' approach to finding a match.
+        ' REF: Smith Chart Full Presentation, page 26 shows a geometric approach
+        ' to finding a match.
         ' https://amris.mbi.ufl.edu/wordpress/files/2021/01/SmithChart_FullPresentation.pdf
 
         'xxxxxxxxxxxxxx
@@ -1186,68 +1157,43 @@ Partial Public Structure Impedance
             Return False
         End If
 
-        ' There are now four image impedances. THEY MAY NOT ALL BE UNIQUE? SOME
-        ' MAY INDICATE NO INTERSECTION?
-
+        ' There are now four image impedances. Some may indicate no
+        ' intersection. THEY MAY NOT ALL BE UNIQUE?
         ' Try each image impedance in turn.
-        Dim BadImpedance As New Impedance(999.99, 999.99)
-        If Not Impedance.EqualEnough(mainCirc.Z0, BadImpedance, ImageImpedances(0)) Then
-            If Not MatchArbFirstOnG2(mainCirc, ImageImpedances(0), loadZ, sourceZ,
-                                transformations) Then
+        Dim BadImpedance As New Impedance(BADIMPDVALUE, BADIMPDVALUE)
+        Dim MainZ0 As System.Double = mainCirc.Z0
+        If Not Impedance.EqualEnough(MainZ0, BadImpedance,
+                                     ImageImpedances(0)) Then
+            If Not MatchArbFirstOnG2(MainZ0, ImageImpedances(0), loadZ,
+                                     sourceZ, transformations) Then
 
                 Return False
             End If
         End If
-        If Not Impedance.EqualEnough(mainCirc.Z0, BadImpedance, ImageImpedances(1)) Then
-            If Not MatchArbFirstOnG2(mainCirc, ImageImpedances(1), loadZ, sourceZ,
-                                    transformations) Then
+        If Not Impedance.EqualEnough(MainZ0, BadImpedance,
+                                     ImageImpedances(1)) Then
+            If Not MatchArbFirstOnG2(MainZ0, ImageImpedances(1), loadZ,
+                                     sourceZ, transformations) Then
 
                 Return False
             End If
         End If
-        If Not Impedance.EqualEnough(mainCirc.Z0, BadImpedance, ImageImpedances(2)) Then
-            If Not MatchArbFirstOnR2(mainCirc, ImageImpedances(2), loadZ, sourceZ,
-                                      transformations) Then
+        If Not Impedance.EqualEnough(mainCirc.Z0, BadImpedance,
+                                     ImageImpedances(2)) Then
+            If Not MatchArbFirstOnR2(MainZ0, ImageImpedances(2), loadZ,
+                                     sourceZ, transformations) Then
 
                 Return False
             End If
         End If
-        If Not Impedance.EqualEnough(mainCirc.Z0, BadImpedance, ImageImpedances(3)) Then
-            If Not MatchArbFirstOnR2(mainCirc, ImageImpedances(3), loadZ, sourceZ,
-                                    transformations) Then
+        If Not Impedance.EqualEnough(mainCirc.Z0, BadImpedance,
+                                     ImageImpedances(3)) Then
+            If Not MatchArbFirstOnR2(MainZ0, ImageImpedances(3), loadZ,
+                                     sourceZ, transformations) Then
 
                 Return False
             End If
         End If
-
-
-
-
-
-
-        'If Not MatchArbFirstOnG2(mainCirc, ImageImpedances(0), loadZ, sourceZ,
-        '                         transformations) Then
-
-        '    Return False
-        'End If
-        'If Not MatchArbFirstOnG2(mainCirc, ImageImpedances(1), loadZ, sourceZ,
-        '                         transformations) Then
-
-        '    Return False
-        'End If
-        'If Not MatchArbFirstOnR2(mainCirc, ImageImpedances(2), loadZ, sourceZ,
-        '                         transformations) Then
-
-        '    Return False
-        'End If
-        If Not MatchArbFirstOnR2(mainCirc, ImageImpedances(3), loadZ, sourceZ,
-                                 transformations) Then
-
-            Return False
-        End If
-
-
-
 
         ' THESE TESTS CAN BE DELETED OR SUPPRESSED AFTER ALL WORKS OK.
         For Each OneTrans As Transformation In transformations
@@ -1255,10 +1201,6 @@ Partial Public Structure Impedance
                 Return False
             End If
         Next
-
-
-
-
 
         ' On getting this far,
         Return True
