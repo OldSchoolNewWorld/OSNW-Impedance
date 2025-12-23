@@ -681,8 +681,9 @@ Partial Public Structure Impedance
         Public Sub New(capacity As Integer)
             MyBase.New(capacity)
             '            Me._count = capacity
+            Dim BadImpedance As New Impedance(999.99, 999.99)
             For i As System.Int32 = 0 To capacity - 1
-                Me.Add(New Impedance(999.99, 999.99))
+                Me.Add(BadImpedance)
             Next
         End Sub
 
@@ -1188,21 +1189,57 @@ Partial Public Structure Impedance
         ' There are now four image impedances. THEY MAY NOT ALL BE UNIQUE? SOME
         ' MAY INDICATE NO INTERSECTION?
 
-        If Not MatchArbFirstOnG2(mainCirc, ImageImpedances(0), loadZ, sourceZ,
-                                 transformations) Then
+        ' Try each image impedance in turn.
+        Dim BadImpedance As New Impedance(999.99, 999.99)
+        If Not Impedance.EqualEnough(mainCirc.Z0, BadImpedance, ImageImpedances(0)) Then
+            If Not MatchArbFirstOnG2(mainCirc, ImageImpedances(0), loadZ, sourceZ,
+                                transformations) Then
 
-            Return False
+                Return False
+            End If
         End If
-        If Not MatchArbFirstOnG2(mainCirc, ImageImpedances(1), loadZ, sourceZ,
-                                 transformations) Then
+        If Not Impedance.EqualEnough(mainCirc.Z0, BadImpedance, ImageImpedances(1)) Then
+            If Not MatchArbFirstOnG2(mainCirc, ImageImpedances(1), loadZ, sourceZ,
+                                    transformations) Then
 
-            Return False
+                Return False
+            End If
         End If
-        If Not MatchArbFirstOnR2(mainCirc, ImageImpedances(2), loadZ, sourceZ,
-                                 transformations) Then
+        If Not Impedance.EqualEnough(mainCirc.Z0, BadImpedance, ImageImpedances(2)) Then
+            If Not MatchArbFirstOnR2(mainCirc, ImageImpedances(2), loadZ, sourceZ,
+                                      transformations) Then
 
-            Return False
+                Return False
+            End If
         End If
+        If Not Impedance.EqualEnough(mainCirc.Z0, BadImpedance, ImageImpedances(3)) Then
+            If Not MatchArbFirstOnR2(mainCirc, ImageImpedances(3), loadZ, sourceZ,
+                                    transformations) Then
+
+                Return False
+            End If
+        End If
+
+
+
+
+
+
+        'If Not MatchArbFirstOnG2(mainCirc, ImageImpedances(0), loadZ, sourceZ,
+        '                         transformations) Then
+
+        '    Return False
+        'End If
+        'If Not MatchArbFirstOnG2(mainCirc, ImageImpedances(1), loadZ, sourceZ,
+        '                         transformations) Then
+
+        '    Return False
+        'End If
+        'If Not MatchArbFirstOnR2(mainCirc, ImageImpedances(2), loadZ, sourceZ,
+        '                         transformations) Then
+
+        '    Return False
+        'End If
         If Not MatchArbFirstOnR2(mainCirc, ImageImpedances(3), loadZ, sourceZ,
                                  transformations) Then
 
