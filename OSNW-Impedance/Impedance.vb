@@ -19,7 +19,6 @@ Option Infer Off
 
 Imports System.Diagnostics.CodeAnalysis
 Imports System.Globalization
-Imports System.Numerics
 Imports System.Text.Json.Serialization
 
 ' REF: A Practical Introduction to Impedance Matching.
