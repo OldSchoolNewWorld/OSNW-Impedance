@@ -70,7 +70,7 @@ Public Structure Impedance
     '     ISignedNumber(Of Impedance),
     '     IUtf8SpanFormattable
     ' FROM OLD YTT CODE:
-    '        Implements IEquatable(Of Ytt.Util.Electrical.Impedance), IFormattable
+    '     Implements IEquatable(Of Ytt.Util.Electrical.Impedance), IFormattable
 
     ' DEV: An Impedance is essentially a complex number with some cosmetic
     ' differences:
@@ -83,7 +83,6 @@ Public Structure Impedance
 
     Public Const PI As System.Double = System.Double.Pi
     Public Const HALFPI As System.Double = System.Double.Pi / 2.0
-    Public Const BADIMPDVALUE As System.Double = 99999.999
 
     Public Const MSGCHNV As System.String = "Cannot have a negative value."
     Public Const MSGCHZV As System.String = "Cannot have a zero value."
@@ -974,6 +973,16 @@ Public Structure Impedance
 
 #Region "Other Instance Methods"
 
+    ''' <summary>
+    ''' Determines whether <see cref="Resistance"/> and <see cref="Reactance"/>
+    ''' both equal 0.0.
+    ''' </summary>
+    ''' <returns><c>True</c> if <see cref="Resistance"/> and
+    ''' <see cref="Reactance"/> both equal 0.0; otherwise,
+    ''' <c>False</c>.</returns>
+    Public Function IsZero() As System.Boolean
+        Return Resistance.Equals(0.0) AndAlso Reactance.Equals(0.0)
+    End Function ' IsZero
 
 #End Region ' "Other Instance Methods"
 

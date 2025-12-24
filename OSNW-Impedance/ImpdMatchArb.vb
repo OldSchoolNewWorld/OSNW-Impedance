@@ -2,6 +2,9 @@
 Option Strict On
 Option Compare Binary
 Option Infer Off
+Imports System.Net.Mime.MediaTypeNames
+
+
 
 ' This document contains items related to matching a load impedance to an
 ' arbitrary source impedance.
@@ -17,8 +20,6 @@ Public Class ImageImpedanceList
 
     ' Ref: IList Interface
     ' https://learn.microsoft.com/en-us/dotnet/api/system.collections.ilist?view=net-10.0
-
-    Private Const BADIMPVAL As System.Double = Impedance.BADIMPDVALUE
 
     '    ''' <summary>
     '    ''' Defines the default capacity of the
@@ -239,9 +240,8 @@ Public Class ImageImpedanceList
     ''' <param name="capacity">xxxxxxxxxx</param>
     Public Sub New(capacity As Integer)
         MyBase.New(capacity)
-        Dim BadImpedance As New Impedance(BADIMPVAL, BADIMPVAL)
         For i As System.Int32 = 0 To capacity - 1
-            Me.Add(BadImpedance)
+            Me.Add(Nothing)
         Next
     End Sub
 
@@ -378,6 +378,9 @@ Partial Public Structure Impedance
                 Dim image1X As System.Double = -image0X
                 images(1) = New Impedance(image1R, image1X)
 
+            Else
+                images(0) = Nothing
+                images(1) = Nothing
             End If
 
             Dim SourceX As System.Double = sourceZ.Reactance
@@ -395,7 +398,14 @@ Partial Public Structure Impedance
                 Dim image3X As System.Double = -image2X
                 images(3) = New Impedance(image3R, image3X)
 
+            Else
+                images(2) = Nothing
+                images(3) = Nothing
             End If
+
+            'xxxxxxxxxxxxxx
+            System.Diagnostics.Debug.WriteLine($"Images: {images(0)}; {images(0)}; {images(2)}; {images(3)}")
+            'xxxxxxxxxxxxxx
 
         Catch ex As Exception
             Return False
@@ -493,7 +503,7 @@ Partial Public Structure Impedance
                 Else ' DeltaX = 0.0
                     .Style = TransformationStyles.ShuntInd
                 End If
-            Else ' DeltaB > 0.0
+            Else ' DeltaB >= 0.0
                 ' CW on a G-circle needs a shunt capacitor.
                 If DeltaX < 0.0 Then
                     ' CCW on a R-circle needs a series capacitor.
@@ -612,7 +622,7 @@ Partial Public Structure Impedance
                 Else ' DeltaB = 0.0
                     .Style = TransformationStyles.SeriesCap
                 End If
-            Else ' DeltaX > 0.0
+            Else ' DeltaX >= 0.0
                 ' CW on a R-circle needs a series inductor.
                 If DeltaB < 0.0 Then
                     ' CCW on a G-circle needs a shunt inductor.
@@ -718,35 +728,31 @@ Partial Public Structure Impedance
 
         ' There are now four image impedances. Some may indicate no
         ' intersection. THEY MAY NOT ALL BE UNIQUE?
-        ' Try each image impedance in turn.
-        Dim BadImpedance As New Impedance(BADIMPDVALUE, BADIMPDVALUE)
+        ' Try each image impedance in turn. No action needed when no
+        ' ImageImpedance was discovered.
         Dim MainZ0 As System.Double = mainCirc.Z0
-        If Not Impedance.EqualEnough(MainZ0, BadImpedance,
-                                     ImageImpedances(0)) Then
+        If Not ImageImpedances(0).IsZero Then
             If Not MatchArbFirstOnG2(MainZ0, ImageImpedances(0), loadZ,
                                      sourceZ, transformations) Then
 
                 Return False
             End If
         End If
-        If Not Impedance.EqualEnough(MainZ0, BadImpedance,
-                                     ImageImpedances(1)) Then
+        If Not ImageImpedances(1).IsZero Then
             If Not MatchArbFirstOnG2(MainZ0, ImageImpedances(1), loadZ,
                                      sourceZ, transformations) Then
 
                 Return False
             End If
         End If
-        If Not Impedance.EqualEnough(mainCirc.Z0, BadImpedance,
-                                     ImageImpedances(2)) Then
+        If Not ImageImpedances(2).IsZero Then
             If Not MatchArbFirstOnR2(MainZ0, ImageImpedances(2), loadZ,
                                      sourceZ, transformations) Then
 
                 Return False
             End If
         End If
-        If Not Impedance.EqualEnough(mainCirc.Z0, BadImpedance,
-                                     ImageImpedances(3)) Then
+        If Not ImageImpedances(3).IsZero Then
             If Not MatchArbFirstOnR2(MainZ0, ImageImpedances(3), loadZ,
                                      sourceZ, transformations) Then
 
