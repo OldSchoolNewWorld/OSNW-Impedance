@@ -44,9 +44,9 @@ Class Messages
     Public Const ITS As String = "Incorrect transformation style"
 End Class ' Messages
 
-Namespace MatchArbitrary2Tests
+Namespace MatchArbitraryTests
 
-    Public Class TestMatchArbitrary2_UnlikelyZ0
+    Public Class TestMatchArbitrary_UnlikelyZ0
 
         Const INF As Double = Double.PositiveInfinity
 
@@ -56,7 +56,7 @@ Namespace MatchArbitrary2Tests
         <InlineData(1.0, INF, 0.0000)> ' C: At the open circuit point on the right.
         <InlineData(1.0, -0.0345, 0.4138)> ' Q: Outside of main circle. Invalid.
         <InlineData(1.0, -2.0, 999)> ' R: NormR<=0. Invalid.
-        Public Sub MatchArbitrary2Z0_BadInput_ThrowsException(z0 As System.Double, loadR As Double, loadX As Double)
+        Public Sub MatchArbitraryZ0_BadInput_ThrowsException(z0 As System.Double, loadR As Double, loadX As Double)
             Try
                 ' Code that throws the exception.
                 Dim LoadZ As New Impedance(loadR, loadX)
@@ -73,19 +73,19 @@ Namespace MatchArbitrary2Tests
         <Theory>
         <InlineData(1.0, 0.0000, 0.0000)> ' A: At the short circuit point.
         <InlineData(1.0, 0.0000, 1 / 2.0)> ' B: Anywhere else on the perimeter. R=0.0.
-        Public Sub MatchArbitrary2Z0_BadInput_Fails(z0 As System.Double, loadR As Double, loadX As Double)
+        Public Sub MatchArbitraryZ0_BadInput_Fails(z0 As System.Double, loadR As Double, loadX As Double)
 
             Dim LoadZ As New Impedance(loadR, loadX)
             Dim SourceZ As New Impedance(z0, 0.0)
             Dim Transformations As Transformation() = Array.Empty(Of Transformation)
 
-            Assert.False(Impedance.MatchArbitrary2(z0, LoadZ, SourceZ, Transformations))
+            Assert.False(Impedance.MatchArbitrary(z0, LoadZ, SourceZ, Transformations))
 
         End Sub
 
-    End Class ' TestMatchArbitrary2_UnlikelyZ0
+    End Class ' TestMatchArbitrary_UnlikelyZ0
 
-    Public Class TestMatchArbitrary2Z0
+    Public Class TestMatchArbitraryZ0
 
         '<InlineData(  Z0,        R,         X)> ' Model
         <Theory>
@@ -115,19 +115,19 @@ Namespace MatchArbitrary2Tests
         <InlineData(50.0, 10.0, 70.0)> ' O50: In the top center. Z0=50.
         <InlineData(1.0, 0.4, -0.8)> ' P1: In the bottom center.
         <InlineData(50.0, 20.0, -40.0)> ' P50: In the bottom center. Z0=50.
-        Public Sub MatchArbitrary2Z0_GoodInput_Succeeds(z0 As System.Double, loadR As Double, loadX As Double)
+        Public Sub MatchArbitraryZ0_GoodInput_Succeeds(z0 As System.Double, loadR As Double, loadX As Double)
 
             Dim LoadZ As New Impedance(loadR, loadX)
             Dim SourceZ As New Impedance(z0, 0.0)
             Dim Transformations As Transformation() = Array.Empty(Of Transformation)
 
-            Assert.True(Impedance.MatchArbitrary2(z0, LoadZ, SourceZ, Transformations))
+            Assert.True(Impedance.MatchArbitrary(z0, LoadZ, SourceZ, Transformations))
 
         End Sub
 
-    End Class ' TestMatchArbitrary2Z0
+    End Class ' TestMatchArbitraryZ0
 
-    Public Class TestMatchArbitrary2Any
+    Public Class TestMatchArbitraryAny
 
         <Theory>
         <InlineData(1, 1.0, 1.0, 0.5, 0.2)> ' AMRIS1.
@@ -150,17 +150,17 @@ Namespace MatchArbitrary2Tests
         <InlineData(1.0, 1 / 2.0, 1 / 2.0, 1.0, 1.0)> ' J1 to E1.
         <InlineData(50.0, 50.0, 50.0, 25.0, 25.0)> ' E50 to J50.
         <InlineData(50.0, 25.0, 25.0, 50.0, 50.0)> ' J50 to E50.
-        Public Sub MatchArbitrary2_GoodInput_Succeeds(z0 As Double, loadR As Double, loadX As Double,
+        Public Sub MatchArbitrary_GoodInput_Succeeds(z0 As Double, loadR As Double, loadX As Double,
                                                       sourceR As Double, sourceX As Double)
 
             Dim LoadZ As New Impedance(loadR, loadX)
             Dim SourceZ As New Impedance(sourceR, sourceX)
             Dim Transformations As Transformation() = Array.Empty(Of Transformation)
 
-            Assert.True(Impedance.MatchArbitrary2(z0, LoadZ, SourceZ, Transformations))
+            Assert.True(Impedance.MatchArbitrary(z0, LoadZ, SourceZ, Transformations))
 
         End Sub
 
-    End Class ' TestMatchArbitrary2Any
+    End Class ' TestMatchArbitraryAny
 
-End Namespace ' MatchArbitrary2Tests
+End Namespace ' MatchArbitraryTests

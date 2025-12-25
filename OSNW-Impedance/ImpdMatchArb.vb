@@ -440,7 +440,7 @@ Partial Public Structure Impedance
     ''' impedance to an image impedance, then moving, on an R-circle, from the
     ''' image impedance to the source impedance.
     ''' </remarks>
-    Public Shared Function MatchArbFirstOnG2(ByVal z0 As System.Double,
+    Public Shared Function MatchArbFirstOnG(ByVal z0 As System.Double,
         ByVal oneImage As Impedance,
         ByVal loadZ As Impedance, ByVal sourceZ As Impedance,
         ByRef transformations As Transformation()) _
@@ -528,7 +528,7 @@ Partial Public Structure Impedance
         'xxxxxxxxxxxxxx
         Return True
 
-    End Function ' MatchArbFirstOnG2
+    End Function ' MatchArbFirstOnG
 
     ''' <summary>
     ''' Attempts to obtain a conjugate match from the specified load
@@ -556,7 +556,7 @@ Partial Public Structure Impedance
     ''' impedance to an image impedance, then moving, on a G-circle, from the
     ''' image impedance to the source impedance.
     ''' </remarks>
-    Public Shared Function MatchArbFirstOnR2(ByVal z0 As System.Double,
+    Public Shared Function MatchArbFirstOnR(ByVal z0 As System.Double,
         ByVal oneImage As Impedance,
         ByVal loadZ As Impedance, ByVal sourceZ As Impedance,
         ByRef transformations As Transformation()) _
@@ -647,7 +647,7 @@ Partial Public Structure Impedance
         'xxxxxxxxxxxxxx
         Return True
 
-    End Function ' MatchArbFirstOnR2
+    End Function ' MatchArbFirstOnR
 
     ''' <summary>
     ''' Attempts to obtain a conjugate match from the specified load
@@ -670,7 +670,7 @@ Partial Public Structure Impedance
     ''' <remarks>
     ''' A succcessful process might result in no transformation being done.
     ''' </remarks>
-    Public Shared Function MatchArbitrary2(
+    Public Shared Function MatchArbitrary(
         ByVal mainCirc As SmithMainCircle,
         ByVal loadZ As Impedance, ByVal sourceZ As Impedance,
         ByRef transformations As Transformation()) _
@@ -732,29 +732,29 @@ Partial Public Structure Impedance
         ' ImageImpedance was discovered.
         Dim MainZ0 As System.Double = mainCirc.Z0
         If Not ImageImpedances(0).IsZero Then
-            If Not MatchArbFirstOnG2(MainZ0, ImageImpedances(0), loadZ,
-                                     sourceZ, transformations) Then
+            If Not MatchArbFirstOnG(MainZ0, ImageImpedances(0), loadZ,
+                                    sourceZ, transformations) Then
 
                 Return False
             End If
         End If
         If Not ImageImpedances(1).IsZero Then
-            If Not MatchArbFirstOnG2(MainZ0, ImageImpedances(1), loadZ,
-                                     sourceZ, transformations) Then
+            If Not MatchArbFirstOnG(MainZ0, ImageImpedances(1), loadZ,
+                                    sourceZ, transformations) Then
 
                 Return False
             End If
         End If
         If Not ImageImpedances(2).IsZero Then
-            If Not MatchArbFirstOnR2(MainZ0, ImageImpedances(2), loadZ,
-                                     sourceZ, transformations) Then
+            If Not MatchArbFirstOnR(MainZ0, ImageImpedances(2), loadZ,
+                                    sourceZ, transformations) Then
 
                 Return False
             End If
         End If
         If Not ImageImpedances(3).IsZero Then
-            If Not MatchArbFirstOnR2(MainZ0, ImageImpedances(3), loadZ,
-                                     sourceZ, transformations) Then
+            If Not MatchArbFirstOnR(MainZ0, ImageImpedances(3), loadZ,
+                                    sourceZ, transformations) Then
 
                 Return False
             End If
@@ -770,7 +770,7 @@ Partial Public Structure Impedance
         ' On getting this far,
         Return True
 
-    End Function ' MatchArbitrary2
+    End Function ' MatchArbitrary
 
     ''' <summary>
     ''' Attempts to obtain a conjugate match from the specified load
@@ -800,7 +800,7 @@ Partial Public Structure Impedance
     ''' succcessful process might result in an empty
     ''' <paramref name="transformations"/>.
     ''' </remarks>
-    Public Shared Function MatchArbitrary2(z0 As System.Double,
+    Public Shared Function MatchArbitrary(z0 As System.Double,
         loadZ As Impedance, sourceZ As Impedance,
         ByRef transformations As Transformation()) _
         As System.Boolean
@@ -822,8 +822,8 @@ Partial Public Structure Impedance
         ' geometric worker.
         ' Dim MainCirc As New SmithMainCircle(1.0, 1.0, 1.0, z0) ' Arbitrary.
         Dim MainCirc As New SmithMainCircle(4.0, 5.0, 4.0, z0) ' Test data.
-        Return MatchArbitrary2(MainCirc, loadZ, sourceZ, transformations)
+        Return MatchArbitrary(MainCirc, loadZ, sourceZ, transformations)
 
-    End Function ' MatchArbitrary2
+    End Function ' MatchArbitrary
 
 End Structure ' Impedance
