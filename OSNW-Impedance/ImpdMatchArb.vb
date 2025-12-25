@@ -19,7 +19,7 @@ Public Class ImageImpedanceList
     Implements IList
 
     ' Ref: IList Interface
-    ' https://learn.microsoft.com/en-us/dotnet/api/system.collections.ilist?view=net-10.0
+    ' https://learn.microsoft.com/en-us/dotnet/api/system.collections.Collections.IList?view=net-10.0
 
     '    ''' <summary>
     '    ''' Defines the default capacity of the
