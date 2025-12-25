@@ -84,18 +84,20 @@ Public Structure Impedance
     Public Const PI As System.Double = System.Double.Pi
     Public Const HALFPI As System.Double = System.Double.Pi / 2.0
 
+    Public Const MSGCHIV As System.String = "Cannot have an infinite value."
     Public Const MSGCHNV As System.String = "Cannot have a negative value."
     Public Const MSGCHZV As System.String = "Cannot have a zero value."
-    Public Const MSGCHIV As System.String = "Cannot have an infinite value."
+    Public Const MSGFGPXPY As System.String = "Failure getting PlotX, PlotY."
+    Public Const MSGFIXEDSIZEVIOLATION As System.String =
+        "cannot modify the fixed-size ImageImpedanceList."
+    Public Const MSGIIC As System.String = "Invalid intersection count."
+    Public Const MSGNOSTR As System.String = "Cannot be Null/Nothing."
+    Public Const MSGTDNRT As String = " transformation did not reach target."
+    Public Const MSGUEEZ As System.String = MSGCHZV & " Use EqualEnoughZero()."
     Public Const MSGVMBGTZ As System.String =
         "Must be a positive, non-zero value."
     Public Const MSGVMBGTE1 As System.String =
         "Must be greater than or equal to 1."
-    Public Const MSGNOSTR As System.String = "Cannot be Null/Nothing."
-    Public Const MSGIIC As System.String = "Invalid intersection count."
-    Public Const MSGFGPXPY As System.String = "Failure getting PlotX, PlotY."
-    Public Const MSGUEEZ As System.String = MSGCHZV & " Use EqualEnoughZero()."
-    Public Const MSGTDNRT As String = " transformation did not reach target."
 
     ''' <summary>
     ''' This sets a practical limit on the precision of equality detection in

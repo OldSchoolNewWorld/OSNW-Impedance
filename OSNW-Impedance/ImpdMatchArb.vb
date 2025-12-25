@@ -2,9 +2,6 @@
 Option Strict On
 Option Compare Binary
 Option Infer Off
-Imports System.Net.Mime.MediaTypeNames
-
-
 
 ' This document contains items related to matching a load impedance to an
 ' arbitrary source impedance.
@@ -14,25 +11,43 @@ Imports System.Net.Mime.MediaTypeNames
 ''' impedances to potentially be used in matching a load <c>Impedance</c> to
 ''' an arbitrary source <c>Impedance</c>.
 ''' </summary>
+''' <remarks>
+''' This class is a fixed-size list of four <see cref="Impedance"/> structures,
+''' each of which serves a specific role. The four slots in the list correspond
+''' to the following image impedances:
+''' <list type="bullet">
+''' <item><term>Items 0 and 1</term>
+''' <description>hold the image impedances used to perform the equivalent of
+''' moving, on a Smith Chart, along a G-circle from the load impedance to the
+''' image impedance, followed by moving along an R-circle to the source
+''' impedance.</description>
+''' </item>
+''' <item><term>Items 2 and 3</term>
+''' <description>hold the image impedances used to perform the equivalent of
+''' moving, on a Smith Chart, along an R-circle from the load impedance to the
+''' image impedance, followed by moving along a G-circle to the source
+''' impedance.</description>
+''' </item>
+''' </list>
+''' </remarks>
 Public Class ImageImpedanceList
-    Inherits List(Of Impedance)
-    Implements IList
+    Inherits System.Collections.Generic.List(Of Impedance)
+    Implements System.Collections.IList
 
-    ' Ref: IList Interface
+    ' Ref:System.Collections.IList Interface
     ' https://learn.microsoft.com/en-us/dotnet/api/system.collections.Collections.IList?view=net-10.0
 
-    '    ''' <summary>
-    '    ''' Defines the default capacity of the
-    '    ''' <see cref="ImageImpedanceList"/>.
-    '    ''' </summary>
-    '    Private Const DEFAULTCAPACITY As System.Int32 = 4
+    ''' <summary>
+    ''' Defines the fixed capacity of the <c>ImageImpedanceList</c>.
+    ''' </summary>
+    Private Const FIXEDCAPACITY As System.Int32 = 4
 
     '    Private ReadOnly _contents(DEFAULTCAPACITY - 1) As System.Object
     '    Private ReadOnly _count As System.Int32
 
-    ' IList members.
+    'System.Collections.IList members.
 
-    'Public Function Add(ByVal value As Object) As Integer Implements IList.Add
+    'Public Function Add(ByVal value As System.Object) As System.Int32 Implements System.Collections.IList.Add
     '    If _count < _contents.Length Then
     '        _contents(_count) = value
     '        _count += 1
@@ -43,41 +58,41 @@ Public Class ImageImpedanceList
     '    Return -1
     'End Function
 
-    'Public Sub Clear() Implements IList.Clear
+    'Public Sub Clear() Implements System.Collections.IList.Clear
     '    _count = 0
     'End Sub
 
-    'Public Overloads Function Contains(ByVal value As Object) _
+    'Public Overloads Function Contains(ByVal value As System.Object) _
     '    As System.Boolean _
-    '    Implements IList.Contains
+    '    Implements System.Collections.IList.Contains
     ' xxxxxxxxxx THIS WOULD LIKELY NEED TO CHANGE EQUALITY TO EQUALENOUGH
 
     '    Dim ValImpedance As Impedance = CType(value, Impedance)
-    '    For i As Integer = 0 To Count - 1
+    '    For i As System.Int32 = 0 To Count - 1
     '        If _contents(i).Equals(ValImpedance) Then Return True
     '    Next
 
     '    Return False
     'End Function
 
-    'Public Overloads Function IndexOf(ByVal value As Object) _
+    'Public Overloads Function IndexOf(ByVal value As System.Object) _
     '    As System.Int32 _
-    '    Implements IList.IndexOf
+    '    Implements System.Collections.IList.IndexOf
     ' xxxxxxxxxx THIS WOULD LIKELY NEED TO CHANGE EQUALITY TO EQUALENOUGH
 
     '    Dim ValImpedance As Impedance = CType(value, Impedance)
-    '    For i As Integer = 0 To Count - 1
+    '    For i As System.Int32 = 0 To Count - 1
     '        If _contents(i).Equals(ValImpedance) Then Return i
     '    Next
     '    Return -1
     'End Function
 
-    'Public Sub Insert(ByVal index As Integer, ByVal value As Object) Implements IList.Insert
+    'Public Sub Insert(ByVal index As System.Int32, ByVal value As System.Object) Implements System.Collections.IList.Insert
 
     '    If _count + 1 <= _contents.Length AndAlso index < Count AndAlso index >= 0 Then
     '        _count += 1
 
-    '        For i As Integer = Count - 1 To index Step -1
+    '        For i As System.Int32 = Count - 1 To index Step -1
     '            _contents(i) = _contents(i - 1)
     '        Next
     '        _contents(index) = value
@@ -85,54 +100,111 @@ Public Class ImageImpedanceList
     'End Sub
 
     ''' <summary>
-    ''' xxxxxxxxxx
+    ''' Gets a value indicating that the <c>ImageImpedanceList</c> has a fixed
+    ''' size. It is fixed-size because the Z=0+j0 impedances are used to
+    ''' indicate that no usable image impedance was created for a particular
+    ''' slot.
     ''' </summary>
-    ''' <returns>xxxxxxxxxx</returns>
+    ''' <returns>
+    ''' This property always returns <c>True</c>.
+    ''' </returns>
     Public ReadOnly Property IsFixedSize() As System.Boolean _
-            Implements IList.IsFixedSize
+        Implements System.Collections.IList.IsFixedSize
 
         Get
             Return True
         End Get
     End Property
 
+    ''' <summary>
+    ''' Gets a value indicating that the <c>ImageImpedanceList</c> is not
+    ''' read-only.
+    ''' </summary>
+    ''' This property always returns <c>False</c>.
     Public ReadOnly Property IsReadOnly() As System.Boolean _
-            Implements IList.IsReadOnly
+        Implements System.Collections.IList.IsReadOnly
 
         Get
             Return False
         End Get
     End Property
 
-    'Public Sub Remove(ByVal value As Object) Implements IList.Remove
-    '    RemoveAt(IndexOf(value))
-    'End Sub
+    ''' <summary>
+    ''' Improperly attempts to remove the first occurrence of a specific object
+    ''' from the <c>ImageImpedanceList</c>.
+    ''' </summary>
+    ''' <param name="value">Ignored due to the violation.</param>
+    ''' <exception cref="System.NotSupportedException">
+    ''' Always thrown, because the <c>ImageImpedanceList</c> has a fixed size.
+    ''' </exception>"
+    Public Overloads Sub Remove(ByVal value As System.Object) _
+        Implements System.Collections.IList.Remove
 
-    'Public Sub RemoveAt(ByVal index As Integer) Implements IList.RemoveAt
+        Dim CaughtBy As System.Reflection.MethodBase =
+            System.Reflection.MethodBase.GetCurrentMethod
+        Throw New System.NotSupportedException(
+            $"{CaughtBy} {Impedance.MSGFIXEDSIZEVIOLATION}")
+    End Sub ' Remove
 
-    '    If index >= 0 AndAlso index < Count Then
-    '        For i As Integer = index To Count - 2
-    '            _contents(i) = _contents(i + 1)
-    '        Next
-    '        _count -= 1
-    '    End If
-    'End Sub
+    ''' <summary>
+    ''' Improperly attempts to remove the <c>ImageImpedanceList</c> item at the
+    ''' specified index.
+    ''' </summary>
+    ''' <param name="index">Ignored due to the violation.</param>
+    ''' <exception cref="System.NotSupportedException">
+    ''' Always thrown, because the <c>ImageImpedanceList</c> has a fixed size.
+    ''' </exception>"
+    Public Overloads Sub RemoveAt(ByVal index As System.Int32) _
+        Implements System.Collections.IList.RemoveAt
 
-    'Public Overloads Property Item(ByVal index As Integer) As Object _
-    '    Implements IList.Item
+        Dim CaughtBy As System.Reflection.MethodBase =
+            System.Reflection.MethodBase.GetCurrentMethod
+        Throw New System.NotSupportedException(
+            $"{CaughtBy} {Impedance.MSGFIXEDSIZEVIOLATION}")
+    End Sub ' RemoveAt
+
+    '''' <summary>
+    '''' xxxxxxxxxx
+    '''' </summary>
+    '''' <param name="index">xxxxxxxxxx</param>
+    '''' <returns>xxxxxxxxxx</returns>
+    'Public Function RemoveAll() As System.Int32 Implements System.Collections.IList.removeall
+
+    '    Me.RemoveAll()
+
+    'End Function
+    'xxxx
+
+    '       ' public int RemoveAll(Predicate<T> match);
+    '''' <summary>
+    '''' Improperly attempts to remove all the elements that match the conditions defined by the specified predicate.
+    '''' </summary>
+    '''' <param name="match">Ignored System.Predicate(Of T) delegate that defines the conditions of the elements to remove.</param>
+    '''' <returns>xxxxxxxxxx</returns>
+    'Public Overloads Function RemoveAll(match As Predicate<T> match) As System.Int32
+    '       ' Implements System.Collections.IList.removeall
+
+    '       Me.RemoveAll()
+
+
+    '   End Function
+    '   xxxx
+
+    'Public Overloads Property Item(ByVal index As System.Int32) As System.Object _
+    '    Implements System.Collections.IList.Item
 
     '    Get
     '        Return _contents(index)
     '    End Get
-    '    Set(ByVal value As Object)
+    '    Set(ByVal value As System.Object)
     '        _contents(index) = value
     '    End Set
     'End Property
 
     ' ICollection members.
 
-    'Public Sub CopyTo(ByVal array As Array, ByVal index As Integer) Implements ICollection.CopyTo
-    '    For i As Integer = 0 To Count - 1
+    'Public Sub CopyTo(ByVal array As Array, ByVal index As System.Int32) Implements ICollection.CopyTo
+    '    For i As System.Int32 = 0 To Count - 1
     '        array.SetValue(_contents(i), index)
     '        index += 1
     '    Next
@@ -154,7 +226,7 @@ Public Class ImageImpedanceList
 
     '' Return the current instance since the underlying store is not
     '' publicly available.
-    'Public ReadOnly Property SyncRoot() As Object Implements ICollection.SyncRoot
+    'Public ReadOnly Property SyncRoot() As System.Object Implements ICollection.SyncRoot
     '    Get
     '        Return Me
     '    End Get
@@ -173,30 +245,12 @@ Public Class ImageImpedanceList
     '    Console.WriteLine($"List has a capacity of {_contents.Length} and currently has {_count} elements.")
     '    Console.Write("List contents:")
 
-    '    For i As Integer = 0 To Count - 1
+    '    For i As System.Int32 = 0 To Count - 1
     '        Console.Write($" {_contents(i)}")
     '    Next
 
     '    Console.WriteLine()
     'End Sub
-
-    'Public Shared Function GetFixedSizeImageImpedanceList() _
-    '    As ImageImpedanceList
-
-    '    'Dim UnfixedSizeAL As New ImageImpedanceList(DEFAULTCAPACITY)
-    '    'Dim FixedSizeAL As ArrayList = ArrayList.FixedSize(UnfixedSizeAL)
-    '    Dim UnfixedSizeAL As New ImageImpedanceList(DEFAULTCAPACITY)
-    '    Dim FixedSizeAL As ImageImpedanceList = ArrayList.FixedSize(UnfixedSizeAL)
-
-    '    '            Dim FixedSizeAAL As ImageImpedanceList = CType(FixedSizeAL, ImageImpedanceList)
-    '    '            Dim FixedSizeIIL As ImageImpedanceList =
-    '    '                CType(FixedSizeAL, ImageImpedanceList)
-    '    Dim FixedSizeIIL As ImageImpedanceList = FixedSizeAL
-
-
-    '    Return FixedSizeIIL
-
-    'End Function ' GetFixedSizeImageImpedanceList
 
     '''' <summary>
     '''' Adds an image <see cref="Impedance"/> to the end of the
@@ -225,7 +279,7 @@ Public Class ImageImpedanceList
     '''' <see cref="ImageImpedanceList"/> ***** has a fixed size *****.
     '''' </exception>
     '''' <returns>Never returns a value. An exception is always thrown.</returns>
-    'Public Shared Shadows Function Add(value As Object) As System.Int32
+    'Public Shared Shadows Function Add(value As System.Object) As System.Int32
     '    Dim CaughtBy As System.Reflection.MethodBase =
     '        System.Reflection.MethodBase.GetCurrentMethod
     '    Throw New System.NotSupportedException(String.Concat(
@@ -235,18 +289,28 @@ Public Class ImageImpedanceList
     'End Function ' Add
 
     ''' <summary>
-    ''' xxxxxxxxxx
+    ''' Initializes a new instance of the <c>ImageImpedanceList</c> class that
+    ''' contains Z=0+j0 impedances and has the specified initial capacity.
     ''' </summary>
-    ''' <param name="capacity">xxxxxxxxxx</param>
-    Public Sub New(capacity As Integer)
+    ''' <param name="capacity">Specifies the number of elements that the new
+    ''' list can initially store.</param>
+    ''' <remarks>The list is initialized to contain a full set of Z=0+j0
+    ''' entries. Those values can be checked later, as done in MatchArbitrary(),
+    ''' to determine whether usable per-slot image impedances were
+    ''' created.</remarks>
+    Public Sub New(capacity As System.Int32)
         MyBase.New(capacity)
-        For i As System.Int32 = 0 To capacity - 1
+        For I As System.Int32 = 0 To capacity - 1
+            ' The Nothing value creates an Impedance with R=0.0 and X=0.0. That
+            ' cannot be done with New Impedance(), because that would throw an
+            ' exception.
             Me.Add(Nothing)
         Next
-    End Sub
+    End Sub ' New
 
     ''' <summary>
-    ''' Improperly attempts to xxxxxxxxxx.
+    ''' Initializes a new instance of the <c>ImageImpedanceList</c> class that
+    ''' contains <see cref="FIXEDCAPACITY"/> number of Z=0+j0 impedances.
     ''' </summary>
     Public Sub New()
 
@@ -255,8 +319,8 @@ Public Class ImageImpedanceList
         '    Throw New System.NotSupportedException(String.Concat(
         '        $"{CaughtBy} called directly. Use New(capacity)"))
 
-        Me.New(4)
-    End Sub
+        Me.New(FIXEDCAPACITY)
+    End Sub ' New
 
 End Class ' ImageImpedanceList
 
