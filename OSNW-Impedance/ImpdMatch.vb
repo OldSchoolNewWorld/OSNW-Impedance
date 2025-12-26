@@ -210,7 +210,8 @@ Partial Public Structure Impedance
         ByVal sourceZ As Impedance, ByVal aTransformation As Transformation) _
         As System.Boolean
 
-        Dim DeltaZ As Impedance
+        Dim DeltaZ1 As New Impedance(0.0, aTransformation.Value1)
+        Dim DeltaZ2 As New Impedance(0.0, aTransformation.Value2)
         Dim WorkZ As Impedance
 
         If aTransformation.Style.Equals(TransformationStyles.ShuntCap) OrElse
@@ -218,8 +219,7 @@ Partial Public Structure Impedance
 
             ' A shunt capacitor moves CW on a G-circle, decreasing B.
             ' A shunt inductor moves CCW on a G-circle, increasing B.
-            DeltaZ = New Impedance(0.0, aTransformation.Value1)
-            WorkZ = Impedance.AddShuntImpedance(Me, DeltaZ)
+            WorkZ = Impedance.AddShuntImpedance(Me, DeltaZ1)
 
         ElseIf aTransformation.Style.Equals(
             TransformationStyles.SeriesInd) OrElse
@@ -227,8 +227,7 @@ Partial Public Structure Impedance
 
             ' A series inductor moves CW on an R-circle, increasing X.
             ' A series capacitor moves CCW on an R-circle, decreasing X.
-            DeltaZ = New Impedance(0.0, aTransformation.Value1)
-            WorkZ = Impedance.AddSeriesImpedance(Me, DeltaZ)
+            WorkZ = Impedance.AddSeriesImpedance(Me, DeltaZ1)
 
         ElseIf aTransformation.Style.Equals(
                 TransformationStyles.ShuntCapSeriesInd) OrElse
@@ -242,14 +241,12 @@ Partial Public Structure Impedance
             ' The first change is a shunt component.
             ' A shunt inductor moves CCW on a G-circle, increasing B.
             ' A shunt capacitor moves CW on a G-circle, decreasing B.
-            DeltaZ = New Impedance(0.0, aTransformation.Value1)
-            WorkZ = Impedance.AddShuntImpedance(Me, DeltaZ)
+            WorkZ = Impedance.AddShuntImpedance(Me, DeltaZ1)
 
             ' The second change is a series component.
             ' A series inductor moves CW on an R-circle, increasing X.
             ' A series capacitor moves CCW on an R-circle, decreasing X.
-            DeltaZ = New Impedance(0.0, aTransformation.Value2)
-            WorkZ = Impedance.AddSeriesImpedance(WorkZ, DeltaZ)
+            WorkZ = Impedance.AddSeriesImpedance(WorkZ, DeltaZ2)
 
         ElseIf aTransformation.Style.Equals(
                 TransformationStyles.SeriesCapShuntInd) OrElse
@@ -263,14 +260,12 @@ Partial Public Structure Impedance
             ' The first change is a series component.
             ' A series inductor moves CW on an R-circle, increasing X.
             ' A series capacitor moves CCW on an R-circle, decreasing X.
-            DeltaZ = New Impedance(0.0, aTransformation.Value1)
-            WorkZ = Impedance.AddSeriesImpedance(Me, DeltaZ)
+            WorkZ = Impedance.AddSeriesImpedance(Me, DeltaZ1)
 
             ' The second change is a shunt component.
             ' A shunt inductor moves CCW on a G-circle, increasing B.
             ' A shunt capacitor moves CW on a G-circle, decreasing B.
-            DeltaZ = New Impedance(0.0, aTransformation.Value2)
-            WorkZ = Impedance.AddShuntImpedance(WorkZ, DeltaZ)
+            WorkZ = Impedance.AddShuntImpedance(WorkZ, DeltaZ2)
 
         Else
             ' Invalid transformation style.
@@ -299,8 +294,7 @@ Partial Public Structure Impedance
             End If
         End If
         If Not TestPassed Then
-            Throw New System.ApplicationException(
-                $"{aTransformation.Style}{MSGTDNRT}")
+            Return False
         End If
 
         ' On getting this far,
