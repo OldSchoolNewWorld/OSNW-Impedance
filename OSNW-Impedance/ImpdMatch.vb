@@ -227,73 +227,10 @@ Partial Public Structure Impedance
         Dim WorkZ As Impedance
         Dim TestPassed As System.Boolean = True ' For now.
 
-        If aTransformation.Style.Equals(TransformationStyles.ShuntCap) Then
-            ' xxxxxxxxxxxx COULD THIS ALSO BE USED FOR ShuntInd AND LET THE SIGN GOVERN THE RESPONSE???
-            ' xxxxxxxxxxxx ARE THE UNIQUE ERRORS REALLY NEEDED???
+        If aTransformation.Style.Equals(TransformationStyles.ShuntCap) OrElse
+            aTransformation.Style.Equals(TransformationStyles.ShuntInd) Then
+
             ' A shunt capacitor moves CW on a G-circle, decreasing B.
-
-            DeltaZ = New Impedance(0.0, aTransformation.Value1)
-            WorkZ = Impedance.AddShuntImpedance(Me, DeltaZ)
-
-            ' xxxxxxxxxxxx TESTS CAN BE REMOVED WHEN ALL IS OK.
-            If Not Impedance.EqualEnough(WorkZ.Resistance, expectZ.Resistance,
-                                         z0 * IMPDTOLERANCE) Then
-                TestPassed = False
-            End If
-            If Impedance.EqualEnoughZero(expectZ.Reactance, NearlyZero) Then
-                ' This wants a Z0 match.
-                If Not Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero) Then
-                    TestPassed = False
-                End If
-            Else
-                ' This wants a match to an arbitrary load.
-                If Not Impedance.EqualEnough(WorkZ.Reactance, expectZ.Reactance,
-                                             z0 * IMPDTOLERANCE) Then
-                    TestPassed = False
-                End If
-            End If
-            If Not TestPassed Then
-                Throw New System.ApplicationException("ShuntCap" & MSGTDNRT)
-            End If
-
-            ' On getting this far,
-            Return True
-
-        ElseIf aTransformation.Style.Equals(TransformationStyles.SeriesInd) Then
-            ' xxxxxxxxxxxx THIS COULD ALSO BE USED FOR SeriesCap???
-
-            ' A series inductor moves CW on an R-circle, increasing X.
-
-            DeltaZ = New Impedance(0.0, aTransformation.Value1)
-            WorkZ = Impedance.AddSeriesImpedance(Me, DeltaZ)
-
-            ' xxxxxxxxxxxx TESTS CAN BE REMOVED WHEN ALL IS OK.
-            If Not Impedance.EqualEnough(WorkZ.Resistance, expectZ.Resistance,
-                                         z0 * IMPDTOLERANCE) Then
-                TestPassed = False
-            End If
-            If Impedance.EqualEnoughZero(expectZ.Reactance, NearlyZero) Then
-                ' This wants a Z0 match.
-                If Not Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero) Then
-                    TestPassed = False
-                End If
-            Else
-                ' This wants a match to an arbitrary load.
-                If Not Impedance.EqualEnough(WorkZ.Reactance, expectZ.Reactance,
-                                             z0 * IMPDTOLERANCE) Then
-                    TestPassed = False
-                End If
-            End If
-            If Not TestPassed Then
-                Throw New System.ApplicationException(
-                        "SeriesInd" & MSGTDNRT)
-            End If
-
-            ' On getting this far,
-            Return True
-
-        ElseIf aTransformation.Style.Equals(TransformationStyles.ShuntInd) Then
-
             ' A shunt inductor moves CCW on a G-circle, increasing B.
 
             DeltaZ = New Impedance(0.0, aTransformation.Value1)
@@ -317,15 +254,16 @@ Partial Public Structure Impedance
                 End If
             End If
             If Not TestPassed Then
-                Throw New System.ApplicationException(
-                        "ShuntInd" & MSGTDNRT)
+                Throw New System.ApplicationException("ShuntCap or ShuntInd" & MSGTDNRT)
             End If
 
             ' On getting this far,
             Return True
 
-        ElseIf aTransformation.Style.Equals(TransformationStyles.SeriesCap) Then
+        ElseIf aTransformation.Style.Equals(TransformationStyles.SeriesInd) OrElse
+            aTransformation.Style.Equals(TransformationStyles.SeriesCap) Then
 
+            ' A series inductor moves CW on an R-circle, increasing X.
             ' A series capacitor moves CCW on an R-circle, decreasing X.
 
             DeltaZ = New Impedance(0.0, aTransformation.Value1)
@@ -350,7 +288,7 @@ Partial Public Structure Impedance
             End If
             If Not TestPassed Then
                 Throw New System.ApplicationException(
-                        "SeriesCap" & MSGTDNRT)
+                        "SeriesInd or SeriesCap" & MSGTDNRT)
             End If
 
             ' On getting this far,
