@@ -193,76 +193,33 @@ End Structure ' Transformation
 
 Partial Public Structure Impedance
 
-    '''' <summary>
-    '''' Confirms that the specified transformation produces the expected result.
-    '''' This is a worker for routines below.
-    '''' </summary>
-    '''' <param name="mainCirc">Specifies the <see cref="SmithMainCircle"/> with
-    '''' which the current instance is associated.</param>
-    '''' <param name="aTransformation">Specifies the <see cref="Transformation"/>
-    '''' to be used to perform the matching.</param>
-    '''' <returns><c>True</c> if the proposed <see cref="Transformation"/>
-    '''' results in a conjugate match for the current instance; otherwise,
-    '''' <c>False</c>.</returns>
     ''' <summary>
-    ''' xxxxxxxxxx
+    ''' Confirms that the specified <see cref="Transformation"/> produces the
+    ''' expected result. This is a worker for <seealso cref="MatchArbitrary"/>.
     ''' </summary>
-    ''' <param name="mainCirc">xxxxxxxxxx</param>
-    ''' <param name="expectZ">xxxxxxxxxx</param>
-    ''' <param name="aTransformation">xxxxxxxxxx</param>
-    ''' <returns>xxxxxxxxxx</returns>
-    ''' <remarks>
-    ''' xxxxxxxxxxxx CHANGE THIS IF IT NOW HANDLES ARBITRARY MATCHES, NOT JUST Z0 MATCHES.
-    ''' Z0 in <paramref name="mainCirc"/> is the characteristic impedance to
-    ''' which the current instance should be matched. It should have a practical
-    ''' value with regard to the impedance values involved.
-    ''' </remarks>
+    ''' <param name="mainCirc">Specifies the <see cref="SmithMainCircle"/> with
+    ''' which the current instance is associated.</param>
+    ''' <param name="sourceZ">Specifies the source <c>Impedance</c> to which the
+    ''' current instance should be matched.</param>
+    ''' <param name="aTransformation">Specifies the <see cref="Transformation"/>
+    ''' to be used to perform the matching.</param>
+    ''' <returns><c>True</c> if the proposed <see cref="Transformation"/>
+    ''' results in a conjugate match for the current instance to
+    ''' <paramref name="sourceZ"/>; otherwise, <c>False</c>.</returns>
     Public Function ValidateTransformation(ByVal mainCirc As SmithMainCircle,
-        ByVal expectZ As Impedance, ByVal aTransformation As Transformation) _
+        ByVal sourceZ As Impedance, ByVal aTransformation As Transformation) _
         As System.Boolean
 
-        Dim z0 As System.Double = mainCirc.Z0
-        Dim NearlyZero As System.Double = z0 * IMPDTOLERANCE0
         Dim DeltaZ As Impedance
         Dim WorkZ As Impedance
-        Dim TestPassed As System.Boolean = True ' For now.
 
         If aTransformation.Style.Equals(TransformationStyles.ShuntCap) OrElse
             aTransformation.Style.Equals(TransformationStyles.ShuntInd) Then
 
             ' A shunt capacitor moves CW on a G-circle, decreasing B.
             ' A shunt inductor moves CCW on a G-circle, increasing B.
-
             DeltaZ = New Impedance(0.0, aTransformation.Value1)
             WorkZ = Impedance.AddShuntImpedance(Me, DeltaZ)
-
-            ' xxxxxxxxxxxx TESTS CAN BE REMOVED WHEN ALL IS OK.
-            If Not Impedance.EqualEnough(WorkZ.Resistance, expectZ.Resistance,
-                                         z0 * IMPDTOLERANCE) Then
-                TestPassed = False
-            End If
-            If Impedance.EqualEnoughZero(expectZ.Reactance, NearlyZero) Then
-                ' This wants a Z0 match.
-                If Not Impedance.EqualEnoughZero(
-                    WorkZ.Reactance, NearlyZero) Then
-
-                    TestPassed = False
-                End If
-            Else
-                ' This wants a match to an arbitrary load.
-                If Not Impedance.EqualEnough(WorkZ.Reactance,
-                    expectZ.Reactance, z0 * IMPDTOLERANCE) Then
-
-                    TestPassed = False
-                End If
-            End If
-            If Not TestPassed Then
-                Throw New System.ApplicationException(
-                    $"{aTransformation.Style}{MSGTDNRT}")
-            End If
-
-            ' On getting this far,
-            Return True
 
         ElseIf aTransformation.Style.Equals(
             TransformationStyles.SeriesInd) OrElse
@@ -270,120 +227,80 @@ Partial Public Structure Impedance
 
             ' A series inductor moves CW on an R-circle, increasing X.
             ' A series capacitor moves CCW on an R-circle, decreasing X.
-
             DeltaZ = New Impedance(0.0, aTransformation.Value1)
             WorkZ = Impedance.AddSeriesImpedance(Me, DeltaZ)
 
-            ' xxxxxxxxxxxx TESTS CAN BE REMOVED WHEN ALL IS OK.
-            If Not Impedance.EqualEnough(WorkZ.Resistance, expectZ.Resistance,
-                                         z0 * IMPDTOLERANCE) Then
-                TestPassed = False
-            End If
-            If Impedance.EqualEnoughZero(expectZ.Reactance, NearlyZero) Then
-                ' This wants a Z0 match.
-                If Not Impedance.EqualEnoughZero(
-                    WorkZ.Reactance, NearlyZero) Then
-
-                    TestPassed = False
-                End If
-            Else
-                ' This wants a match to an arbitrary load.
-                If Not Impedance.EqualEnough(WorkZ.Reactance, expectZ.Reactance,
-                                             z0 * IMPDTOLERANCE) Then
-                    TestPassed = False
-                End If
-            End If
-            If Not TestPassed Then
-                Throw New System.ApplicationException(
-                        "SeriesInd or SeriesCap" & MSGTDNRT)
-            End If
-
-            ' On getting this far,
-            Return True
-
-        ElseIf aTransformation.Style.Equals(TransformationStyles.ShuntCapSeriesInd) OrElse
-            aTransformation.Style.Equals(TransformationStyles.ShuntCapSeriesCap) OrElse
-            aTransformation.Style.Equals(TransformationStyles.ShuntIndSeriesCap) OrElse
-            aTransformation.Style.Equals(TransformationStyles.ShuntIndSeriesInd) Then
+        ElseIf aTransformation.Style.Equals(
+                TransformationStyles.ShuntCapSeriesInd) OrElse
+            aTransformation.Style.Equals(
+                TransformationStyles.ShuntCapSeriesCap) OrElse
+            aTransformation.Style.Equals(
+                TransformationStyles.ShuntIndSeriesCap) OrElse
+            aTransformation.Style.Equals(
+                TransformationStyles.ShuntIndSeriesInd) Then
 
             ' The first change is a shunt component.
+            ' A shunt inductor moves CCW on a G-circle, increasing B.
+            ' A shunt capacitor moves CW on a G-circle, decreasing B.
             DeltaZ = New Impedance(0.0, aTransformation.Value1)
             WorkZ = Impedance.AddShuntImpedance(Me, DeltaZ)
 
             ' The second change is a series component.
+            ' A series inductor moves CW on an R-circle, increasing X.
+            ' A series capacitor moves CCW on an R-circle, decreasing X.
             DeltaZ = New Impedance(0.0, aTransformation.Value2)
             WorkZ = Impedance.AddSeriesImpedance(WorkZ, DeltaZ)
 
-            ' xxxxxxxxxxxx TESTS CAN BE REMOVED WHEN ALL IS OK.
-            If Not Impedance.EqualEnough(WorkZ.Resistance, expectZ.Resistance,
-                                         z0 * IMPDTOLERANCE) Then
-                TestPassed = False
-            End If
-            If Impedance.EqualEnoughZero(expectZ.Reactance, NearlyZero) Then
-                ' This wants a Z0 match.
-                If Not Impedance.EqualEnoughZero(
-                    WorkZ.Reactance, NearlyZero) Then
-
-                    TestPassed = False
-                End If
-            Else
-                ' This wants a match to an arbitrary load.
-                If Not Impedance.EqualEnough(WorkZ.Reactance, expectZ.Reactance,
-                                             z0 * IMPDTOLERANCE) Then
-                    TestPassed = False
-                End If
-            End If
-            If Not TestPassed Then
-                Throw New System.ApplicationException(
-                        "SeriesInd or SeriesCap" & MSGTDNRT)
-            End If
-
-            ' On getting this far,
-            Return True
-
-        ElseIf aTransformation.Style.Equals(TransformationStyles.SeriesCapShuntInd) OrElse
-                aTransformation.Style.Equals(TransformationStyles.SeriesCapShuntCap) OrElse
-                aTransformation.Style.Equals(TransformationStyles.SeriesIndShuntCap) OrElse
-                aTransformation.Style.Equals(TransformationStyles.SeriesIndShuntInd) Then
+        ElseIf aTransformation.Style.Equals(
+                TransformationStyles.SeriesCapShuntInd) OrElse
+            aTransformation.Style.Equals(
+               TransformationStyles.SeriesCapShuntCap) OrElse
+            aTransformation.Style.Equals(
+                TransformationStyles.SeriesIndShuntCap) OrElse
+            aTransformation.Style.Equals(
+                TransformationStyles.SeriesIndShuntInd) Then
 
             ' The first change is a series component.
+            ' A series inductor moves CW on an R-circle, increasing X.
+            ' A series capacitor moves CCW on an R-circle, decreasing X.
             DeltaZ = New Impedance(0.0, aTransformation.Value1)
             WorkZ = Impedance.AddSeriesImpedance(Me, DeltaZ)
 
             ' The second change is a shunt component.
+            ' A shunt inductor moves CCW on a G-circle, increasing B.
+            ' A shunt capacitor moves CW on a G-circle, decreasing B.
             DeltaZ = New Impedance(0.0, aTransformation.Value2)
             WorkZ = Impedance.AddShuntImpedance(WorkZ, DeltaZ)
-
-            ' xxxxxxxxxxxx TESTS CAN BE REMOVED WHEN ALL IS OK.
-            If Not Impedance.EqualEnough(WorkZ.Resistance, expectZ.Resistance,
-                                         z0 * IMPDTOLERANCE) Then
-                TestPassed = False
-            End If
-            If Impedance.EqualEnoughZero(expectZ.Reactance, NearlyZero) Then
-                ' This wants a Z0 match.
-                If Not Impedance.EqualEnoughZero(
-                    WorkZ.Reactance, NearlyZero) Then
-
-                    TestPassed = False
-                End If
-            Else
-                ' This wants a match to an arbitrary load.
-                If Not Impedance.EqualEnough(WorkZ.Reactance, expectZ.Reactance,
-                                             z0 * IMPDTOLERANCE) Then
-                    TestPassed = False
-                End If
-            End If
-            If Not TestPassed Then
-                Throw New System.ApplicationException(
-                        "SeriesInd or SeriesCap" & MSGTDNRT)
-            End If
-
-            ' On getting this far,
-            Return True
 
         Else
             ' Invalid transformation style.
             Return False
+        End If
+
+        ' xxxxxxxxxxxx TESTS CAN BE REMOVED WHEN ALL IS OK.
+        Dim z0 As System.Double = mainCirc.Z0
+        Dim TestPassed As System.Boolean = True ' For now.
+        If Not Impedance.EqualEnough(WorkZ.Resistance, sourceZ.Resistance,
+                                     z0 * IMPDTOLERANCE) Then
+            TestPassed = False
+        End If
+        Dim NearlyZero As System.Double = z0 * IMPDTOLERANCE0
+        If Impedance.EqualEnoughZero(sourceZ.Reactance, NearlyZero) Then
+            ' This wants a Z0 match.
+            If Not Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero) Then
+                TestPassed = False
+            End If
+        Else
+            ' This wants a match to an arbitrary load.
+            If Not Impedance.EqualEnough(WorkZ.Reactance, sourceZ.Reactance,
+                                         z0 * IMPDTOLERANCE) Then
+
+                TestPassed = False
+            End If
+        End If
+        If Not TestPassed Then
+            Throw New System.ApplicationException(
+                $"{aTransformation.Style}{MSGTDNRT}")
         End If
 
         ' On getting this far,
