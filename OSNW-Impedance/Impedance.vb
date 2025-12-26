@@ -1,4 +1,5 @@
 ﻿'TODO:
+' Can ValidateTransformation() be changed to share some responses?
 ' Convert from building an array, to building a list, of suggested solutions.
 ' Create looped test of tangency with reversed checks?
 ' Should infinity be allowed or rejected for admittance and susceptance inputs?
