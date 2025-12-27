@@ -108,6 +108,55 @@ End Class
 Namespace DevelopmentTests
     ' Used as a place to perform ad hoc tests.
 
+
+
+    Public Class TestEquality
+
+        '<Fact>
+        'Public Shared Sub EqualityTest_WorksOk()
+        '    'Dim Z1 As New OSNW.Numerics.Impedance(50.0, 25.0)
+        '    'Dim Z2 As New OSNW.Numerics.Impedance(50.0, 25.0)
+        '    'Dim Z3 As New OSNW.Numerics.Impedance(75.0, 25.0)
+        '    '' Using Assert.Equal for value equality.
+        '    'Assert.Equal(Z1, Z2) ' Should be equal.
+        '    'Assert.NotEqual(Z1, Z3) ' Should not be equal.
+
+
+
+        '    Dim Z0 As System.Double = 50.0
+        '    Dim Tol As System.Double = Z0 * Impedance.DFLTIMPDTOLERANCE
+        '    Dim Z1 As New OSNW.Numerics.Impedance(50.0, 25.0)
+        '    Dim Z2 As New OSNW.Numerics.Impedance(50.0, 25.001)
+        '    Dim Z3 As New OSNW.Numerics.Impedance(50.0, 25.00001)
+        '    Dim Z4 As New OSNW.Numerics.Impedance(50.0, 25.000002)
+
+        '    'Dim AreEqual As System.Boolean =
+        '    '    Impedance.EqualEnough(Z1.Resistance, Z2.Resistance,
+        '    '                          Z0 * Impedance.DFLTIMPDTOLERANCE) AndAlso
+        '    '    Impedance.EqualEnough(Z1.Reactance, Z2.Reactance,
+        '    '                          Z0 * Impedance.DFLTIMPDTOLERANCE)
+
+
+        '    Assert.False(Impedance.EqualEnough(Z2.Resistance, Z1.Resistance, Tol) AndAlso
+        '                 Impedance.EqualEnough(Z2.Reactance, Z1.Reactance, Tol))
+        '    Assert.False(Impedance.EqualEnough(Z3.Resistance, Z1.Resistance, Tol) AndAlso
+        '                 Impedance.EqualEnough(Z3.Reactance, Z1.Reactance, Tol))
+        '    Assert.True(Impedance.EqualEnough(Z4.Resistance, Z1.Resistance, Tol) AndAlso
+        '                Impedance.EqualEnough(Z4.Reactance, Z1.Reactance, Tol))
+
+
+        '    'Dim TestPassed As System.Boolean = True ' For now.
+        '    'If Not Impedance.EqualEnough(loadZ.Resistance, sourceZ.Resistance,
+        '    '                             Z0 * IMPDTOLERANCE) Then
+        '    '    ' Do something.
+        '    'End If
+
+
+        'End Sub
+
+    End Class
+
+
     Public Class TestUnitTestExceptions
 
         ' The first two tests below check for a SPECIFIC exception. The third
@@ -285,7 +334,7 @@ Namespace TryParseStandardTests
 
     Public Class TestTryParseStandardDefault
 
-        Const IMPDTOLERANCE As System.Double = Impedance.IMPDTOLERANCE
+        Const IMPDTOLERANCE As System.Double = Impedance.DFLTIMPDTOLERANCE
 
         <Theory>
         <InlineData("111111.125+555555.6875j", CultureTestVals.SAMERESISTANCE, CultureTestVals.SAMEREACTANCE)>
@@ -346,7 +395,7 @@ Namespace TryParseStandardTests
 
     Public Class TestTryParseStandardDefaultMixed
 
-        Const IMPDTOLERANCE As System.Double = Impedance.IMPDTOLERANCE
+        Const IMPDTOLERANCE As System.Double = Impedance.DFLTIMPDTOLERANCE
 
         <Theory>
         <InlineData("111111.125+j555555.6875", CultureTestVals.SAMERESISTANCE, CultureTestVals.SAMEREACTANCE)> ' A+Bi.
@@ -369,7 +418,7 @@ Namespace TryParseStandardTests
 
     Public Class TestTryParseStandardEnforceStandardization
 
-        Const IMPDTOLERANCE As System.Double = Impedance.IMPDTOLERANCE
+        Const IMPDTOLERANCE As System.Double = Impedance.DFLTIMPDTOLERANCE
         Const TightEnforcement As OsnwNumSS =
             OsnwNumSS.EnforceSequence Or OsnwNumSS.EnforceSpacing
 
@@ -406,7 +455,7 @@ Namespace TryParseStandardTests
 
     Public Class TestTryParseStandardCulture
 
-        Const IMPDTOLERANCE As System.Double = Impedance.IMPDTOLERANCE
+        Const IMPDTOLERANCE As System.Double = Impedance.DFLTIMPDTOLERANCE
 
         <Theory>
         <InlineData("111111.125+j555555.6875", CultureTestVals.SAMERESISTANCE, CultureTestVals.SAMEREACTANCE, 0)>

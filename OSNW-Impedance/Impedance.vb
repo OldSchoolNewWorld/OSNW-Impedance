@@ -1,5 +1,4 @@
 ﻿'TODO:
-' Can ValidateTransformation() be changed to share some responses?
 ' Convert from building an array, to building a list, of suggested solutions.
 ' Create looped test of tangency with reversed checks?
 ' Should infinity be allowed or rejected for admittance and susceptance inputs?
@@ -7,7 +6,7 @@
 '   "the strings should be generated and parsed by using the conventions of the invariant culture."
 '   REF: Serialize and deserialize numeric data
 '   https://learn.microsoft.com/en-us/dotnet/fundamentals/runtime-libraries/system-globalization-numberformatinfo#serialize-and-deserialize-numeric-data
-' Add De/Serialization to soultiuon suggestions?????
+' Add De/Serialization to solution suggestions?????
 ' Allow both "i" and "j" to match the .NET result? Add tests for both i and j.
 '   Wait, where does .NET indicate anything about allowing "j" for Complex aside from "Format a complex
 '     number"? Complex only has ToString() and TryFormat() - nothing about standard form.
@@ -82,6 +81,47 @@ Public Structure Impedance
     ' inherited. Given that, Impedance is created as a structure which uses
     ' familiar terminology but relies on Complex for most of its work.
 
+    ''' <summary>
+    ''' This sets a practical limit on the precision of equality detection in
+    ''' mathematical operations related to impedances. It is intended to prevent
+    ''' issues arising from floating point precision limitations. This should
+    ''' account for practical applications where capacitor, inductor, or
+    ''' resistor component values have limited precision. A smaller value
+    ''' DEcreases the liklihood of detecting equality; a larger value INcreases
+    ''' the liklihood of detecting equality.
+    ''' </summary>
+    Const DFLTIMPDTOLERANCE As System.Double = 0.000_001
+    'xxxx
+
+    ''' <summary>
+    ''' This sets a practical limit on the precision of zero detection in
+    ''' mathematical operations related to impedances. It is intended to prevent
+    ''' issues arising from floating point precision limitations. This should
+    ''' account for practical applications where capacitor, inductor, or
+    ''' resistor component values have limited precision. A smaller value
+    ''' DEcreases the liklihood of zero detection; a larger value INcreases the
+    ''' liklihood of zero detection.
+    ''' </summary>
+    ''' <remarks>
+    ''' This is intended to be used as a factor to multiplied by some practical
+    ''' reference value.
+    ''' 
+    ''' <example><code>
+    ''' </code></example>
+    ''' </remarks>
+    Const DFLTIMPDTOLERANCE0 As System.Double = 0.000_001
+    'xxxx
+
+    ''' <summary>
+    ''' This sets a practical limit on the precision of equality detection in
+    ''' graphics operations. It is intended to prevent issues arising from
+    ''' floating point precision limitations. This should account for
+    ''' indistinguishable, sub-pixel, differences on any current monitor or
+    ''' printer. A smaller value DEcreases the liklihood of detecting equality;
+    ''' a larger value INcreases the liklihood of detecting equality.
+    ''' </summary>
+    Const GRAPHICTOLERANCE As System.Double = 0.0001
+
     Public Const PI As System.Double = System.Double.Pi
     Public Const HALFPI As System.Double = System.Double.Pi / 2.0
 
@@ -99,38 +139,6 @@ Public Structure Impedance
         "Must be a positive, non-zero value."
     Public Const MSGVMBGTE1 As System.String =
         "Must be greater than or equal to 1."
-
-    ''' <summary>
-    ''' This sets a practical limit on the precision of equality detection in
-    ''' mathematical operations related to impedances. It is intended to prevent
-    ''' issues arising from floating point precision limitations. This should
-    ''' account for practical applications where capacitor, inductor, or
-    ''' resistor component values have limited precision. A smaller value
-    ''' DEcreases the liklihood of detecting equality; a larger value INcreases
-    ''' the liklihood of detecting equality.
-    ''' </summary>
-    Const IMPDTOLERANCE As System.Double = 0.000001
-
-    ''' <summary>
-    ''' This sets a practical limit on the precision of zero detection in
-    ''' mathematical operations related to impedances. It is intended to prevent
-    ''' issues arising from floating point precision limitations. This should
-    ''' account for practical applications where capacitor, inductor, or
-    ''' resistor component values have limited precision. A smaller value
-    ''' DEcreases the liklihood of zero detection; a larger value INcreases the
-    ''' liklihood of zero detection.
-    ''' </summary>
-    Const IMPDTOLERANCE0 As System.Double = 0.000001
-
-    ''' <summary>
-    ''' This sets a practical limit on the precision of equality detection in
-    ''' graphics operations. It is intended to prevent issues arising from
-    ''' floating point precision limitations. This should account for
-    ''' indistinguishable, sub-pixel, differences on any current monitor or
-    ''' printer. A smaller value DEcreases the liklihood of detecting equality;
-    ''' a larger value INcreases the liklihood of detecting equality.
-    ''' </summary>
-    Const GRAPHICTOLERANCE As System.Double = 0.0001
 
 #Region "Fields and Properties"
 
@@ -310,7 +318,7 @@ Public Structure Impedance
     ''' <summary>
     ''' Check for reasonable equality of two impedances, based on the
     ''' characteristic impedance of the system. A difference of less than
-    ''' <see cref="IMPDTOLERANCE"/> multiplied by <paramref name="z0"/> is
+    ''' <see cref="DFLTIMPDTOLERANCE"/> multiplied by <paramref name="z0"/> is
     ''' considered to establish equality.
     ''' </summary>
     ''' <param name="z0">xxxxxxxxxx</param>
@@ -322,7 +330,7 @@ Public Structure Impedance
         ByVal otherVal As Impedance, ByVal refVal As Impedance) _
         As System.Boolean
 
-        Dim NearlyZero As System.Double = IMPDTOLERANCE * z0
+        Dim NearlyZero As System.Double = DFLTIMPDTOLERANCE * z0
 
         ' REF: Precision and complex numbers
         ' <see href="https://github.com/dotnet/docs/blob/main/docs/fundamentals/runtime-libraries/system-numerics-complex.md#precision-and-complex-numbers"/>
@@ -343,7 +351,7 @@ Public Structure Impedance
         Else
             ' Not zero; reactances must match.
             Return EqualEnough(otherVal.Reactance, refVal.Reactance,
-                               IMPDTOLERANCE)
+                               DFLTIMPDTOLERANCE)
         End If
 
     End Function ' EqualEnough

@@ -673,7 +673,7 @@ Public Class SmithMainCircle
         As System.Double
 
         If Impedance.EqualEnoughZero(
-            reactance, Me.GridRadius * Impedance.IMPDTOLERANCE0) Then
+            reactance, Me.GridRadius * Impedance.DFLTIMPDTOLERANCE0) Then
 
             'Dim CaughtBy As System.Reflection.MethodBase =
             '    System.Reflection.MethodBase.GetCurrentMethod
@@ -724,7 +724,7 @@ Public Class SmithMainCircle
         As System.Double
 
         If Impedance.EqualEnoughZero(
-            susceptance, Me.GridRadius * Impedance.IMPDTOLERANCE0) Then
+            susceptance, Me.GridRadius * Impedance.DFLTIMPDTOLERANCE0) Then
 
             'Dim CaughtBy As System.Reflection.MethodBase =
             '    System.Reflection.MethodBase.GetCurrentMethod
@@ -796,7 +796,7 @@ Public Class SmithMainCircle
             Dim RCirc As New RCircle(Me, resistance)
 
             If Impedance.EqualEnoughZero(
-                reactance, Me.GridRadius * Impedance.IMPDTOLERANCE0) Then
+                reactance, Me.GridRadius * Impedance.DFLTIMPDTOLERANCE0) Then
 
                 ' The circle intersection approach further below will not work
                 ' due to the infinite radius of the X-circle.
