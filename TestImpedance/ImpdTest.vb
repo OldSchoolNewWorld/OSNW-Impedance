@@ -108,54 +108,36 @@ End Class
 Namespace DevelopmentTests
     ' Used as a place to perform ad hoc tests.
 
-
-
     Public Class TestEquality
 
-        '<Fact>
-        'Public Shared Sub EqualityTest_WorksOk()
-        '    'Dim Z1 As New OSNW.Numerics.Impedance(50.0, 25.0)
-        '    'Dim Z2 As New OSNW.Numerics.Impedance(50.0, 25.0)
-        '    'Dim Z3 As New OSNW.Numerics.Impedance(75.0, 25.0)
-        '    '' Using Assert.Equal for value equality.
-        '    'Assert.Equal(Z1, Z2) ' Should be equal.
-        '    'Assert.NotEqual(Z1, Z3) ' Should not be equal.
+        <Fact>
+        Public Shared Sub EqualityTest_WorksOk()
 
+            Dim Tol As System.Double = Impedance.DFLTIMPDTOLERANCE
+            Dim Z1 As New OSNW.Numerics.Impedance(50.0, 25.0)
+            Dim Z2 As New OSNW.Numerics.Impedance(50.000049, 25)
+            Dim Z3 As New OSNW.Numerics.Impedance(50.00005, 25)
+            Dim Z4 As New OSNW.Numerics.Impedance(50.000051, 25)
+            Dim Z5 As New OSNW.Numerics.Impedance(50, 25.000024)
+            Dim Z6 As New OSNW.Numerics.Impedance(50, 25.000025)
+            Dim Z7 As New OSNW.Numerics.Impedance(50, 25.000026)
 
+            Assert.True(Impedance.EqualEnough(Z2.Resistance, Z1.Resistance, Tol) AndAlso
+                        Impedance.EqualEnough(Z2.Reactance, Z1.Reactance, Tol))
+            Assert.False(Impedance.EqualEnough(Z3.Resistance, Z1.Resistance, Tol) AndAlso
+                         Impedance.EqualEnough(Z3.Reactance, Z1.Reactance, Tol))
+            Assert.False(Impedance.EqualEnough(Z4.Resistance, Z1.Resistance, Tol) AndAlso
+                         Impedance.EqualEnough(Z4.Reactance, Z1.Reactance, Tol))
+            Assert.True(Impedance.EqualEnough(Z5.Resistance, Z1.Resistance, Tol) AndAlso
+                        Impedance.EqualEnough(Z5.Reactance, Z1.Reactance, Tol))
+            Assert.False(Impedance.EqualEnough(Z6.Resistance, Z1.Resistance, Tol) AndAlso
+                         Impedance.EqualEnough(Z6.Reactance, Z1.Reactance, Tol))
+            Assert.False(Impedance.EqualEnough(Z7.Resistance, Z1.Resistance, Tol) AndAlso
+                         Impedance.EqualEnough(Z7.Reactance, Z1.Reactance, Tol))
 
-        '    Dim Z0 As System.Double = 50.0
-        '    Dim Tol As System.Double = Z0 * Impedance.DFLTIMPDTOLERANCE
-        '    Dim Z1 As New OSNW.Numerics.Impedance(50.0, 25.0)
-        '    Dim Z2 As New OSNW.Numerics.Impedance(50.0, 25.001)
-        '    Dim Z3 As New OSNW.Numerics.Impedance(50.0, 25.00001)
-        '    Dim Z4 As New OSNW.Numerics.Impedance(50.0, 25.000002)
+        End Sub
 
-        '    'Dim AreEqual As System.Boolean =
-        '    '    Impedance.EqualEnough(Z1.Resistance, Z2.Resistance,
-        '    '                          Z0 * Impedance.DFLTIMPDTOLERANCE) AndAlso
-        '    '    Impedance.EqualEnough(Z1.Reactance, Z2.Reactance,
-        '    '                          Z0 * Impedance.DFLTIMPDTOLERANCE)
-
-
-        '    Assert.False(Impedance.EqualEnough(Z2.Resistance, Z1.Resistance, Tol) AndAlso
-        '                 Impedance.EqualEnough(Z2.Reactance, Z1.Reactance, Tol))
-        '    Assert.False(Impedance.EqualEnough(Z3.Resistance, Z1.Resistance, Tol) AndAlso
-        '                 Impedance.EqualEnough(Z3.Reactance, Z1.Reactance, Tol))
-        '    Assert.True(Impedance.EqualEnough(Z4.Resistance, Z1.Resistance, Tol) AndAlso
-        '                Impedance.EqualEnough(Z4.Reactance, Z1.Reactance, Tol))
-
-
-        '    'Dim TestPassed As System.Boolean = True ' For now.
-        '    'If Not Impedance.EqualEnough(loadZ.Resistance, sourceZ.Resistance,
-        '    '                             Z0 * IMPDTOLERANCE) Then
-        '    '    ' Do something.
-        '    'End If
-
-
-        'End Sub
-
-    End Class
-
+    End Class ' TestEquality
 
     Public Class TestUnitTestExceptions
 
@@ -539,8 +521,8 @@ Namespace MathTests
 
         <Fact>
         Sub Equals_DoubleDefault_Passes()
-            Dim I1 As OsnwImpd
-            Dim I2 As OsnwImpd
+            Dim I1 As New OsnwImpd
+            Dim I2 As New OsnwImpd
             Assert.True(I1.Equals(I2))
         End Sub
 
@@ -691,7 +673,7 @@ Namespace SerializationTests
 
             Dim jsonString As String = "{""Resistance"":1,""Reactance"":2}"
 
-            Dim Imp As Impedance
+            Dim Imp As New Impedance
             If Impedance.DeserializeJSONString(jsonString, Imp) Then
                 Assert.True(Imp.Resistance.Equals(1) AndAlso Imp.Reactance.Equals(2))
             Else
@@ -710,7 +692,7 @@ Namespace SerializationTests
         <InlineData("{""Resistance"":555555555.5555556,""Reactance"":555555555.5555556}",
                     555_555_555.555_555_555, 555_555_555.555_555_555)>
         Sub Deserialize_Default_Passes(jsonString As String, r As Double, x As Double)
-            Dim Imp As Impedance
+            Dim Imp As New Impedance
             If Impedance.DeserializeJSONString(jsonString, Imp) Then
                 Assert.True(Imp.Resistance.Equals(r) AndAlso Imp.Reactance.Equals(x))
             Else

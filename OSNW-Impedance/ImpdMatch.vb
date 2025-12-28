@@ -276,7 +276,7 @@ Partial Public Structure Impedance
         Dim Z0 As System.Double = mainCirc.Z0
         Dim TestPassed As System.Boolean = True ' For now.
         If Not Impedance.EqualEnough(WorkZ.Resistance, sourceZ.Resistance,
-                                     Z0 * DFLTIMPDTOLERANCE) Then
+                                     DFLTIMPDTOLERANCE) Then
             TestPassed = False
         End If
         Dim NearlyZero As System.Double = Z0 * DFLTIMPDTOLERANCE0
@@ -288,7 +288,7 @@ Partial Public Structure Impedance
         Else
             ' This wants a match to an arbitrary load.
             If Not Impedance.EqualEnough(WorkZ.Reactance, sourceZ.Reactance,
-                                         Z0 * DFLTIMPDTOLERANCE) Then
+                                         DFLTIMPDTOLERANCE) Then
 
                 TestPassed = False
             End If

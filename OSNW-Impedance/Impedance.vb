@@ -1,4 +1,5 @@
 ﻿'TODO:
+' Rework comments for the tolerance constants.
 ' Convert from building an array, to building a list, of suggested solutions.
 ' Create looped test of tangency with reversed checks?
 ' Should infinity be allowed or rejected for admittance and susceptance inputs?
@@ -84,33 +85,73 @@ Public Structure Impedance
     ''' <summary>
     ''' This sets a practical limit on the precision of equality detection in
     ''' mathematical operations related to impedances. It is intended to prevent
-    ''' issues arising from floating point precision limitations. This should
-    ''' account for practical applications where capacitor, inductor, or
-    ''' resistor component values have limited precision. A smaller value
-    ''' DEcreases the liklihood of detecting equality; a larger value INcreases
-    ''' the liklihood of detecting equality.
+    ''' issues arising from minor inequalities due to floating point precision
+    ''' limitations. A smaller value DEcreases the liklihood of detecting
+    ''' equality; a larger value INcreases the liklihood of detecting equality.
     ''' </summary>
+    ''' <remarks>
+    ''' This is intended to be used as a factor to be multiplied by some practical
+    ''' reference value.<br/>
+    ''' <example>
+    ''' This example uses the <see cref="DFLTIMPDTOLERANCE"/> value to determine
+    ''' if two impedances are close enough to be considered equal. In the case
+    ''' of <see cref="EqualEnough(Double, Double, Double)"/>, the reference
+    ''' value is the "refVal" parameter.
+    ''' <code>
+    ''' Public Shared Sub EqualityTest
+    '''
+    '''     Dim Tol As System.Double = Impedance.DFLTIMPDTOLERANCE
+    '''     Dim Z1 As New OSNW.Numerics.Impedance(50.0, 25.0)
+    '''     Dim Z2 As New OSNW.Numerics.Impedance(50.000049, 25)
+    '''
+    '''     if Impedance.EqualEnough(Z2.Resistance, Z1.Resistance, Tol) AndAlso
+    '''         Impedance.EqualEnough(Z2.Reactance, Z1.Reactance, Tol)) then
+    '''         '
+    '''         ' Code for a match.
+    '''         '
+    '''     else
+    '''         '
+    '''         ' Code for a mismatch.
+    '''         '
+    '''     end if
+    '''
+    ''' End Sub
+    ''' </code></example>
+    ''' </remarks>
     Const DFLTIMPDTOLERANCE As System.Double = 0.000_001
-    'xxxx
 
     ''' <summary>
     ''' This sets a practical limit on the precision of zero detection in
     ''' mathematical operations related to impedances. It is intended to prevent
-    ''' issues arising from floating point precision limitations. This should
-    ''' account for practical applications where capacitor, inductor, or
-    ''' resistor component values have limited precision. A smaller value
+    ''' issues arising from floating point precision limitations. A smaller value
     ''' DEcreases the liklihood of zero detection; a larger value INcreases the
     ''' liklihood of zero detection.
     ''' </summary>
     ''' <remarks>
-    ''' This is intended to be used as a factor to multiplied by some practical
-    ''' reference value.
-    ''' 
-    ''' <example><code>
+    ''' This is intended to be used as a factor to be multiplied by some
+    ''' practical reference value. Since zeroes cannot be compared based on a
+    ''' ratio of two values, some other value is needed to establish a
+    ''' reasonable closeness to zero.<br/>
+    ''' <example>
+    ''' This example shows how to use <c>DFLTIMPDTOLERANCE0</c> in conjunction
+    ''' with <see cref="EqualEnoughZero(System.Double, System.Double)"/> to
+    ''' determine if two reactances are close enough to be considered equal.
+    ''' <code>
+    ''' Dim Z0 As System.Double = 50.0
+    ''' Dim SourceX As System.Double = SourceZ.Reactance
+    ''' Dim LoadX As System.Double = LoadZ.Reactance
+    ''' If EqualEnoughZero(SourceX - LoadX, DFLTIMPDTOLERANCE0 * Z0) Then
+    '''     '
+    '''     ' Code for when reactances are considered to already match.
+    '''     '
+    ''' ElseIf
+    '''     '
+    '''     ' Code for when reactances are not considered to already match.
+    '''     '
+    ''' End If
     ''' </code></example>
     ''' </remarks>
     Const DFLTIMPDTOLERANCE0 As System.Double = 0.000_001
-    'xxxx
 
     ''' <summary>
     ''' This sets a practical limit on the precision of equality detection in
@@ -206,8 +247,8 @@ Public Structure Impedance
 
     ''' <summary>
     ''' Check for reasonable equality when using floating point values. A
-    ''' difference of less than <paramref name="maxDiff"/> is considered to
-    ''' establish equality.
+    ''' difference greater than <paramref name="maxDiff"/> is considered to
+    ''' establish inequality.
     ''' </summary>
     ''' <param name="otherVal">Specifies the value to be compared to
     ''' <paramref name="refVal"/>.</param>
@@ -217,9 +258,8 @@ Public Structure Impedance
     ''' <returns><c>True</c> if the values are reasonably close in value;
     ''' otherwise, <c>False</c>.</returns>
     ''' <remarks>
-    ''' <see cref="EqualEnoughAbsolute(System.Double, System.Double,
-    ''' System.Double)"/> does the comparison based on an absolute numeric
-    ''' difference. The control value is <paramref name="maxDiff"/>. Select
+    ''' This does the comparison based on an absolute numeric difference. The
+    ''' control value is <paramref name="maxDiff"/>. Select
     ''' <paramref name="maxDiff"/> such that it is a good representation of zero
     ''' relative to other known or expected values.</remarks>
     Public Shared Function EqualEnoughAbsolute(ByVal otherVal As System.Double,
@@ -231,7 +271,7 @@ Public Structure Impedance
 
         ' No input checking.
 
-        Return System.Math.Abs(otherVal - refVal) < maxDiff
+        Return System.Math.Abs(otherVal - refVal) <= maxDiff
 
     End Function ' EqualEnoughAbsolute
 
@@ -242,7 +282,7 @@ Public Structure Impedance
     ''' </summary>
     ''' <param name="value">Specifies the value to be compared to zero.</param>
     ''' <param name="zeroTolerance">Specifies an offset from zero, below which
-    ''' <paramref name="value"/> is assumed to repreent zero.</param>
+    ''' <paramref name="value"/> is assumed to represent zero.</param>
     ''' <returns><c>True</c> if <paramref name="value"/> is reasonably close to
     ''' zero; otherwise, <c>False</c>.</returns>
     ''' <remarks>Use this when an actual zero reference would cause a failure in
@@ -271,14 +311,13 @@ Public Structure Impedance
     ''' <exception cref="System.ArgumentOutOfRangeException">When either
     ''' parameter is zero.</exception>
     ''' <remarks>
-    ''' <see cref="EqualEnough(System.Double, System.Double, System.Double)"/>
-    ''' does the comparison based on scale, Not on an
-    ''' absolute numeric difference. The control value is
-    ''' <paramref name="factor"/> multiplied by <paramref name="refVal"/>, to
-    ''' determine the minimum difference that excludes equality. There is no way
-    ''' to scale a comparison to zero. When a zero reference would cause a
-    ''' failure here, use <see cref="EqualEnoughZero(System.Double,
-    ''' System.Double)"/>.
+    ''' This does the comparison based on scale, not on an absolute numeric
+    ''' difference. The control value is <paramref name="factor"/> multiplied
+    ''' by <paramref name="refVal"/>, to determine the minimum difference that
+    ''' excludes equality.<br/>
+    ''' There is no way to scale a comparison to zero. When a zero reference
+    ''' would cause a failure here, use
+    ''' <see cref="EqualEnoughZero(System.Double, System.Double)"/>.
     ''' </remarks>
     Public Shared Function EqualEnough(ByVal otherVal As System.Double,
         ByVal refVal As System.Double, ByVal factor As System.Double) _
@@ -306,37 +345,47 @@ Public Structure Impedance
 
     End Function ' EqualEnough
 
-    '''' <param name="z0">xxxxxxxxxx</param>
-    '''' <returns><c>True</c> if the values are reasonably close in value;
-    '''' otherwise, <c>False</c>.</returns>
-    '''' <remarks>
-    '''' <c>EqualEnough()</c> does the comparison based on scale, not on an
-    '''' absolute numeric difference.
-    '''' There is no way to scale a comparison to zero. When a zero reference
-    '''' would cause a failure here, this uses <see cref="EqualEnoughZero"/>.
-    '''' </remarks>
     ''' <summary>
     ''' Check for reasonable equality of two impedances, based on the
     ''' characteristic impedance of the system. A difference of less than
     ''' <see cref="DFLTIMPDTOLERANCE"/> multiplied by <paramref name="z0"/> is
     ''' considered to establish equality.
     ''' </summary>
-    ''' <param name="z0">xxxxxxxxxx</param>
+    ''' <param name="z0">Specifies the characteristic impedance of the
+    ''' system.</param>
     ''' <param name="otherVal">Specifies the value to be compared to
     ''' <paramref name="refVal"/>.</param>
     ''' <param name="refVal">Specifies a base value for comparison.</param>
-    ''' <returns>xxxxxxxxxx</returns>
+    ''' <returns><c>True</c> if the values are reasonably close in value;
+    ''' otherwise, <c>False</c>.</returns>
+    ''' <exception cref="System.ArgumentOutOfRangeException">When
+    ''' <paramref name="z0"/> is zero or negative.</exception>"
+    ''' <remarks>
+    ''' This does the comparison based on scale, not on an absolute numeric
+    ''' difference.
+    ''' The control value is <see cref="DFLTIMPDTOLERANCE"/> multiplied by
+    ''' <paramref name="z0"/>, to determine the minimum difference that
+    ''' excludes equality.<br/>
+    ''' There is no way to scale a comparison to zero. When a zero reference
+    ''' would cause a failure here, this uses <see cref="EqualEnoughZero"/>.
+    ''' </remarks>
     Public Shared Function EqualEnough(ByVal z0 As System.Double,
         ByVal otherVal As Impedance, ByVal refVal As Impedance) _
         As System.Boolean
 
-        Dim NearlyZero As System.Double = DFLTIMPDTOLERANCE * z0
-
         ' REF: Precision and complex numbers
         ' <see href="https://github.com/dotnet/docs/blob/main/docs/fundamentals/runtime-libraries/system-numerics-complex.md#precision-and-complex-numbers"/>
 
-        ' No input checking. otherVal and refVal are presumed to have been
-        ' checked when created.
+        ' Input checking.
+        If z0 <= 0.0 Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(
+                NameOf(z0), Impedance.MSGVMBGTZ)
+        End If
+        ' otherVal and refVal are presumed to have been checked when created.
+
+        Dim NearlyZero As System.Double = DFLTIMPDTOLERANCE0 * z0
 
         If Not EqualEnoughAbsolute(otherVal.Resistance, refVal.Resistance,
                                    NearlyZero) Then
