@@ -16,24 +16,6 @@ Option Infer Off
 ' The comments here relate to solving conjugate matches on a Smith Chart that
 ' has a horizontal resonance line, with R=0 at the left.
 
-' Smith-Chart - University of Utah
-' https://my.ece.utah.edu/~ece5321/ZY_chart.pdf
-'
-' NORMALIZED IMPEDANCE AND ADMITTANCE COORDINATES
-' https://mtt.org/app/uploads/2023/08/ZY_color_smith_chart.pdf
-
-' Chapter 2-2 The Smith Chart - University of Florida
-' https://amris.mbi.ufl.edu/wordpress/files/2021/01/SmithChart_FullPresentation.pdf
-
-' Impedance Matching and Smith Chart Impedance
-' https://www.analog.com/en/resources/technical-articles/impedance-matching-and-smith-chart-impedance-maxim-integrated.html?gated=1751854195363
-
-' Microsoft Word - The Smith Chart.doc
-' https://ittc.ku.edu/~jstiles/723/handouts/The%20Smith%20Chart.pdf
-
-' Smith Chart Table of Contents
-' http://www.antenna-theory.com/tutorial/smith/chart.php
-
 '             Component selection
 ' To go | On a(n)  | Use a
 ' CW    | R-circle | series inductor, increasing X.

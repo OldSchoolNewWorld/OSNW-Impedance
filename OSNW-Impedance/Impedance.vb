@@ -1,6 +1,9 @@
 ﻿'TODO:
-' Rework comments for the tolerance constants.
+' Move EqualEnough routines to a new class derived from System.Double, in its own solution?
+'   Both Single and Double?
+'   Implement at least some as extensions?
 ' Convert from building an array, to building a list, of suggested solutions.
+'   https://learn.microsoft.com/en-us/dotnet/standard/collections/
 ' Create looped test of tangency with reversed checks?
 ' Should infinity be allowed or rejected for admittance and susceptance inputs?
 ' Add De/Serialization to Admittance?????
@@ -21,23 +24,26 @@ Imports System.Diagnostics.CodeAnalysis
 Imports System.Globalization
 Imports System.Text.Json.Serialization
 
-' REF: A Practical Introduction to Impedance Matching.
-' https://picture.iczhiku.com/resource/eetop/shkgQUqJkAUQZBXx.pdf
-
 ' REF: Electrical impedance
 ' https://en.wikipedia.org/wiki/Electrical_impedance
 
 ' REF: Standing wave ratio
 ' https://en.wikipedia.org/wiki/Standing_wave_ratio
 
+' REF: Formulas of Impedances in AC Circuits
+' https://www.mathforengineers.com/AC-circuits/formulas-of-impedances-in-ac-circuits.html
+
+' REF: A Practical Introduction to Impedance Matching.
+' https://picture.iczhiku.com/resource/eetop/shkgQUqJkAUQZBXx.pdf
+
 ' REF: Impedance matching
 ' https://en.wikipedia.org/wiki/Impedance_matching
 
+' Impedance Matching and Smith Chart Impedance
+' https://www.analog.com/en/resources/technical-articles/impedance-matching-and-smith-chart-impedance-maxim-integrated.html?gated=1751854195363
+
 ' REF: Spread Spectrum Scene
 ' http://www.sss-mag.com/smith.html
-
-' REF: Formulas of Impedances in AC Circuits
-' https://www.mathforengineers.com/AC-circuits/formulas-of-impedances-in-ac-circuits.html
 
 ' REF: Advanced Accelerator Physics Course 2013
 ' https://indico.cern.ch/event/216963/sessions/35851/attachments/347577/
@@ -50,6 +56,21 @@ Imports System.Text.Json.Serialization
 
 '   C1-S_Parameter_in_CAS_Ebeltoft_CASPERS_26.1.2011.pdf
 '   https://indico.cern.ch/event/216963/sessions/35851/attachments/347577/484630/C1-S_Parameter_in_CAS_Ebeltoft_CASPERS_26.1.2011.pdf
+
+' Smith-Chart - University of Utah
+' https://my.ece.utah.edu/~ece5321/ZY_chart.pdf
+'
+' NORMALIZED IMPEDANCE AND ADMITTANCE COORDINATES
+' https://mtt.org/app/uploads/2023/08/ZY_color_smith_chart.pdf
+
+' Chapter 2-2 The Smith Chart - University of Florida
+' https://amris.mbi.ufl.edu/wordpress/files/2021/01/SmithChart_FullPresentation.pdf
+
+' Microsoft Word - The Smith Chart.doc
+' https://ittc.ku.edu/~jstiles/723/handouts/The%20Smith%20Chart.pdf
+
+' Smith Chart Table of Contents
+' http://www.antenna-theory.com/tutorial/smith/chart.php
 
 ' FROM OLD YTT CODE AND .NET Source:
 '    <SerializableAttribute()>
@@ -80,7 +101,7 @@ Public Structure Impedance
     '   The Imaginary component is represented by Reactance.
     ' Since System.Numerics.Complex is represented as a structure, it cannot be
     ' inherited. Given that, Impedance is created as a structure which uses
-    ' familiar terminology but relies on Complex for most of its work.
+    ' familiar terminology but relies on Complex for some of its work.
 
     ''' <summary>
     ''' This sets a practical limit on the precision of equality detection in
@@ -90,13 +111,13 @@ Public Structure Impedance
     ''' equality; a larger value INcreases the liklihood of detecting equality.
     ''' </summary>
     ''' <remarks>
-    ''' This is intended to be used as a factor to be multiplied by some practical
-    ''' reference value.<br/>
+    ''' This is intended to be used as a factor to be multiplied by some
+    ''' practical reference value.<br/>
     ''' <example>
-    ''' This example uses the <see cref="DFLTIMPDTOLERANCE"/> value to determine
-    ''' if two impedances are close enough to be considered equal. In the case
-    ''' of <see cref="EqualEnough(Double, Double, Double)"/>, the reference
-    ''' value is the "refVal" parameter.
+    ''' This example uses the <c>DFLTIMPDTOLERANCE</c> value to determine if two
+    ''' impedances are close enough to be treated as being equal. In the case of
+    ''' <see cref="EqualEnough(Double, Double, Double)"/>, the reference value
+    ''' is the "refVal" parameter.
     ''' <code>
     ''' Public Shared Sub EqualityTest
     '''
@@ -267,7 +288,10 @@ Public Structure Impedance
         As System.Boolean
 
         ' REF: Precision and complex numbers
-        ' <see href="https://github.com/dotnet/docs/blob/main/docs/fundamentals/runtime-libraries/system-numerics-complex.md#precision-and-complex-numbers"/>
+        ' https://github.com/dotnet/docs/blob/main/docs/fundamentals/runtime-libraries/system-numerics-complex.md#precision-and-complex-numbers
+
+        ' REF: Random ASCII – tech blog of Bruce Dawson
+        ' https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/
 
         ' No input checking.
 
@@ -294,7 +318,7 @@ Public Structure Impedance
         ByVal zeroTolerance As System.Double) As System.Boolean
 
         ' REF: Precision and complex numbers
-        ' <see href="https://github.com/dotnet/docs/blob/main/docs/fundamentals/runtime-libraries/system-numerics-complex.md#precision-and-complex-numbers"/>
+        ' https://github.com/dotnet/docs/blob/main/docs/fundamentals/runtime-libraries/system-numerics-complex.md#precision-and-complex-numbers
         Return System.Math.Abs(value) < System.Math.Abs(zeroTolerance)
     End Function ' EqualEnoughZero
 
@@ -324,7 +348,7 @@ Public Structure Impedance
         As System.Boolean
 
         ' REF: Precision and complex numbers
-        ' <see href="https://github.com/dotnet/docs/blob/main/docs/fundamentals/runtime-libraries/system-numerics-complex.md#precision-and-complex-numbers"/>
+        ' https://github.com/dotnet/docs/blob/main/docs/fundamentals/runtime-libraries/system-numerics-complex.md#precision-and-complex-numbers
 
         ' Input checking.
         If refVal.Equals(0.0) Then
@@ -374,7 +398,7 @@ Public Structure Impedance
         As System.Boolean
 
         ' REF: Precision and complex numbers
-        ' <see href="https://github.com/dotnet/docs/blob/main/docs/fundamentals/runtime-libraries/system-numerics-complex.md#precision-and-complex-numbers"/>
+        ' https://github.com/dotnet/docs/blob/main/docs/fundamentals/runtime-libraries/system-numerics-complex.md#precision-and-complex-numbers
 
         ' Input checking.
         If z0 <= 0.0 Then
