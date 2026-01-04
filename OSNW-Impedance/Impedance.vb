@@ -368,22 +368,24 @@ Public Structure Impedance
 
     ''' <summary>
     ''' Check for reasonable equality of two impedances, based on the
-    ''' characteristic impedance of the system. A difference of less than
-    ''' <see cref="DFLTIMPDTOLERANCE"/> multiplied by <paramref name="z0"/> is
-    ''' considered to establish equality.
+    ''' characteristic impedance of the system. A difference of less than or
+    ''' equal to <see cref="DFLTIMPDTOLERANCE"/> multiplied by
+    ''' <paramref name="z0"/> is considered to establish equality.
     ''' </summary>
     ''' <param name="z0">Specifies the characteristic impedance of the
     ''' system.</param>
     ''' <param name="otherVal">Specifies the value to be compared to
     ''' <paramref name="refVal"/>.</param>
-    ''' <param name="refVal">Specifies a base value for comparison.</param>
+    ''' <param name="refVal">Specifies the reference value to which
+    ''' <paramref name="otherVal"/> is compared.</param>
     ''' <returns><c>True</c> if the values are reasonably close in value;
     ''' otherwise, <c>False</c>.</returns>
     ''' <exception cref="System.ArgumentOutOfRangeException">When
     ''' <paramref name="z0"/> is zero or negative.</exception>"
     ''' <remarks>
-    ''' This does the comparison based on scale, not on an absolute numeric
-    ''' difference.
+    ''' This attempts to do the comparison based on scale, not on an absolute
+    ''' numeric difference. When either reactance is nearly zero, both
+    ''' reactances must be nearly zero to be considered equal.
     ''' The control value is <see cref="DFLTIMPDTOLERANCE"/> multiplied by
     ''' <paramref name="z0"/>, to determine the minimum difference that
     ''' excludes equality.<br/>
@@ -393,9 +395,6 @@ Public Structure Impedance
     Public Shared Function EqualEnough(ByVal z0 As System.Double,
         ByVal otherVal As Impedance, ByVal refVal As Impedance) _
         As System.Boolean
-
-        ' REF: Precision and complex numbers
-        ' https://github.com/dotnet/docs/blob/main/docs/fundamentals/runtime-libraries/system-numerics-complex.md#precision-and-complex-numbers
 
         ' Input checking.
         If z0 <= 0.0 Then
