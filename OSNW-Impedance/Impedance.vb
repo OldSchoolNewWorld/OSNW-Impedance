@@ -266,47 +266,46 @@ Public Structure Impedance
 
 #Region "EqualEnough Implementations"
 
+    ' REF: Precision and complex numbers
+    ' https://github.com/dotnet/docs/blob/main/docs/fundamentals/runtime-libraries/system-numerics-complex.md#precision-and-complex-numbers
+
+    ' REF: Random ASCII – tech blog of Bruce Dawson
+    ' https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/
+
     ''' <summary>
     ''' Check for reasonable equality when using floating point values. A
-    ''' difference greater than <paramref name="maxDiff"/> is considered to
-    ''' establish inequality.
+    ''' difference of less than or equal to <paramref name="maxDiff"/> is
+    ''' considered to establish equality.
     ''' </summary>
     ''' <param name="otherVal">Specifies the value to be compared to
     ''' <paramref name="refVal"/>.</param>
-    ''' <param name="refVal">Specifies a base value for comparison.</param>
-    ''' <param name="maxDiff">Specifies the minimum difference that excludes
+    ''' <param name="refVal">Specifies the reference value to which
+    ''' <paramref name="otherVal"/> is compared.</param>
+    ''' <param name="maxDiff">Specifies the maximum difference that satisfies
     ''' equality.</param>
     ''' <returns><c>True</c> if the values are reasonably close in value;
     ''' otherwise, <c>False</c>.</returns>
     ''' <remarks>
     ''' This does the comparison based on an absolute numeric difference. The
     ''' control value is <paramref name="maxDiff"/>. Select
-    ''' <paramref name="maxDiff"/> such that it is a good representation of zero
-    ''' relative to other known or expected values.</remarks>
+    ''' <paramref name="maxDiff"/> such that it is a good representation of
+    ''' zero, relative to other known or expected values.</remarks>
     Public Shared Function EqualEnoughAbsolute(ByVal otherVal As System.Double,
         ByVal refVal As System.Double, ByVal maxDiff As System.Double) _
         As System.Boolean
 
-        ' REF: Precision and complex numbers
-        ' https://github.com/dotnet/docs/blob/main/docs/fundamentals/runtime-libraries/system-numerics-complex.md#precision-and-complex-numbers
-
-        ' REF: Random ASCII – tech blog of Bruce Dawson
-        ' https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/
-
         ' No input checking.
-
         Return System.Math.Abs(otherVal - refVal) <= maxDiff
-
     End Function ' EqualEnoughAbsolute
 
     ''' <summary>
     ''' Check for reasonable equality to zero when using floating point values.
-    ''' Any value less than <paramref name="zeroTolerance"/> from zero is
-    ''' considered to be equal to zero.
+    ''' Any value less than or equal to <paramref name="zeroTolerance"/> from
+    ''' zero is considered to be equal to zero.
     ''' </summary>
     ''' <param name="value">Specifies the value to be compared to zero.</param>
-    ''' <param name="zeroTolerance">Specifies an offset from zero, below which
-    ''' <paramref name="value"/> is assumed to represent zero.</param>
+    ''' <param name="zeroTolerance">Specifies the maximum offset from zero which
+    ''' is assumed to represent zero.</param>
     ''' <returns><c>True</c> if <paramref name="value"/> is reasonably close to
     ''' zero; otherwise, <c>False</c>.</returns>
     ''' <remarks>Use this when an actual zero reference would cause a failure in
@@ -317,26 +316,27 @@ Public Structure Impedance
     Public Shared Function EqualEnoughZero(ByVal value As System.Double,
         ByVal zeroTolerance As System.Double) As System.Boolean
 
-        ' REF: Precision and complex numbers
-        ' https://github.com/dotnet/docs/blob/main/docs/fundamentals/runtime-libraries/system-numerics-complex.md#precision-and-complex-numbers
-        Return System.Math.Abs(value) < System.Math.Abs(zeroTolerance)
+        ' No input checking.
+        Return System.Math.Abs(value) <= System.Math.Abs(zeroTolerance)
     End Function ' EqualEnoughZero
 
     ''' <summary>
-    ''' Check for reasonable equality when using floating point values.
+    ''' Check for reasonable equality, within a specified ratio, when using
+    ''' floating point values.
     ''' </summary>
     ''' <param name="otherVal">Specifies the value to be compared to
     ''' <paramref name="refVal"/>.</param>
-    ''' <param name="refVal">Specifies a base value for comparison.</param>
-    ''' <param name="factor">Specifies a ratio for the minimum difference that
-    ''' excludes equality.</param>
+    ''' <param name="refVal">Specifies the reference value to which
+    ''' <paramref name="otherVal"/> is compared.</param>
+    ''' <param name="ratio">Specifies the maximum ratio of the values which is
+    ''' assumed to represent equality.</param>
     ''' <returns><c>True</c> if the values are reasonably close in value;
     ''' otherwise, <c>False</c>.</returns>
     ''' <exception cref="System.ArgumentOutOfRangeException">When either
-    ''' parameter is zero.</exception>
+    ''' compared value is zero.</exception>
     ''' <remarks>
     ''' This does the comparison based on scale, not on an absolute numeric
-    ''' difference. The control value is <paramref name="factor"/> multiplied
+    ''' difference. The control value is <paramref name="ratio"/> multiplied
     ''' by <paramref name="refVal"/>, to determine the minimum difference that
     ''' excludes equality.<br/>
     ''' There is no way to scale a comparison to zero. When a zero reference
@@ -344,11 +344,8 @@ Public Structure Impedance
     ''' <see cref="EqualEnoughZero(System.Double, System.Double)"/>.
     ''' </remarks>
     Public Shared Function EqualEnough(ByVal otherVal As System.Double,
-        ByVal refVal As System.Double, ByVal factor As System.Double) _
+        ByVal refVal As System.Double, ByVal ratio As System.Double) _
         As System.Boolean
-
-        ' REF: Precision and complex numbers
-        ' https://github.com/dotnet/docs/blob/main/docs/fundamentals/runtime-libraries/system-numerics-complex.md#precision-and-complex-numbers
 
         ' Input checking.
         If refVal.Equals(0.0) Then
@@ -365,7 +362,7 @@ Public Structure Impedance
         End If
 
         Return System.Math.Abs(otherVal - refVal) <
-            System.Math.Abs(factor * refVal)
+            System.Math.Abs(ratio * refVal)
 
     End Function ' EqualEnough
 

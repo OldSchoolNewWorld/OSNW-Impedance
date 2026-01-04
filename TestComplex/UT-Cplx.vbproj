@@ -7,6 +7,11 @@
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
     <AssemblyName>ComplexTest</AssemblyName>
+	  <Title>Unit tests for Complex implementations.</Title>
+	  <Version>0.1.0</Version>
+	  <Authors>OldSchoolNewWorld</Authors>
+	  <Company>OldSchoolNewWorld</Company>
+	  <Copyright>Copyright (c) 2026 OldSchoolNewWorld</Copyright>
   </PropertyGroup>
 
   <ItemGroup>

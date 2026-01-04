@@ -7,6 +7,11 @@
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
     <AssemblyName>AdmittanceTest</AssemblyName>
+	  <Title>Unit tests for Admittances.</Title>
+	  <Version>0.1.0</Version>
+	  <Authors>OldSchoolNewWorld</Authors>
+	  <Company>OldSchoolNewWorld</Company>
+	  <Copyright>Copyright (c) 2026 OldSchoolNewWorld</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
