@@ -22,8 +22,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="OSNW.Impedance">
-      <HintPath>..\OSNW-Impedance\bin\Debug\net8.0\OSNW.Impedance.dll</HintPath>
+    <Reference Include="OSNW.Numerics">
+      <HintPath>..\OSNW-Impedance\bin\Debug\net8.0\OSNW.Numerics.dll</HintPath>
     </Reference>
   </ItemGroup>
 

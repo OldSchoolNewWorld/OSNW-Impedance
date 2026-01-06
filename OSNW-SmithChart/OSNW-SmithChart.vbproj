@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>OSNW.SmithChart</RootNamespace>
+    <TargetFramework>net8.0-windows8.0</TargetFramework>
+    <RootNamespace>OSNW.SmithChart</RootNamespace>
+    <UseWPF>true</UseWPF>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <Title>OSNW Smith Chart</Title>
+    <Version>0.1.0</Version>
+    <Authors>OldSchoolNewWorld</Authors>
+    <Company>OldSchoolNewWorld</Company>
+    <Description>Items to support Smith Charts.</Description>
+    <Copyright>Copyright (c) 2026 OldSchoolNewWorld</Copyright>
+    <AssemblyVersion>0.1.0</AssemblyVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="OSNW.Numerics">
+      <HintPath>..\OSNW-Impedance\bin\Debug\net8.0\OSNW.Numerics.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

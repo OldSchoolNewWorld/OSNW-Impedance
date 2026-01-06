@@ -3,13 +3,13 @@
   <PropertyGroup>
     <RootNamespace>OSNW.Numerics</RootNamespace>
     <TargetFramework>net8.0</TargetFramework>
-    <AssemblyName>OSNW.Impedance</AssemblyName>
+    <AssemblyName>OSNW.Numerics</AssemblyName>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <Title>OSNW Impedance</Title>
+    <Title>OSNW Numerics</Title>
     <Version>0.1.0</Version>
     <Authors>OldSchoolNewWorld</Authors>
     <Company>OldSchoolNewWorld</Company>
-    <Description>A type and routines to work with electrical impedances.</Description>
+    <Description>A type and routines to work with numerics.</Description>
     <Copyright>Copyright (c) 2026 OldSchoolNewWorld</Copyright>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/OldSchoolNewWorld/OSNW-Impedance</RepositoryUrl>
