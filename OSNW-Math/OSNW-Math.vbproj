@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>OSNW</RootNamespace>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>OSNW.Math</AssemblyName>
+	<GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <Title>OSNW Math</Title>
+    <Version>0.1.0</Version>
+    <Authors>OldSchoolNewWorld</Authors>
+    <Company>OldSchoolNewWorld</Company>
+    <Description>Routines to work with mathematics.</Description>
+    <Copyright>Copyright (c) 2026 OldSchoolNewWorld</Copyright>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/OldSchoolNewWorld/OSNW-Impedance</RepositoryUrl>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<None Include="..\README.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
+
+</Project>

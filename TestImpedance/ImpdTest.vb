@@ -5,9 +5,53 @@ Option Infer Off
 
 Imports System.Globalization
 Imports OSNW.Numerics
+Imports OSNW.Math
 Imports Xunit
 Imports OsnwImpd = OSNW.Numerics.Impedance
 Imports OsnwNumSS = OSNW.Numerics.StandardizationStyles
+
+Namespace MathTests
+
+    Public Class TryCircleLineIntersectionTests
+
+        <Theory>
+        <InlineData(1.75, 6.75, 1.5,
+                    (6.25 - 6.75) / (3 - 1.75), 7.45,
+                    0.3558, 7.3065,
+                    3.1428, 6.1934)>
+        <InlineData(3.0, 6.25, 1.0,
+                    (6.25 - 6.75) / (3 - 1.75), 7.45,
+                    2.0703, 6.621,
+                    3.9293, 5.8801)>
+        Sub ToAdmittance_KnownData_Passes(
+         circleX As System.Double, circleY As System.Double, circleR As System.Double,
+         lineM As System.Double, lineB As System.Double,
+         expect1X As System.Double, expect1Y As System.Double,
+         expect2X As System.Double, expect2Y As System.Double)
+
+            Dim Intersect1X As System.Double = expect1X
+            Dim Intersect1Y As System.Double = expect1Y
+            Dim Intersect2X As System.Double = expect2X
+            Dim Intersect2Y As System.Double = expect2Y
+
+            If Not OSNW.Math.TryCircleLineIntersection(
+                circleX, circleY, circleR,
+                lineM, lineB,
+                Intersect1X, Intersect1Y,
+                Intersect2X, Intersect2Y) Then
+                Assert.True(False)
+            End If
+
+            Assert.Equal(Intersect2X, expect1X, 0.01)
+            Assert.Equal(Intersect2Y, expect1Y, 0.01)
+            Assert.Equal(Intersect1X, expect2X, 0.01)
+            Assert.Equal(Intersect1Y, expect2Y, 0.01)
+
+        End Sub
+
+    End Class ' TryCircleLineIntersectionTests
+
+End Namespace ' MathTests
 
 #Region "Test Data"
 
