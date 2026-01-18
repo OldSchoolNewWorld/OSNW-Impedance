@@ -69,7 +69,7 @@ Public Module Math
     '''' <param name="circleY">xxxxxxxxxx</param>
     '''' <param name="circleR">xxxxxxxxxx</param>
     '''' <param name="lineM">xxxxxxxxxx</param>
-    '''' <param name="lineI">xxxxxxxxxx</param>
+    '''' <param name="lineB">xxxxxxxxxx</param>
     '''' <param name="int1X">xxxxxxxxxx</param>
     '''' <param name="int1Y">xxxxxxxxxx</param>
     '''' <param name="int2X">intxxxxxxxxxx2X</param>
@@ -79,13 +79,12 @@ Public Module Math
     Public Function TryCircleLineIntersection(
         ByVal circleX As System.Double, ByVal circleY As System.Double,
         ByVal circleR As System.Double, ByVal lineM As System.Double,
-        ByVal lineI As System.Double, ByRef int1X As System.Double,
+        ByVal lineB As System.Double, ByRef int1X As System.Double,
         ByRef int1Y As System.Double, ByRef int2X As System.Double,
         ByRef Int2Y As System.Double) As System.Boolean
 
 
-        Dim cHECKPOINT1 As System.Double
-        Dim cHECKPOINT2 As System.Double
+
 
 
         '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -104,147 +103,70 @@ Public Module Math
 
         ' Localize parameters, for one point of intersection.
         ' (int1X - circleX)^2 + (int1Y - circleY)^2 = circleR^2
-        ' y1 = lineM * int1X + lineI
-
-        cHECKPOINT1 = (int1X - circleX) ^ 2 + (int1Y - circleY) ^ 2
-        cHECKPOINT2 = circleR ^ 2
-        If Not Double.Abs(cHECKPOINT2 - cHECKPOINT1) < 0.01 Then
-            Return False
-        End If
-        cHECKPOINT1 = int1Y
-        cHECKPOINT2 = lineM * int1X + lineI
-        If Not Double.Abs(cHECKPOINT2 - cHECKPOINT1) < 0.01 Then
-            Return False
-        End If
+        ' y1 = lineM * int1X + lineB
 
         ' A point at the intersection of the circle and the line conforms to
         ' both equations.
-        ' (int1X - circleX)^2 + ((lineM * int1X + lineI)- circleY)^2 = circleR^2
-        ' (int1X - circleX)^2 + (lineM * int1X + lineI - circleY)^2 = circleR^2
-
-        cHECKPOINT1 = (int1X - circleX) ^ 2 + (lineM * int1X + lineI - circleY) ^ 2
-        cHECKPOINT2 = circleR ^ 2
-        If Not Double.Abs(cHECKPOINT2 - cHECKPOINT1) < 0.01 Then
-            Return False
-        End If
+        ' (int1X - circleX)^2 + ((lineM * int1X + lineB)- circleY)^2 = circleR^2
+        ' (int1X - circleX)^2 + (lineM * int1X + lineB - circleY)^2 = circleR^2
 
         ' Rewrite for visibility.
         ' (int1X - circleX)^2
-        ' + ((lineM * int1X) + lineI - circleY)^2
+        ' + ((lineM * int1X) + lineB - circleY)^2
         ' = circleR^2
-
-        cHECKPOINT1 = (int1X - circleX) ^ 2 + (lineM * int1X + lineI - circleY) ^ 2
-        cHECKPOINT2 = circleR ^ 2
-        If Not Double.Abs(cHECKPOINT2 - cHECKPOINT1) < 0.01 Then
-            Return False
-        End If
 
         ' Expand the squares.
         ' int1X^2 - (2 * circleX * int1X) + circleX^2
-        ' + (lineM * int1X) * ((lineM * int1X) + lineI - circleY)
-        ' + lineI           * ((lineM * int1X) + lineI - circleY)
-        ' - circleY         * ((lineM * int1X) + lineI - circleY)
+        ' + (lineM * int1X) * ((lineM * int1X) + lineB - circleY)
+        ' + lineB           * ((lineM * int1X) + lineB - circleY)
+        ' - circleY         * ((lineM * int1X) + lineB - circleY)
         ' = circleR^2
-
-        cHECKPOINT1 =
-            int1X ^ 2 - (2 * circleX * int1X) + circleX ^ 2 _
-            + (lineM * int1X) * ((lineM * int1X) + lineI - circleY) _
-            + lineI * ((lineM * int1X) + lineI - circleY) _
-            - circleY * ((lineM * int1X) + lineI - circleY)
-        cHECKPOINT2 = circleR ^ 2
-        If Not Double.Abs(cHECKPOINT2 - cHECKPOINT1) < 0.01 Then
-            Return False
-        End If
 
         ' Distribute the multiplications.
         ' int1X^2 -2*circleX*int1X + circleX^2
-        ' + (lineM*int1X*lineM*int1X + lineM*int1X*lineI - lineM*int1X*circleY)
-        ' + (lineI*lineM*int1X + lineI*lineI - lineI*circleY)
-        ' - (circleY*lineM*int1X + circleY*lineI - circleY*circleY)
+        ' + (lineM*int1X*lineM*int1X + lineM*int1X*lineB - lineM*int1X*circleY)
+        ' + (lineB*lineM*int1X + lineB*lineB - lineB*circleY)
+        ' - (circleY*lineM*int1X + circleY*lineB - circleY*circleY)
         ' = circleR^2
-
-        cHECKPOINT1 =
-            int1X ^ 2 - 2 * circleX * int1X + circleX ^ 2 _
-            + (lineM * int1X * lineM * int1X + lineM * int1X * lineI - lineM * int1X * circleY) _
-            + (lineI * lineM * int1X + lineI * lineI - lineI * circleY) _
-         - (circleY * lineM * int1X + circleY * lineI - circleY * circleY)
-        cHECKPOINT2 = circleR ^ 2
-        If Not Double.Abs(cHECKPOINT2 - cHECKPOINT1) < 0.01 Then
-            Return False
-        End If
 
         ' Normalize terms.
         ' int1X^2 -2*circleX*int1X + circleX^2
-        ' + lineM*lineM*int1X^2 + lineM*lineI*int1X - lineM*circleY*int1X
-        ' + lineI*lineM*int1X + lineI*lineI - lineI*circleY
-        ' - circleY*lineM*int1X - circleY*lineI + circleY*circleY
+        ' + lineM^2*int1X^2 + lineM*lineB*int1X - lineM*circleY*int1X
+        ' + lineB*lineM*int1X + lineB^2 - lineB*circleY
+        ' - circleY*lineM*int1X - circleY*lineB + circleY*circleY
         ' = circleR^2
-
-        cHECKPOINT1 =
-            int1X ^ 2 - 2 * circleX * int1X + circleX ^ 2 _
-            + lineM * lineM * int1X ^ 2 + lineM * lineI * int1X - lineM * circleY * int1X _
-            + lineI * lineM * int1X + lineI * lineI - lineI * circleY _
-            - circleY * lineM * int1X - circleY * lineI + circleY * circleY
-
-        cHECKPOINT2 = circleR ^ 2
-        If Not Double.Abs(cHECKPOINT2 - cHECKPOINT1) < 0.01 Then
-            Return False
-        End If
 
         ' Gather like terms. Arrange for quadratic formula.
         ' int1X^2 + (lineM^2)*int1X^2
-        ' -(2*circleX)*int1X + (2*lineM*lineI)*int1X - (2*lineM*circleY)*int1X
-        ' + circleX^2 + lineI*lineI - 2*lineI*circleY + circleY^2 - circleR^2
+        ' -(2*circleX)*int1X + (2*lineM*lineB)*int1X - (2*lineM*circleY)*int1X
+        ' + circleX^2 + lineB^2 - 2*lineB*circleY + circleY^2 - circleR^2
         ' = 0
-
-        cHECKPOINT1 =
-             int1X ^ 2 + (lineM ^ 2) * int1X ^ 2 _
-             - (2 * circleX) * int1X + (2 * lineM * lineI) * int1X - (2 * lineM * circleY) * int1X _
-             + circleX ^ 2 + lineI * lineI - 2 * lineI * circleY + circleY ^ 2 - circleR ^ 2
-        cHECKPOINT2 = 0
-        If Not Double.Abs(cHECKPOINT2 - cHECKPOINT1) < 0.01 Then
-            Return False
-        End If
-
-
-
-
-
-
-        '        REWORKED ABOVE HERE
-
-
 
         ' Extract X terms.
-        ' (1 + lineM*lineM)*int1X^2
-        ' + 2*(-circleX + lineM*lineI - lineM*circleY)*int1X
-        ' + circleX^2 + lineI*lineI - 2*lineI*circleY + circleY*circleY - circleR^2
+        ' (1 + (lineM^2))*int1X^2
+        ' + (lineM*(lineB - circleY) - circleX)*2*int1X
+        ' circleX^2 + lineB*(lineB - 2*circleY) + circleY^2 - circleR^2
         ' = 0
 
-        cHECKPOINT1 = (1 + lineM * lineM) * int1X ^ 2 + 2 * (-circleX + lineM * lineI - lineM * circleY) * int1X + circleX ^ 2 + lineI * lineI - 2 * lineI * circleY + circleY * circleY - circleR ^ 2
-        cHECKPOINT2 = 0
-        If Not Double.Abs(cHECKPOINT2 - cHECKPOINT1) < 0.01 Then
-            Return False
-        End If
-
-        ' Set up for quadratic formula.
-        ' a = 1 + (lineM*lineM)
-        ' b = 2*(-circleX + lineM*lineI - lineM*circleY)
-        ' c = circleX^2 + lineI*lineI - 2*lineI*circleY + circleY*circleY - circleR^2
+        ' Set up for the quadratic formula.
+        ' a = (1 + (lineM^2))
+        ' b = (lineM*(lineB - circleY) - circleX)*2
+        ' c = circleX^2 + lineB*(lineB - 2*circleY) + circleY^2 - circleR^2
 
         ' Implementation:
 
-        Dim a As System.Double = 1 + (lineM * lineM)
-        Dim b As System.Double = 2 * (-circleX + lineM * lineI - lineM * circleY)
-        Dim c As System.Double = circleX ^ 2 + lineI * lineI - 2 * lineI * circleY + circleY * circleY - circleR ^ 2
+        Dim a As System.Double = (1 + (lineM ^ 2))
+        Dim b As System.Double = (lineM * (lineB - circleY) - circleX) * 2
+        Dim c As System.Double = circleX ^ 2 + lineB * (lineB - 2 * circleY) +
+                                 circleY ^ 2 - circleR ^ 2
 
         If Not TryQuadratic(a, b, c, int1X, int2X) Then
             Return False
         End If
 
-        ' y = lineMx + b
-        int1Y = lineM * int1X + lineI
-        Int2Y = lineM * int2X + lineI
+        ' y = mx + b
+        int1Y = lineM * int1X + lineB
+        Int2Y = lineM * int2X + lineB
         Return True
 
     End Function ' TryCircleLineIntersection
