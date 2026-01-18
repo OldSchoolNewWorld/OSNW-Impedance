@@ -23,7 +23,7 @@ Namespace MathTests
                     (6.25 - 6.75) / (3 - 1.75), 7.45,
                     2.0703, 6.621,
                     3.9293, 5.8801)>
-        Sub ToAdmittance_KnownData_Passes(
+        Sub TryCircleLineIntersectionLine_KnownData_Passes(
          circleX As System.Double, circleY As System.Double, circleR As System.Double,
          lineM As System.Double, lineB As System.Double,
          expect1X As System.Double, expect1Y As System.Double,
@@ -47,6 +47,47 @@ Namespace MathTests
             Assert.Equal(Intersect2Y, expect1Y, 0.01)
             Assert.Equal(Intersect1X, expect2X, 0.01)
             Assert.Equal(Intersect1Y, expect2Y, 0.01)
+
+        End Sub
+
+        <Theory>
+        <InlineData(1.75, 6.75, 1.5,
+                    1, 8.25,
+                    1, 5.25,
+                    1, 8.049,
+                    1, 5.451)>
+        <InlineData(1.75, 6.75, 1.5,
+                    1, 5.25,
+                    1, 8.25,
+                    1, 8.049,
+                    1, 5.451)>
+        <InlineData(1.75, 6.75, 1.5,
+                    3.1698, 7.2381,
+                    2.4427, 5.4205,
+                    3.1698, 7.2381,
+                    2.4427, 5.4205)>
+        Sub TryCircleLineIntersectionPoints_KnownData_Passes(
+             circleX As System.Double, circleY As System.Double, circleR As System.Double,
+             lineX1 As System.Double, lineY1 As System.Double,
+             lineX2 As System.Double, lineY2 As System.Double,
+             expect1X As System.Double, expect1Y As System.Double,
+             expect2X As System.Double, expect2Y As System.Double)
+
+            Dim Intersect1X As System.Double = expect1X
+            Dim Intersect1Y As System.Double = expect1Y
+            Dim Intersect2X As System.Double = expect2X
+            Dim Intersect2Y As System.Double = expect2Y
+
+            If Not OSNW.Math.TryCircleLineIntersection(circleX, circleY, circleR, lineX1, lineY1,
+                lineX2, lineY2, Intersect1X, Intersect1Y, Intersect2X, Intersect2Y) Then
+                Assert.True(False)
+            End If
+
+            ' These may need to be swapped depending on order of calculation.
+            Assert.Equal(Intersect1X, expect1X, 0.01)
+            Assert.Equal(Intersect1Y, expect1Y, 0.01)
+            Assert.Equal(Intersect2X, expect2X, 0.01)
+            Assert.Equal(Intersect2Y, expect2Y, 0.01)
 
         End Sub
 

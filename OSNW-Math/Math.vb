@@ -70,18 +70,18 @@ Public Module Math
     '''' <param name="circleR">xxxxxxxxxx</param>
     '''' <param name="lineM">xxxxxxxxxx</param>
     '''' <param name="lineB">xxxxxxxxxx</param>
-    '''' <param name="int1X">xxxxxxxxxx</param>
-    '''' <param name="int1Y">xxxxxxxxxx</param>
-    '''' <param name="int2X">intxxxxxxxxxx2X</param>
-    '''' <param name="Int2Y">xxxxxxxxxx</param>
+    '''' <param name="intersect1X">xxxxxxxxxx</param>
+    '''' <param name="intersect1Y">xxxxxxxxxx</param>
+    '''' <param name="intersect2X">intxxxxxxxxxx2X</param>
+    '''' <param name="intersect2Y">xxxxxxxxxx</param>
     '''' <returns>xxxxxxxxxx</returns>
     '''' <remarks>xxxxxxxxxx</remarks>
     Public Function TryCircleLineIntersection(
         ByVal circleX As System.Double, ByVal circleY As System.Double,
         ByVal circleR As System.Double, ByVal lineM As System.Double,
-        ByVal lineB As System.Double, ByRef int1X As System.Double,
-        ByRef int1Y As System.Double, ByRef int2X As System.Double,
-        ByRef Int2Y As System.Double) As System.Boolean
+        ByVal lineB As System.Double, ByRef intersect1X As System.Double,
+        ByRef intersect1Y As System.Double, ByRef intersect2X As System.Double,
+        ByRef intersect2Y As System.Double) As System.Boolean
 
 
 
@@ -102,49 +102,55 @@ Public Module Math
         ' Y = lineM * X + B
 
         ' Localize parameters, for one point of intersection.
-        ' (int1X - circleX)^2 + (int1Y - circleY)^2 = circleR^2
-        ' y1 = lineM * int1X + lineB
+        ' (intersect1X - circleX)^2 + (intersect1Y - circleY)^2 = circleR^2
+        ' y1 = lineM * intersect1X + lineB
 
         ' A point at the intersection of the circle and the line conforms to
         ' both equations.
-        ' (int1X - circleX)^2 + ((lineM * int1X + lineB)- circleY)^2 = circleR^2
-        ' (int1X - circleX)^2 + (lineM * int1X + lineB - circleY)^2 = circleR^2
+        ' (intersect1X - circleX)^2
+        '     + ((lineM * intersect1X + lineB)- circleY)^2 = circleR^2
+        ' (intersect1X - circleX)^2
+        '     + (lineM * intersect1X + lineB - circleY)^2 = circleR^2
 
         ' Rewrite for visibility.
-        ' (int1X - circleX)^2
-        ' + ((lineM * int1X) + lineB - circleY)^2
+        ' (intersect1X - circleX)^2
+        ' + ((lineM * intersect1X) + lineB - circleY)^2
         ' = circleR^2
 
         ' Expand the squares.
-        ' int1X^2 - (2 * circleX * int1X) + circleX^2
-        ' + (lineM * int1X) * ((lineM * int1X) + lineB - circleY)
-        ' + lineB           * ((lineM * int1X) + lineB - circleY)
-        ' - circleY         * ((lineM * int1X) + lineB - circleY)
+        ' intersect1X^2 - (2 * circleX * intersect1X) + circleX^2
+        ' + (lineM * intersect1X)
+        '     * ((lineM * intersect1X) + lineB - circleY)
+        ' + lineB * ((lineM * intersect1X) + lineB - circleY)
+        ' - circleY * ((lineM * intersect1X) + lineB - circleY)
         ' = circleR^2
 
         ' Distribute the multiplications.
-        ' int1X^2 -2*circleX*int1X + circleX^2
-        ' + (lineM*int1X*lineM*int1X + lineM*int1X*lineB - lineM*int1X*circleY)
-        ' + (lineB*lineM*int1X + lineB*lineB - lineB*circleY)
-        ' - (circleY*lineM*int1X + circleY*lineB - circleY*circleY)
+        ' intersect1X^2 -2*circleX*intersect1X + circleX^2
+        ' + (lineM*intersect1X*lineM*intersect1X + lineM*intersect1X*lineB
+        '     - lineM*intersect1X*circleY)
+        ' + (lineB*lineM*intersect1X + lineB*lineB - lineB*circleY)
+        ' - (circleY*lineM*intersect1X + circleY*lineB - circleY*circleY)
         ' = circleR^2
 
         ' Normalize terms.
-        ' int1X^2 -2*circleX*int1X + circleX^2
-        ' + lineM^2*int1X^2 + lineM*lineB*int1X - lineM*circleY*int1X
-        ' + lineB*lineM*int1X + lineB^2 - lineB*circleY
-        ' - circleY*lineM*int1X - circleY*lineB + circleY*circleY
+        ' intersect1X^2 -2*circleX*intersect1X + circleX^2
+        ' + lineM^2*intersect1X^2 + lineM*lineB*intersect1X
+        '     - lineM*circleY*intersect1X
+        ' + lineB*lineM*intersect1X + lineB^2 - lineB*circleY
+        ' - circleY*lineM*intersect1X - circleY*lineB + circleY*circleY
         ' = circleR^2
 
         ' Gather like terms. Arrange for quadratic formula.
-        ' int1X^2 + (lineM^2)*int1X^2
-        ' -(2*circleX)*int1X + (2*lineM*lineB)*int1X - (2*lineM*circleY)*int1X
+        ' intersect1X^2 + (lineM^2)*intersect1X^2
+        ' -(2*circleX)*intersect1X + (2*lineM*lineB)*intersect1X
+        '     - (2*lineM*circleY)*intersect1X
         ' + circleX^2 + lineB^2 - 2*lineB*circleY + circleY^2 - circleR^2
         ' = 0
 
         ' Extract X terms.
-        ' (1 + (lineM^2))*int1X^2
-        ' + (lineM*(lineB - circleY) - circleX)*2*int1X
+        ' (1 + (lineM^2))*intersect1X^2
+        ' + (lineM*(lineB - circleY) - circleX)*2*intersect1X
         ' circleX^2 + lineB*(lineB - 2*circleY) + circleY^2 - circleR^2
         ' = 0
 
@@ -160,13 +166,13 @@ Public Module Math
         Dim c As System.Double = circleX ^ 2 + lineB * (lineB - 2 * circleY) +
                                  circleY ^ 2 - circleR ^ 2
 
-        If Not TryQuadratic(a, b, c, int1X, int2X) Then
+        If Not TryQuadratic(a, b, c, intersect1X, intersect2X) Then
             Return False
         End If
 
         ' y = mx + b
-        int1Y = lineM * int1X + lineB
-        Int2Y = lineM * int2X + lineB
+        intersect1Y = lineM * intersect1X + lineB
+        intersect2Y = lineM * intersect2X + lineB
         Return True
 
     End Function ' TryCircleLineIntersection
@@ -179,7 +185,7 @@ Public Module Math
     ''' <param name="circleR">xxxxxxxxxx</param>
     ''' <param name="lineX1">xxxxxxxxxx</param>
     ''' <param name="lineY1">xxxxxxxxxx</param>
-    ''' <param name="lineint2X">xxxxxxxxxx</param>
+    ''' <param name="lineX2">xxxxxxxxxx</param>
     ''' <param name="lineY2">xxxxxxxxxx</param>
     ''' <param name="intersect1X">xxxxxxxxxx</param>
     ''' <param name="intersect1Y">xxxxxxxxxx</param>
@@ -190,30 +196,54 @@ Public Module Math
     Public Function TryCircleLineIntersection(ByVal circleX As System.Double,
         ByVal circleY As System.Double, ByVal circleR As System.Double,
         ByVal lineX1 As System.Double, ByVal lineY1 As System.Double,
-        ByVal lineint2X As System.Double, ByVal lineY2 As System.Double,
+        ByVal lineX2 As System.Double, ByVal lineY2 As System.Double,
         ByRef intersect1X As System.Double, ByRef intersect1Y As System.Double,
         ByRef intersect2X As System.Double,
         ByRef intersect2Y As System.Double) As System.Boolean
 
+        Dim DeltaX As System.Double = lineX2 - lineX1
+        If DeltaX.Equals(0.0) Then
+            ' Vertical line; X = lineX1.
+
+            ' The derivation follows:
+            ' Standard form of a circle and a line.
+            ' (X - h)^2 + (Y - k)^2 = r^2
+
+            ' Substitute parameters into well-known circle equation.
+            ' (X - circleX)^2 + (Y - circleY)^2 = circleR^2
+            ' (Y - circleY)^2 = circleR^2 - (X - circleX)^2
+            ' Y - circleY = sqrt(circleR^2 - (X - circleX)^2)
+            ' Y = circleY + sqrt(circleR^2 - (X - circleX)^2)
+            ' Y = circleY + sqrt(circleR^2 - (lineX1 - circleX)^2)
+
+            ' Get the Y values.
+            ' Root = sqrt(circleR^2 - (lineX1 - circleX)^2)
+            ' intersect1Y = circleY + Root
+            ' intersect2Y = circleY - Root
+
+            Dim Minus As System.Double = lineX1 - circleX
+            Dim Root As System.Double =
+                System.Math.Sqrt((circleR * circleR) - (Minus * Minus))
+            intersect1Y = circleY + Root
+            intersect2Y = circleY - Root
+            intersect1X = lineX1
+            intersect2X = lineX1
+            Return True
+
+        End If ' Vertical line.
+
+        ' On getting here, the line is not vertical.
+
         ' Get the slope of the line.
-        ' M = (Y2 - Y1) / (int2X - X1); generic slope.
-        Dim lineM As System.Double = (lineY2 - lineY1) / (lineint2X - lineX1)
-
-
-        '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        ' First, check for the vertical case?
-        '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-
-
-
+        ' M = (Y2 - Y1) / (intersect2X - X1); generic slope.
+        Dim lineM As System.Double = (lineY2 - lineY1) / DeltaX
 
         ' Get the equation for the line.
         ' Y = M*X + B; Standard form line.
         ' B = Y - M*X; Solve for the Y-intercept.
         Dim lineB As System.Double = lineY1 - lineM * lineX1
 
-        Return TryCircleLineIntersection(circleX, circleY, circleR, lineX1,
+        Return TryCircleLineIntersection(circleX, circleY, circleR, lineM,
             lineB, intersect1X, intersect1Y, intersect2X, intersect2Y)
 
     End Function ' TryCircleLineIntersection
