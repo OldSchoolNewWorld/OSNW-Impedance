@@ -29,10 +29,10 @@ Namespace MathTests
          expect1X As System.Double, expect1Y As System.Double,
          expect2X As System.Double, expect2Y As System.Double)
 
-            Dim Intersect1X As System.Double = expect1X
-            Dim Intersect1Y As System.Double = expect1Y
-            Dim Intersect2X As System.Double = expect2X
-            Dim Intersect2Y As System.Double = expect2Y
+            Dim Intersect1X As System.Double
+            Dim Intersect1Y As System.Double
+            Dim Intersect2X As System.Double
+            Dim Intersect2Y As System.Double
 
             If Not OSNW.Math.TryCircleLineIntersection(
                 circleX, circleY, circleR,
@@ -73,10 +73,10 @@ Namespace MathTests
              expect1X As System.Double, expect1Y As System.Double,
              expect2X As System.Double, expect2Y As System.Double)
 
-            Dim Intersect1X As System.Double = expect1X
-            Dim Intersect1Y As System.Double = expect1Y
-            Dim Intersect2X As System.Double = expect2X
-            Dim Intersect2Y As System.Double = expect2Y
+            Dim Intersect1X As System.Double
+            Dim Intersect1Y As System.Double
+            Dim Intersect2X As System.Double
+            Dim Intersect2Y As System.Double
 
             If Not OSNW.Math.TryCircleLineIntersection(circleX, circleY, circleR, lineX1, lineY1,
                 lineX2, lineY2, Intersect1X, Intersect1Y, Intersect2X, Intersect2Y) Then

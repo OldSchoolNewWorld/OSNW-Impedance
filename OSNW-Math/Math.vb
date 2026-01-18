@@ -29,7 +29,7 @@ Public Module Math
     End Function ' Distance3D
 
     ''' <summary>
-    ''' Attempts to solve the quadratic equation a*x^2 + b*x + c = 0 for real
+    ''' Attempts to solve the a*x^2 + b*x + c = 0 quadratic equation for real
     ''' solutions.
     ''' </summary>
     ''' <param name="a">Specifies the <paramref name="a"/> in the well-known
@@ -62,20 +62,30 @@ Public Module Math
 
     End Function ' TryQuadratic
 
-    '''' <Summary>
-    '''' xxxxxxxxxx
-    '''' </Summary>
-    '''' <param name="circleX">xxxxxxxxxx</param>
-    '''' <param name="circleY">xxxxxxxxxx</param>
-    '''' <param name="circleR">xxxxxxxxxx</param>
-    '''' <param name="lineM">xxxxxxxxxx</param>
-    '''' <param name="lineB">xxxxxxxxxx</param>
-    '''' <param name="intersect1X">xxxxxxxxxx</param>
-    '''' <param name="intersect1Y">xxxxxxxxxx</param>
-    '''' <param name="intersect2X">intxxxxxxxxxx2X</param>
-    '''' <param name="intersect2Y">xxxxxxxxxx</param>
-    '''' <returns>xxxxxxxxxx</returns>
-    '''' <remarks>xxxxxxxxxx</remarks>
+    ''' <summary>
+    ''' Attempts to solve where a line intersects a circle, given the center
+    ''' coordinates and radius of the circle, along with the slope and
+    ''' Y-intercept of the line.
+    ''' </summary>
+    ''' <param name="circleX">Specifies the X-coordinate of the center of the
+    ''' circle.</param>
+    ''' <param name="circleY">Specifies the Y-coordinate of the center of the
+    ''' circle.</param>
+    ''' <param name="circleR">Specifies the radius of the circle.</param>
+    ''' <param name="lineM">Specifies the slope of the line.</param>
+    ''' <param name="lineB">Specifies the Y-intercept of the line.</param>
+    ''' <param name="intersect1X">Specifies the X-coordinate of one
+    ''' intersection.</param>
+    ''' <param name="intersect1Y">Specifies the Y-coordinate of one
+    ''' intersection.</param>
+    ''' <param name="intersect2X">Specifies the X-coordinate of the other
+    ''' intersection.</param>
+    ''' <param name="intersect2Y">Specifies the Y-coordinate of the other
+    ''' intersection.</param>
+    ''' <returns><c>True</c> if the process succeeds; otherwise, <c>False</c>.
+    ''' When valid, also returns the results in <paramref name="intersect1X"/>,
+    ''' <paramref name="intersect1Y"/>, <paramref name="intersect2X"/>, and
+    ''' <paramref name="intersect2Y"/>.</returns>
     Public Function TryCircleLineIntersection(
         ByVal circleX As System.Double, ByVal circleY As System.Double,
         ByVal circleR As System.Double, ByVal lineM As System.Double,
@@ -89,6 +99,7 @@ Public Module Math
 
         '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         ' First, check for the vertical case?
+        ' Is infinity accepted? Rejected? Cause an exception?
         '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
@@ -167,6 +178,10 @@ Public Module Math
                                  circleY ^ 2 - circleR ^ 2
 
         If Not TryQuadratic(a, b, c, intersect1X, intersect2X) Then
+            intersect1X = System.Double.NaN
+            intersect1Y = System.Double.NaN
+            intersect2X = System.Double.NaN
+            intersect2Y = System.Double.NaN
             Return False
         End If
 
@@ -178,21 +193,35 @@ Public Module Math
     End Function ' TryCircleLineIntersection
 
     ''' <summary>
-    ''' xxxxxxxxxx
+    ''' Attempts to solve where a line intersects a circle, given the center
+    ''' coordinates and radius of the circle, along with the coordinates of two
+    ''' points on the line..
     ''' </summary>
-    ''' <param name="circleX">xxxxxxxxxx</param>
-    ''' <param name="circleY">xxxxxxxxxx</param>
-    ''' <param name="circleR">xxxxxxxxxx</param>
-    ''' <param name="lineX1">xxxxxxxxxx</param>
-    ''' <param name="lineY1">xxxxxxxxxx</param>
-    ''' <param name="lineX2">xxxxxxxxxx</param>
-    ''' <param name="lineY2">xxxxxxxxxx</param>
-    ''' <param name="intersect1X">xxxxxxxxxx</param>
-    ''' <param name="intersect1Y">xxxxxxxxxx</param>
-    ''' <param name="intersect2X">xxxxxxxxxx</param>
-    ''' <param name="intersect2Y">xxxxxxxxxx</param>
-    ''' <returns>xxxxxxxxxx</returns>
-    ''' <remarks>xxxxxxxxxx</remarks>
+    ''' <param name="circleX">Specifies the X-coordinate of the center of the
+    ''' circle.</param>
+    ''' <param name="circleY">Specifies the Y-coordinate of the center of the
+    ''' circle.</param>
+    ''' <param name="circleR">Specifies the radius of the circle.</param>
+    ''' <param name="lineX1">Specifies the X-coordinate of the first point on
+    ''' the line.</param>
+    ''' <param name="lineY1">Specifies the Y-coordinate of the first point on
+    ''' the line.</param>
+    ''' <param name="lineX2">Specifies the X-coordinate of the second point on
+    ''' the line.</param>
+    ''' <param name="lineY2">Specifies the Y-coordinate of the second point on
+    ''' the line.</param>
+    ''' <param name="intersect1X">Specifies the X-coordinate of one
+    ''' intersection.</param>
+    ''' <param name="intersect1Y">Specifies the Y-coordinate of one
+    ''' intersection.</param>
+    ''' <param name="intersect2X">Specifies the X-coordinate of the other
+    ''' intersection.</param>
+    ''' <param name="intersect2Y">Specifies the Y-coordinate of the other
+    ''' intersection.</param>
+    ''' <returns><c>True</c> if the process succeeds; otherwise, <c>False</c>.
+    ''' When valid, also returns the results in <paramref name="intersect1X"/>,
+    ''' <paramref name="intersect1Y"/>, <paramref name="intersect2X"/>, and
+    ''' <paramref name="intersect2Y"/>.</returns>
     Public Function TryCircleLineIntersection(ByVal circleX As System.Double,
         ByVal circleY As System.Double, ByVal circleR As System.Double,
         ByVal lineX1 As System.Double, ByVal lineY1 As System.Double,
@@ -201,9 +230,20 @@ Public Module Math
         ByRef intersect2X As System.Double,
         ByRef intersect2Y As System.Double) As System.Boolean
 
+        ' Check for a vertical line.
         Dim DeltaX As System.Double = lineX2 - lineX1
         If DeltaX.Equals(0.0) Then
             ' Vertical line; X = lineX1.
+
+            ' Can there be an intersection?
+            If System.Math.Abs(lineX1 - circleX) > circleR Then
+                ' No intersection possible.
+                intersect1X = System.Double.NaN
+                intersect1Y = System.Double.NaN
+                intersect2X = System.Double.NaN
+                intersect2Y = System.Double.NaN
+                Return False
+            End If
 
             ' The derivation follows:
             ' Standard form of a circle and a line.
@@ -235,7 +275,7 @@ Public Module Math
         ' On getting here, the line is not vertical.
 
         ' Get the slope of the line.
-        ' M = (Y2 - Y1) / (intersect2X - X1); generic slope.
+        ' M = (Y2 - Y1) / (X2 - X1); generic slope.
         Dim lineM As System.Double = (lineY2 - lineY1) / DeltaX
 
         ' Get the equation for the line.
