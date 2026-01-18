@@ -42,6 +42,7 @@ Namespace MathTests
                 Assert.True(False)
             End If
 
+            ' These may need to be swapped depending on order of calculation.
             Assert.Equal(Intersect2X, expect1X, 0.01)
             Assert.Equal(Intersect2Y, expect1Y, 0.01)
             Assert.Equal(Intersect1X, expect2X, 0.01)

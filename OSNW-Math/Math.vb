@@ -20,7 +20,7 @@ Public Module Math
         ByVal x2 As System.Double, ByVal y2 As System.Double,
         ByVal z2 As System.Double) As System.Double
 
-        ' Based on Pythagoras' theorem.
+        ' Based on Pythagorean theorem.
         Dim DeltaX As System.Double = x2 - x1
         Dim DeltaY As System.Double = y2 - y1
         Dim DeltaZ As System.Double = z2 - z1
@@ -32,9 +32,12 @@ Public Module Math
     ''' Attempts to solve the quadratic equation a*x^2 + b*x + c = 0 for real
     ''' solutions.
     ''' </summary>
-    ''' <param name="a">Specifies the <paramref name="a"/> value.</param>
-    ''' <param name="b">Specifies the <paramref name="b"/> value.</param>
-    ''' <param name="c">Specifies the <paramref name="c"/> value.</param>
+    ''' <param name="a">Specifies the <paramref name="a"/> in the well-known
+    ''' formula.</param>
+    ''' <param name="b">Specifies the <paramref name="b"/> in the well-known
+    ''' formula.</param>
+    ''' <param name="c">Specifies the <paramref name="c"/> in the well-known
+    ''' formula.</param>
     ''' <returns><c>True</c> if the process succeeds; otherwise, <c>False</c>.
     ''' When valid, also returns the results in <paramref name="x1"/> and
     ''' <paramref name="x2"/>.</returns>
@@ -59,148 +62,189 @@ Public Module Math
 
     End Function ' TryQuadratic
 
-    '''' <summary>
+    '''' <Summary>
     '''' xxxxxxxxxx
-    '''' </summary>
-    '''' <param name="h">H</param>
-    '''' <param name="k">K</param>
-    '''' <param name="r">R</param>
-    '''' <param name="m">M</param>
-    '''' <param name="i">B</param>
-    '''' <param name="t">X1</param>
-    '''' <param name="u">Y1</param>
-    '''' <param name="v">X2</param>
-    '''' <param name="w">Y2</param>
+    '''' </Summary>
+    '''' <param name="circleX">xxxxxxxxxx</param>
+    '''' <param name="circleY">xxxxxxxxxx</param>
+    '''' <param name="circleR">xxxxxxxxxx</param>
+    '''' <param name="lineM">xxxxxxxxxx</param>
+    '''' <param name="lineI">xxxxxxxxxx</param>
+    '''' <param name="int1X">xxxxxxxxxx</param>
+    '''' <param name="int1Y">xxxxxxxxxx</param>
+    '''' <param name="int2X">intxxxxxxxxxx2X</param>
+    '''' <param name="Int2Y">xxxxxxxxxx</param>
     '''' <returns>xxxxxxxxxx</returns>
     '''' <remarks>xxxxxxxxxx</remarks>
     Public Function TryCircleLineIntersection(
-        ByVal h As System.Double, ByVal k As System.Double, ByVal r As System.Double,
-        ByVal m As System.Double, ByVal i As System.Double,
-        ByRef t As System.Double, ByRef u As System.Double,
-        ByRef v As System.Double, ByRef w As System.Double) _
-        As System.Boolean
+        ByVal circleX As System.Double, ByVal circleY As System.Double,
+        ByVal circleR As System.Double, ByVal lineM As System.Double,
+        ByVal lineI As System.Double, ByRef int1X As System.Double,
+        ByRef int1Y As System.Double, ByRef int2X As System.Double,
+        ByRef Int2Y As System.Double) As System.Boolean
 
 
         Dim cHECKPOINT1 As System.Double
         Dim cHECKPOINT2 As System.Double
 
 
+        '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        ' First, check for the vertical case?
+        '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+
+
+
 
         ' The derivation follows:
         ' Standard form of a circle and a line.
-        ' (X-H)^2 + (Y-K)^2 = R^2
-        ' Y = M*X + B
+        ' (X - circleX)^2 + (Y - circleY)^2 = circleR^2
+        ' Y = lineM * X + B
 
         ' Localize parameters, for one point of intersection.
-        ' (t-h)^2 + (u-k)^2 = r^2
-        ' u = m*t + i
-        cHECKPOINT1 = (t - h) ^ 2 + (u - k) ^ 2
-        cHECKPOINT2 = r ^ 2
+        ' (int1X - circleX)^2 + (int1Y - circleY)^2 = circleR^2
+        ' y1 = lineM * int1X + lineI
+
+        cHECKPOINT1 = (int1X - circleX) ^ 2 + (int1Y - circleY) ^ 2
+        cHECKPOINT2 = circleR ^ 2
         If Not Double.Abs(cHECKPOINT2 - cHECKPOINT1) < 0.01 Then
             Return False
         End If
-        cHECKPOINT1 = u
-        cHECKPOINT2 = m * t + i
+        cHECKPOINT1 = int1Y
+        cHECKPOINT2 = lineM * int1X + lineI
         If Not Double.Abs(cHECKPOINT2 - cHECKPOINT1) < 0.01 Then
             Return False
         End If
 
         ' A point at the intersection of the circle and the line conforms to
         ' both equations.
-        ' (t-h)^2 + ((m*t + i)-k)^2 = r^2
-        ' (t-h)^2 + (m*t + i -k)^2 = r^2
-        cHECKPOINT1 = (t - h) ^ 2 + (m * t + i - k) ^ 2
-        cHECKPOINT2 = r ^ 2
+        ' (int1X - circleX)^2 + ((lineM * int1X + lineI)- circleY)^2 = circleR^2
+        ' (int1X - circleX)^2 + (lineM * int1X + lineI - circleY)^2 = circleR^2
+
+        cHECKPOINT1 = (int1X - circleX) ^ 2 + (lineM * int1X + lineI - circleY) ^ 2
+        cHECKPOINT2 = circleR ^ 2
         If Not Double.Abs(cHECKPOINT2 - cHECKPOINT1) < 0.01 Then
             Return False
         End If
 
-
         ' Rewrite for visibility.
-        ' (t-h)^2
-        ' + (m*t + i -k)^2
-        ' = r^2
+        ' (int1X - circleX)^2
+        ' + ((lineM * int1X) + lineI - circleY)^2
+        ' = circleR^2
 
-        cHECKPOINT1 = (t - h) ^ 2 + (m * t + i - k) ^ 2
-        cHECKPOINT2 = r ^ 2
+        cHECKPOINT1 = (int1X - circleX) ^ 2 + (lineM * int1X + lineI - circleY) ^ 2
+        cHECKPOINT2 = circleR ^ 2
         If Not Double.Abs(cHECKPOINT2 - cHECKPOINT1) < 0.01 Then
             Return False
         End If
 
         ' Expand the squares.
-        ' t^2 -2ht + h^2
-        ' + m*t(m*t + i - k) + i(m*t + i - k) - k(m*t + i - k)
-        ' = r^2
-        cHECKPOINT1 = t ^ 2 - 2 * h * t + h ^ 2 + m * t * (m * t + i - k) + i * (m * t + i - k) - k * (m * t + i - k)
-        cHECKPOINT2 = r ^ 2
+        ' int1X^2 - (2 * circleX * int1X) + circleX^2
+        ' + (lineM * int1X) * ((lineM * int1X) + lineI - circleY)
+        ' + lineI           * ((lineM * int1X) + lineI - circleY)
+        ' - circleY         * ((lineM * int1X) + lineI - circleY)
+        ' = circleR^2
+
+        cHECKPOINT1 =
+            int1X ^ 2 - (2 * circleX * int1X) + circleX ^ 2 _
+            + (lineM * int1X) * ((lineM * int1X) + lineI - circleY) _
+            + lineI * ((lineM * int1X) + lineI - circleY) _
+            - circleY * ((lineM * int1X) + lineI - circleY)
+        cHECKPOINT2 = circleR ^ 2
         If Not Double.Abs(cHECKPOINT2 - cHECKPOINT1) < 0.01 Then
             Return False
         End If
 
         ' Distribute the multiplications.
-        ' t^2 -2ht + h^2
-        ' + (m*t*m*t + m*t*i - m*t*k)
-        ' + (i*m*t + i*i - i*k)
-        ' - (k*m*t + k*i - k*k)
-        ' = r^2
-        cHECKPOINT1 = t ^ 2 - 2 * h * t + h ^ 2 + (m * t * m * t + m * t * i - m * t * k) + (i * m * t + i * i - i * k) - (k * m * t + k * i - k * k)
-        cHECKPOINT2 = r ^ 2
+        ' int1X^2 -2*circleX*int1X + circleX^2
+        ' + (lineM*int1X*lineM*int1X + lineM*int1X*lineI - lineM*int1X*circleY)
+        ' + (lineI*lineM*int1X + lineI*lineI - lineI*circleY)
+        ' - (circleY*lineM*int1X + circleY*lineI - circleY*circleY)
+        ' = circleR^2
+
+        cHECKPOINT1 =
+            int1X ^ 2 - 2 * circleX * int1X + circleX ^ 2 _
+            + (lineM * int1X * lineM * int1X + lineM * int1X * lineI - lineM * int1X * circleY) _
+            + (lineI * lineM * int1X + lineI * lineI - lineI * circleY) _
+         - (circleY * lineM * int1X + circleY * lineI - circleY * circleY)
+        cHECKPOINT2 = circleR ^ 2
         If Not Double.Abs(cHECKPOINT2 - cHECKPOINT1) < 0.01 Then
             Return False
         End If
 
         ' Normalize terms.
-        ' t^2 -2*h*t + h^2
-        ' + m*m*t^2 + m*i*t - m*k*t
-        ' + i*m*t + i*i - i*k
-        ' - k*m*t - k*i + k*k
-        ' = r^2
-        cHECKPOINT1 = t ^ 2 - 2 * h * t + h ^ 2 + m * m * t ^ 2 + m * i * t - m * k * t + i * m * t + i * i - i * k - k * m * t - k * i + k * k
-        cHECKPOINT2 = r ^ 2
+        ' int1X^2 -2*circleX*int1X + circleX^2
+        ' + lineM*lineM*int1X^2 + lineM*lineI*int1X - lineM*circleY*int1X
+        ' + lineI*lineM*int1X + lineI*lineI - lineI*circleY
+        ' - circleY*lineM*int1X - circleY*lineI + circleY*circleY
+        ' = circleR^2
+
+        cHECKPOINT1 =
+            int1X ^ 2 - 2 * circleX * int1X + circleX ^ 2 _
+            + lineM * lineM * int1X ^ 2 + lineM * lineI * int1X - lineM * circleY * int1X _
+            + lineI * lineM * int1X + lineI * lineI - lineI * circleY _
+            - circleY * lineM * int1X - circleY * lineI + circleY * circleY
+
+        cHECKPOINT2 = circleR ^ 2
         If Not Double.Abs(cHECKPOINT2 - cHECKPOINT1) < 0.01 Then
             Return False
         End If
 
         ' Gather like terms. Arrange for quadratic formula.
-        ' t^2 + m*m*t^2
-        ' -2*h*t + 2*m*i*t - 2*m*k*t
-        ' + h^2 + i*i - 2*i*k + k*k - r^2
+        ' int1X^2 + (lineM^2)*int1X^2
+        ' -(2*circleX)*int1X + (2*lineM*lineI)*int1X - (2*lineM*circleY)*int1X
+        ' + circleX^2 + lineI*lineI - 2*lineI*circleY + circleY^2 - circleR^2
         ' = 0
-        cHECKPOINT1 = t ^ 2 + m * m * t ^ 2 - 2 * h * t + 2 * m * i * t - 2 * m * k * t + h ^ 2 + i * i - 2 * i * k + k * k - r ^ 2
+
+        cHECKPOINT1 =
+             int1X ^ 2 + (lineM ^ 2) * int1X ^ 2 _
+             - (2 * circleX) * int1X + (2 * lineM * lineI) * int1X - (2 * lineM * circleY) * int1X _
+             + circleX ^ 2 + lineI * lineI - 2 * lineI * circleY + circleY ^ 2 - circleR ^ 2
         cHECKPOINT2 = 0
         If Not Double.Abs(cHECKPOINT2 - cHECKPOINT1) < 0.01 Then
             Return False
         End If
 
+
+
+
+
+
+        '        REWORKED ABOVE HERE
+
+
+
         ' Extract X terms.
-        ' (1 + m*m)*t^2
-        ' + 2*(-h + m*i - m*k)*t
-        ' + h^2 + i*i - 2*i*k + k*k - r^2
+        ' (1 + lineM*lineM)*int1X^2
+        ' + 2*(-circleX + lineM*lineI - lineM*circleY)*int1X
+        ' + circleX^2 + lineI*lineI - 2*lineI*circleY + circleY*circleY - circleR^2
         ' = 0
-        cHECKPOINT1 = (1 + m * m) * t ^ 2 + 2 * (-h + m * i - m * k) * t + h ^ 2 + i * i - 2 * i * k + k * k - r ^ 2
+
+        cHECKPOINT1 = (1 + lineM * lineM) * int1X ^ 2 + 2 * (-circleX + lineM * lineI - lineM * circleY) * int1X + circleX ^ 2 + lineI * lineI - 2 * lineI * circleY + circleY * circleY - circleR ^ 2
         cHECKPOINT2 = 0
         If Not Double.Abs(cHECKPOINT2 - cHECKPOINT1) < 0.01 Then
             Return False
         End If
 
         ' Set up for quadratic formula.
-        ' a = 1 + (m*m)
-        ' b = 2*(-h + m*i - m*k)
-        ' c = h^2 + i*i - 2*i*k + k*k - r^2
+        ' a = 1 + (lineM*lineM)
+        ' b = 2*(-circleX + lineM*lineI - lineM*circleY)
+        ' c = circleX^2 + lineI*lineI - 2*lineI*circleY + circleY*circleY - circleR^2
 
         ' Implementation:
 
-        Dim a As System.Double = 1 + (m * m)
-        Dim b As System.Double = 2 * (-h + m * i - m * k)
-        Dim c As System.Double = h ^ 2 + i * i - 2 * i * k + k * k - r ^ 2
+        Dim a As System.Double = 1 + (lineM * lineM)
+        Dim b As System.Double = 2 * (-circleX + lineM * lineI - lineM * circleY)
+        Dim c As System.Double = circleX ^ 2 + lineI * lineI - 2 * lineI * circleY + circleY * circleY - circleR ^ 2
 
-        If Not TryQuadratic(a, b, c, t, v) Then
+        If Not TryQuadratic(a, b, c, int1X, int2X) Then
             Return False
         End If
 
-        ' y = mx + b
-        u = m * t + i
-        w = m * v + i
+        ' y = lineMx + b
+        int1Y = lineM * int1X + lineI
+        Int2Y = lineM * int2X + lineI
         Return True
 
     End Function ' TryCircleLineIntersection
@@ -213,7 +257,7 @@ Public Module Math
     ''' <param name="circleR">xxxxxxxxxx</param>
     ''' <param name="lineX1">xxxxxxxxxx</param>
     ''' <param name="lineY1">xxxxxxxxxx</param>
-    ''' <param name="lineX2">xxxxxxxxxx</param>
+    ''' <param name="lineint2X">xxxxxxxxxx</param>
     ''' <param name="lineY2">xxxxxxxxxx</param>
     ''' <param name="intersect1X">xxxxxxxxxx</param>
     ''' <param name="intersect1Y">xxxxxxxxxx</param>
@@ -224,14 +268,23 @@ Public Module Math
     Public Function TryCircleLineIntersection(ByVal circleX As System.Double,
         ByVal circleY As System.Double, ByVal circleR As System.Double,
         ByVal lineX1 As System.Double, ByVal lineY1 As System.Double,
-        ByVal lineX2 As System.Double, ByVal lineY2 As System.Double,
+        ByVal lineint2X As System.Double, ByVal lineY2 As System.Double,
         ByRef intersect1X As System.Double, ByRef intersect1Y As System.Double,
         ByRef intersect2X As System.Double,
         ByRef intersect2Y As System.Double) As System.Boolean
 
         ' Get the slope of the line.
-        ' M = (Y2 - Y1) / (X2 - X1); generic slope.
-        Dim lineM As System.Double = (lineY2 - lineY1) / (lineX2 - lineX1)
+        ' M = (Y2 - Y1) / (int2X - X1); generic slope.
+        Dim lineM As System.Double = (lineY2 - lineY1) / (lineint2X - lineX1)
+
+
+        '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        ' First, check for the vertical case?
+        '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+
+
 
         ' Get the equation for the line.
         ' Y = M*X + B; Standard form line.
@@ -249,7 +302,7 @@ Public Module Math
     ''' <param name="x1">xxxxxxxxxx</param>
     ''' <param name="y1">xxxxxxxxxx</param>
     ''' <param name="r1">xxxxxxxxxx</param>
-    ''' <param name="x2">xxxxxxxxxx</param>
+    ''' <param name="int2X">xxxxxxxxxx</param>
     ''' <param name="y2">xxxxxxxxxx</param>
     ''' <param name="r2">xxxxxxxxxx</param>
     ''' <returns>xxxxxxxxxx
@@ -260,7 +313,7 @@ Public Module Math
     ''' </remarks>
     Public Function CirclesIntersect(ByVal x1 As System.Double,
         ByVal y1 As System.Double, ByVal r1 As System.Double,
-        ByVal x2 As System.Double, ByVal y2 As System.Double,
+        ByVal int2X As System.Double, ByVal y2 As System.Double,
         ByVal r2 As System.Double) As System.Boolean
 
         ' Input checking.
@@ -270,14 +323,14 @@ Public Module Math
 
         ' Check for solvability.
         Dim CtrSeparation As System.Double =
-            System.Double.Hypot(x2 - x1, y2 - y1)
+            System.Double.Hypot(int2X - x1, y2 - y1)
         If CtrSeparation > (r1 + r2) Then
             ' Two isolated circles.
             Return False
         ElseIf CtrSeparation < System.Math.Abs(r2 - r1) Then
             ' One inside the other.
             Return False
-        ElseIf x2.Equals(x1) AndAlso y2.Equals(y1) Then
+        ElseIf int2X.Equals(x1) AndAlso y2.Equals(y1) Then
             ' They are concentric, with either zero or infinite common points.
             ' The second case is consirered not to be intersecting.
             Return False
@@ -288,13 +341,13 @@ Public Module Math
 
     Public Function TryCircleIntersection(ByVal centerX1 As System.Double,
         ByVal centerY1 As System.Double, ByVal radius1 As System.Double,
-        ByVal centerX2 As System.Double, ByVal centerY2 As System.Double,
+        ByVal centerint2X As System.Double, ByVal centerY2 As System.Double,
         ByVal radius2 As System.Double, ByRef intersect1X As System.Double,
         ByRef intersect1Y As System.Double, ByRef intersect2X As System.Double,
         ByRef intersect2Y As System.Double) As System.Boolean
 
         If Not CirclesIntersect(centerX1, centerY1, radius1,
-            centerX2, centerY2, radius2) Then
+            centerint2X, centerY2, radius2) Then
             intersect1X = Double.NaN
             intersect1Y = Double.NaN
             intersect2X = Double.NaN
@@ -361,12 +414,12 @@ End Module ' Math
 '         ''' </summary>
 '         ''' <declaration>
 '         ''' Public Sub New(ByVal centerX1 As System.Double, ByVal centerY1 As System.Double, ByVal radius1 As System.Double,
-'         ''' ByVal centerX2 As System.Double, ByVal centerY2 As System.Double, ByVal radius2 As System.Double)
+'         ''' ByVal centerint2X As System.Double, ByVal centerY2 As System.Double, ByVal radius2 As System.Double)
 '         ''' </declaration>
 '         ''' <param name="centerX1">The X coordinate of the center of one circle.</param>
 '         ''' <param name="centerY1">The Y coordinate of the center of one circle.</param>
 '         ''' <param name="radius1">The radius of one circle. Cannot be negative.</param>
-'         ''' <param name="centerX2">The X coordinate of the center of the other circle.</param>
+'         ''' <param name="centerint2X">The X coordinate of the center of the other circle.</param>
 '         ''' <param name="centerY2">The Y coordinate of the center of the other circle.</param>
 '         ''' <param name="radius2">The radius of the other circle. Cannot be negative.</param>
 '         ''' <exception cref="System.ArgumentException">
@@ -374,7 +427,7 @@ End Module ' Math
 '         ''' </exception>
 '         ''' <remarks></remarks>
 '         Public Sub New(ByVal centerX1 As System.Double, ByVal centerY1 As System.Double, ByVal radius1 As System.Double,
-'                        ByVal centerX2 As System.Double, ByVal centerY2 As System.Double, ByVal radius2 As System.Double)
+'                        ByVal centerint2X As System.Double, ByVal centerY2 As System.Double, ByVal radius2 As System.Double)
 ' 
 '             ' References:
 '             ' http://paulbourke.net/geometry/circlesphere/
@@ -389,7 +442,7 @@ End Module ' Math
 '                 Ex.Data.Add("centerX1", centerX1)
 '                 Ex.Data.Add("centerY1", centerY1)
 '                 Ex.Data.Add("radius1", radius1)
-'                 Ex.Data.Add("centerX2", centerX2)
+'                 Ex.Data.Add("centerint2X", centerint2X)
 '                 Ex.Data.Add("centerY2", centerY2)
 '                 Ex.Data.Add("radius2", radius2)
 '                 Throw Ex
@@ -401,7 +454,7 @@ End Module ' Math
 '                 Ex.Data.Add("centerX1", centerX1)
 '                 Ex.Data.Add("centerY1", centerY1)
 '                 Ex.Data.Add("radius1", radius1)
-'                 Ex.Data.Add("centerX2", centerX2)
+'                 Ex.Data.Add("centerint2X", centerint2X)
 '                 Ex.Data.Add("centerY2", centerY2)
 '                 Ex.Data.Add("radius2", radius2)
 '                 Throw Ex
@@ -409,11 +462,11 @@ End Module ' Math
 ' 
 '             With Me
 '                 .m_X1 = centerX1 : .m_Y1 = centerY1 : .m_R1 = radius1
-'                 .m_X2 = centerX2 : .m_Y2 = centerY2 : .m_R2 = radius2
+'                 .m_int2X = centerint2X : .m_Y2 = centerY2 : .m_R2 = radius2
 '             End With
 ' 
 '             ' DeltaX and DeltaY are the vertical and horizontal distances between the circle centers.
-'             Dim DeltaX = (m_X2 - m_X1)
+'             Dim DeltaX = (m_int2X - m_X1)
 '             Dim DeltaY = (m_Y2 - m_Y1)
 ' 
 '             ' Determine the straight-line distance between the centers. 
@@ -421,7 +474,7 @@ End Module ' Math
 ' 
 '             ' Check for solvability.
 '             Me.m_CirclesIntersect = True ' For now.
-'             If ((Me.m_X2 = Me.m_X1) AndAlso (Me.m_Y2 = Me.m_Y1) AndAlso (Me.m_R2 = Me.m_R1)) Then
+'             If ((Me.m_int2X = Me.m_X1) AndAlso (Me.m_Y2 = Me.m_Y1) AndAlso (Me.m_R2 = Me.m_R1)) Then
 '                 ' They are both the same.
 '                 Me.m_CirclesIntersect = False
 '             ElseIf (CenterSeparation > (m_R1 + m_R2)) Then
@@ -587,7 +640,7 @@ End Module ' Math
 '         Private m_Y1 As System.Double
 '         Private m_R1 As System.Double
 '         ' Center and radius of 2nd circle.
-'         Private m_X2 As System.Double
+'         Private m_int2X As System.Double
 '         Private m_Y2 As System.Double
 '         Private m_R2 As System.Double
 ' 
