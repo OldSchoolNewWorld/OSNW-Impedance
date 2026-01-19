@@ -5,6 +5,109 @@ Option Infer Off
 
 Public Module Math
 
+#Region "Constants"
+
+    '''' <summary>
+    '''' This sets a practical limit on the precision of equality detection in
+    '''' mathematical operations related to impedances. It is intended to prevent
+    '''' issues arising from minor inequalities due to floating point precision
+    '''' limitations. A smaller value DEcreases the liklihood of detecting
+    '''' equality; a larger value INcreases the liklihood of detecting equality.
+    '''' </summary>
+    '''' <remarks>
+    '''' This is intended to be used as a factor to be multiplied by some
+    '''' practical reference value.<br/>
+    '''' <example>
+    '''' This example uses the <c>DFLTIMPDTOLERANCE</c> value to determine if two
+    '''' impedances are close enough to be treated as being equal. In the case of
+    '''' <see cref="EqualEnough(Double, Double, Double)"/>, the reference value
+    '''' is the "refVal" parameter.
+    '''' <code>
+    '''' Public Shared Sub EqualityTest
+    ''''
+    ''''     Dim Tol As System.Double = Impedance.DFLTIMPDTOLERANCE
+    ''''     Dim Z1 As New OSNW.Numerics.Impedance(50.0, 25.0)
+    ''''     Dim Z2 As New OSNW.Numerics.Impedance(50.000049, 25)
+    ''''
+    ''''     if Impedance.EqualEnough(Z2.Resistance, Z1.Resistance, Tol) AndAlso
+    ''''         Impedance.EqualEnough(Z2.Reactance, Z1.Reactance, Tol)) then
+    ''''         '
+    ''''         ' Code for a match.
+    ''''         '
+    ''''     else
+    ''''         '
+    ''''         ' Code for a mismatch.
+    ''''         '
+    ''''     end if
+    ''''
+    '''' End Sub
+    '''' </code></example>
+    '''' </remarks>
+    'Const DFLTIMPDTOLERANCE As System.Double = 0.000_001
+
+    '''' <summary>
+    '''' This sets a practical limit on the precision of zero detection in
+    '''' mathematical operations related to impedances. It is intended to prevent
+    '''' issues arising from floating point precision limitations. A smaller value
+    '''' DEcreases the liklihood of zero detection; a larger value INcreases the
+    '''' liklihood of zero detection.
+    '''' </summary>
+    '''' <remarks>
+    '''' This is intended to be used as a factor to be multiplied by some
+    '''' practical reference value. Since zeroes cannot be compared based on a
+    '''' ratio of two values, some other value is needed to establish a
+    '''' reasonable closeness to zero.<br/>
+    '''' <example>
+    '''' This example shows how to use <c>DFLTIMPDTOLERANCE0</c> in conjunction
+    '''' with <see cref="EqualEnoughZero(System.Double, System.Double)"/> to
+    '''' determine if two reactances are close enough to be considered equal.
+    '''' <code>
+    '''' Dim Z0 As System.Double = 50.0
+    '''' Dim SourceX As System.Double = SourceZ.Reactance
+    '''' Dim LoadX As System.Double = LoadZ.Reactance
+    '''' If EqualEnoughZero(SourceX - LoadX, DFLTIMPDTOLERANCE0 * Z0) Then
+    ''''     '
+    ''''     ' Code for when reactances are considered to already match.
+    ''''     '
+    '''' ElseIf
+    ''''     '
+    ''''     ' Code for when reactances are not considered to already match.
+    ''''     '
+    '''' End If
+    '''' </code></example>
+    '''' </remarks>
+    'Const DFLTIMPDTOLERANCE0 As System.Double = 0.000_001
+
+    '''' <summary>
+    '''' This sets a practical limit on the precision of equality detection in
+    '''' graphics operations. It is intended to prevent issues arising from
+    '''' floating point precision limitations. This should account for
+    '''' indistinguishable, sub-pixel, differences on any current monitor or
+    '''' printer. A smaller value DEcreases the liklihood of detecting equality;
+    '''' a larger value INcreases the liklihood of detecting equality.
+    '''' </summary>
+    'Const GRAPHICTOLERANCE As System.Double = 0.0001
+
+    'Public Const PI As System.Double = System.Double.Pi
+    'Public Const HALFPI As System.Double = System.Double.Pi / 2.0
+
+    Public Const MSGCHIV As System.String = "Cannot have an infinite value."
+    'Public Const MSGCHNV As System.String = "Cannot have a negative value."
+    'Public Const MSGCHZV As System.String = "Cannot have a zero value."
+    'Public Const MSGFGPXPY As System.String = "Failure getting PlotX, PlotY."
+    'Public Const MSGFIXEDSIZEVIOLATION As System.String =
+    '    "cannot modify the fixed-size ImageImpedanceList."
+    'Public Const MSGIIC As System.String = "Invalid intersection count."
+    'Public Const MSGNOSTR As System.String = "Cannot be Null/Nothing."
+    'Public Const MSGTDNRT As String = " transformation did not reach target."
+    'Public Const MSGUEEZ As System.String = MSGCHZV & " Use EqualEnoughZero()."
+    'Public Const MSGVMBGTE1 As System.String =
+    '    "Must be greater than or equal to 1."
+    Public Const MSGVMBGTZ As System.String =
+        "Must be a positive, non-zero value."
+
+#End Region ' Constants
+
     ''' <summary>
     ''' Computes the distance between two points in a 3D space.
     ''' </summary>
@@ -20,7 +123,7 @@ Public Module Math
         ByVal x2 As System.Double, ByVal y2 As System.Double,
         ByVal z2 As System.Double) As System.Double
 
-        ' Based on Pythagorean theorem.
+        ' Based on the Pythagorean theorem.
         Dim DeltaX As System.Double = x2 - x1
         Dim DeltaY As System.Double = y2 - y1
         Dim DeltaZ As System.Double = z2 - z1
@@ -29,7 +132,7 @@ Public Module Math
     End Function ' Distance3D
 
     ''' <summary>
-    ''' Attempts to solve the a*x^2 + b*x + c = 0 quadratic equation for real
+    ''' Attempts to solve the "a*x^2 + b*x + c = 0" quadratic equation for real
     ''' solutions.
     ''' </summary>
     ''' <param name="a">Specifies the <paramref name="a"/> in the well-known
@@ -62,6 +165,15 @@ Public Module Math
 
     End Function ' TryQuadratic
 
+    '''' Suspended XML comments for suspended code:
+    '''' <exception cref="System.ArgumentOutOfRangeException">
+    '''' Thrown when <paramref name="circleX"/>, <paramref name="circleY"/>,
+    '''' <paramref name="circleR"/>, <paramref name="lineM"/>, or
+    '''' <paramref name="lineB"/> is infinite.
+    '''' </exception>
+    '''' <exception cref="System.ArgumentOutOfRangeException">
+    '''' Thrown when <paramref name="circleR"/> is less than or equal to zero.
+    '''' </exception>
     ''' <summary>
     ''' Attempts to solve where a line intersects a circle, given the center
     ''' coordinates and radius of the circle, along with the slope and
@@ -86,6 +198,18 @@ Public Module Math
     ''' When valid, also returns the results in <paramref name="intersect1X"/>,
     ''' <paramref name="intersect1Y"/>, <paramref name="intersect2X"/>, and
     ''' <paramref name="intersect2Y"/>.</returns>
+    ''' <remarks>
+    ''' A vertical line (infinite slope) will not have a Y-intercept, except
+    ''' when that line passes through the circle center, a case which would have
+    ''' infinite common points.
+    ''' <br/>
+    ''' To avoid throwing an exception, <c>False</c> is returned
+    ''' when <paramref name="circleX"/>, <paramref name="circleY"/>,
+    ''' <paramref name="circleR"/>, <paramref name="lineM"/>, or
+    ''' <paramref name="lineB"/> is infinite,
+    ''' or
+    ''' when <paramref name="circleR"/> is less than or equal to zero.
+    ''' </remarks>
     Public Function TryCircleLineIntersection(
         ByVal circleX As System.Double, ByVal circleY As System.Double,
         ByVal circleR As System.Double, ByVal lineM As System.Double,
@@ -93,19 +217,32 @@ Public Module Math
         ByRef intersect1Y As System.Double, ByRef intersect2X As System.Double,
         ByRef intersect2Y As System.Double) As System.Boolean
 
-
-
-
-
-        '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        ' First, check for the vertical case?
-        ' Is infinity accepted? Rejected? Cause an exception?
-        '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-
-
-
-
+        ' Input checking.
+        ' Suspended to avoid exceptions:
+        '        If System.Double.IsInfinity(circleX) OrElse
+        '            System.Double.IsInfinity(circleY) OrElse
+        '            System.Double.IsInfinity(circleR) OrElse
+        '            System.Double.IsInfinity(lineM) OrElse
+        '            System.Double.IsInfinity(lineB) Then
+        '            'Dim CaughtBy As System.Reflection.MethodBase =
+        '            '    System.Reflection.MethodBase.GetCurrentMethod
+        '            Throw New System.ArgumentOutOfRangeException(
+        '                $"Arguments to {NameOf(TryCircleLineIntersection)} {MSGCHIV}")
+        '        End If
+        '        If circleR <= 0.0 Then
+        '            'Dim CaughtBy As System.Reflection.MethodBase =
+        '            '    System.Reflection.MethodBase.GetCurrentMethod
+        '            Throw New System.ArgumentOutOfRangeException(
+        '                NameOf(circleR), MSGVMBGTZ)
+        '        End If
+        If System.Double.IsInfinity(circleX) OrElse
+            System.Double.IsInfinity(circleY) OrElse
+            System.Double.IsInfinity(circleR) OrElse
+            System.Double.IsInfinity(lineM) OrElse
+            System.Double.IsInfinity(lineB) OrElse
+            circleR <= 0.0 Then
+            Return False
+        End If
 
         ' The derivation follows:
         ' Standard form of a circle and a line.
@@ -172,11 +309,10 @@ Public Module Math
 
         ' Implementation:
 
-        Dim a As System.Double = (1 + (lineM ^ 2))
-        Dim b As System.Double = (lineM * (lineB - circleY) - circleX) * 2
+        Dim a As System.Double = 1 + (lineM ^ 2)
+        Dim b As System.Double = 2 * (lineM * (lineB - circleY) - circleX)
         Dim c As System.Double = circleX ^ 2 + lineB * (lineB - 2 * circleY) +
                                  circleY ^ 2 - circleR ^ 2
-
         If Not TryQuadratic(a, b, c, intersect1X, intersect2X) Then
             intersect1X = System.Double.NaN
             intersect1Y = System.Double.NaN
@@ -185,13 +321,23 @@ Public Module Math
             Return False
         End If
 
-        ' y = mx + b
+        ' Substitute into "y = mx + b".
         intersect1Y = lineM * intersect1X + lineB
         intersect2Y = lineM * intersect2X + lineB
         Return True
 
     End Function ' TryCircleLineIntersection
 
+    '''' Suspended XML comments for suspended code:
+    '''' <exception cref="System.ArgumentOutOfRangeException">
+    '''' Thrown when <paramref name="circleX"/>, <paramref name="circleY"/>,
+    '''' <paramref name="circleR"/>, <paramref name="lineX1"/>,
+    '''' <paramref name="lineX2"/>, <paramref name="lineY1"/>, or
+    '''' <paramref name="lineY2"/> is infinite.
+    '''' </exception>
+    '''' <exception cref="System.ArgumentOutOfRangeException">
+    '''' Thrown when <paramref name="circleR"/> is less than or equal to zero.
+    '''' </exception>
     ''' <summary>
     ''' Attempts to solve where a line intersects a circle, given the center
     ''' coordinates and radius of the circle, along with the coordinates of two
@@ -222,6 +368,14 @@ Public Module Math
     ''' When valid, also returns the results in <paramref name="intersect1X"/>,
     ''' <paramref name="intersect1Y"/>, <paramref name="intersect2X"/>, and
     ''' <paramref name="intersect2Y"/>.</returns>
+    ''' <remarks>
+    ''' To avoid throwing an exception, <c>False</c> is returned
+    ''' when <paramref name="circleX"/>, <paramref name="circleY"/>,
+    ''' <paramref name="circleR"/>, <paramref name="lineX1"/>,
+    ''' or <paramref name="lineY1"/>, or <paramref name="lineY2"/> is infinite,
+    ''' or
+    ''' when <paramref name="circleR"/> is less than or equal to zero.
+    ''' </remarks>
     Public Function TryCircleLineIntersection(ByVal circleX As System.Double,
         ByVal circleY As System.Double, ByVal circleR As System.Double,
         ByVal lineX1 As System.Double, ByVal lineY1 As System.Double,
@@ -229,6 +383,37 @@ Public Module Math
         ByRef intersect1X As System.Double, ByRef intersect1Y As System.Double,
         ByRef intersect2X As System.Double,
         ByRef intersect2Y As System.Double) As System.Boolean
+
+        ' Input checking.
+        ' Suspended to avoid exceptions:
+        '       If System.Double.IsInfinity(circleX) OrElse
+        '           System.Double.IsInfinity(circleY) OrElse
+        '           System.Double.IsInfinity(circleR) OrElse
+        '           System.Double.IsInfinity(lineX1) OrElse
+        '           System.Double.IsInfinity(lineY1) OrElse
+        '           System.Double.IsInfinity(lineX2) OrElse
+        '           System.Double.IsInfinity(lineY2) Then
+        '           'Dim CaughtBy As System.Reflection.MethodBase =
+        '           '    System.Reflection.MethodBase.GetCurrentMethod
+        '           Throw New System.ArgumentOutOfRangeException(
+        '               $"Arguments to {NameOf(TryCircleLineIntersection)} {MSGCHIV}")
+        '       End If
+        '        If circleR <= 0.0 Then
+        '            'Dim CaughtBy As System.Reflection.MethodBase =
+        '            '    System.Reflection.MethodBase.GetCurrentMethod
+        '            Throw New System.ArgumentOutOfRangeException(
+        '                NameOf(circleR), MSGVMBGTZ)
+        '        End If
+        If System.Double.IsInfinity(circleX) OrElse
+            System.Double.IsInfinity(circleY) OrElse
+            System.Double.IsInfinity(circleR) OrElse
+            System.Double.IsInfinity(lineX1) OrElse
+            System.Double.IsInfinity(lineY1) OrElse
+            System.Double.IsInfinity(lineX2) OrElse
+            System.Double.IsInfinity(lineY2) OrElse
+            circleR <= 0.0 Then
+            Return False
+        End If
 
         ' Check for a vertical line.
         Dim DeltaX As System.Double = lineX2 - lineX1
@@ -267,7 +452,7 @@ Public Module Math
             intersect1Y = circleY + Root
             intersect2Y = circleY - Root
             intersect1X = lineX1
-            intersect2X = lineX1
+            intersect2X = lineX1 ' Yes, the same assignment.
             Return True
 
         End If ' Vertical line.
@@ -414,7 +599,7 @@ End Module ' Math
 '         ''' <param name="centerint2X">The X coordinate of the center of the other circle.</param>
 '         ''' <param name="centerY2">The Y coordinate of the center of the other circle.</param>
 '         ''' <param name="radius2">The radius of the other circle. Cannot be negative.</param>
-'         ''' <exception cref="System.ArgumentException">
+'         ''' <exception cref="System.ArgumentOutOfRangeException">
 '         ''' Thrown when <paramref name="radius1"/> or <paramref name="radius1"/> is negative.
 '         ''' </exception>
 '         ''' <remarks></remarks>

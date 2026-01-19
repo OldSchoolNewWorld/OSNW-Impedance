@@ -112,6 +112,14 @@ Public Class GenericCircle
     ''' <param name="c2R">Specifies the radius of circle 1.</param>
     ''' <returns>A list of 0, 1, or 2 intersection points as
     ''' <see cref="OSNW.Numerics.PointD"/> structure(s).</returns>
+    ''' <exception cref="ArgumentOutOfRangeException">when either radius is less
+    ''' than or equal to zero.</exception>
+    ''' <remarks>
+    ''' If there are no intersection points, an empty list is returned. If the
+    ''' circles are tangent to each other, a list with one intersection point is
+    ''' returned. If the circles intersect at two points, a list with both
+    ''' points is returned.
+    ''' </remarks>
     Public Shared Function GetIntersections(ByVal c1X As System.Double,
         ByVal c1Y As System.Double, ByVal c1R As System.Double,
         ByVal c2X As System.Double, ByVal c2Y As System.Double,

@@ -199,6 +199,8 @@ Public Structure Impedance
     Public Const MSGUEEZ As System.String = MSGCHZV & " Use EqualEnoughZero()."
     Public Const MSGVMBGTZ As System.String =
         "Must be a positive, non-zero value."
+    Public Const MSGVMBGTE0 As System.String =
+        "Must be greater than or equal to 0."
     Public Const MSGVMBGTE1 As System.String =
         "Must be greater than or equal to 1."
 

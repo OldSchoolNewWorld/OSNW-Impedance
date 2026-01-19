@@ -52,20 +52,25 @@ Namespace MathTests
 
         <Theory>
         <InlineData(1.75, 6.75, 1.5,
-                    1, 8.25,
-                    1, 5.25,
-                    1, 8.049,
-                    1, 5.451)>
-        <InlineData(1.75, 6.75, 1.5,
-                    1, 5.25,
-                    1, 8.25,
-                    1, 8.049,
-                    1, 5.451)>
-        <InlineData(1.75, 6.75, 1.5,
                     3.1698, 7.2381,
                     2.4427, 5.4205,
                     3.1698, 7.2381,
-                    2.4427, 5.4205)>
+                    2.4427, 5.4205)> ' Line ends on circle.
+        <InlineData(1.75, 6.75, 1.5,
+                    0.5, 7.875,
+                    2.25, 7.875,
+                    2.7422, 7.875,
+                    0.7578, 7.875)> ' Horizontal line.
+        <InlineData(1.75, 6.75, 1.5,
+                    1, 8.25,
+                    1, 5.25,
+                    1, 8.049,
+                    1, 5.451)> ' Vertical line.
+        <InlineData(1.75, 6.75, 1.5,
+                    1, 5.25,
+                    1, 8.25,
+                    1, 8.049,
+                    1, 5.451)> ' Vertical line reversed.
         Sub TryCircleLineIntersectionPoints_KnownData_Passes(
              circleX As System.Double, circleY As System.Double, circleR As System.Double,
              lineX1 As System.Double, lineY1 As System.Double,
@@ -84,10 +89,10 @@ Namespace MathTests
             End If
 
             ' These may need to be swapped depending on order of calculation.
-            Assert.Equal(Intersect1X, expect1X, 0.01)
-            Assert.Equal(Intersect1Y, expect1Y, 0.01)
-            Assert.Equal(Intersect2X, expect2X, 0.01)
-            Assert.Equal(Intersect2Y, expect2Y, 0.01)
+            Assert.Equal(expect1X, Intersect1X, 0.01)
+            Assert.Equal(expect1Y, Intersect1Y, 0.01)
+            Assert.Equal(expect2X, Intersect2X, 0.01)
+            Assert.Equal(expect2Y, Intersect2Y, 0.01)
 
         End Sub
 
