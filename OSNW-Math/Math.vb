@@ -7,106 +7,139 @@ Public Module Math
 
 #Region "Constants"
 
-    '''' <summary>
-    '''' This sets a practical limit on the precision of equality detection in
-    '''' mathematical operations related to impedances. It is intended to prevent
-    '''' issues arising from minor inequalities due to floating point precision
-    '''' limitations. A smaller value DEcreases the liklihood of detecting
-    '''' equality; a larger value INcreases the liklihood of detecting equality.
-    '''' </summary>
-    '''' <remarks>
-    '''' This is intended to be used as a factor to be multiplied by some
-    '''' practical reference value.<br/>
-    '''' <example>
-    '''' This example uses the <c>DFLTIMPDTOLERANCE</c> value to determine if two
-    '''' impedances are close enough to be treated as being equal. In the case of
-    '''' <see cref="EqualEnough(Double, Double, Double)"/>, the reference value
-    '''' is the "refVal" parameter.
-    '''' <code>
-    '''' Public Shared Sub EqualityTest
-    ''''
-    ''''     Dim Tol As System.Double = Impedance.DFLTIMPDTOLERANCE
-    ''''     Dim Z1 As New OSNW.Numerics.Impedance(50.0, 25.0)
-    ''''     Dim Z2 As New OSNW.Numerics.Impedance(50.000049, 25)
-    ''''
-    ''''     if Impedance.EqualEnough(Z2.Resistance, Z1.Resistance, Tol) AndAlso
-    ''''         Impedance.EqualEnough(Z2.Reactance, Z1.Reactance, Tol)) then
-    ''''         '
-    ''''         ' Code for a match.
-    ''''         '
-    ''''     else
-    ''''         '
-    ''''         ' Code for a mismatch.
-    ''''         '
-    ''''     end if
-    ''''
-    '''' End Sub
-    '''' </code></example>
-    '''' </remarks>
-    'Const DFLTIMPDTOLERANCE As System.Double = 0.000_001
-
-    '''' <summary>
-    '''' This sets a practical limit on the precision of zero detection in
-    '''' mathematical operations related to impedances. It is intended to prevent
-    '''' issues arising from floating point precision limitations. A smaller value
-    '''' DEcreases the liklihood of zero detection; a larger value INcreases the
-    '''' liklihood of zero detection.
-    '''' </summary>
-    '''' <remarks>
-    '''' This is intended to be used as a factor to be multiplied by some
-    '''' practical reference value. Since zeroes cannot be compared based on a
-    '''' ratio of two values, some other value is needed to establish a
-    '''' reasonable closeness to zero.<br/>
-    '''' <example>
-    '''' This example shows how to use <c>DFLTIMPDTOLERANCE0</c> in conjunction
-    '''' with <see cref="EqualEnoughZero(System.Double, System.Double)"/> to
-    '''' determine if two reactances are close enough to be considered equal.
-    '''' <code>
-    '''' Dim Z0 As System.Double = 50.0
-    '''' Dim SourceX As System.Double = SourceZ.Reactance
-    '''' Dim LoadX As System.Double = LoadZ.Reactance
-    '''' If EqualEnoughZero(SourceX - LoadX, DFLTIMPDTOLERANCE0 * Z0) Then
-    ''''     '
-    ''''     ' Code for when reactances are considered to already match.
-    ''''     '
-    '''' ElseIf
-    ''''     '
-    ''''     ' Code for when reactances are not considered to already match.
-    ''''     '
-    '''' End If
-    '''' </code></example>
-    '''' </remarks>
-    'Const DFLTIMPDTOLERANCE0 As System.Double = 0.000_001
-
-    '''' <summary>
-    '''' This sets a practical limit on the precision of equality detection in
-    '''' graphics operations. It is intended to prevent issues arising from
-    '''' floating point precision limitations. This should account for
-    '''' indistinguishable, sub-pixel, differences on any current monitor or
-    '''' printer. A smaller value DEcreases the liklihood of detecting equality;
-    '''' a larger value INcreases the liklihood of detecting equality.
-    '''' </summary>
-    'Const GRAPHICTOLERANCE As System.Double = 0.0001
+    ''' <summary>
+    ''' This sets a practical limit on the precision of equality detection in
+    ''' graphics operations. It is intended to prevent issues arising from
+    ''' floating point precision limitations. This should account for
+    ''' indistinguishable, sub-pixel, differences on any current monitor or
+    ''' printer. A smaller value DEcreases the liklihood of detecting equality;
+    ''' a larger value INcreases the liklihood of detecting equality.
+    ''' </summary>
+    Public Const GRAPHICTOLERANCE As System.Double = 0.0001
 
     'Public Const PI As System.Double = System.Double.Pi
-    'Public Const HALFPI As System.Double = System.Double.Pi / 2.0
+    Public Const HALFPI As System.Double = System.Double.Pi / 2.0
 
     Public Const MSGCHIV As System.String = "Cannot have an infinite value."
-    'Public Const MSGCHNV As System.String = "Cannot have a negative value."
-    'Public Const MSGCHZV As System.String = "Cannot have a zero value."
+    Public Const MSGCHNV As System.String = "Cannot have a negative value."
+    Public Const MSGCHZV As System.String = "Cannot have a zero value."
     'Public Const MSGFGPXPY As System.String = "Failure getting PlotX, PlotY."
     'Public Const MSGFIXEDSIZEVIOLATION As System.String =
     '    "cannot modify the fixed-size ImageImpedanceList."
     'Public Const MSGIIC As System.String = "Invalid intersection count."
     'Public Const MSGNOSTR As System.String = "Cannot be Null/Nothing."
     'Public Const MSGTDNRT As String = " transformation did not reach target."
-    'Public Const MSGUEEZ As System.String = MSGCHZV & " Use EqualEnoughZero()."
-    'Public Const MSGVMBGTE1 As System.String =
-    '    "Must be greater than or equal to 1."
+    Public Const MSGUEEZ As System.String = MSGCHZV & " Use EqualEnoughZero()."
+    Public Const MSGVMBGTE1 As System.String =
+        "Must be greater than or equal to 1."
     Public Const MSGVMBGTZ As System.String =
         "Must be a positive, non-zero value."
 
 #End Region ' Constants
+
+#Region "EqualEnough Implementations"
+
+    ' REF: Precision and complex numbers
+    ' https://github.com/dotnet/docs/blob/main/docs/fundamentals/runtime-libraries/system-numerics-complex.md#precision-and-complex-numbers
+
+    ' REF: Random ASCII – tech blog of Bruce Dawson
+    ' https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/
+
+    ''' <summary>
+    ''' Check for reasonable equality when using floating point values. A
+    ''' difference of less than or equal to <paramref name="maxDiff"/> is
+    ''' considered to establish equality.
+    ''' </summary>
+    ''' <param name="otherVal">Specifies the value to be compared to
+    ''' <paramref name="refVal"/>.</param>
+    ''' <param name="refVal">Specifies the reference value to which
+    ''' <paramref name="otherVal"/> is compared.</param>
+    ''' <param name="maxDiff">Specifies the maximum difference that satisfies
+    ''' equality.</param>
+    ''' <returns><c>True</c> if the values are reasonably close in value;
+    ''' otherwise, <c>False</c>.</returns>
+    ''' <remarks>
+    ''' This does the comparison based on an absolute numeric difference. The
+    ''' control value is <paramref name="maxDiff"/>. Select
+    ''' <paramref name="maxDiff"/> such that it is a good representation of
+    ''' zero, relative to other known or expected values.</remarks>
+    Public Function EqualEnoughAbsolute(ByVal otherVal As System.Double,
+        ByVal refVal As System.Double, ByVal maxDiff As System.Double) _
+        As System.Boolean
+
+        ' No input checking.
+        Return System.Math.Abs(otherVal - refVal) <= maxDiff
+    End Function ' EqualEnoughAbsolute
+
+    ''' <summary>
+    ''' Check for reasonable equality to zero when using floating point values.
+    ''' Any value less than or equal to <paramref name="zeroTolerance"/> from
+    ''' zero is considered to be equal to zero.
+    ''' </summary>
+    ''' <param name="value">Specifies the value to be compared to zero.</param>
+    ''' <param name="zeroTolerance">Specifies the maximum offset from zero which
+    ''' is assumed to represent zero.</param>
+    ''' <returns><c>True</c> if <paramref name="value"/> is reasonably close to
+    ''' zero; otherwise, <c>False</c>.</returns>
+    ''' <remarks>Use this when an actual zero reference would cause a failure in
+    ''' <see cref="EqualEnough(System.Double, System.Double, System.Double)"/>.
+    ''' Select <paramref name="zeroTolerance"/> such that it is a good
+    ''' representation of zero relative to other known or expected
+    ''' values.</remarks>
+    Public Function EqualEnoughZero(ByVal value As System.Double,
+        ByVal zeroTolerance As System.Double) As System.Boolean
+
+        ' No input checking.
+        Return System.Math.Abs(value) <= System.Math.Abs(zeroTolerance)
+    End Function ' EqualEnoughZero
+
+    ''' <summary>
+    ''' Check for reasonable equality, within a specified ratio, when using
+    ''' floating point values.
+    ''' </summary>
+    ''' <param name="otherVal">Specifies the value to be compared to
+    ''' <paramref name="refVal"/>.</param>
+    ''' <param name="refVal">Specifies the reference value to which
+    ''' <paramref name="otherVal"/> is compared.</param>
+    ''' <param name="ratio">Specifies the maximum ratio of the values which is
+    ''' assumed to represent equality.</param>
+    ''' <returns><c>True</c> if the values are reasonably close in value;
+    ''' otherwise, <c>False</c>.</returns>
+    ''' <exception cref="System.ArgumentOutOfRangeException">When either
+    ''' compared value is zero.</exception>
+    ''' <remarks>
+    ''' This does the comparison based on scale, not on an absolute numeric
+    ''' difference. The control value is <paramref name="ratio"/> multiplied
+    ''' by <paramref name="refVal"/>, to determine the minimum difference that
+    ''' excludes equality.<br/>
+    ''' There is no way to scale a comparison to zero. When a zero reference
+    ''' would cause a failure here, use
+    ''' <see cref="EqualEnoughZero(System.Double, System.Double)"/>.
+    ''' </remarks>
+    Public Function EqualEnough(ByVal otherVal As System.Double,
+        ByVal refVal As System.Double, ByVal ratio As System.Double) _
+        As System.Boolean
+
+        ' Input checking.
+        If refVal.Equals(0.0) Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(
+                NameOf(refVal), MSGUEEZ)
+        End If
+        If otherVal.Equals(0.0) Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(
+                NameOf(otherVal), MSGUEEZ)
+        End If
+
+        Return System.Math.Abs(otherVal - refVal) <
+            System.Math.Abs(ratio * refVal)
+
+    End Function ' EqualEnough
+
+#End Region ' "EqualEnough Implementations"
 
     ''' <summary>
     ''' Computes the distance between two points in a 3D space.

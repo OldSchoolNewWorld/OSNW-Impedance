@@ -27,9 +27,9 @@ Imports OSNW.Numerics.ComplexExtensions
 Public Structure Admittance
     Implements IEquatable(Of Admittance), IFormattable
 
-    Const MSGCHNV As System.String = Impedance.MSGCHNV
-    Const MSGCHZV As System.String = Impedance.MSGCHZV
-    Const MSGCHIV As System.String = Impedance.MSGCHIV
+    Const MSGCHNV As System.String = OSNW.Math.MSGCHNV
+    Const MSGCHZV As System.String = OSNW.Math.MSGCHZV
+    Const MSGCHIV As System.String = OSNW.Math.MSGCHIV
 
 #Region "Fields and Properties"
 

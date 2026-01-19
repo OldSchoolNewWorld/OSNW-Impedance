@@ -22,4 +22,10 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="OSNW.Math">
+      <HintPath>..\OSNW-Math\bin\Debug\net8.0\OSNW.Math.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

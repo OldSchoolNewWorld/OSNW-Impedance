@@ -213,18 +213,18 @@ Namespace DevelopmentTests
             Dim Z6 As New OSNW.Numerics.Impedance(50, 25.000025)
             Dim Z7 As New OSNW.Numerics.Impedance(50, 25.000026)
 
-            Assert.True(Impedance.EqualEnough(Z2.Resistance, Z1.Resistance, Tol) AndAlso
-                        Impedance.EqualEnough(Z2.Reactance, Z1.Reactance, Tol))
-            Assert.False(Impedance.EqualEnough(Z3.Resistance, Z1.Resistance, Tol) AndAlso
-                         Impedance.EqualEnough(Z3.Reactance, Z1.Reactance, Tol))
-            Assert.False(Impedance.EqualEnough(Z4.Resistance, Z1.Resistance, Tol) AndAlso
-                         Impedance.EqualEnough(Z4.Reactance, Z1.Reactance, Tol))
-            Assert.True(Impedance.EqualEnough(Z5.Resistance, Z1.Resistance, Tol) AndAlso
-                        Impedance.EqualEnough(Z5.Reactance, Z1.Reactance, Tol))
-            Assert.False(Impedance.EqualEnough(Z6.Resistance, Z1.Resistance, Tol) AndAlso
-                         Impedance.EqualEnough(Z6.Reactance, Z1.Reactance, Tol))
-            Assert.False(Impedance.EqualEnough(Z7.Resistance, Z1.Resistance, Tol) AndAlso
-                         Impedance.EqualEnough(Z7.Reactance, Z1.Reactance, Tol))
+            Assert.True(OSNW.Math.EqualEnough(Z2.Resistance, Z1.Resistance, Tol) AndAlso
+                        OSNW.Math.EqualEnough(Z2.Reactance, Z1.Reactance, Tol))
+            Assert.False(OSNW.Math.EqualEnough(Z3.Resistance, Z1.Resistance, Tol) AndAlso
+                         OSNW.Math.EqualEnough(Z3.Reactance, Z1.Reactance, Tol))
+            Assert.False(OSNW.Math.EqualEnough(Z4.Resistance, Z1.Resistance, Tol) AndAlso
+                         OSNW.Math.EqualEnough(Z4.Reactance, Z1.Reactance, Tol))
+            Assert.True(OSNW.Math.EqualEnough(Z5.Resistance, Z1.Resistance, Tol) AndAlso
+                        OSNW.Math.EqualEnough(Z5.Reactance, Z1.Reactance, Tol))
+            Assert.False(OSNW.Math.EqualEnough(Z6.Resistance, Z1.Resistance, Tol) AndAlso
+                         OSNW.Math.EqualEnough(Z6.Reactance, Z1.Reactance, Tol))
+            Assert.False(OSNW.Math.EqualEnough(Z7.Resistance, Z1.Resistance, Tol) AndAlso
+                         OSNW.Math.EqualEnough(Z7.Reactance, Z1.Reactance, Tol))
 
         End Sub
 
@@ -423,8 +423,8 @@ Namespace TryParseStandardTests
             End If
             '        Const XXTOLERANCEXX As System.Double = 0.000001
             '        If Impedance.EqualEnough(reactance, TOLERANCE) Then
-            Assert.True(Impedance.EqualEnough(resistance, Impd.Resistance, IMPDTOLERANCE) AndAlso
-                        Impedance.EqualEnough(reactance, Impd.Reactance, IMPDTOLERANCE))
+            Assert.True(OSNW.Math.EqualEnough(resistance, Impd.Resistance, IMPDTOLERANCE) AndAlso
+                        OSNW.Math.EqualEnough(reactance, Impd.Reactance, IMPDTOLERANCE))
         End Sub
 
         <Fact>
@@ -436,8 +436,8 @@ Namespace TryParseStandardTests
                     If OSNW.Numerics.Impedance.TryParseStandard("-111111.125+555555.6875j", Nothing, Nothing, Impd) Then
                         Assert.Fail("Parsed despite bad entry.")
                     End If
-                    Assert.False(Impedance.EqualEnoughZero(Impd.Resistance, -CultureTestVals.SAMERESISTANCE) AndAlso
-                             Impedance.EqualEnoughZero(Impd.Reactance, CultureTestVals.SAMEREACTANCE))
+                    Assert.False(OSNW.Math.EqualEnoughZero(Impd.Resistance, -CultureTestVals.SAMERESISTANCE) AndAlso
+                             OSNW.Math.EqualEnoughZero(Impd.Reactance, CultureTestVals.SAMEREACTANCE))
                 End Sub)
         End Sub
 
@@ -458,9 +458,9 @@ Namespace TryParseStandardTests
                 Assert.Fail("Parsed despite bad entry.")
             End If
 
-            Assert.True(Impedance.EqualEnoughZero(Impd.Resistance, NearlyZero) OrElse
-                        Not (Impedance.EqualEnough(Impd.Resistance, resistance, IMPDTOLERANCE) AndAlso
-                             Impedance.EqualEnough(Impd.Reactance, reactance, IMPDTOLERANCE)))
+            Assert.True(OSNW.Math.EqualEnoughZero(Impd.Resistance, NearlyZero) OrElse
+                        Not (OSNW.Math.EqualEnough(Impd.Resistance, resistance, IMPDTOLERANCE) AndAlso
+                             OSNW.Math.EqualEnough(Impd.Reactance, reactance, IMPDTOLERANCE)))
 
         End Sub
 
@@ -483,8 +483,8 @@ Namespace TryParseStandardTests
             If Not OSNW.Numerics.Impedance.TryParseStandard(standardStr, Nothing, Nothing, Impd) Then
                 Assert.Fail("Failed to parse.")
             End If
-            Assert.True(Impedance.EqualEnough(Impd.Resistance, resistance, IMPDTOLERANCE) AndAlso
-                        Impedance.EqualEnough(Impd.Reactance, reactance, IMPDTOLERANCE))
+            Assert.True(OSNW.Math.EqualEnough(Impd.Resistance, resistance, IMPDTOLERANCE) AndAlso
+                        OSNW.Math.EqualEnough(Impd.Reactance, reactance, IMPDTOLERANCE))
         End Sub
 
     End Class ' TestTryParseStandardDefaultMixed
@@ -508,8 +508,8 @@ Namespace TryParseStandardTests
             If Not OSNW.Numerics.Impedance.TryParseStandard(standardStr, stdStyle, Nothing, Impd) Then
                 Assert.Fail("Failed to parse.")
             End If
-            Assert.True(Impedance.EqualEnough(Impd.Resistance, resistance, IMPDTOLERANCE) AndAlso
-                        Impedance.EqualEnough(Impd.Reactance, reactance, IMPDTOLERANCE))
+            Assert.True(OSNW.Math.EqualEnough(Impd.Resistance, resistance, IMPDTOLERANCE) AndAlso
+                        OSNW.Math.EqualEnough(Impd.Reactance, reactance, IMPDTOLERANCE))
         End Sub
 
         <Theory>
@@ -558,8 +558,8 @@ Namespace TryParseStandardTests
                 Assert.Fail("Failed to parse.")
             End If
 
-            Assert.True(Impedance.EqualEnough(Impd.Resistance, resistance, IMPDTOLERANCE) AndAlso
-                        Impedance.EqualEnough(Impd.Reactance, reactance, IMPDTOLERANCE))
+            Assert.True(OSNW.Math.EqualEnough(Impd.Resistance, resistance, IMPDTOLERANCE) AndAlso
+                        OSNW.Math.EqualEnough(Impd.Reactance, reactance, IMPDTOLERANCE))
 
         End Sub
 

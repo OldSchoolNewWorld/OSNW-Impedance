@@ -66,7 +66,7 @@ Public Class GenericCircle
                 'Dim CaughtBy As System.Reflection.MethodBase =
                 '    System.Reflection.MethodBase.GetCurrentMethod
                 Throw New System.ArgumentOutOfRangeException(
-                    NameOf(value), Impedance.MSGCHNV)
+                    NameOf(value), OSNW.Math.MSGCHNV)
             End If
 
             Me.m_GridRadius = value
@@ -92,7 +92,7 @@ Public Class GenericCircle
                 'Dim CaughtBy As System.Reflection.MethodBase =
                 '    System.Reflection.MethodBase.GetCurrentMethod
                 Throw New System.ArgumentOutOfRangeException(
-                    NameOf(value), Impedance.MSGCHNV)
+                    NameOf(value), OSNW.Math.MSGCHNV)
             End If
 
             Me.GridRadius = value / 2.0
@@ -135,15 +135,15 @@ Public Class GenericCircle
             Dim ErrMsg As System.String = String.Format(
                 "{0}={1}, {2}={3}", NameOf(c1R), c1R, NameOf(c2R), c2R)
             Throw New System.ArgumentOutOfRangeException(
-                ErrMsg, Impedance.MSGVMBGTZ)
+                ErrMsg, OSNW.Math.MSGVMBGTZ)
         End If
 
         Dim Intersections _
             As New System.Collections.Generic.List(Of OSNW.Numerics.PointD)
 
         ' Concentric circles would have zero or infinite intersection points.
-        If Impedance.EqualEnough(c1X, c2X, Impedance.GRAPHICTOLERANCE) AndAlso
-            Impedance.EqualEnough(c1Y, c2Y, Impedance.GRAPHICTOLERANCE) Then
+        If OSNW.Math.EqualEnough(c1X, c2X, OSNW.Math.GRAPHICTOLERANCE) AndAlso
+            OSNW.Math.EqualEnough(c1Y, c2Y, OSNW.Math.GRAPHICTOLERANCE) Then
 
             Return Intersections ' Still empty.
         End If
@@ -167,8 +167,8 @@ Public Class GenericCircle
         ' or two intersections.
 
         ' Check if the circles are outside-tangent to each other.
-        If Impedance.EqualEnough(c1R + c2R, DeltaCtr,
-                                 Impedance.GRAPHICTOLERANCE) Then
+        If OSNW.Math.EqualEnough(c1R + c2R, DeltaCtr,
+                                 OSNW.Math.GRAPHICTOLERANCE) Then
             ' One intersection point.
             Dim C1Frac As System.Double = c1R / DeltaCtr
             Intersections.Add(New OSNW.Numerics.PointD(
@@ -178,9 +178,9 @@ Public Class GenericCircle
 
         ' Check if the circles are inside-tangent to each other.
         ' Two circles of the same radius cannot be inside-tangent to each other.
-        If Not Impedance.EqualEnough(c1R, c2R, Impedance.GRAPHICTOLERANCE) Then
-            If Impedance.EqualEnough(Math.Abs(c1R - c2R), DeltaCtr,
-                                     Impedance.GRAPHICTOLERANCE) Then
+        If Not OSNW.Math.EqualEnough(c1R, c2R, OSNW.Math.GRAPHICTOLERANCE) Then
+            If OSNW.Math.EqualEnough(System.Math.Abs(c1R - c2R), DeltaCtr,
+                                     OSNW.Math.GRAPHICTOLERANCE) Then
                 ' They are inside-tangent.
                 If c1R > c2R Then
                     Dim C1Frac As System.Double = c1R / DeltaCtr
@@ -204,7 +204,7 @@ Public Class GenericCircle
         ' Calculate two intersection points.
         Dim OnceA As System.Double =
             (c1R * c1R - c2R * c2R + DeltaCtr * DeltaCtr) / (2 * DeltaCtr)
-        Dim OnceH As System.Double = Math.Sqrt(c1R * c1R - OnceA * OnceA)
+        Dim OnceH As System.Double = System.Math.Sqrt(c1R * c1R - OnceA * OnceA)
         Dim X0 As System.Double = c1X + OnceA * (DeltaX / DeltaCtr)
         Dim Y0 As System.Double = c1Y + OnceA * (DeltaY / DeltaCtr)
 
@@ -324,7 +324,7 @@ Public Class GenericCircle
             'Dim CaughtBy As System.Reflection.MethodBase =
             '    System.Reflection.MethodBase.GetCurrentMethod
             Throw New System.ArgumentOutOfRangeException(
-                    NameOf(gridRadius), Impedance.MSGCHNV)
+                    NameOf(gridRadius), OSNW.Math.MSGCHNV)
         End If
 
         With Me
@@ -565,7 +565,7 @@ Public Class SmithMainCircle
                 'Dim CaughtBy As System.Reflection.MethodBase =
                 '    System.Reflection.MethodBase.GetCurrentMethod
                 Throw New System.ArgumentOutOfRangeException(
-                    NameOf(value), Impedance.MSGVMBGTZ)
+                    NameOf(value), OSNW.Math.MSGVMBGTZ)
             End If
 
             Me.m_Z0 = value
@@ -659,7 +659,7 @@ Public Class SmithMainCircle
             'Dim CaughtBy As System.Reflection.MethodBase =
             '    System.Reflection.MethodBase.GetCurrentMethod
             Throw New System.ArgumentOutOfRangeException(
-                NameOf(resistance), Impedance.MSGVMBGTZ)
+                NameOf(resistance), OSNW.Math.MSGVMBGTZ)
         End If
 
         ' REF: Mathematical Construction and Properties of the Smith Chart
@@ -680,20 +680,20 @@ Public Class SmithMainCircle
     Public Function GetRadiusX(ByVal reactance As System.Double) _
         As System.Double
 
-        If Impedance.EqualEnoughZero(
+        If OSNW.Math.EqualEnoughZero(
             reactance, Me.GridRadius * Impedance.DFLTIMPDTOLERANCE0) Then
 
             'Dim CaughtBy As System.Reflection.MethodBase =
             '    System.Reflection.MethodBase.GetCurrentMethod
             Throw New System.ArgumentOutOfRangeException(
-                NameOf(reactance), Impedance.MSGCHZV)
+                NameOf(reactance), OSNW.Math.MSGCHZV)
         End If
 
         ' REF: Mathematical Construction and Properties of the Smith Chart
         ' https://www.allaboutcircuits.com/technical-articles/mathematical-construction-and-properties-of-the-smith-chart/
 
         ' Derived like GetRadiusR.
-        Return Me.Z0 * Me.GridRadius / Math.Abs(reactance)
+        Return Me.Z0 * Me.GridRadius / System.Math.Abs(reactance)
 
     End Function ' GetRadiusX
 
@@ -713,7 +713,7 @@ Public Class SmithMainCircle
             'Dim CaughtBy As System.Reflection.MethodBase =
             '    System.Reflection.MethodBase.GetCurrentMethod
             Throw New System.ArgumentOutOfRangeException(
-                NameOf(conductance), Impedance.MSGVMBGTZ)
+                NameOf(conductance), OSNW.Math.MSGVMBGTZ)
         End If
 
         Return (1.0 / ((conductance / Me.Y0) + 1.0)) * Me.GridRadius
@@ -731,17 +731,17 @@ Public Class SmithMainCircle
     Public Function GetRadiusB(ByVal susceptance As System.Double) _
         As System.Double
 
-        If Impedance.EqualEnoughZero(
+        If OSNW.Math.EqualEnoughZero(
             susceptance, Me.GridRadius * Impedance.DFLTIMPDTOLERANCE0) Then
 
             'Dim CaughtBy As System.Reflection.MethodBase =
             '    System.Reflection.MethodBase.GetCurrentMethod
             Throw New System.ArgumentOutOfRangeException(
-                NameOf(susceptance), Impedance.MSGCHZV)
+                NameOf(susceptance), OSNW.Math.MSGCHZV)
         End If
 
         ' Derived like GetRadiusR.
-        Return Me.Y0 * Me.GridRadius / Math.Abs(susceptance)
+        Return Me.Y0 * Me.GridRadius / System.Math.Abs(susceptance)
 
     End Function ' GetRadiusB
 
@@ -760,7 +760,7 @@ Public Class SmithMainCircle
             'Dim CaughtBy As System.Reflection.MethodBase =
             '    System.Reflection.MethodBase.GetCurrentMethod
             Throw New System.ArgumentOutOfRangeException(
-                NameOf(vswr), Impedance.MSGVMBGTE1)
+                NameOf(vswr), OSNW.Math.MSGVMBGTE1)
         End If
 
         If Double.IsInfinity(vswr) Then
@@ -792,7 +792,7 @@ Public Class SmithMainCircle
             'Dim CaughtBy As System.Reflection.MethodBase =
             '    System.Reflection.MethodBase.GetCurrentMethod
             Throw New System.ArgumentOutOfRangeException(
-                    NameOf(resistance), Impedance.MSGVMBGTZ)
+                    NameOf(resistance), OSNW.Math.MSGVMBGTZ)
         End If
 
         Try
@@ -803,7 +803,7 @@ Public Class SmithMainCircle
             ' Create the R-circle that passes through the impedance plot.
             Dim RCirc As New RCircle(Me, resistance)
 
-            If Impedance.EqualEnoughZero(
+            If OSNW.Math.EqualEnoughZero(
                 reactance, Me.GridRadius * Impedance.DFLTIMPDTOLERANCE0) Then
 
                 ' The circle intersection approach further below will not work
@@ -884,8 +884,8 @@ Public Class SmithMainCircle
         Dim RadiusR As System.Double
 
         ' Check for the special case with the plot ON the resonance line.
-        If Impedance.EqualEnough(plotY, Me.GridCenterY,
-                                 Impedance.GRAPHICTOLERANCE) Then
+        If OSNW.Math.EqualEnough(plotY, Me.GridCenterY,
+                                 OSNW.Math.GRAPHICTOLERANCE) Then
             ' From GetRadiusR:
             '     RadiusR = Me.GridRadius / ((resistance / Me.Z0) + 1)
             '     RadiusR * ((resistance / Me.Z0) + 1) = Me.GridRadius
@@ -1040,12 +1040,12 @@ Public Class SmithMainCircle
             'Dim CaughtBy As System.Reflection.MethodBase =
             '    System.Reflection.MethodBase.GetCurrentMethod
             Throw New System.ArgumentOutOfRangeException(
-                NameOf(gridDiameter), Impedance.MSGVMBGTZ)
+                NameOf(gridDiameter), OSNW.Math.MSGVMBGTZ)
         End If
         If z0 <= 0.0 Then
             'Dim CaughtBy As System.Reflection.MethodBase =
             '    System.Reflection.MethodBase.GetCurrentMethod
-            Throw New System.ArgumentOutOfRangeException(NameOf(z0), Impedance.MSGVMBGTZ)
+            Throw New System.ArgumentOutOfRangeException(NameOf(z0), OSNW.Math.MSGVMBGTZ)
         End If
 
         With Me
@@ -1159,7 +1159,7 @@ Public Class RCircle
             'Dim CaughtBy As System.Reflection.MethodBase =
             '    System.Reflection.MethodBase.GetCurrentMethod
             Throw New System.ArgumentOutOfRangeException(
-                NameOf(resistance), Impedance.MSGVMBGTZ)
+                NameOf(resistance), OSNW.Math.MSGVMBGTZ)
         End If
 
         Me.m_MainCircle = mainCircle
@@ -1377,7 +1377,7 @@ Public Class GCircle
             'Dim CaughtBy As System.Reflection.MethodBase =
             '    System.Reflection.MethodBase.GetCurrentMethod
             Throw New System.ArgumentOutOfRangeException(
-                NameOf(conductance), Impedance.MSGVMBGTZ)
+                NameOf(conductance), OSNW.Math.MSGVMBGTZ)
         End If
 
         Me.m_MainCircle = mainCircle
@@ -1626,7 +1626,7 @@ Public Class VCircle
             'Dim CaughtBy As System.Reflection.MethodBase =
             '    System.Reflection.MethodBase.GetCurrentMethod
             Throw New System.ArgumentOutOfRangeException(
-                NameOf(vswr), Impedance.MSGVMBGTE1)
+                NameOf(vswr), OSNW.Math.MSGVMBGTE1)
         End If
 
         Me.m_MainCircle = mainCircle
@@ -1772,7 +1772,7 @@ Public Class ZPlot
             'Dim CaughtBy As System.Reflection.MethodBase =
             '    System.Reflection.MethodBase.GetCurrentMethod
             Throw New System.ArgumentOutOfRangeException(
-                NameOf(resistance), Impedance.MSGVMBGTZ)
+                NameOf(resistance), OSNW.Math.MSGVMBGTZ)
         End If
 
         Me.m_MainCircle = mainCircle

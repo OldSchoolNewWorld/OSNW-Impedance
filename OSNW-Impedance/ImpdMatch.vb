@@ -257,19 +257,19 @@ Partial Public Structure Impedance
         ' xxxxxxxxxxxx TESTS CAN BE REMOVED WHEN ALL IS OK.
         Dim Z0 As System.Double = mainCirc.Z0
         Dim TestPassed As System.Boolean = True ' For now.
-        If Not Impedance.EqualEnough(WorkZ.Resistance, sourceZ.Resistance,
+        If Not OSNW.Math.EqualEnough(WorkZ.Resistance, sourceZ.Resistance,
                                      DFLTIMPDTOLERANCE) Then
             TestPassed = False
         End If
         Dim NearlyZero As System.Double = Z0 * DFLTIMPDTOLERANCE0
-        If Impedance.EqualEnoughZero(sourceZ.Reactance, NearlyZero) Then
+        If OSNW.Math.EqualEnoughZero(sourceZ.Reactance, NearlyZero) Then
             ' This wants a Z0 match.
-            If Not Impedance.EqualEnoughZero(WorkZ.Reactance, NearlyZero) Then
+            If Not OSNW.Math.EqualEnoughZero(WorkZ.Reactance, NearlyZero) Then
                 TestPassed = False
             End If
         Else
             ' This wants a match to an arbitrary load.
-            If Not Impedance.EqualEnough(WorkZ.Reactance, sourceZ.Reactance,
+            If Not OSNW.Math.EqualEnough(WorkZ.Reactance, sourceZ.Reactance,
                                          DFLTIMPDTOLERANCE) Then
 
                 TestPassed = False
