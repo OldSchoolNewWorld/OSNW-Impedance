@@ -3,6 +3,9 @@ Option Strict On
 Option Compare Binary
 Option Infer Off
 
+Imports OsnwPoint2D = OSNW.Math.Point2D
+Imports OsnwCircle2D = OSNW.Math.Circle2D
+
 ' This document contains items related to the geometry of a Smith Chart. These
 ' geometry items may seem better suited to being included in a Smith Chart
 ' project. They are located here so that the calculations could be used used by
@@ -15,337 +18,337 @@ Option Infer Off
 ' REF: Reflection and Transmission Coefficients Explained
 ' https://www.rfwireless-world.com/terminology/reflection-and-transmission-coefficients
 
-''' <summary>
-''' A base class that represents the geometry of a generic circle, with a center
-''' and radius, for use on a Cartesian grid. Dimensions are in generic "units".
-''' </summary>
-Public Class GenericCircle
+'''' <summary>
+'''' A base class that represents the geometry of a generic circle, with a center
+'''' and radius, for use on a Cartesian grid. Dimensions are in generic "units".
+'''' </summary>
+'Public Class Circle2D
 
-    Private m_GridCenterX As System.Double
-    ''' <summary>
-    ''' Represents the X-coordinate of the center of the <c>GenericCircle</c>,
-    ''' on a Cartesian grid. Dimensions are in generic "units".
-    ''' </summary>
-    Public Property GridCenterX As System.Double
-        Get
-            Return Me.m_GridCenterX
-        End Get
-        Set(value As System.Double)
-            Me.m_GridCenterX = value
-        End Set
-    End Property
+'    Private m_GridCenterX As System.Double
+'    ''' <summary>
+'    ''' Represents the X-coordinate of the center of the <c>Circle2D</c>,
+'    ''' on a Cartesian grid. Dimensions are in generic "units".
+'    ''' </summary>
+'    Public Property GridCenterX As System.Double
+'        Get
+'            Return Me.m_GridCenterX
+'        End Get
+'        Set(value As System.Double)
+'            Me.m_GridCenterX = value
+'        End Set
+'    End Property
 
-    Private m_GridCenterY As System.Double
-    ''' <summary>
-    ''' Represents the Y-coordinate of the center of the <c>GenericCircle</c>,
-    ''' on a Cartesian grid. Dimensions are in generic "units".
-    ''' </summary>
-    Public Property GridCenterY As System.Double
-        Get
-            Return Me.m_GridCenterY
-        End Get
-        Set(value As System.Double)
-            Me.m_GridCenterY = value
-        End Set
-    End Property
+'    Private m_GridCenterY As System.Double
+'    ''' <summary>
+'    ''' Represents the Y-coordinate of the center of the <c>Circle2D</c>,
+'    ''' on a Cartesian grid. Dimensions are in generic "units".
+'    ''' </summary>
+'    Public Property GridCenterY As System.Double
+'        Get
+'            Return Me.m_GridCenterY
+'        End Get
+'        Set(value As System.Double)
+'            Me.m_GridCenterY = value
+'        End Set
+'    End Property
 
-    Private m_GridRadius As System.Double
-    ''' <summary>
-    ''' Represents the radius of the <c>GenericCircle</c>, on a Cartesian grid.
-    ''' Dimensions are in generic "units".
-    ''' </summary>
-    Public Property GridRadius As System.Double
-        Get
-            Return Me.m_GridRadius
-        End Get
-        Set(value As System.Double)
+'    Private m_GridRadius As System.Double
+'    ''' <summary>
+'    ''' Represents the radius of the <c>Circle2D</c>, on a Cartesian grid.
+'    ''' Dimensions are in generic "units".
+'    ''' </summary>
+'    Public Property GridRadius As System.Double
+'        Get
+'            Return Me.m_GridRadius
+'        End Get
+'        Set(value As System.Double)
 
-            ' Input checking.
-            ' A zero value is useless, but possibly valid.
-            If value < 0.0 Then
-                'Dim CaughtBy As System.Reflection.MethodBase =
-                '    System.Reflection.MethodBase.GetCurrentMethod
-                Throw New System.ArgumentOutOfRangeException(
-                    NameOf(value), OSNW.Math.MSGCHNV)
-            End If
+'            ' Input checking.
+'            ' A zero value is useless, but possibly valid.
+'            If value < 0.0 Then
+'                'Dim CaughtBy As System.Reflection.MethodBase =
+'                '    System.Reflection.MethodBase.GetCurrentMethod
+'                Throw New System.ArgumentOutOfRangeException(
+'                    NameOf(value), OSNW.Math.MSGCHNV)
+'            End If
 
-            Me.m_GridRadius = value
+'            Me.m_GridRadius = value
 
-        End Set
-    End Property
+'        End Set
+'    End Property
 
-    ''' <summary>
-    ''' Represents the diameter of the <c>GenericCircle</c>, on a Cartesian
-    ''' grid. Dimensions are in generic "units".
-    ''' </summary>
-    Public Property GridDiameter As System.Double
-        ' DEV: Being functionally redundant, this may need to be excluded from
-        ' any serialization process.
-        Get
-            Return Me.GridRadius * 2.0
-        End Get
-        Set(value As System.Double)
+'    ''' <summary>
+'    ''' Represents the diameter of the <c>Circle2D</c>, on a Cartesian
+'    ''' grid. Dimensions are in generic "units".
+'    ''' </summary>
+'    Public Property GridDiameter As System.Double
+'        ' DEV: Being functionally redundant, this may need to be excluded from
+'        ' any serialization process.
+'        Get
+'            Return Me.GridRadius * 2.0
+'        End Get
+'        Set(value As System.Double)
 
-            ' Input checking.
-            ' A zero value is useless, but possibly valid.
-            If value < 0.0 Then
-                'Dim CaughtBy As System.Reflection.MethodBase =
-                '    System.Reflection.MethodBase.GetCurrentMethod
-                Throw New System.ArgumentOutOfRangeException(
-                    NameOf(value), OSNW.Math.MSGCHNV)
-            End If
+'            ' Input checking.
+'            ' A zero value is useless, but possibly valid.
+'            If value < 0.0 Then
+'                'Dim CaughtBy As System.Reflection.MethodBase =
+'                '    System.Reflection.MethodBase.GetCurrentMethod
+'                Throw New System.ArgumentOutOfRangeException(
+'                    NameOf(value), OSNW.Math.MSGCHNV)
+'            End If
 
-            Me.GridRadius = value / 2.0
+'            Me.GridRadius = value / 2.0
 
-        End Set
-    End Property
+'        End Set
+'    End Property
 
-    ''' <summary>
-    ''' Calculates the intersection points between two circles defined by their
-    ''' center coordinates and radii.
-    ''' </summary>
-    ''' <param name="c1X">Specifies the X-coordinate of circle 1.</param>
-    ''' <param name="c1Y">Specifies the Y-coordinate of circle 1.</param>
-    ''' <param name="c1R">Specifies the radius of circle 1.</param>
-    ''' <param name="c2X">Specifies the X-coordinate of circle 2.</param>
-    ''' <param name="c2Y">Specifies the Y-coordinate of circle 2.</param>
-    ''' <param name="c2R">Specifies the radius of circle 1.</param>
-    ''' <returns>A list of 0, 1, or 2 intersection points as
-    ''' <see cref="OSNW.Numerics.PointD"/> structure(s).</returns>
-    ''' <exception cref="ArgumentOutOfRangeException">when either radius is less
-    ''' than or equal to zero.</exception>
-    ''' <remarks>
-    ''' If there are no intersection points, an empty list is returned. If the
-    ''' circles are tangent to each other, a list with one intersection point is
-    ''' returned. If the circles intersect at two points, a list with both
-    ''' points is returned.
-    ''' </remarks>
-    Public Shared Function GetIntersections(ByVal c1X As System.Double,
-        ByVal c1Y As System.Double, ByVal c1R As System.Double,
-        ByVal c2X As System.Double, ByVal c2Y As System.Double,
-        ByVal c2R As System.Double) _
-        As System.Collections.Generic.List(Of OSNW.Numerics.PointD)
+'    ''' <summary>
+'    ''' Calculates the intersection points between two circles defined by their
+'    ''' center coordinates and radii.
+'    ''' </summary>
+'    ''' <param name="c1X">Specifies the X-coordinate of circle 1.</param>
+'    ''' <param name="c1Y">Specifies the Y-coordinate of circle 1.</param>
+'    ''' <param name="c1R">Specifies the radius of circle 1.</param>
+'    ''' <param name="c2X">Specifies the X-coordinate of circle 2.</param>
+'    ''' <param name="c2Y">Specifies the Y-coordinate of circle 2.</param>
+'    ''' <param name="c2R">Specifies the radius of circle 1.</param>
+'    ''' <returns>A list of 0, 1, or 2 intersection points as
+'    ''' <see cref="OSNW.Numerics.PointD"/> structure(s).</returns>
+'    ''' <exception cref="ArgumentOutOfRangeException">when either radius is less
+'    ''' than or equal to zero.</exception>
+'    ''' <remarks>
+'    ''' If there are no intersection points, an empty list is returned. If the
+'    ''' circles are tangent to each other, a list with one intersection point is
+'    ''' returned. If the circles intersect at two points, a list with both
+'    ''' points is returned.
+'    ''' </remarks>
+'    Public Shared Function GetIntersections(ByVal c1X As System.Double,
+'        ByVal c1Y As System.Double, ByVal c1R As System.Double,
+'        ByVal c2X As System.Double, ByVal c2Y As System.Double,
+'        ByVal c2R As System.Double) _
+'        As System.Collections.Generic.List(Of OSNW.Numerics.PointD)
 
-        ' DEV: This is the worker for the related routines.
+'        ' DEV: This is the worker for the related routines.
 
-        ' Input checking.
-        If c1R <= 0 OrElse c2R <= 0 Then
-            'Dim CaughtBy As System.Reflection.MethodBase =
-            '    System.Reflection.MethodBase.GetCurrentMethod
-            Dim ErrMsg As System.String = String.Format(
-                "{0}={1}, {2}={3}", NameOf(c1R), c1R, NameOf(c2R), c2R)
-            Throw New System.ArgumentOutOfRangeException(
-                ErrMsg, OSNW.Math.MSGVMBGTZ)
-        End If
+'        ' Input checking.
+'        If c1R <= 0 OrElse c2R <= 0 Then
+'            'Dim CaughtBy As System.Reflection.MethodBase =
+'            '    System.Reflection.MethodBase.GetCurrentMethod
+'            Dim ErrMsg As System.String = String.Format(
+'                "{0}={1}, {2}={3}", NameOf(c1R), c1R, NameOf(c2R), c2R)
+'            Throw New System.ArgumentOutOfRangeException(
+'                ErrMsg, OSNW.Math.MSGVMBGTZ)
+'        End If
 
-        Dim Intersections _
-            As New System.Collections.Generic.List(Of OSNW.Numerics.PointD)
+'        Dim Intersections _
+'            As New System.Collections.Generic.List(Of OSNW.Numerics.PointD)
 
-        ' Concentric circles would have zero or infinite intersection points.
-        If OSNW.Math.EqualEnough(c1X, c2X, OSNW.Math.GRAPHICTOLERANCE) AndAlso
-            OSNW.Math.EqualEnough(c1Y, c2Y, OSNW.Math.GRAPHICTOLERANCE) Then
+'        ' Concentric circles would have zero or infinite intersection points.
+'        If OSNW.Math.EqualEnough(c1X, c2X, OSNW.Math.GRAPHICTOLERANCE) AndAlso
+'            OSNW.Math.EqualEnough(c1Y, c2Y, OSNW.Math.GRAPHICTOLERANCE) Then
 
-            Return Intersections ' Still empty.
-        End If
+'            Return Intersections ' Still empty.
+'        End If
 
-        ' Calculate the distance between the centers of the circles.
-        Dim DeltaX As System.Double = c2X - c1X
-        Dim DeltaY As System.Double = c2Y - c1Y
-        Dim DeltaCtr As System.Double =
-            System.Math.Sqrt(DeltaX * DeltaX + DeltaY * DeltaY)
+'        ' Calculate the distance between the centers of the circles.
+'        Dim DeltaX As System.Double = c2X - c1X
+'        Dim DeltaY As System.Double = c2Y - c1Y
+'        Dim DeltaCtr As System.Double =
+'            System.Math.Sqrt(DeltaX * DeltaX + DeltaY * DeltaY)
 
-        ' Check if circles are too far apart or if one is contained within, but
-        ' not tangent to, the other.
-        If DeltaCtr > (c1R + c2R) OrElse
-            DeltaCtr < System.Math.Abs(c1R - c2R) Then
+'        ' Check if circles are too far apart or if one is contained within, but
+'        ' not tangent to, the other.
+'        If DeltaCtr > (c1R + c2R) OrElse
+'            DeltaCtr < System.Math.Abs(c1R - c2R) Then
 
-            Return Intersections ' Still empty.
-        End If
+'            Return Intersections ' Still empty.
+'        End If
 
-        ' On getting this far, the circles are neither isolated nor have one
-        ' separately contained within the other. There should now be either one
-        ' or two intersections.
+'        ' On getting this far, the circles are neither isolated nor have one
+'        ' separately contained within the other. There should now be either one
+'        ' or two intersections.
 
-        ' Check if the circles are outside-tangent to each other.
-        If OSNW.Math.EqualEnough(c1R + c2R, DeltaCtr,
-                                 OSNW.Math.GRAPHICTOLERANCE) Then
-            ' One intersection point.
-            Dim C1Frac As System.Double = c1R / DeltaCtr
-            Intersections.Add(New OSNW.Numerics.PointD(
-                              c1X + C1Frac * DeltaX, c1Y + C1Frac * DeltaY))
-            Return Intersections
-        End If
+'        ' Check if the circles are outside-tangent to each other.
+'        If OSNW.Math.EqualEnough(c1R + c2R, DeltaCtr,
+'                                 OSNW.Math.GRAPHICTOLERANCE) Then
+'            ' One intersection point.
+'            Dim C1Frac As System.Double = c1R / DeltaCtr
+'            Intersections.Add(New OSNW.Numerics.PointD(
+'                              c1X + C1Frac * DeltaX, c1Y + C1Frac * DeltaY))
+'            Return Intersections
+'        End If
 
-        ' Check if the circles are inside-tangent to each other.
-        ' Two circles of the same radius cannot be inside-tangent to each other.
-        If Not OSNW.Math.EqualEnough(c1R, c2R, OSNW.Math.GRAPHICTOLERANCE) Then
-            If OSNW.Math.EqualEnough(System.Math.Abs(c1R - c2R), DeltaCtr,
-                                     OSNW.Math.GRAPHICTOLERANCE) Then
-                ' They are inside-tangent.
-                If c1R > c2R Then
-                    Dim C1Frac As System.Double = c1R / DeltaCtr
-                    Intersections.Add(New OSNW.Numerics.PointD(
-                                          c1X + (C1Frac * DeltaX),
-                                          c1Y + (C1Frac * DeltaY)))
-                    Return Intersections
-                Else
-                    Dim C2Frac As System.Double = c2R / DeltaCtr
-                    Intersections.Add(New OSNW.Numerics.PointD(
-                                          c2X + (C2Frac * -DeltaX),
-                                          c2Y + (C2Frac * -DeltaY)))
-                    Return Intersections
-                End If
-            End If
-        End If
+'        ' Check if the circles are inside-tangent to each other.
+'        ' Two circles of the same radius cannot be inside-tangent to each other.
+'        If Not OSNW.Math.EqualEnough(c1R, c2R, OSNW.Math.GRAPHICTOLERANCE) Then
+'            If OSNW.Math.EqualEnough(System.Math.Abs(c1R - c2R), DeltaCtr,
+'                                     OSNW.Math.GRAPHICTOLERANCE) Then
+'                ' They are inside-tangent.
+'                If c1R > c2R Then
+'                    Dim C1Frac As System.Double = c1R / DeltaCtr
+'                    Intersections.Add(New OSNW.Numerics.PointD(
+'                                          c1X + (C1Frac * DeltaX),
+'                                          c1Y + (C1Frac * DeltaY)))
+'                    Return Intersections
+'                Else
+'                    Dim C2Frac As System.Double = c2R / DeltaCtr
+'                    Intersections.Add(New OSNW.Numerics.PointD(
+'                                          c2X + (C2Frac * -DeltaX),
+'                                          c2Y + (C2Frac * -DeltaY)))
+'                    Return Intersections
+'                End If
+'            End If
+'        End If
 
-        ' (The initial version of) the sequence below was generated by Visual
-        ' Studio AI.
+'        ' (The initial version of) the sequence below was generated by Visual
+'        ' Studio AI.
 
-        ' Calculate two intersection points.
-        Dim OnceA As System.Double =
-            (c1R * c1R - c2R * c2R + DeltaCtr * DeltaCtr) / (2 * DeltaCtr)
-        Dim OnceH As System.Double = System.Math.Sqrt(c1R * c1R - OnceA * OnceA)
-        Dim X0 As System.Double = c1X + OnceA * (DeltaX / DeltaCtr)
-        Dim Y0 As System.Double = c1Y + OnceA * (DeltaY / DeltaCtr)
+'        ' Calculate two intersection points.
+'        Dim OnceA As System.Double =
+'            (c1R * c1R - c2R * c2R + DeltaCtr * DeltaCtr) / (2 * DeltaCtr)
+'        Dim OnceH As System.Double = System.Math.Sqrt(c1R * c1R - OnceA * OnceA)
+'        Dim X0 As System.Double = c1X + OnceA * (DeltaX / DeltaCtr)
+'        Dim Y0 As System.Double = c1Y + OnceA * (DeltaY / DeltaCtr)
 
-        ' Two intersection points.
-        Dim intersection1 As New OSNW.Numerics.PointD(
-            X0 + OnceH * (DeltaY / DeltaCtr),
-            Y0 - OnceH * (DeltaX / DeltaCtr))
-        Dim intersection2 As New OSNW.Numerics.PointD(
-            X0 - OnceH * (DeltaY / DeltaCtr),
-            Y0 + OnceH * (DeltaX / DeltaCtr))
-        Intersections.Add(intersection1)
-        Intersections.Add(intersection2)
-        Return Intersections
+'        ' Two intersection points.
+'        Dim intersection1 As New OSNW.Numerics.PointD(
+'            X0 + OnceH * (DeltaY / DeltaCtr),
+'            Y0 - OnceH * (DeltaX / DeltaCtr))
+'        Dim intersection2 As New OSNW.Numerics.PointD(
+'            X0 - OnceH * (DeltaY / DeltaCtr),
+'            Y0 + OnceH * (DeltaX / DeltaCtr))
+'        Intersections.Add(intersection1)
+'        Intersections.Add(intersection2)
+'        Return Intersections
 
-    End Function ' GetIntersections
+'    End Function ' GetIntersections
 
-    ''' <summary>
-    ''' Calculates the intersection points between <paramref name="circle1"/>
-    ''' and <paramref name="circle2"/>.
-    ''' </summary>
-    ''' <param name="circle1">Specifies the first circle.</param>
-    ''' <param name="circle2">Specifies the second circle.</param>
-    ''' <returns>A list of intersection points as
-    ''' <see cref="OSNW.Numerics.PointD"/> objects.</returns>
-    Public Shared Function GetIntersections(
-        ByVal circle1 As GenericCircle, ByVal circle2 As GenericCircle) _
-        As System.Collections.Generic.List(Of OSNW.Numerics.PointD)
+'    ''' <summary>
+'    ''' Calculates the intersection points between <paramref name="circle1"/>
+'    ''' and <paramref name="circle2"/>.
+'    ''' </summary>
+'    ''' <param name="circle1">Specifies the first circle.</param>
+'    ''' <param name="circle2">Specifies the second circle.</param>
+'    ''' <returns>A list of intersection points as
+'    ''' <see cref="OSNW.Numerics.PointD"/> objects.</returns>
+'    Public Shared Function GetIntersections(
+'        ByVal circle1 As Circle2D, ByVal circle2 As Circle2D) _
+'        As System.Collections.Generic.List(Of OSNW.Numerics.PointD)
 
-        Return GetIntersections(
-            circle1.GridCenterX, circle1.GridCenterY, circle1.GridRadius,
-            circle2.GridCenterX, circle2.GridCenterY, circle2.GridRadius)
-    End Function ' GetIntersections
+'        Return GetIntersections(
+'            circle1.GridCenterX, circle1.GridCenterY, circle1.GridRadius,
+'            circle2.GridCenterX, circle2.GridCenterY, circle2.GridRadius)
+'    End Function ' GetIntersections
 
-    ''' <summary>
-    ''' Calculates the intersection points between the current instance and
-    ''' <paramref name="otherCircle"/>.
-    ''' </summary>
-    ''' <param name="otherCircle">Specifies the other circle with which to find
-    ''' intersections.</param>
-    ''' <returns>A list of intersection points as
-    ''' <see cref="OSNW.Numerics.PointD"/> objects.</returns>
-    Public Function GetIntersections(ByVal otherCircle As GenericCircle) _
-        As System.Collections.Generic.List(Of OSNW.Numerics.PointD)
+'    ''' <summary>
+'    ''' Calculates the intersection points between the current instance and
+'    ''' <paramref name="otherCircle"/>.
+'    ''' </summary>
+'    ''' <param name="otherCircle">Specifies the other circle with which to find
+'    ''' intersections.</param>
+'    ''' <returns>A list of intersection points as
+'    ''' <see cref="OSNW.Numerics.PointD"/> objects.</returns>
+'    Public Function GetIntersections(ByVal otherCircle As Circle2D) _
+'        As System.Collections.Generic.List(Of OSNW.Numerics.PointD)
 
-        Return GetIntersections(Me, otherCircle)
-    End Function ' GetIntersections
+'        Return GetIntersections(Me, otherCircle)
+'    End Function ' GetIntersections
 
-    ''' <summary>
-    ''' xxxxxxxxxx
-    ''' </summary>
-    ''' <param name="circle1">Specifies the <c>GenericCircle</c> to consider for
-    ''' intersection with <paramref name="circle2"/>.</param>
-    ''' <param name="circle2">Specifies the <c>GenericCircle</c> to consider for
-    ''' intersection with <paramref name="circle1"/>.</param>
-    ''' <returns>xxxxxxxxxx</returns>
-    Public Shared Function CirclesIntersect(ByVal circle1 As GenericCircle,
-        ByVal circle2 As GenericCircle) As System.Boolean
+'    ''' <summary>
+'    ''' xxxxxxxxxx
+'    ''' </summary>
+'    ''' <param name="circle1">Specifies the <c>Circle2D</c> to consider for
+'    ''' intersection with <paramref name="circle2"/>.</param>
+'    ''' <param name="circle2">Specifies the <c>Circle2D</c> to consider for
+'    ''' intersection with <paramref name="circle1"/>.</param>
+'    ''' <returns>xxxxxxxxxx</returns>
+'    Public Shared Function CirclesIntersect(ByVal circle1 As Circle2D,
+'        ByVal circle2 As Circle2D) As System.Boolean
 
-        ' xxxxxxxxxx NO TEST HAS BEEN ADDED FOR THIS. xxxxxxxxxx
-        Return circle1.GetIntersections(circle2).Count > 0
-    End Function ' CirclesIntersect
+'        ' xxxxxxxxxx NO TEST HAS BEEN ADDED FOR THIS. xxxxxxxxxx
+'        Return circle1.GetIntersections(circle2).Count > 0
+'    End Function ' CirclesIntersect
 
-    ''' <summary>
-    ''' xxxxxxxxxx
-    ''' </summary>
-    ''' <param name="circle1">Specifies the <c>GenericCircle</c> to consider for
-    ''' intersection with <paramref name="circle2"/>.</param>
-    ''' <param name="circle2">Specifies the <c>GenericCircle</c> to consider for
-    ''' intersection with <paramref name="circle1"/>.</param>
-    ''' <param name="intersections">xxxxxxxxxx</param>
-    ''' <returns>xxxxxxxxxx</returns>
-    Public Shared Function CirclesIntersect(
-        ByVal circle1 As GenericCircle, ByVal circle2 As GenericCircle,
-        ByRef intersections As System.Collections.Generic.List(
-            Of OSNW.Numerics.PointD)) As System.Boolean
+'    ''' <summary>
+'    ''' xxxxxxxxxx
+'    ''' </summary>
+'    ''' <param name="circle1">Specifies the <c>Circle2D</c> to consider for
+'    ''' intersection with <paramref name="circle2"/>.</param>
+'    ''' <param name="circle2">Specifies the <c>Circle2D</c> to consider for
+'    ''' intersection with <paramref name="circle1"/>.</param>
+'    ''' <param name="intersections">xxxxxxxxxx</param>
+'    ''' <returns>xxxxxxxxxx</returns>
+'    Public Shared Function CirclesIntersect(
+'        ByVal circle1 As Circle2D, ByVal circle2 As Circle2D,
+'        ByRef intersections As System.Collections.Generic.List(
+'            Of OSNW.Numerics.PointD)) As System.Boolean
 
-        ' xxxxxxxxxx NO TEST HAS BEEN ADDED FOR THIS. xxxxxxxxxx
-        intersections = circle1.GetIntersections(circle2)
-        Return intersections.Count > 0
-    End Function ' CirclesIntersect
+'        ' xxxxxxxxxx NO TEST HAS BEEN ADDED FOR THIS. xxxxxxxxxx
+'        intersections = circle1.GetIntersections(circle2)
+'        Return intersections.Count > 0
+'    End Function ' CirclesIntersect
 
-    ''' <summary>
-    ''' A default constructor that creates a new instance of the
-    ''' <c>GenericCircle</c> class with default center coordinates and radius.
-    ''' </summary>
-    ''' <remarks>
-    ''' A default constructor is required to allow inheritance.
-    ''' </remarks>
-    Public Sub New()
-        With Me
-            '.m_GridCenterX = 0.0
-            '.m_GridCenterY = 0.0
-            .m_GridRadius = 1.0 ' Default to a unit circle.
-        End With
-    End Sub ' New
+'    ''' <summary>
+'    ''' A default constructor that creates a new instance of the
+'    ''' <c>Circle2D</c> class with default center coordinates and radius.
+'    ''' </summary>
+'    ''' <remarks>
+'    ''' A default constructor is required to allow inheritance.
+'    ''' </remarks>
+'    Public Sub New()
+'        With Me
+'            '.m_GridCenterX = 0.0
+'            '.m_GridCenterY = 0.0
+'            .m_GridRadius = 1.0 ' Default to a unit circle.
+'        End With
+'    End Sub ' New
 
-    ''' <summary>
-    ''' Creates a new instance of the <c>GenericCircle</c> class with the
-    ''' specified center coordinates and radius.
-    ''' </summary>
-    ''' <param name="gridCenterX"> Specifies the X-coordinate of the center of
-    ''' the <c>GenericCircle</c>, on a Cartesian grid. Dimensions are in generic
-    ''' "units".</param>
-    ''' <param name="gridCenterY"> Specifies the Y-coordinate of the center of
-    ''' the <c>GenericCircle</c>, on a Cartesian grid. Dimensions are in generic
-    ''' "units".</param>
-    ''' <param name="gridRadius">Specifies the radius of the
-    ''' <c>GenericCircle</c>, on a Cartesian grid. Dimensions are in generic
-    ''' "units".</param>
-    Public Sub New(ByVal gridCenterX As System.Double,
-                   ByVal gridCenterY As System.Double,
-                   ByVal gridRadius As System.Double)
+'    ''' <summary>
+'    ''' Creates a new instance of the <c>Circle2D</c> class with the
+'    ''' specified center coordinates and radius.
+'    ''' </summary>
+'    ''' <param name="gridCenterX"> Specifies the X-coordinate of the center of
+'    ''' the <c>Circle2D</c>, on a Cartesian grid. Dimensions are in generic
+'    ''' "units".</param>
+'    ''' <param name="gridCenterY"> Specifies the Y-coordinate of the center of
+'    ''' the <c>Circle2D</c>, on a Cartesian grid. Dimensions are in generic
+'    ''' "units".</param>
+'    ''' <param name="gridRadius">Specifies the radius of the
+'    ''' <c>Circle2D</c>, on a Cartesian grid. Dimensions are in generic
+'    ''' "units".</param>
+'    Public Sub New(ByVal gridCenterX As System.Double,
+'                   ByVal gridCenterY As System.Double,
+'                   ByVal gridRadius As System.Double)
 
-        ' Input checking.
-        ' A zero value is useless, but possibly valid.
-        If gridRadius < 0.0 Then
-            'Dim CaughtBy As System.Reflection.MethodBase =
-            '    System.Reflection.MethodBase.GetCurrentMethod
-            Throw New System.ArgumentOutOfRangeException(
-                    NameOf(gridRadius), OSNW.Math.MSGCHNV)
-        End If
+'        ' Input checking.
+'        ' A zero value is useless, but possibly valid.
+'        If gridRadius < 0.0 Then
+'            'Dim CaughtBy As System.Reflection.MethodBase =
+'            '    System.Reflection.MethodBase.GetCurrentMethod
+'            Throw New System.ArgumentOutOfRangeException(
+'                    NameOf(gridRadius), OSNW.Math.MSGCHNV)
+'        End If
 
-        With Me
-            .m_GridCenterX = gridCenterX
-            .m_GridCenterY = gridCenterY
-            .m_GridRadius = gridRadius
-        End With
+'        With Me
+'            .m_GridCenterX = gridCenterX
+'            .m_GridCenterY = gridCenterY
+'            .m_GridRadius = gridRadius
+'        End With
 
-    End Sub ' New
+'    End Sub ' New
 
-    ''' <summary>
-    ''' Converts the value of the current GenericCircle to its equivalent string
-    ''' representation in Cartesian form, using the default numeric format and
-    ''' culture-specific format information for its parts.
-    ''' </summary>
-    ''' <returns>The current GenericCircle expressed in Cartesian form.</returns>
-    Public Overrides Function ToString() As System.String
-        Return $"Center: ({Me.GridCenterX}, {Me.GridCenterY}), Radius: {Me.GridRadius}"
-    End Function ' ToString
+'    ''' <summary>
+'    ''' Converts the value of the current Circle2D to its equivalent string
+'    ''' representation in Cartesian form, using the default numeric format and
+'    ''' culture-specific format information for its parts.
+'    ''' </summary>
+'    ''' <returns>The current Circle2D expressed in Cartesian form.</returns>
+'    Public Overrides Function ToString() As System.String
+'        Return $"Center: ({Me.GridCenterX}, {Me.GridCenterY}), Radius: {Me.GridRadius}"
+'    End Function ' ToString
 
-End Class ' GenericCircle
+'End Class ' Circle2D
 
 ''' <summary>
 ''' A class that extracts details about the impedance associated with a specific
@@ -545,7 +548,9 @@ End Class ' PlotDetails
 ''' Cartesian grid. Dimensions are in generic "units".
 ''' </summary>
 Public Class SmithMainCircle
-    Inherits GenericCircle
+    Inherits OsnwCircle2D
+
+#Region "Fields and Properties"
 
     Private m_Z0 As System.Double
     ''' <summary>
@@ -591,9 +596,9 @@ Public Class SmithMainCircle
     ''' Returns the Cartesian X-coordinate of the leftmost edge of the current
     ''' <c>SmithMainCircle</c>. Dimensions are in generic "units".
     ''' </summary>
-    Public ReadOnly Property GridLeftEdgeX As System.Double
+    Public ReadOnly Property LeftEdgeX As System.Double
         Get
-            Return Me.GridCenterX - Me.GridRadius
+            Return Me.CenterX - Me.Radius
         End Get
     End Property
 
@@ -601,45 +606,75 @@ Public Class SmithMainCircle
     ''' Returns the Cartesian X-coordinate of the rightmost edge of the current
     ''' <c>SmithMainCircle</c>. Dimensions are in generic "units".
     ''' </summary>
-    Public ReadOnly Property GridRightEdgeX As System.Double
+    Public ReadOnly Property RightEdgeX As System.Double
         Get
-            Return Me.GridCenterX + Me.GridRadius
+            Return Me.CenterX + Me.Radius
         End Get
     End Property
+
+#End Region ' "Fields and Properties"
+
+#Region "Constructors"
+
+    ''' <summary>
+    ''' Creates a new instance of the <c>SmithMainCircle</c> class with the
+    ''' specified center coordinates, diameter, and characteristic impedance.
+    ''' Dimensions are in generic "units" relative to the grid on which the
+    ''' <c>SmithMainCircle</c>is located.
+    ''' </summary>
+    ''' <param name="gridCenterX">Specifies the X-coordinate of the center of
+    ''' the circle in generic "units".</param>
+    ''' <param name="gridCenterY">Specifies the Y-coordinate of the center of
+    ''' the circle in generic "units".</param>
+    ''' <param name="gridDiameter">Specifies the diameter of the circle in
+    ''' generic "units".</param>
+    ''' <param name="z0">Specifies the characteristic impedance of the
+    ''' <c>SmithMainCircle</c> in ohms.</param>
+    Public Sub New(ByVal gridCenterX As System.Double,
+                   ByVal gridCenterY As System.Double,
+                   ByVal gridDiameter As System.Double,
+                   ByVal z0 As System.Double)
+
+        ' Input checking.
+        If gridDiameter <= 0.0 Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(
+                NameOf(gridDiameter), OSNW.Math.MSGVMBGTZ)
+        End If
+        If z0 <= 0.0 Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(NameOf(z0), OSNW.Math.MSGVMBGTZ)
+        End If
+
+        With Me
+            .CenterX = gridCenterX
+            .CenterY = gridCenterY
+            .Diameter = gridDiameter
+            .m_Z0 = z0
+        End With
+
+    End Sub ' New
+
+#End Region ' "Constructors"
+
+#Region "Methods"
 
     ''' <summary>
     ''' Converts the value of the current SmithMainCircle to its equivalent
     ''' string representation in Cartesian form, using the default numeric
     ''' format and culture-specific format information for its parts.
     ''' </summary>
-    ''' <returns>The current GenericCircle expressed in Cartesian form.</returns>
+    ''' <returns>The current SmithMainCircle expressed in Cartesian form.</returns>
     Public Overrides Function ToString() As System.String
-        Return $"Z0: {Me.Z0}, Center: ({Me.GridCenterX}, {Me.GridCenterY}), Radius: {Me.GridRadius}"
+        Return $"Z0: {Me.Z0}, Center: ({Me.CenterX}, {Me.CenterY})" &
+            $", Radius: {Me.Radius}"
     End Function ' ToString
 
     ''' <summary>
-    ''' Returns whether point (plotX, plotY) falls inside the outer circle.
-    ''' </summary>
-    ''' <param name="plotX">Specifies the X-coordinate of the point on the
-    ''' Smith Chart in generic "units".</param>
-    ''' <param name="plotY">Specifies the Y-coordinate of the point on the
-    ''' Smith Chart in generic "units".</param>
-    ''' <returns>Returns <c>True</c> if point (<paramref name="plotX"/>,
-    ''' <paramref name="plotY"/>) falls inside the outer circle; otherwise,
-    ''' <c>False</c>.</returns>
-    ''' <remarks>Points ON the outer circle are NOT considered to be INSIDE the
-    ''' circle.</remarks>
-    Public Function PlotXYIsInside(ByVal plotX As System.Double,
-        ByVal plotY As System.Double) As System.Boolean
-
-        Return System.Math.Sqrt((plotX - Me.GridCenterX) ^ 2 +
-                                (plotY - Me.GridCenterY) ^ 2) <
-            Me.GridRadius
-    End Function ' PlotIsInside
-
-    ''' <summary>
-    ''' Calculates the radius of an R-circle associated with the current instance
-    ''' for a <paramref name="resistance"/> specified in ohms.
+    ''' Calculates the radius of an R-circle associated with the current
+    ''' instance for a <paramref name="resistance"/> specified in ohms.
     ''' </summary>
     ''' <param name="resistance">Specifies the resistance in ohms.</param>
     ''' <returns>The radius of the R-circle in generic "units".</returns>
@@ -665,7 +700,7 @@ Public Class SmithMainCircle
         ' REF: Mathematical Construction and Properties of the Smith Chart
         ' https://www.allaboutcircuits.com/technical-articles/mathematical-construction-and-properties-of-the-smith-chart/
 
-        Return Me.GridRadius / ((resistance / Me.Z0) + 1.0)
+        Return Me.Radius / ((resistance / Me.Z0) + 1.0)
 
     End Function ' GetRadiusR
 
@@ -681,7 +716,7 @@ Public Class SmithMainCircle
         As System.Double
 
         If OSNW.Math.EqualEnoughZero(
-            reactance, Me.GridRadius * Impedance.DFLTIMPDTOLERANCE0) Then
+            reactance, Me.Radius * Impedance.DFLTIMPDTOLERANCE0) Then
 
             'Dim CaughtBy As System.Reflection.MethodBase =
             '    System.Reflection.MethodBase.GetCurrentMethod
@@ -693,7 +728,7 @@ Public Class SmithMainCircle
         ' https://www.allaboutcircuits.com/technical-articles/mathematical-construction-and-properties-of-the-smith-chart/
 
         ' Derived like GetRadiusR.
-        Return Me.Z0 * Me.GridRadius / System.Math.Abs(reactance)
+        Return Me.Z0 * Me.Radius / System.Math.Abs(reactance)
 
     End Function ' GetRadiusX
 
@@ -716,7 +751,7 @@ Public Class SmithMainCircle
                 NameOf(conductance), OSNW.Math.MSGVMBGTZ)
         End If
 
-        Return (1.0 / ((conductance / Me.Y0) + 1.0)) * Me.GridRadius
+        Return (1.0 / ((conductance / Me.Y0) + 1.0)) * Me.Radius
 
     End Function ' GetRadiusG
 
@@ -732,7 +767,7 @@ Public Class SmithMainCircle
         As System.Double
 
         If OSNW.Math.EqualEnoughZero(
-            susceptance, Me.GridRadius * Impedance.DFLTIMPDTOLERANCE0) Then
+            susceptance, Me.Radius * Impedance.DFLTIMPDTOLERANCE0) Then
 
             'Dim CaughtBy As System.Reflection.MethodBase =
             '    System.Reflection.MethodBase.GetCurrentMethod
@@ -741,7 +776,7 @@ Public Class SmithMainCircle
         End If
 
         ' Derived like GetRadiusR.
-        Return Me.Y0 * Me.GridRadius / System.Math.Abs(susceptance)
+        Return Me.Y0 * Me.Radius / System.Math.Abs(susceptance)
 
     End Function ' GetRadiusB
 
@@ -768,13 +803,33 @@ Public Class SmithMainCircle
             '     The rightmost edge of the VSWR-circle is tangent to the
             '     leftmost edge of the R-circle whose resistance magnitude
             '     matches the VSWR magnitude.
-            Return Me.GridRadius - (Me.GetRadiusR(vswr) * 2.0)
+            Return Me.Radius - (Me.GetRadiusR(vswr) * 2.0)
         Else
             ' Alternate form.
-            Return Me.GridRadius * (vswr - 1.0) / (vswr + 1.0)
+            Return Me.Radius * (vswr - 1.0) / (vswr + 1.0)
         End If
 
     End Function ' GetRadiusV
+
+    ''' <summary>
+    ''' Returns whether point (plotX, plotY) falls inside the outer circle.
+    ''' </summary>
+    ''' <param name="plotX">Specifies the X-coordinate of the point on the
+    ''' Smith Chart in generic "units".</param>
+    ''' <param name="plotY">Specifies the Y-coordinate of the point on the
+    ''' Smith Chart in generic "units".</param>
+    ''' <returns>Returns <c>True</c> if point (<paramref name="plotX"/>,
+    ''' <paramref name="plotY"/>) falls inside the outer circle; otherwise,
+    ''' <c>False</c>.</returns>
+    ''' <remarks>Points ON the outer circle are NOT considered to be INSIDE the
+    ''' circle.</remarks>
+    Public Function PlotXYIsInside(ByVal plotX As System.Double,
+        ByVal plotY As System.Double) As System.Boolean
+
+        Return System.Math.Sqrt((plotX - Me.CenterX) ^ 2 +
+                                (plotY - Me.CenterY) ^ 2) <
+            Me.Radius
+    End Function ' PlotIsInside
 
     ''' <summary>
     ''' Attempts to generate a set of values describing the geometry of the
@@ -804,12 +859,12 @@ Public Class SmithMainCircle
             Dim RCirc As New RCircle(Me, resistance)
 
             If OSNW.Math.EqualEnoughZero(
-                reactance, Me.GridRadius * Impedance.DFLTIMPDTOLERANCE0) Then
+                reactance, Me.Radius * Impedance.DFLTIMPDTOLERANCE0) Then
 
                 ' The circle intersection approach further below will not work
                 ' due to the infinite radius of the X-circle.
-                plotX = Me.GridRightEdgeX - RCirc.GridDiameter
-                plotY = Me.GridCenterY
+                plotX = Me.RightEdgeX - RCirc.Diameter
+                plotY = Me.CenterY
                 Return True
             End If
 
@@ -817,8 +872,7 @@ Public Class SmithMainCircle
             ' Then find the intercections of the two circles.
             Dim XCirc As New XCircle(Me, reactance)
             Dim Intersections As System.Collections.Generic.List(
-                Of OSNW.Numerics.PointD) =
-                GenericCircle.GetIntersections(RCirc, XCirc)
+                Of OsnwPoint2D) = OsnwCircle2D.GetIntersections(RCirc, XCirc)
 
             ' The R- and X-circles will intersect at two distinct points, with
             ' one at the open circuit point.
@@ -834,8 +888,8 @@ Public Class SmithMainCircle
             ' maybe not finding a Y value exactly on the resonance line, assume
             ' the closest Y to be the one on the resonance line.
 
-            If System.Math.Abs(Intersections(0).Y - Me.GridCenterY) <
-                System.Math.Abs(Intersections(1).Y - Me.GridCenterY) Then
+            If System.Math.Abs(Intersections(0).Y - Me.CenterY) <
+                System.Math.Abs(Intersections(1).Y - Me.CenterY) Then
                 plotX = Intersections(1).X
                 plotY = Intersections(1).Y
             Else
@@ -884,15 +938,15 @@ Public Class SmithMainCircle
         Dim RadiusR As System.Double
 
         ' Check for the special case with the plot ON the resonance line.
-        If OSNW.Math.EqualEnough(plotY, Me.GridCenterY,
+        If OSNW.Math.EqualEnough(plotY, Me.CenterY,
                                  OSNW.Math.GRAPHICTOLERANCE) Then
             ' From GetRadiusR:
             '     RadiusR = Me.GridRadius / ((resistance / Me.Z0) + 1)
             '     RadiusR * ((resistance / Me.Z0) + 1) = Me.GridRadius
             '     (resistance / Me.Z0) + 1 = Me.GridRadius / RadiusR
             '     resistance / Me.Z0 = (Me.GridRadius / RadiusR) - 1
-            RadiusR = (Me.GridRightEdgeX - plotX) / 2.0
-            Resistance = Me.Z0 * ((Me.GridRadius / RadiusR) - 1)
+            RadiusR = (Me.RightEdgeX - plotX) / 2.0
+            Resistance = Me.Z0 * ((Me.Radius / RadiusR) - 1)
             Return New Impedance(Resistance, 0.0)
         End If
 
@@ -936,19 +990,19 @@ Public Class SmithMainCircle
 
         ' Consolidated version of the above.
         Dim PerpSlope As System.Double =
-            -(Me.GridRightEdgeX - plotX) / (Me.GridCenterY - plotY)
+            -(Me.RightEdgeX - plotX) / (Me.CenterY - plotY)
         Dim YIntercept As System.Double =
-            ((plotY + Me.GridCenterY) / 2.0) -
-            (PerpSlope * ((plotX + Me.GridRightEdgeX) / 2.0))
+            ((plotY + Me.CenterY) / 2.0) -
+            (PerpSlope * ((plotX + Me.RightEdgeX) / 2.0))
         Dim XCircCtrY As System.Double =
-            (PerpSlope * Me.GridRightEdgeX) + YIntercept
+            (PerpSlope * Me.RightEdgeX) + YIntercept
         Dim PerpCrossRes As System.Double =
-            (Me.GridCenterY - YIntercept) / PerpSlope
+            (Me.CenterY - YIntercept) / PerpSlope
 
         ' Use the intercepts to find the radii of the circles?
-        RadiusR = Me.GridRightEdgeX - PerpCrossRes
+        RadiusR = Me.RightEdgeX - PerpCrossRes
         Dim RadiusX As System.Double =
-            System.Math.Abs(XCircCtrY - Me.GridCenterY)
+            System.Math.Abs(XCircCtrY - Me.CenterY)
 
         ' Use the radii to find the resistance and reactance.
 
@@ -957,9 +1011,9 @@ Public Class SmithMainCircle
         '     RadiusX * Math.Abs(reactance) = Me.Z0 * Me.GridRadius
         '     Math.Abs(reactance) = (Me.Z0 * Me.GridRadius) / RadiusX
         Dim Reactance As System.Double =
-            (Me.Z0 * Me.GridRadius) / RadiusX
+            (Me.Z0 * Me.Radius) / RadiusX
         ' Determine the sign of the reactance.
-        If plotY < Me.GridCenterY Then
+        If plotY < Me.CenterY Then
             Reactance = -Reactance
         End If
 
@@ -968,7 +1022,7 @@ Public Class SmithMainCircle
         '     RadiusR * ((resistance / Me.Z0) + 1) = Me.GridRadius
         '     (resistance / Me.Z0) + 1 = Me.GridRadius / RadiusR
         '     resistance / Me.Z0 = (Me.GridRadius / RadiusR) - 1
-        Resistance = Me.Z0 * ((Me.GridRadius / RadiusR) - 1)
+        Resistance = Me.Z0 * ((Me.Radius / RadiusR) - 1)
 
         Return New Impedance(Resistance, Reactance)
 
@@ -1016,46 +1070,7 @@ Public Class SmithMainCircle
         Return New PlotDetails(Me, plotX, plotY)
     End Function ' GetDetailsFromPlot
 
-    ''' <summary>
-    ''' Creates a new instance of the <c>SmithMainCircle</c> class with the
-    ''' specified center coordinates, diameter, and characteristic impedance.
-    ''' Dimensions are in generic "units" relative to the grid on which the
-    ''' <c>SmithMainCircle</c>is located.
-    ''' </summary>
-    ''' <param name="gridCenterX">Specifies the X-coordinate of the center of
-    ''' the circle in generic "units".</param>
-    ''' <param name="gridCenterY">Specifies the Y-coordinate of the center of
-    ''' the circle in generic "units".</param>
-    ''' <param name="gridDiameter">Specifies the diameter of the circle in
-    ''' generic "units".</param>
-    ''' <param name="z0">Specifies the characteristic impedance of the
-    ''' <c>SmithMainCircle</c> in ohms.</param>
-    Public Sub New(ByVal gridCenterX As System.Double,
-                   ByVal gridCenterY As System.Double,
-                   ByVal gridDiameter As System.Double,
-                   ByVal z0 As System.Double)
-
-        ' Input checking.
-        If gridDiameter <= 0.0 Then
-            'Dim CaughtBy As System.Reflection.MethodBase =
-            '    System.Reflection.MethodBase.GetCurrentMethod
-            Throw New System.ArgumentOutOfRangeException(
-                NameOf(gridDiameter), OSNW.Math.MSGVMBGTZ)
-        End If
-        If z0 <= 0.0 Then
-            'Dim CaughtBy As System.Reflection.MethodBase =
-            '    System.Reflection.MethodBase.GetCurrentMethod
-            Throw New System.ArgumentOutOfRangeException(NameOf(z0), OSNW.Math.MSGVMBGTZ)
-        End If
-
-        With Me
-            .GridCenterX = gridCenterX
-            .GridCenterY = gridCenterY
-            .GridDiameter = gridDiameter
-            .m_Z0 = z0
-        End With
-
-    End Sub ' New
+#End Region ' "Methods"
 
 End Class ' SmithMainCircle
 
@@ -1067,7 +1082,7 @@ End Class ' SmithMainCircle
 ''' <see cref="SmithMainCircle"/> itself.
 ''' </summary>
 Public Class RCircle
-    Inherits GenericCircle
+    Inherits OsnwCircle2D
 
     Private ReadOnly m_MainCircle As SmithMainCircle
     ''' <summary>
@@ -1109,8 +1124,8 @@ Public Class RCircle
             ' Calculate values relative to the host outer circle.
             ' Then populate values relative to the Cartesian grid.
             gridRadius = Me.MainCircle.GetRadiusR(Me.Resistance)
-            gridCenterX = Me.MainCircle.GridRightEdgeX - gridRadius
-            gridCenterY = Me.MainCircle.GridCenterY
+            gridCenterX = Me.MainCircle.RightEdgeX - gridRadius
+            gridCenterY = Me.MainCircle.CenterY
             Return True
         Catch ex As Exception
             Return False
@@ -1131,7 +1146,7 @@ Public Class RCircle
     ''' </remarks>
     Public Sub SetCircleBasics()
         If Not Me.TryGetCircleBasics(
-            Me.GridCenterX, Me.GridCenterY, Me.GridRadius) Then
+            Me.CenterX, Me.CenterY, Me.Radius) Then
 
             Dim CaughtBy As System.Reflection.MethodBase =
                 System.Reflection.MethodBase.GetCurrentMethod
@@ -1178,7 +1193,7 @@ End Class ' RCircle
 ''' <see cref="SmithMainCircle"/> itself.
 ''' </summary>
 Public Class XCircle
-    Inherits GenericCircle
+    Inherits OsnwCircle2D
 
     Private ReadOnly m_MainCircle As SmithMainCircle
     ''' <summary>
@@ -1221,13 +1236,13 @@ Public Class XCircle
             ' Then populate values relative to the Cartesian grid.
             With Me
                 gridRadius = .MainCircle.GetRadiusX(.Reactance)
-                gridCenterX = .MainCircle.GridRightEdgeX
+                gridCenterX = .MainCircle.RightEdgeX
                 If .Reactance < 0.0 Then
                     gridCenterY =
-                        .MainCircle.GridCenterY - System.Math.Abs(gridRadius)
+                        .MainCircle.CenterY - System.Math.Abs(gridRadius)
                 Else
                     gridCenterY =
-                        .MainCircle.GridCenterY + System.Math.Abs(gridRadius)
+                        .MainCircle.CenterY + System.Math.Abs(gridRadius)
                 End If
             End With
             Return True
@@ -1250,7 +1265,7 @@ Public Class XCircle
     ''' </remarks>
     Public Sub SetCircleBasics()
         If Not Me.TryGetCircleBasics(
-            Me.GridCenterX, Me.GridCenterY, Me.GridRadius) Then
+            Me.CenterX, Me.CenterY, Me.Radius) Then
 
             Dim CaughtBy As System.Reflection.MethodBase =
                 System.Reflection.MethodBase.GetCurrentMethod
@@ -1286,7 +1301,7 @@ End Class ' XCircle
 ''' <see cref="SmithMainCircle"/> itself.
 ''' </summary>
 Public Class GCircle
-    Inherits GenericCircle
+    Inherits OsnwCircle2D
 
     Private ReadOnly m_MainCircle As SmithMainCircle
     ''' <summary>
@@ -1328,8 +1343,8 @@ Public Class GCircle
             ' Calculate values relative to the host outer circle.
             ' Then populate values relative to the Cartesian grid.
             gridRadius = Me.MainCircle.GetRadiusG(Me.Conductance)
-            gridCenterX = Me.MainCircle.GridLeftEdgeX + gridRadius
-            gridCenterY = Me.MainCircle.GridCenterY
+            gridCenterX = Me.MainCircle.LeftEdgeX + gridRadius
+            gridCenterY = Me.MainCircle.CenterY
             Return True
         Catch ex As Exception
             Return False
@@ -1350,7 +1365,7 @@ Public Class GCircle
     ''' </remarks>
     Public Sub SetCircleBasics()
         If Not Me.TryGetCircleBasics(
-            Me.GridCenterX, Me.GridCenterY, Me.GridRadius) Then
+            Me.CenterX, Me.CenterY, Me.Radius) Then
             Dim CaughtBy As System.Reflection.MethodBase =
                 System.Reflection.MethodBase.GetCurrentMethod
             Throw New System.InvalidOperationException(
@@ -1396,7 +1411,7 @@ End Class ' GCircle
 ''' <see cref="SmithMainCircle"/> itself.
 ''' </summary>
 Public Class BCircle
-    Inherits GenericCircle
+    Inherits OsnwCircle2D
 
     Private ReadOnly m_MainCircle As SmithMainCircle
     ''' <summary>
@@ -1438,14 +1453,14 @@ Public Class BCircle
             ' Calculate values relative to the host outer circle.
             ' Then populate values relative to the Cartesian grid.
             With Me
-                .GridRadius = .MainCircle.GetRadiusX(.Susceptance)
-                .GridCenterX = .MainCircle.GridLeftEdgeX
+                .Radius = .MainCircle.GetRadiusX(.Susceptance)
+                .CenterX = .MainCircle.LeftEdgeX
                 If .Susceptance < 0.0 Then
-                    .GridCenterY =
-                        .MainCircle.GridCenterY + System.Math.Abs(.GridRadius)
+                    .CenterY =
+                        .MainCircle.CenterY + System.Math.Abs(.Radius)
                 Else
-                    .GridCenterY =
-                        .MainCircle.GridCenterY - System.Math.Abs(.GridRadius)
+                    .CenterY =
+                        .MainCircle.CenterY - System.Math.Abs(.Radius)
                 End If
             End With
             Return True
@@ -1480,9 +1495,9 @@ Public Class BCircle
         End If
 
         With Me
-            .GridCenterX = GridCenterX
-            .GridCenterY = GridCenterY
-            .GridRadius = GridRadius
+            .CenterX = GridCenterX
+            .CenterY = GridCenterY
+            .Radius = GridRadius
         End With
 
     End Sub ' SetCircleBasics
@@ -1513,7 +1528,7 @@ End Class ' BCircle
 ''' <see cref="SmithMainCircle"/> itself.
 ''' </summary>
 Public Class VCircle
-    Inherits GenericCircle
+    Inherits OsnwCircle2D
 
     Private ReadOnly m_MainCircle As SmithMainCircle
     ''' <summary>
@@ -1563,9 +1578,9 @@ Public Class VCircle
                 ' outer circle.
                 ' Then populate values for the VSWR-circle relative to the Cartesian
                 ' grid.
-                .GridRadius = .MainCircle.GetRadiusV(Me.VSWR)
-                .GridCenterX = .MainCircle.GridCenterX
-                .GridCenterY = .MainCircle.GridCenterY
+                .Radius = .MainCircle.GetRadiusV(Me.VSWR)
+                .CenterX = .MainCircle.CenterX
+                .CenterY = .MainCircle.CenterY
             End With
             Return True
 
@@ -1600,9 +1615,9 @@ Public Class VCircle
         End If
 
         With Me
-            .GridCenterX = GridCenterX
-            .GridCenterY = GridCenterY
-            .GridRadius = GridRadius
+            .CenterX = GridCenterX
+            .CenterY = GridCenterY
+            .Radius = GridRadius
         End With
 
     End Sub ' SetCircleBasics

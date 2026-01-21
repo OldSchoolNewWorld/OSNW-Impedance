@@ -561,12 +561,12 @@ Partial Public Structure Impedance
         End If
 
         ' Check a special case - horizontal center.
-        If PlotX = MainCirc.GridCenterX Then
+        If PlotX = MainCirc.CenterX Then
             ' Vertical would have zero as the adjacent side (below).
-            If PlotY > MainCirc.GridCenterY Then
+            If PlotY > MainCirc.CenterY Then
                 ' Above the resonance line.
                 Return OSNW.Math.HALFPI
-            ElseIf PlotY < MainCirc.GridCenterY Then
+            ElseIf PlotY < MainCirc.CenterY Then
                 ' Below the resonance line.
                 Return -OSNW.Math.HALFPI
             Else
@@ -578,11 +578,11 @@ Partial Public Structure Impedance
 
         End If
 
-        Dim Opposite As System.Double = PlotY - MainCirc.GridCenterY
-        Dim Adjacent As System.Double = PlotX - MainCirc.GridCenterX
+        Dim Opposite As System.Double = PlotY - MainCirc.CenterY
+        Dim Adjacent As System.Double = PlotX - MainCirc.CenterX
         Dim TanAlpha As System.Double = Opposite / Adjacent
         Dim RadAngle As System.Double = System.Math.Atan(TanAlpha)
-        If PlotX > MainCirc.GridCenterX Then
+        If PlotX > MainCirc.CenterX Then
             ' Right side.
             Return RadAngle
         Else
@@ -764,16 +764,16 @@ Partial Public Structure Impedance
             Throw New ApplicationException(MSGFGPXPY)
         End If
 
-        Dim Opposite As System.Double = PlotY - MainCirc.GridCenterY
-        Dim Adjacent As System.Double = PlotX - MainCirc.GridLeftEdgeX
+        Dim Opposite As System.Double = PlotY - MainCirc.CenterY
+        Dim Adjacent As System.Double = PlotX - MainCirc.LeftEdgeX
         Dim TanAlpha As System.Double
         Dim RadAngle As System.Double
 
-        If PlotY < MainCirc.GridCenterY Then
+        If PlotY < MainCirc.CenterY Then
             TanAlpha = Opposite / Adjacent
             RadAngle = System.Math.Atan(TanAlpha)
             Return RadAngle
-        ElseIf PlotY > MainCirc.GridCenterY Then
+        ElseIf PlotY > MainCirc.CenterY Then
             TanAlpha = Opposite / Adjacent
             RadAngle = System.Math.Atan(TanAlpha)
             Return RadAngle
