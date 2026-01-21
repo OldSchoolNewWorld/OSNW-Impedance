@@ -9,6 +9,7 @@ Imports OSNW.Math
 Imports Xunit
 Imports OsnwImpd = OSNW.Numerics.Impedance
 Imports OsnwNumSS = OSNW.Numerics.StandardizationStyles
+Imports OsnwCircle2D = OSNW.Math.Circle2D
 
 Namespace MathTests
 
@@ -34,7 +35,7 @@ Namespace MathTests
             Dim Intersect2X As System.Double
             Dim Intersect2Y As System.Double
 
-            If Not OSNW.Math.TryCircleLineIntersection(
+            If Not OsnwCircle2D.TryCircleLineIntersection(
                 circleX, circleY, circleR,
                 lineM, lineB,
                 Intersect1X, Intersect1Y,
@@ -83,7 +84,7 @@ Namespace MathTests
             Dim Intersect2X As System.Double
             Dim Intersect2Y As System.Double
 
-            If Not OSNW.Math.TryCircleLineIntersection(circleX, circleY, circleR, lineX1, lineY1,
+            If Not OsnwCircle2D.TryCircleLineIntersection(circleX, circleY, circleR, lineX1, lineY1,
                 lineX2, lineY2, Intersect1X, Intersect1Y, Intersect2X, Intersect2Y) Then
                 Assert.True(False)
             End If

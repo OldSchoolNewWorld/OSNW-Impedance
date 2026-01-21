@@ -364,6 +364,400 @@
             Return intersections.Count > 0
         End Function ' CirclesIntersect
 
+        '''' Suspended XML comments for suspended code:
+        '''' <exception cref="System.ArgumentOutOfRangeException">
+        '''' Thrown when <paramref name="circleX"/>, <paramref name="circleY"/>,
+        '''' <paramref name="circleR"/>, <paramref name="lineM"/>, or
+        '''' <paramref name="lineB"/> is infinite.
+        '''' </exception>
+        '''' <exception cref="System.ArgumentOutOfRangeException">
+        '''' Thrown when <paramref name="circleR"/> is less than or equal to zero.
+        '''' </exception>
+        ''' <summary>
+        ''' Attempts to solve where a line intersects a circle, given the center
+        ''' coordinates and radius of the circle, along with the slope and
+        ''' Y-intercept of the line.
+        ''' </summary>
+        ''' <param name="circleX">Specifies the X-coordinate of the center of the
+        ''' circle.</param>
+        ''' <param name="circleY">Specifies the Y-coordinate of the center of the
+        ''' circle.</param>
+        ''' <param name="circleR">Specifies the radius of the circle.</param>
+        ''' <param name="lineM">Specifies the slope of the line.</param>
+        ''' <param name="lineB">Specifies the Y-intercept of the line.</param>
+        ''' <param name="intersect1X">Specifies the X-coordinate of one
+        ''' intersection.</param>
+        ''' <param name="intersect1Y">Specifies the Y-coordinate of one
+        ''' intersection.</param>
+        ''' <param name="intersect2X">Specifies the X-coordinate of the other
+        ''' intersection.</param>
+        ''' <param name="intersect2Y">Specifies the Y-coordinate of the other
+        ''' intersection.</param>
+        ''' <returns><c>True</c> if the process succeeds; otherwise, <c>False</c>.
+        ''' When valid, also returns the results in <paramref name="intersect1X"/>,
+        ''' <paramref name="intersect1Y"/>, <paramref name="intersect2X"/>, and
+        ''' <paramref name="intersect2Y"/>.</returns>
+        ''' <remarks>
+        ''' A vertical line (infinite slope) will not have a Y-intercept, except
+        ''' when that line passes through the circle center, a case which would have
+        ''' infinite common points.
+        ''' <br/>
+        ''' To avoid throwing an exception, <c>False</c> is returned
+        ''' when <paramref name="circleX"/>, <paramref name="circleY"/>,
+        ''' <paramref name="circleR"/>, <paramref name="lineM"/>, or
+        ''' <paramref name="lineB"/> is infinite,
+        ''' or
+        ''' when <paramref name="circleR"/> is less than or equal to zero.
+        ''' </remarks>
+        Public Shared Function TryCircleLineIntersection(
+            ByVal circleX As System.Double, ByVal circleY As System.Double,
+            ByVal circleR As System.Double, ByVal lineM As System.Double,
+            ByVal lineB As System.Double, ByRef intersect1X As System.Double,
+            ByRef intersect1Y As System.Double,
+            ByRef intersect2X As System.Double,
+            ByRef intersect2Y As System.Double) As System.Boolean
+
+            ' Input checking.
+            ' Suspended to avoid exceptions:
+            '        If System.Double.IsInfinity(circleX) OrElse
+            '            System.Double.IsInfinity(circleY) OrElse
+            '            System.Double.IsInfinity(circleR) OrElse
+            '            System.Double.IsInfinity(lineM) OrElse
+            '            System.Double.IsInfinity(lineB) Then
+            '            'Dim CaughtBy As System.Reflection.MethodBase =
+            '            '    System.Reflection.MethodBase.GetCurrentMethod
+            '            Throw New System.ArgumentOutOfRangeException(
+            '                $"Arguments to {NameOf(TryCircleLineIntersection)} {MSGCHIV}")
+            '        End If
+            '        If circleR <= 0.0 Then
+            '            'Dim CaughtBy As System.Reflection.MethodBase =
+            '            '    System.Reflection.MethodBase.GetCurrentMethod
+            '            Throw New System.ArgumentOutOfRangeException(
+            '                NameOf(circleR), MSGVMBGTZ)
+            '        End If
+            If System.Double.IsInfinity(circleX) OrElse
+                System.Double.IsInfinity(circleY) OrElse
+                System.Double.IsInfinity(circleR) OrElse
+                System.Double.IsInfinity(lineM) OrElse
+                System.Double.IsInfinity(lineB) OrElse
+                circleR <= 0.0 Then
+                Return False
+            End If
+
+            ' The derivation follows:
+            ' Standard form of a circle and a line.
+            ' (X - circleX)^2 + (Y - circleY)^2 = circleR^2
+            ' Y = lineM * X + B
+
+            ' Localize parameters, for one point of intersection.
+            ' (intersect1X - circleX)^2 + (intersect1Y - circleY)^2 = circleR^2
+            ' y1 = lineM * intersect1X + lineB
+
+            ' A point at the intersection of the circle and the line conforms to
+            ' both equations.
+            ' (intersect1X - circleX)^2
+            '     + ((lineM * intersect1X + lineB)- circleY)^2 = circleR^2
+            ' (intersect1X - circleX)^2
+            '     + (lineM * intersect1X + lineB - circleY)^2 = circleR^2
+
+            ' Rewrite for visibility.
+            ' (intersect1X - circleX)^2
+            ' + ((lineM * intersect1X) + lineB - circleY)^2
+            ' = circleR^2
+
+            ' Expand the squares.
+            ' intersect1X^2 - (2 * circleX * intersect1X) + circleX^2
+            ' + (lineM * intersect1X)
+            '     * ((lineM * intersect1X) + lineB - circleY)
+            ' + lineB * ((lineM * intersect1X) + lineB - circleY)
+            ' - circleY * ((lineM * intersect1X) + lineB - circleY)
+            ' = circleR^2
+
+            ' Distribute the multiplications.
+            ' intersect1X^2 -2*circleX*intersect1X + circleX^2
+            ' + (lineM*intersect1X*lineM*intersect1X + lineM*intersect1X*lineB
+            '     - lineM*intersect1X*circleY)
+            ' + (lineB*lineM*intersect1X + lineB*lineB - lineB*circleY)
+            ' - (circleY*lineM*intersect1X + circleY*lineB - circleY*circleY)
+            ' = circleR^2
+
+            ' Normalize terms.
+            ' intersect1X^2 -2*circleX*intersect1X + circleX^2
+            ' + lineM^2*intersect1X^2 + lineM*lineB*intersect1X
+            '     - lineM*circleY*intersect1X
+            ' + lineB*lineM*intersect1X + lineB^2 - lineB*circleY
+            ' - circleY*lineM*intersect1X - circleY*lineB + circleY*circleY
+            ' = circleR^2
+
+            ' Gather like terms. Arrange for quadratic formula.
+            ' intersect1X^2 + (lineM^2)*intersect1X^2
+            ' -(2*circleX)*intersect1X + (2*lineM*lineB)*intersect1X
+            '     - (2*lineM*circleY)*intersect1X
+            ' + circleX^2 + lineB^2 - 2*lineB*circleY + circleY^2 - circleR^2
+            ' = 0
+
+            ' Extract X terms.
+            ' (1 + (lineM^2))*intersect1X^2
+            ' + (lineM*(lineB - circleY) - circleX)*2*intersect1X
+            ' circleX^2 + lineB*(lineB - 2*circleY) + circleY^2 - circleR^2
+            ' = 0
+
+            ' Set up for the quadratic formula.
+            ' a = (1 + (lineM^2))
+            ' b = (lineM*(lineB - circleY) - circleX)*2
+            ' c = circleX^2 + lineB*(lineB - 2*circleY) + circleY^2 - circleR^2
+
+            ' Implementation:
+
+            Dim a As System.Double = 1 + (lineM ^ 2)
+            Dim b As System.Double = 2 * (lineM * (lineB - circleY) - circleX)
+            Dim c As System.Double = circleX ^ 2 + lineB * (lineB - 2 * circleY) +
+                                     circleY ^ 2 - circleR ^ 2
+            If Not TryQuadratic(a, b, c, intersect1X, intersect2X) Then
+                intersect1X = System.Double.NaN
+                intersect1Y = System.Double.NaN
+                intersect2X = System.Double.NaN
+                intersect2Y = System.Double.NaN
+                Return False
+            End If
+
+            ' Substitute into "y = mx + b".
+            intersect1Y = lineM * intersect1X + lineB
+            intersect2Y = lineM * intersect2X + lineB
+            Return True
+
+        End Function ' TryCircleLineIntersection
+
+        '''' Suspended XML comments for suspended code:
+        '''' <exception cref="System.ArgumentOutOfRangeException">
+        '''' Thrown when <paramref name="circleX"/>, <paramref name="circleY"/>,
+        '''' <paramref name="circleR"/>, <paramref name="lineX1"/>,
+        '''' <paramref name="lineX2"/>, <paramref name="lineY1"/>, or
+        '''' <paramref name="lineY2"/> is infinite.
+        '''' </exception>
+        '''' <exception cref="System.ArgumentOutOfRangeException">
+        '''' Thrown when <paramref name="circleR"/> is less than or equal to zero.
+        '''' </exception>
+        ''' <summary>
+        ''' Attempts to solve where a line intersects a circle, given the center
+        ''' coordinates and radius of the circle, along with the coordinates of two
+        ''' points on the line..
+        ''' </summary>
+        ''' <param name="circleX">Specifies the X-coordinate of the center of the
+        ''' circle.</param>
+        ''' <param name="circleY">Specifies the Y-coordinate of the center of the
+        ''' circle.</param>
+        ''' <param name="circleR">Specifies the radius of the circle.</param>
+        ''' <param name="lineX1">Specifies the X-coordinate of the first point on
+        ''' the line.</param>
+        ''' <param name="lineY1">Specifies the Y-coordinate of the first point on
+        ''' the line.</param>
+        ''' <param name="lineX2">Specifies the X-coordinate of the second point on
+        ''' the line.</param>
+        ''' <param name="lineY2">Specifies the Y-coordinate of the second point on
+        ''' the line.</param>
+        ''' <param name="intersect1X">Specifies the X-coordinate of one
+        ''' intersection.</param>
+        ''' <param name="intersect1Y">Specifies the Y-coordinate of one
+        ''' intersection.</param>
+        ''' <param name="intersect2X">Specifies the X-coordinate of the other
+        ''' intersection.</param>
+        ''' <param name="intersect2Y">Specifies the Y-coordinate of the other
+        ''' intersection.</param>
+        ''' <returns>
+        ''' <c>True</c> if the process succeeds; otherwise, <c>False</c>. When
+        ''' valid, also returns the results in <paramref name="intersect1X"/>,
+        ''' <paramref name="intersect1Y"/>, <paramref name="intersect2X"/>, and
+        ''' <paramref name="intersect2Y"/>.
+        ''' </returns>
+        ''' <remarks>
+        ''' To avoid throwing an exception, <c>False</c> is returned
+        ''' when <paramref name="circleX"/>, <paramref name="circleY"/>,
+        ''' <paramref name="circleR"/>, <paramref name="lineX1"/>,
+        ''' or <paramref name="lineY1"/>, or <paramref name="lineY2"/> is
+        ''' infinite,
+        ''' or
+        ''' when <paramref name="circleR"/> is less than or equal to zero.
+        ''' </remarks>
+        Public Shared Function TryCircleLineIntersection(ByVal circleX As System.Double,
+            ByVal circleY As System.Double, ByVal circleR As System.Double,
+            ByVal lineX1 As System.Double, ByVal lineY1 As System.Double,
+            ByVal lineX2 As System.Double, ByVal lineY2 As System.Double,
+            ByRef intersect1X As System.Double, ByRef intersect1Y As System.Double,
+            ByRef intersect2X As System.Double,
+            ByRef intersect2Y As System.Double) As System.Boolean
+
+            ' Input checking.
+            ' Suspended to avoid exceptions:
+            '       If System.Double.IsInfinity(circleX) OrElse
+            '           System.Double.IsInfinity(circleY) OrElse
+            '           System.Double.IsInfinity(circleR) OrElse
+            '           System.Double.IsInfinity(lineX1) OrElse
+            '           System.Double.IsInfinity(lineY1) OrElse
+            '           System.Double.IsInfinity(lineX2) OrElse
+            '           System.Double.IsInfinity(lineY2) Then
+            '           'Dim CaughtBy As System.Reflection.MethodBase =
+            '           '    System.Reflection.MethodBase.GetCurrentMethod
+            '           Throw New System.ArgumentOutOfRangeException(
+            '               $"Arguments to {NameOf(TryCircleLineIntersection)} {MSGCHIV}")
+            '       End If
+            '        If circleR <= 0.0 Then
+            '            'Dim CaughtBy As System.Reflection.MethodBase =
+            '            '    System.Reflection.MethodBase.GetCurrentMethod
+            '            Throw New System.ArgumentOutOfRangeException(
+            '                NameOf(circleR), MSGVMBGTZ)
+            '        End If
+            If System.Double.IsInfinity(circleX) OrElse
+                System.Double.IsInfinity(circleY) OrElse
+                System.Double.IsInfinity(circleR) OrElse
+                System.Double.IsInfinity(lineX1) OrElse
+                System.Double.IsInfinity(lineY1) OrElse
+                System.Double.IsInfinity(lineX2) OrElse
+                System.Double.IsInfinity(lineY2) OrElse
+                circleR <= 0.0 Then
+                Return False
+            End If
+
+            ' Check for a vertical line.
+            Dim DeltaX As System.Double = lineX2 - lineX1
+            If DeltaX.Equals(0.0) Then
+                ' Vertical line; X = lineX1.
+
+                ' Can there be an intersection?
+                If System.Math.Abs(lineX1 - circleX) > circleR Then
+                    ' No intersection possible.
+                    intersect1X = System.Double.NaN
+                    intersect1Y = System.Double.NaN
+                    intersect2X = System.Double.NaN
+                    intersect2Y = System.Double.NaN
+                    Return False
+                End If
+
+                ' The derivation follows:
+                ' Standard form of a circle and a line.
+                ' (X - h)^2 + (Y - k)^2 = r^2
+
+                ' Substitute parameters into well-known circle equation.
+                ' (X - circleX)^2 + (Y - circleY)^2 = circleR^2
+                ' (Y - circleY)^2 = circleR^2 - (X - circleX)^2
+                ' Y - circleY = sqrt(circleR^2 - (X - circleX)^2)
+                ' Y = circleY + sqrt(circleR^2 - (X - circleX)^2)
+                ' Y = circleY + sqrt(circleR^2 - (lineX1 - circleX)^2)
+
+                ' Get the Y values.
+                ' Root = sqrt(circleR^2 - (lineX1 - circleX)^2)
+                ' intersect1Y = circleY + Root
+                ' intersect2Y = circleY - Root
+
+                Dim Minus As System.Double = lineX1 - circleX
+                Dim Root As System.Double =
+                    System.Math.Sqrt((circleR * circleR) - (Minus * Minus))
+                intersect1Y = circleY + Root
+                intersect2Y = circleY - Root
+                intersect1X = lineX1
+                intersect2X = lineX1 ' Yes, the same assignment.
+                Return True
+
+            End If ' Vertical line.
+
+            ' On getting here, the line is not vertical.
+
+            ' Get the slope of the line.
+            ' M = (Y2 - Y1) / (X2 - X1); generic slope.
+            Dim lineM As System.Double = (lineY2 - lineY1) / DeltaX
+
+            ' Get the equation for the line.
+            ' Y = M*X + B; Standard form line.
+            ' B = Y - M*X; Solve for the Y-intercept.
+            Dim lineB As System.Double = lineY1 - lineM * lineX1
+
+            Return TryCircleLineIntersection(circleX, circleY, circleR, lineM,
+                lineB, intersect1X, intersect1Y, intersect2X, intersect2Y)
+
+        End Function ' TryCircleLineIntersection
+
+        ''' <summary>
+        ''' xxxxxxxxxx
+        ''' </summary>
+        ''' <param name="x1">xxxxxxxxxx</param>
+        ''' <param name="y1">xxxxxxxxxx</param>
+        ''' <param name="r1">xxxxxxxxxx</param>
+        ''' <param name="x2">xxxxxxxxxx</param>
+        ''' <param name="y2">xxxxxxxxxx</param>
+        ''' <param name="r2">xxxxxxxxxx</param>
+        ''' <returns>xxxxxxxxxx</returns>
+        ''' <remarks>
+        ''' Tangent circles will have only one intersection. When both circles
+        ''' specify the same circle, they are considered not to intersect.
+        ''' </remarks>
+        Public Shared Function CirclesIntersect(ByVal x1 As System.Double,
+        ByVal y1 As System.Double, ByVal r1 As System.Double,
+        ByVal x2 As System.Double, ByVal y2 As System.Double,
+        ByVal r2 As System.Double) As System.Boolean
+
+            ' Input checking.
+            If (r1 < 0.0) OrElse (r2 < 0.0) Then
+                Return False
+            End If
+
+            ' Check for solvability.
+            Dim CtrSeparation As System.Double =
+            System.Double.Hypot(x2 - x1, y2 - y1)
+            If CtrSeparation > (r1 + r2) Then
+                ' Two isolated circles.
+                Return False
+            ElseIf CtrSeparation < System.Math.Abs(r2 - r1) Then
+                ' One inside the other.
+                Return False
+            ElseIf x2.Equals(x1) AndAlso y2.Equals(y1) Then
+                ' They are concentric, with either zero or infinite common points.
+                ' The second case is considered not to be intersecting.
+                Return False
+            End If
+            Return True
+
+        End Function ' CirclesIntersect
+
+        ''' <summary>
+        ''' xxxxxxxxxx
+        ''' </summary>
+        ''' <param name="x1">xxxxxxxxxx</param>
+        ''' <param name="y1">xxxxxxxxxx</param>
+        ''' <param name="r1">xxxxxxxxxx</param>
+        ''' <param name="x2">xxxxxxxxxx</param>
+        ''' <param name="y2">xxxxxxxxxx</param>
+        ''' <param name="r2">xxxxxxxxxx</param>
+        ''' <param name="i1x">xxxxxxxxxx</param>
+        ''' <param name="i1y">xxxxxxxxxx</param>
+        ''' <param name="i2x">xxxxxxxxxx</param>
+        ''' <param name="i2y">xxxxxxxxxx</param>
+        ''' <returns>xxxxxxxxxx</returns>
+        Public Shared Function TryCirclesIntersection(
+        ByVal x1 As System.Double, ByVal y1 As System.Double, ByVal r1 As System.Double,
+        ByVal x2 As System.Double, ByVal y2 As System.Double, ByVal r2 As System.Double,
+        ByRef i1x As System.Double, ByRef i1y As System.Double,
+        ByRef i2x As System.Double, ByRef i2y As System.Double) As System.Boolean
+
+            If Not CirclesIntersect(x1, y1, r1, x2, y2, r2) Then
+                i1x = Double.NaN
+                i1y = Double.NaN
+                i2x = Double.NaN
+                i2y = Double.NaN
+                Return False
+            End If
+
+            i1x = 999.99
+            i1y = 999.99
+            i2x = 999.99
+            i2y = 999.99
+
+
+
+            '        xxxx
+            Return False ' Until implemented.
+
+        End Function ' TryCirclesIntersection
+
         ''' <summary>
         ''' Converts the value of the current Circle2D to its equivalent string
         ''' representation in Cartesian form, using the default numeric format and
@@ -378,395 +772,7 @@
 
     End Class ' Circle2D
 
-    '''' Suspended XML comments for suspended code:
-    '''' <exception cref="System.ArgumentOutOfRangeException">
-    '''' Thrown when <paramref name="circleX"/>, <paramref name="circleY"/>,
-    '''' <paramref name="circleR"/>, <paramref name="lineM"/>, or
-    '''' <paramref name="lineB"/> is infinite.
-    '''' </exception>
-    '''' <exception cref="System.ArgumentOutOfRangeException">
-    '''' Thrown when <paramref name="circleR"/> is less than or equal to zero.
-    '''' </exception>
-    ''' <summary>
-    ''' Attempts to solve where a line intersects a circle, given the center
-    ''' coordinates and radius of the circle, along with the slope and
-    ''' Y-intercept of the line.
-    ''' </summary>
-    ''' <param name="circleX">Specifies the X-coordinate of the center of the
-    ''' circle.</param>
-    ''' <param name="circleY">Specifies the Y-coordinate of the center of the
-    ''' circle.</param>
-    ''' <param name="circleR">Specifies the radius of the circle.</param>
-    ''' <param name="lineM">Specifies the slope of the line.</param>
-    ''' <param name="lineB">Specifies the Y-intercept of the line.</param>
-    ''' <param name="intersect1X">Specifies the X-coordinate of one
-    ''' intersection.</param>
-    ''' <param name="intersect1Y">Specifies the Y-coordinate of one
-    ''' intersection.</param>
-    ''' <param name="intersect2X">Specifies the X-coordinate of the other
-    ''' intersection.</param>
-    ''' <param name="intersect2Y">Specifies the Y-coordinate of the other
-    ''' intersection.</param>
-    ''' <returns><c>True</c> if the process succeeds; otherwise, <c>False</c>.
-    ''' When valid, also returns the results in <paramref name="intersect1X"/>,
-    ''' <paramref name="intersect1Y"/>, <paramref name="intersect2X"/>, and
-    ''' <paramref name="intersect2Y"/>.</returns>
-    ''' <remarks>
-    ''' A vertical line (infinite slope) will not have a Y-intercept, except
-    ''' when that line passes through the circle center, a case which would have
-    ''' infinite common points.
-    ''' <br/>
-    ''' To avoid throwing an exception, <c>False</c> is returned
-    ''' when <paramref name="circleX"/>, <paramref name="circleY"/>,
-    ''' <paramref name="circleR"/>, <paramref name="lineM"/>, or
-    ''' <paramref name="lineB"/> is infinite,
-    ''' or
-    ''' when <paramref name="circleR"/> is less than or equal to zero.
-    ''' </remarks>
-    Public Function TryCircleLineIntersection(
-        ByVal circleX As System.Double, ByVal circleY As System.Double,
-        ByVal circleR As System.Double, ByVal lineM As System.Double,
-        ByVal lineB As System.Double, ByRef intersect1X As System.Double,
-        ByRef intersect1Y As System.Double, ByRef intersect2X As System.Double,
-        ByRef intersect2Y As System.Double) As System.Boolean
 
-        ' Input checking.
-        ' Suspended to avoid exceptions:
-        '        If System.Double.IsInfinity(circleX) OrElse
-        '            System.Double.IsInfinity(circleY) OrElse
-        '            System.Double.IsInfinity(circleR) OrElse
-        '            System.Double.IsInfinity(lineM) OrElse
-        '            System.Double.IsInfinity(lineB) Then
-        '            'Dim CaughtBy As System.Reflection.MethodBase =
-        '            '    System.Reflection.MethodBase.GetCurrentMethod
-        '            Throw New System.ArgumentOutOfRangeException(
-        '                $"Arguments to {NameOf(TryCircleLineIntersection)} {MSGCHIV}")
-        '        End If
-        '        If circleR <= 0.0 Then
-        '            'Dim CaughtBy As System.Reflection.MethodBase =
-        '            '    System.Reflection.MethodBase.GetCurrentMethod
-        '            Throw New System.ArgumentOutOfRangeException(
-        '                NameOf(circleR), MSGVMBGTZ)
-        '        End If
-        If System.Double.IsInfinity(circleX) OrElse
-            System.Double.IsInfinity(circleY) OrElse
-            System.Double.IsInfinity(circleR) OrElse
-            System.Double.IsInfinity(lineM) OrElse
-            System.Double.IsInfinity(lineB) OrElse
-            circleR <= 0.0 Then
-            Return False
-        End If
-
-        ' The derivation follows:
-        ' Standard form of a circle and a line.
-        ' (X - circleX)^2 + (Y - circleY)^2 = circleR^2
-        ' Y = lineM * X + B
-
-        ' Localize parameters, for one point of intersection.
-        ' (intersect1X - circleX)^2 + (intersect1Y - circleY)^2 = circleR^2
-        ' y1 = lineM * intersect1X + lineB
-
-        ' A point at the intersection of the circle and the line conforms to
-        ' both equations.
-        ' (intersect1X - circleX)^2
-        '     + ((lineM * intersect1X + lineB)- circleY)^2 = circleR^2
-        ' (intersect1X - circleX)^2
-        '     + (lineM * intersect1X + lineB - circleY)^2 = circleR^2
-
-        ' Rewrite for visibility.
-        ' (intersect1X - circleX)^2
-        ' + ((lineM * intersect1X) + lineB - circleY)^2
-        ' = circleR^2
-
-        ' Expand the squares.
-        ' intersect1X^2 - (2 * circleX * intersect1X) + circleX^2
-        ' + (lineM * intersect1X)
-        '     * ((lineM * intersect1X) + lineB - circleY)
-        ' + lineB * ((lineM * intersect1X) + lineB - circleY)
-        ' - circleY * ((lineM * intersect1X) + lineB - circleY)
-        ' = circleR^2
-
-        ' Distribute the multiplications.
-        ' intersect1X^2 -2*circleX*intersect1X + circleX^2
-        ' + (lineM*intersect1X*lineM*intersect1X + lineM*intersect1X*lineB
-        '     - lineM*intersect1X*circleY)
-        ' + (lineB*lineM*intersect1X + lineB*lineB - lineB*circleY)
-        ' - (circleY*lineM*intersect1X + circleY*lineB - circleY*circleY)
-        ' = circleR^2
-
-        ' Normalize terms.
-        ' intersect1X^2 -2*circleX*intersect1X + circleX^2
-        ' + lineM^2*intersect1X^2 + lineM*lineB*intersect1X
-        '     - lineM*circleY*intersect1X
-        ' + lineB*lineM*intersect1X + lineB^2 - lineB*circleY
-        ' - circleY*lineM*intersect1X - circleY*lineB + circleY*circleY
-        ' = circleR^2
-
-        ' Gather like terms. Arrange for quadratic formula.
-        ' intersect1X^2 + (lineM^2)*intersect1X^2
-        ' -(2*circleX)*intersect1X + (2*lineM*lineB)*intersect1X
-        '     - (2*lineM*circleY)*intersect1X
-        ' + circleX^2 + lineB^2 - 2*lineB*circleY + circleY^2 - circleR^2
-        ' = 0
-
-        ' Extract X terms.
-        ' (1 + (lineM^2))*intersect1X^2
-        ' + (lineM*(lineB - circleY) - circleX)*2*intersect1X
-        ' circleX^2 + lineB*(lineB - 2*circleY) + circleY^2 - circleR^2
-        ' = 0
-
-        ' Set up for the quadratic formula.
-        ' a = (1 + (lineM^2))
-        ' b = (lineM*(lineB - circleY) - circleX)*2
-        ' c = circleX^2 + lineB*(lineB - 2*circleY) + circleY^2 - circleR^2
-
-        ' Implementation:
-
-        Dim a As System.Double = 1 + (lineM ^ 2)
-        Dim b As System.Double = 2 * (lineM * (lineB - circleY) - circleX)
-        Dim c As System.Double = circleX ^ 2 + lineB * (lineB - 2 * circleY) +
-                                 circleY ^ 2 - circleR ^ 2
-        If Not TryQuadratic(a, b, c, intersect1X, intersect2X) Then
-            intersect1X = System.Double.NaN
-            intersect1Y = System.Double.NaN
-            intersect2X = System.Double.NaN
-            intersect2Y = System.Double.NaN
-            Return False
-        End If
-
-        ' Substitute into "y = mx + b".
-        intersect1Y = lineM * intersect1X + lineB
-        intersect2Y = lineM * intersect2X + lineB
-        Return True
-
-    End Function ' TryCircleLineIntersection
-
-    '''' Suspended XML comments for suspended code:
-    '''' <exception cref="System.ArgumentOutOfRangeException">
-    '''' Thrown when <paramref name="circleX"/>, <paramref name="circleY"/>,
-    '''' <paramref name="circleR"/>, <paramref name="lineX1"/>,
-    '''' <paramref name="lineX2"/>, <paramref name="lineY1"/>, or
-    '''' <paramref name="lineY2"/> is infinite.
-    '''' </exception>
-    '''' <exception cref="System.ArgumentOutOfRangeException">
-    '''' Thrown when <paramref name="circleR"/> is less than or equal to zero.
-    '''' </exception>
-    ''' <summary>
-    ''' Attempts to solve where a line intersects a circle, given the center
-    ''' coordinates and radius of the circle, along with the coordinates of two
-    ''' points on the line..
-    ''' </summary>
-    ''' <param name="circleX">Specifies the X-coordinate of the center of the
-    ''' circle.</param>
-    ''' <param name="circleY">Specifies the Y-coordinate of the center of the
-    ''' circle.</param>
-    ''' <param name="circleR">Specifies the radius of the circle.</param>
-    ''' <param name="lineX1">Specifies the X-coordinate of the first point on
-    ''' the line.</param>
-    ''' <param name="lineY1">Specifies the Y-coordinate of the first point on
-    ''' the line.</param>
-    ''' <param name="lineX2">Specifies the X-coordinate of the second point on
-    ''' the line.</param>
-    ''' <param name="lineY2">Specifies the Y-coordinate of the second point on
-    ''' the line.</param>
-    ''' <param name="intersect1X">Specifies the X-coordinate of one
-    ''' intersection.</param>
-    ''' <param name="intersect1Y">Specifies the Y-coordinate of one
-    ''' intersection.</param>
-    ''' <param name="intersect2X">Specifies the X-coordinate of the other
-    ''' intersection.</param>
-    ''' <param name="intersect2Y">Specifies the Y-coordinate of the other
-    ''' intersection.</param>
-    ''' <returns><c>True</c> if the process succeeds; otherwise, <c>False</c>.
-    ''' When valid, also returns the results in <paramref name="intersect1X"/>,
-    ''' <paramref name="intersect1Y"/>, <paramref name="intersect2X"/>, and
-    ''' <paramref name="intersect2Y"/>.</returns>
-    ''' <remarks>
-    ''' To avoid throwing an exception, <c>False</c> is returned
-    ''' when <paramref name="circleX"/>, <paramref name="circleY"/>,
-    ''' <paramref name="circleR"/>, <paramref name="lineX1"/>,
-    ''' or <paramref name="lineY1"/>, or <paramref name="lineY2"/> is infinite,
-    ''' or
-    ''' when <paramref name="circleR"/> is less than or equal to zero.
-    ''' </remarks>
-    Public Function TryCircleLineIntersection(ByVal circleX As System.Double,
-        ByVal circleY As System.Double, ByVal circleR As System.Double,
-        ByVal lineX1 As System.Double, ByVal lineY1 As System.Double,
-        ByVal lineX2 As System.Double, ByVal lineY2 As System.Double,
-        ByRef intersect1X As System.Double, ByRef intersect1Y As System.Double,
-        ByRef intersect2X As System.Double,
-        ByRef intersect2Y As System.Double) As System.Boolean
-
-        ' Input checking.
-        ' Suspended to avoid exceptions:
-        '       If System.Double.IsInfinity(circleX) OrElse
-        '           System.Double.IsInfinity(circleY) OrElse
-        '           System.Double.IsInfinity(circleR) OrElse
-        '           System.Double.IsInfinity(lineX1) OrElse
-        '           System.Double.IsInfinity(lineY1) OrElse
-        '           System.Double.IsInfinity(lineX2) OrElse
-        '           System.Double.IsInfinity(lineY2) Then
-        '           'Dim CaughtBy As System.Reflection.MethodBase =
-        '           '    System.Reflection.MethodBase.GetCurrentMethod
-        '           Throw New System.ArgumentOutOfRangeException(
-        '               $"Arguments to {NameOf(TryCircleLineIntersection)} {MSGCHIV}")
-        '       End If
-        '        If circleR <= 0.0 Then
-        '            'Dim CaughtBy As System.Reflection.MethodBase =
-        '            '    System.Reflection.MethodBase.GetCurrentMethod
-        '            Throw New System.ArgumentOutOfRangeException(
-        '                NameOf(circleR), MSGVMBGTZ)
-        '        End If
-        If System.Double.IsInfinity(circleX) OrElse
-            System.Double.IsInfinity(circleY) OrElse
-            System.Double.IsInfinity(circleR) OrElse
-            System.Double.IsInfinity(lineX1) OrElse
-            System.Double.IsInfinity(lineY1) OrElse
-            System.Double.IsInfinity(lineX2) OrElse
-            System.Double.IsInfinity(lineY2) OrElse
-            circleR <= 0.0 Then
-            Return False
-        End If
-
-        ' Check for a vertical line.
-        Dim DeltaX As System.Double = lineX2 - lineX1
-        If DeltaX.Equals(0.0) Then
-            ' Vertical line; X = lineX1.
-
-            ' Can there be an intersection?
-            If System.Math.Abs(lineX1 - circleX) > circleR Then
-                ' No intersection possible.
-                intersect1X = System.Double.NaN
-                intersect1Y = System.Double.NaN
-                intersect2X = System.Double.NaN
-                intersect2Y = System.Double.NaN
-                Return False
-            End If
-
-            ' The derivation follows:
-            ' Standard form of a circle and a line.
-            ' (X - h)^2 + (Y - k)^2 = r^2
-
-            ' Substitute parameters into well-known circle equation.
-            ' (X - circleX)^2 + (Y - circleY)^2 = circleR^2
-            ' (Y - circleY)^2 = circleR^2 - (X - circleX)^2
-            ' Y - circleY = sqrt(circleR^2 - (X - circleX)^2)
-            ' Y = circleY + sqrt(circleR^2 - (X - circleX)^2)
-            ' Y = circleY + sqrt(circleR^2 - (lineX1 - circleX)^2)
-
-            ' Get the Y values.
-            ' Root = sqrt(circleR^2 - (lineX1 - circleX)^2)
-            ' intersect1Y = circleY + Root
-            ' intersect2Y = circleY - Root
-
-            Dim Minus As System.Double = lineX1 - circleX
-            Dim Root As System.Double =
-                System.Math.Sqrt((circleR * circleR) - (Minus * Minus))
-            intersect1Y = circleY + Root
-            intersect2Y = circleY - Root
-            intersect1X = lineX1
-            intersect2X = lineX1 ' Yes, the same assignment.
-            Return True
-
-        End If ' Vertical line.
-
-        ' On getting here, the line is not vertical.
-
-        ' Get the slope of the line.
-        ' M = (Y2 - Y1) / (X2 - X1); generic slope.
-        Dim lineM As System.Double = (lineY2 - lineY1) / DeltaX
-
-        ' Get the equation for the line.
-        ' Y = M*X + B; Standard form line.
-        ' B = Y - M*X; Solve for the Y-intercept.
-        Dim lineB As System.Double = lineY1 - lineM * lineX1
-
-        Return TryCircleLineIntersection(circleX, circleY, circleR, lineM,
-            lineB, intersect1X, intersect1Y, intersect2X, intersect2Y)
-
-    End Function ' TryCircleLineIntersection
-
-    ''' <summary>
-    ''' xxxxxxxxxx
-    ''' </summary>
-    ''' <param name="x1">xxxxxxxxxx</param>
-    ''' <param name="y1">xxxxxxxxxx</param>
-    ''' <param name="r1">xxxxxxxxxx</param>
-    ''' <param name="x2">xxxxxxxxxx</param>
-    ''' <param name="y2">xxxxxxxxxx</param>
-    ''' <param name="r2">xxxxxxxxxx</param>
-    ''' <returns>xxxxxxxxxx</returns>
-    ''' <remarks>
-    ''' Tangent circles will have only one intersection. When both circles
-    ''' specify the same circle, they are considered not to intersect.
-    ''' </remarks>
-    Public Function CirclesIntersect(ByVal x1 As System.Double,
-        ByVal y1 As System.Double, ByVal r1 As System.Double,
-        ByVal x2 As System.Double, ByVal y2 As System.Double,
-        ByVal r2 As System.Double) As System.Boolean
-
-        ' Input checking.
-        If (r1 < 0.0) OrElse (r2 < 0.0) Then
-            Return False
-        End If
-
-        ' Check for solvability.
-        Dim CtrSeparation As System.Double =
-            System.Double.Hypot(x2 - x1, y2 - y1)
-        If CtrSeparation > (r1 + r2) Then
-            ' Two isolated circles.
-            Return False
-        ElseIf CtrSeparation < System.Math.Abs(r2 - r1) Then
-            ' One inside the other.
-            Return False
-        ElseIf x2.Equals(x1) AndAlso y2.Equals(y1) Then
-            ' They are concentric, with either zero or infinite common points.
-            ' The second case is considered not to be intersecting.
-            Return False
-        End If
-        Return True
-
-    End Function ' CirclesIntersect
-
-    ''' <summary>
-    ''' xxxxxxxxxx
-    ''' </summary>
-    ''' <param name="x1">xxxxxxxxxx</param>
-    ''' <param name="y1">xxxxxxxxxx</param>
-    ''' <param name="r1">xxxxxxxxxx</param>
-    ''' <param name="x2">xxxxxxxxxx</param>
-    ''' <param name="y2">xxxxxxxxxx</param>
-    ''' <param name="r2">xxxxxxxxxx</param>
-    ''' <param name="i1x">xxxxxxxxxx</param>
-    ''' <param name="i1y">xxxxxxxxxx</param>
-    ''' <param name="i2x">xxxxxxxxxx</param>
-    ''' <param name="i2y">xxxxxxxxxx</param>
-    ''' <returns>xxxxxxxxxx</returns>
-    Public Function TryCirclesIntersection(
-        ByVal x1 As System.Double, ByVal y1 As System.Double, ByVal r1 As System.Double,
-        ByVal x2 As System.Double, ByVal y2 As System.Double, ByVal r2 As System.Double,
-        ByRef i1x As System.Double, ByRef i1y As System.Double,
-        ByRef i2x As System.Double, ByRef i2y As System.Double) As System.Boolean
-
-        If Not CirclesIntersect(x1, y1, r1, x2, y2, r2) Then
-            i1x = Double.NaN
-            i1y = Double.NaN
-            i2x = Double.NaN
-            i2y = Double.NaN
-            Return False
-        End If
-
-        i1x = 999.99
-        i1y = 999.99
-        i2x = 999.99
-        i2y = 999.99
-
-
-
-        '        xxxx
-        Return False ' Until implemented.
-
-    End Function ' TryCirclesIntersection
 
 
     ' Partial Public Structure Math
