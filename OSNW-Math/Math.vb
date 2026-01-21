@@ -3,8 +3,6 @@ Option Strict On
 Option Compare Binary
 Option Infer Off
 
-Imports OsnwPoint2D = OSNW.Math.Point2D
-
 Public Module Math
 
 #Region "Constants"
@@ -17,20 +15,17 @@ Public Module Math
     ''' printer. A smaller value DEcreases the liklihood of detecting equality;
     ''' a larger value INcreases the liklihood of detecting equality.
     ''' </summary>
-    Public Const GRAPHICTOLERANCE As System.Double = 0.0001
+    Public Const DFLTGRAPHICTOLERANCE As System.Double = 0.0001
 
-    'Public Const PI As System.Double = System.Double.Pi
-    Public Const HALFPI As System.Double = System.Double.Pi / 2.0
+    ' Just for shorthand.
+    Public Const PIs As Single = System.Single.Pi
+    Public Const HALFPIs As System.Single = System.Single.Pi / 2.0
+    Public Const PId As System.Double = System.Double.Pi
+    Public Const HALFPId As System.Double = System.Double.Pi / 2.0
 
     Public Const MSGCHIV As System.String = "Cannot have an infinite value."
     Public Const MSGCHNV As System.String = "Cannot have a negative value."
     Public Const MSGCHZV As System.String = "Cannot have a zero value."
-    'Public Const MSGFGPXPY As System.String = "Failure getting PlotX, PlotY."
-    'Public Const MSGFIXEDSIZEVIOLATION As System.String =
-    '    "cannot modify the fixed-size ImageImpedanceList."
-    'Public Const MSGIIC As System.String = "Invalid intersection count."
-    'Public Const MSGNOSTR As System.String = "Cannot be Null/Nothing."
-    'Public Const MSGTDNRT As String = " transformation did not reach target."
     Public Const MSGUEEZ As System.String = MSGCHZV & " Use EqualEnoughZero()."
     Public Const MSGVMBGTE1 As System.String =
         "Must be greater than or equal to 1."
@@ -484,7 +479,7 @@ Public Module Math
                 ByVal c1Y As System.Double, ByVal c1R As System.Double,
                 ByVal c2X As System.Double, ByVal c2Y As System.Double,
                 ByVal c2R As System.Double) _
-                As System.Collections.Generic.List(Of OsnwPoint2D)
+                As System.Collections.Generic.List(Of Point2D)
 
             ' DEV: This is the worker for the related routines.
 
@@ -499,11 +494,13 @@ Public Module Math
             End If
 
             Dim Intersections _
-                As New System.Collections.Generic.List(Of OsnwPoint2D)
+                As New System.Collections.Generic.List(Of Point2D)
 
             ' Concentric circles would have zero or infinite intersection points.
-            If OSNW.Math.EqualEnough(c1X, c2X, OSNW.Math.GRAPHICTOLERANCE) AndAlso
-                OSNW.Math.EqualEnough(c1Y, c2Y, OSNW.Math.GRAPHICTOLERANCE) Then
+            If OSNW.Math.EqualEnough(
+                    c1X, c2X, OSNW.Math.DFLTGRAPHICTOLERANCE) AndAlso
+                OSNW.Math.EqualEnough(
+                    c1Y, c2Y, OSNW.Math.DFLTGRAPHICTOLERANCE) Then
 
                 Return Intersections ' Still empty.
             End If
@@ -528,29 +525,32 @@ Public Module Math
 
             ' Check if the circles are outside-tangent to each other.
             If OSNW.Math.EqualEnough(c1R + c2R, DeltaCtr,
-                                     OSNW.Math.GRAPHICTOLERANCE) Then
+                                     OSNW.Math.DFLTGRAPHICTOLERANCE) Then
                 ' One intersection point.
                 Dim C1Frac As System.Double = c1R / DeltaCtr
-                Intersections.Add(New OsnwPoint2D(
+                Intersections.Add(New Point2D(
                                   c1X + C1Frac * DeltaX, c1Y + C1Frac * DeltaY))
                 Return Intersections
             End If
 
             ' Check if the circles are inside-tangent to each other.
-            ' Two circles of the same radius cannot be inside-tangent to each other.
-            If Not OSNW.Math.EqualEnough(c1R, c2R, OSNW.Math.GRAPHICTOLERANCE) Then
+            ' Two circles of the same radius cannot be inside-tangent to each
+            ' other.
+            If Not OSNW.Math.EqualEnough(
+                c1R, c2R, OSNW.Math.DFLTGRAPHICTOLERANCE) Then
+
                 If OSNW.Math.EqualEnough(System.Math.Abs(c1R - c2R), DeltaCtr,
-                                         OSNW.Math.GRAPHICTOLERANCE) Then
+                                         OSNW.Math.DFLTGRAPHICTOLERANCE) Then
                     ' They are inside-tangent.
                     If c1R > c2R Then
                         Dim C1Frac As System.Double = c1R / DeltaCtr
-                        Intersections.Add(New OsnwPoint2D(
+                        Intersections.Add(New Point2D(
                                               c1X + (C1Frac * DeltaX),
                                               c1Y + (C1Frac * DeltaY)))
                         Return Intersections
                     Else
                         Dim C2Frac As System.Double = c2R / DeltaCtr
-                        Intersections.Add(New OsnwPoint2D(
+                        Intersections.Add(New Point2D(
                                               c2X + (C2Frac * -DeltaX),
                                               c2Y + (C2Frac * -DeltaY)))
                         Return Intersections
@@ -569,10 +569,10 @@ Public Module Math
             Dim Y0 As System.Double = c1Y + OnceA * (DeltaY / DeltaCtr)
 
             ' Two intersection points.
-            Dim intersection1 As New OsnwPoint2D(
+            Dim intersection1 As New Point2D(
                 X0 + OnceH * (DeltaY / DeltaCtr),
                 Y0 - OnceH * (DeltaX / DeltaCtr))
-            Dim intersection2 As New OsnwPoint2D(
+            Dim intersection2 As New Point2D(
                 X0 - OnceH * (DeltaY / DeltaCtr),
                 Y0 + OnceH * (DeltaX / DeltaCtr))
             Intersections.Add(intersection1)
@@ -591,7 +591,7 @@ Public Module Math
         ''' <see cref="OSNW.Math.Point2D"/> objects.</returns>
         Public Shared Function GetIntersections(
             ByVal circle1 As Circle2D, ByVal circle2 As Circle2D) _
-            As System.Collections.Generic.List(Of OsnwPoint2D)
+            As System.Collections.Generic.List(Of Point2D)
 
             Return GetIntersections(
                 circle1.CenterX, circle1.CenterY, circle1.Radius,
@@ -607,7 +607,7 @@ Public Module Math
         ''' <returns>A list of intersection points as
         ''' <see cref="OSNW.Math.Point2D"/> objects.</returns>
         Public Function GetIntersections(ByVal otherCircle As Circle2D) _
-            As System.Collections.Generic.List(Of OsnwPoint2D)
+            As System.Collections.Generic.List(Of Point2D)
 
             Return GetIntersections(Me, otherCircle)
         End Function ' GetIntersections
@@ -656,7 +656,338 @@ Public Module Math
             Return $"Center: ({Me.CenterX}, {Me.CenterY}), Radius: {Me.Radius}"
         End Function ' ToString
 
+
+
+
+
+
+
+
+
 #End Region ' "Methods"
+
+        '''' <summary>
+        '''' A base class that represents the geometry of a generic circle, with a center
+        '''' and radius, for use on a Cartesian grid. Dimensions are in generic "units".
+        '''' </summary>
+        'Public Class Circle2D
+
+        '    Private m_GridCenterX As System.Double
+        '    ''' <summary>
+        '    ''' Represents the X-coordinate of the center of the <c>Circle2D</c>,
+        '    ''' on a Cartesian grid. Dimensions are in generic "units".
+        '    ''' </summary>
+        '    Public Property GridCenterX As System.Double
+        '        Get
+        '            Return Me.m_GridCenterX
+        '        End Get
+        '        Set(value As System.Double)
+        '            Me.m_GridCenterX = value
+        '        End Set
+        '    End Property
+
+        '    Private m_GridCenterY As System.Double
+        '    ''' <summary>
+        '    ''' Represents the Y-coordinate of the center of the <c>Circle2D</c>,
+        '    ''' on a Cartesian grid. Dimensions are in generic "units".
+        '    ''' </summary>
+        '    Public Property GridCenterY As System.Double
+        '        Get
+        '            Return Me.m_GridCenterY
+        '        End Get
+        '        Set(value As System.Double)
+        '            Me.m_GridCenterY = value
+        '        End Set
+        '    End Property
+
+        '    Private m_GridRadius As System.Double
+        '    ''' <summary>
+        '    ''' Represents the radius of the <c>Circle2D</c>, on a Cartesian grid.
+        '    ''' Dimensions are in generic "units".
+        '    ''' </summary>
+        '    Public Property GridRadius As System.Double
+        '        Get
+        '            Return Me.m_GridRadius
+        '        End Get
+        '        Set(value As System.Double)
+
+        '            ' Input checking.
+        '            ' A zero value is useless, but possibly valid.
+        '            If value < 0.0 Then
+        '                'Dim CaughtBy As System.Reflection.MethodBase =
+        '                '    System.Reflection.MethodBase.GetCurrentMethod
+        '                Throw New System.ArgumentOutOfRangeException(
+        '                    NameOf(value), OSNW.Math.MSGCHNV)
+        '            End If
+
+        '            Me.m_GridRadius = value
+
+        '        End Set
+        '    End Property
+
+        '    ''' <summary>
+        '    ''' Represents the diameter of the <c>Circle2D</c>, on a Cartesian
+        '    ''' grid. Dimensions are in generic "units".
+        '    ''' </summary>
+        '    Public Property GridDiameter As System.Double
+        '        ' DEV: Being functionally redundant, this may need to be excluded from
+        '        ' any serialization process.
+        '        Get
+        '            Return Me.GridRadius * 2.0
+        '        End Get
+        '        Set(value As System.Double)
+
+        '            ' Input checking.
+        '            ' A zero value is useless, but possibly valid.
+        '            If value < 0.0 Then
+        '                'Dim CaughtBy As System.Reflection.MethodBase =
+        '                '    System.Reflection.MethodBase.GetCurrentMethod
+        '                Throw New System.ArgumentOutOfRangeException(
+        '                    NameOf(value), OSNW.Math.MSGCHNV)
+        '            End If
+
+        '            Me.GridRadius = value / 2.0
+
+        '        End Set
+        '    End Property
+
+        '    ''' <summary>
+        '    ''' Calculates the intersection points between two circles defined by their
+        '    ''' center coordinates and radii.
+        '    ''' </summary>
+        '    ''' <param name="c1X">Specifies the X-coordinate of circle 1.</param>
+        '    ''' <param name="c1Y">Specifies the Y-coordinate of circle 1.</param>
+        '    ''' <param name="c1R">Specifies the radius of circle 1.</param>
+        '    ''' <param name="c2X">Specifies the X-coordinate of circle 2.</param>
+        '    ''' <param name="c2Y">Specifies the Y-coordinate of circle 2.</param>
+        '    ''' <param name="c2R">Specifies the radius of circle 1.</param>
+        '    ''' <returns>A list of 0, 1, or 2 intersection points as
+        '    ''' <see cref="OSNW.Numerics.PointD"/> structure(s).</returns>
+        '    ''' <exception cref="ArgumentOutOfRangeException">when either radius is less
+        '    ''' than or equal to zero.</exception>
+        '    ''' <remarks>
+        '    ''' If there are no intersection points, an empty list is returned. If the
+        '    ''' circles are tangent to each other, a list with one intersection point is
+        '    ''' returned. If the circles intersect at two points, a list with both
+        '    ''' points is returned.
+        '    ''' </remarks>
+        '    Public Shared Function GetIntersections(ByVal c1X As System.Double,
+        '        ByVal c1Y As System.Double, ByVal c1R As System.Double,
+        '        ByVal c2X As System.Double, ByVal c2Y As System.Double,
+        '        ByVal c2R As System.Double) _
+        '        As System.Collections.Generic.List(Of OSNW.Numerics.PointD)
+
+        '        ' DEV: This is the worker for the related routines.
+
+        '        ' Input checking.
+        '        If c1R <= 0 OrElse c2R <= 0 Then
+        '            'Dim CaughtBy As System.Reflection.MethodBase =
+        '            '    System.Reflection.MethodBase.GetCurrentMethod
+        '            Dim ErrMsg As System.String = String.Format(
+        '                "{0}={1}, {2}={3}", NameOf(c1R), c1R, NameOf(c2R), c2R)
+        '            Throw New System.ArgumentOutOfRangeException(
+        '                ErrMsg, OSNW.Math.MSGVMBGTZ)
+        '        End If
+
+        '        Dim Intersections _
+        '            As New System.Collections.Generic.List(Of OSNW.Numerics.PointD)
+
+        '        ' Concentric circles would have zero or infinite intersection points.
+        '        If OSNW.Math.EqualEnough(c1X, c2X, OSNW.Math.GRAPHICTOLERANCE) AndAlso
+        '            OSNW.Math.EqualEnough(c1Y, c2Y, OSNW.Math.GRAPHICTOLERANCE) Then
+
+        '            Return Intersections ' Still empty.
+        '        End If
+
+        '        ' Calculate the distance between the centers of the circles.
+        '        Dim DeltaX As System.Double = c2X - c1X
+        '        Dim DeltaY As System.Double = c2Y - c1Y
+        '        Dim DeltaCtr As System.Double =
+        '            System.Math.Sqrt(DeltaX * DeltaX + DeltaY * DeltaY)
+
+        '        ' Check if circles are too far apart or if one is contained within, but
+        '        ' not tangent to, the other.
+        '        If DeltaCtr > (c1R + c2R) OrElse
+        '            DeltaCtr < System.Math.Abs(c1R - c2R) Then
+
+        '            Return Intersections ' Still empty.
+        '        End If
+
+        '        ' On getting this far, the circles are neither isolated nor have one
+        '        ' separately contained within the other. There should now be either one
+        '        ' or two intersections.
+
+        '        ' Check if the circles are outside-tangent to each other.
+        '        If OSNW.Math.EqualEnough(c1R + c2R, DeltaCtr,
+        '                                 OSNW.Math.GRAPHICTOLERANCE) Then
+        '            ' One intersection point.
+        '            Dim C1Frac As System.Double = c1R / DeltaCtr
+        '            Intersections.Add(New OSNW.Numerics.PointD(
+        '                              c1X + C1Frac * DeltaX, c1Y + C1Frac * DeltaY))
+        '            Return Intersections
+        '        End If
+
+        '        ' Check if the circles are inside-tangent to each other.
+        '        ' Two circles of the same radius cannot be inside-tangent to each other.
+        '        If Not OSNW.Math.EqualEnough(c1R, c2R, OSNW.Math.GRAPHICTOLERANCE) Then
+        '            If OSNW.Math.EqualEnough(System.Math.Abs(c1R - c2R), DeltaCtr,
+        '                                     OSNW.Math.GRAPHICTOLERANCE) Then
+        '                ' They are inside-tangent.
+        '                If c1R > c2R Then
+        '                    Dim C1Frac As System.Double = c1R / DeltaCtr
+        '                    Intersections.Add(New OSNW.Numerics.PointD(
+        '                                          c1X + (C1Frac * DeltaX),
+        '                                          c1Y + (C1Frac * DeltaY)))
+        '                    Return Intersections
+        '                Else
+        '                    Dim C2Frac As System.Double = c2R / DeltaCtr
+        '                    Intersections.Add(New OSNW.Numerics.PointD(
+        '                                          c2X + (C2Frac * -DeltaX),
+        '                                          c2Y + (C2Frac * -DeltaY)))
+        '                    Return Intersections
+        '                End If
+        '            End If
+        '        End If
+
+        '        ' (The initial version of) the sequence below was generated by Visual
+        '        ' Studio AI.
+
+        '        ' Calculate two intersection points.
+        '        Dim OnceA As System.Double =
+        '            (c1R * c1R - c2R * c2R + DeltaCtr * DeltaCtr) / (2 * DeltaCtr)
+        '        Dim OnceH As System.Double = System.Math.Sqrt(c1R * c1R - OnceA * OnceA)
+        '        Dim X0 As System.Double = c1X + OnceA * (DeltaX / DeltaCtr)
+        '        Dim Y0 As System.Double = c1Y + OnceA * (DeltaY / DeltaCtr)
+
+        '        ' Two intersection points.
+        '        Dim intersection1 As New OSNW.Numerics.PointD(
+        '            X0 + OnceH * (DeltaY / DeltaCtr),
+        '            Y0 - OnceH * (DeltaX / DeltaCtr))
+        '        Dim intersection2 As New OSNW.Numerics.PointD(
+        '            X0 - OnceH * (DeltaY / DeltaCtr),
+        '            Y0 + OnceH * (DeltaX / DeltaCtr))
+        '        Intersections.Add(intersection1)
+        '        Intersections.Add(intersection2)
+        '        Return Intersections
+
+        '    End Function ' GetIntersections
+
+        '    ''' <summary>
+        '    ''' Calculates the intersection points between <paramref name="circle1"/>
+        '    ''' and <paramref name="circle2"/>.
+        '    ''' </summary>
+        '    ''' <param name="circle1">Specifies the first circle.</param>
+        '    ''' <param name="circle2">Specifies the second circle.</param>
+        '    ''' <returns>A list of intersection points as
+        '    ''' <see cref="OSNW.Numerics.PointD"/> objects.</returns>
+        '    Public Shared Function GetIntersections(
+        '        ByVal circle1 As Circle2D, ByVal circle2 As Circle2D) _
+        '        As System.Collections.Generic.List(Of OSNW.Numerics.PointD)
+
+        '        Return GetIntersections(
+        '            circle1.GridCenterX, circle1.GridCenterY, circle1.GridRadius,
+        '            circle2.GridCenterX, circle2.GridCenterY, circle2.GridRadius)
+        '    End Function ' GetIntersections
+
+        '    ''' <summary>
+        '    ''' Calculates the intersection points between the current instance and
+        '    ''' <paramref name="otherCircle"/>.
+        '    ''' </summary>
+        '    ''' <param name="otherCircle">Specifies the other circle with which to find
+        '    ''' intersections.</param>
+        '    ''' <returns>A list of intersection points as
+        '    ''' <see cref="OSNW.Numerics.PointD"/> objects.</returns>
+        '    Public Function GetIntersections(ByVal otherCircle As Circle2D) _
+        '        As System.Collections.Generic.List(Of OSNW.Numerics.PointD)
+
+        '        Return GetIntersections(Me, otherCircle)
+        '    End Function ' GetIntersections
+
+        '    ''' <summary>
+        '    ''' xxxxxxxxxx
+        '    ''' </summary>
+        '    ''' <param name="circle1">Specifies the <c>Circle2D</c> to consider for
+        '    ''' intersection with <paramref name="circle2"/>.</param>
+        '    ''' <param name="circle2">Specifies the <c>Circle2D</c> to consider for
+        '    ''' intersection with <paramref name="circle1"/>.</param>
+        '    ''' <returns>xxxxxxxxxx</returns>
+        '    Public Shared Function CirclesIntersect(ByVal circle1 As Circle2D,
+        '        ByVal circle2 As Circle2D) As System.Boolean
+
+        '        ' xxxxxxxxxx NO TEST HAS BEEN ADDED FOR THIS. xxxxxxxxxx
+        '        Return circle1.GetIntersections(circle2).Count > 0
+        '    End Function ' CirclesIntersect
+
+        '    ''' <summary>
+        '    ''' xxxxxxxxxx
+        '    ''' </summary>
+        '    ''' <param name="circle1">Specifies the <c>Circle2D</c> to consider for
+        '    ''' intersection with <paramref name="circle2"/>.</param>
+        '    ''' <param name="circle2">Specifies the <c>Circle2D</c> to consider for
+        '    ''' intersection with <paramref name="circle1"/>.</param>
+        '    ''' <param name="intersections">xxxxxxxxxx</param>
+        '    ''' <returns>xxxxxxxxxx</returns>
+        '    Public Shared Function CirclesIntersect(
+        '        ByVal circle1 As Circle2D, ByVal circle2 As Circle2D,
+        '        ByRef intersections As System.Collections.Generic.List(
+        '            Of OSNW.Numerics.PointD)) As System.Boolean
+
+        '        ' xxxxxxxxxx NO TEST HAS BEEN ADDED FOR THIS. xxxxxxxxxx
+        '        intersections = circle1.GetIntersections(circle2)
+        '        Return intersections.Count > 0
+        '    End Function ' CirclesIntersect
+
+        '    ''' <summary>
+        '    ''' A default constructor that creates a new instance of the
+        '    ''' <c>Circle2D</c> class with default center coordinates and radius.
+        '    ''' </summary>
+        '    ''' <remarks>
+        '    ''' A default constructor is required to allow inheritance.
+        '    ''' </remarks>
+        '    Public Sub New()
+        '        With Me
+        '            '.m_GridCenterX = 0.0
+        '            '.m_GridCenterY = 0.0
+        '            .m_GridRadius = 1.0 ' Default to a unit circle.
+        '        End With
+        '    End Sub ' New
+
+        '    ''' <summary>
+        '    ''' Creates a new instance of the <c>Circle2D</c> class with the
+        '    ''' specified center coordinates and radius.
+        '    ''' </summary>
+        '    ''' <param name="gridCenterX"> Specifies the X-coordinate of the center of
+        '    ''' the <c>Circle2D</c>, on a Cartesian grid. Dimensions are in generic
+        '    ''' "units".</param>
+        '    ''' <param name="gridCenterY"> Specifies the Y-coordinate of the center of
+        '    ''' the <c>Circle2D</c>, on a Cartesian grid. Dimensions are in generic
+        '    ''' "units".</param>
+        '    ''' <param name="gridRadius">Specifies the radius of the
+        '    ''' <c>Circle2D</c>, on a Cartesian grid. Dimensions are in generic
+        '    ''' "units".</param>
+        '    Public Sub New(ByVal gridCenterX As System.Double,
+        '                   ByVal gridCenterY As System.Double,
+        '                   ByVal gridRadius As System.Double)
+
+        '        ' Input checking.
+        '        ' A zero value is useless, but possibly valid.
+        '        If gridRadius < 0.0 Then
+        '            'Dim CaughtBy As System.Reflection.MethodBase =
+        '            '    System.Reflection.MethodBase.GetCurrentMethod
+        '            Throw New System.ArgumentOutOfRangeException(
+        '                    NameOf(gridRadius), OSNW.Math.MSGCHNV)
+        '        End If
+
+        '        With Me
+        '            .m_GridCenterX = gridCenterX
+        '            .m_GridCenterY = gridCenterY
+        '            .m_GridRadius = gridRadius
+        '        End With
+
+        '    End Sub ' New
+
+        'End Class ' Circle2D
+
 
     End Class ' Circle2D
 
@@ -1024,7 +1355,7 @@ Public Module Math
     ''' <param name="i2x">xxxxxxxxxx</param>
     ''' <param name="i2y">xxxxxxxxxx</param>
     ''' <returns>xxxxxxxxxx</returns>
-    Public Function TryCircleIntersection(
+    Public Function TryCirclesIntersection(
         ByVal x1 As System.Double, ByVal y1 As System.Double, ByVal r1 As System.Double,
         ByVal x2 As System.Double, ByVal y2 As System.Double, ByVal r2 As System.Double,
         ByRef i1x As System.Double, ByRef i1y As System.Double,
@@ -1048,7 +1379,7 @@ Public Module Math
         '        xxxx
         Return False ' Until implemented.
 
-    End Function ' TryCircleIntersection
+    End Function ' TryCirclesIntersection
 
 End Module ' Math
 

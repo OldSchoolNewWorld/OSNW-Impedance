@@ -103,6 +103,9 @@ Public Structure Impedance
     ' inherited. Given that, Impedance is created as a structure which uses
     ' familiar terminology but relies on Complex for some of its work.
 
+
+#Region "Constants"
+
     ''' <summary>
     ''' This sets a practical limit on the precision of equality detection in
     ''' mathematical operations related to impedances. It is intended to prevent
@@ -174,35 +177,13 @@ Public Structure Impedance
     ''' </remarks>
     Const DFLTIMPDTOLERANCE0 As System.Double = 0.000_001
 
-    '''' <summary>
-    '''' This sets a practical limit on the precision of equality detection in
-    '''' graphics operations. It is intended to prevent issues arising from
-    '''' floating point precision limitations. This should account for
-    '''' indistinguishable, sub-pixel, differences on any current monitor or
-    '''' printer. A smaller value DEcreases the liklihood of detecting equality;
-    '''' a larger value INcreases the liklihood of detecting equality.
-    '''' </summary>
-    'Const GRAPHICTOLERANCE As System.Double = 0.0001
-
-    Public Const PI As System.Double = System.Double.Pi
-    'Public Const HALFPI As System.Double = System.Double.Pi / 2.0
-
-    'Public Const MSGCHIV As System.String = "Cannot have an infinite value."
-    'Public Const MSGCHNV As System.String = "Cannot have a negative value."
-    'Public Const MSGCHZV As System.String = "Cannot have a zero value."
     Public Const MSGFGPXPY As System.String = "Failure getting PlotX, PlotY."
-    Public Const MSGFIXEDSIZEVIOLATION As System.String =
+    Public Const MSGFSV As System.String =
         "cannot modify the fixed-size ImageImpedanceList."
     Public Const MSGIIC As System.String = "Invalid intersection count."
     Public Const MSGNOSTR As System.String = "Cannot be Null/Nothing."
-    'Public Const MSGTDNRT As String = " transformation did not reach target."
-    'Public Const MSGUEEZ As System.String = MSGCHZV & " Use EqualEnoughZero()."
-    'Public Const MSGVMBGTZ As System.String =
-    '    "Must be a positive, non-zero value."
-    'Public Const MSGVMBGTE0 As System.String =
-    '    "Must be greater than or equal to 0."
-    'Public Const MSGVMBGTE1 As System.String =
-    '    "Must be greater than or equal to 1."
+
+#End Region ' "Constants"
 
 #Region "Fields and Properties"
 

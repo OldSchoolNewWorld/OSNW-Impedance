@@ -565,10 +565,10 @@ Partial Public Structure Impedance
             ' Vertical would have zero as the adjacent side (below).
             If PlotY > MainCirc.CenterY Then
                 ' Above the resonance line.
-                Return OSNW.Math.HALFPI
+                Return OSNW.Math.HALFPId
             ElseIf PlotY < MainCirc.CenterY Then
                 ' Below the resonance line.
-                Return -OSNW.Math.HALFPI
+                Return -OSNW.Math.HALFPId
             Else
                 ' At the center.
                 ' MATCHED, SO NO REFLECTION. SHOULD THIS HAVE *ANY* VALUE? NOT
@@ -589,10 +589,10 @@ Partial Public Structure Impedance
             ' Left side.
             If Opposite < 0.0 Then
                 ' Below the resonance line.
-                Return RadAngle - PI
+                Return RadAngle - PId
             Else
                 ' On or above the resonance line.
-                Return PI + RadAngle
+                Return PId + RadAngle
             End If
         End If
 
@@ -673,7 +673,7 @@ Partial Public Structure Impedance
             Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHIV)
         End If
 
-        Return AngleOfReflectionRadians(z0, zLoad) * 180.0 / PI
+        Return AngleOfReflectionRadians(z0, zLoad) * 180.0 / PId
 
     End Function ' AngleOfReflection
 
@@ -713,7 +713,7 @@ Partial Public Structure Impedance
             Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHIV)
         End If
 
-        Return Me.AngleOfReflectionRadians(z0) * 180.0 / PI
+        Return Me.AngleOfReflectionRadians(z0) * 180.0 / PId
 
     End Function ' AngleOfReflection
 
@@ -843,7 +843,7 @@ Partial Public Structure Impedance
             Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHIV)
         End If
 
-        Return AngleOfTransmissionRadians(z0, zLoad) * 180.0 / PI
+        Return AngleOfTransmissionRadians(z0, zLoad) * 180.0 / PId
 
     End Function ' AngleOfTransmission
 
@@ -873,7 +873,7 @@ Partial Public Structure Impedance
             Throw New System.ArgumentOutOfRangeException(NameOf(z0), MSGCHIV)
         End If
 
-        Return AngleOfTransmissionRadians(z0, Me) * 180.0 / PI
+        Return AngleOfTransmissionRadians(z0, Me) * 180.0 / PId
 
     End Function ' AngleOfTransmission
 

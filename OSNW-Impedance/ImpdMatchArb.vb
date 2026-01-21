@@ -143,7 +143,7 @@ Public Class ImageImpedanceList
         Dim CaughtBy As System.Reflection.MethodBase =
             System.Reflection.MethodBase.GetCurrentMethod
         Throw New System.NotSupportedException(
-            $"{CaughtBy} {Impedance.MSGFIXEDSIZEVIOLATION}")
+            $"{CaughtBy} {Impedance.MSGFSV}")
     End Sub ' Remove
 
     ''' <summary>
@@ -160,7 +160,7 @@ Public Class ImageImpedanceList
         Dim CaughtBy As System.Reflection.MethodBase =
             System.Reflection.MethodBase.GetCurrentMethod
         Throw New System.NotSupportedException(
-            $"{CaughtBy} {Impedance.MSGFIXEDSIZEVIOLATION}")
+            $"{CaughtBy} {Impedance.MSGFSV}")
     End Sub ' RemoveAt
 
     '''' <summary>
