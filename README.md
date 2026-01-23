@@ -10,6 +10,6 @@
  Mathematical functions
    Function Distance3D
    Function TryQuadratic
-   Function TryCircleLineIntersection
+   Function TryCircleLineIntersections
    Function CirclesIntersect
-   Function TryCirclesIntersection
+   Function TryCircleCircleIntersections

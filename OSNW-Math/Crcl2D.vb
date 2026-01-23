@@ -1,7 +1,4 @@
-﻿Imports System.Security.Cryptography
-Imports System.Security.Cryptography.X509Certificates
-
-Partial Public Module Math
+﻿Partial Public Module Math
 
     ''' <summary>
     ''' A base class that represents the geometry of a generic circle, with a
@@ -52,7 +49,8 @@ Partial Public Module Math
             Set(value As System.Double)
 
                 ' Input checking.
-                ' A zero value is useless, but possibly valid.
+                ' A zero radius seems useless, but may be valid in some unusual
+                ' case.
                 If value < 0.0 Then
                     'Dim CaughtBy As System.Reflection.MethodBase =
                     '    System.Reflection.MethodBase.GetCurrentMethod
@@ -78,7 +76,8 @@ Partial Public Module Math
             Set(value As System.Double)
 
                 ' Input checking.
-                ' A zero value is useless, but possibly valid.
+                ' A zero radius seems useless, but may be valid in some unusual
+                ' case.
                 If value < 0.0 Then
                     'Dim CaughtBy As System.Reflection.MethodBase =
                     '    System.Reflection.MethodBase.GetCurrentMethod
@@ -127,7 +126,8 @@ Partial Public Module Math
                        ByVal radius As System.Double)
 
             ' Input checking.
-            ' A zero value is useless, but possibly valid.
+            ' A zero radius seems useless, but may be valid in some unusual
+            ' case.
             If radius < 0.0 Then
                 'Dim CaughtBy As System.Reflection.MethodBase =
                 '    System.Reflection.MethodBase.GetCurrentMethod
@@ -156,7 +156,8 @@ Partial Public Module Math
                        ByVal radius As System.Double)
 
             ' Input checking.
-            ' A zero value is useless, but possibly valid.
+            ' A zero radius seems useless, but may be valid in some unusual
+            ' case.
             If radius < 0.0 Then
                 'Dim CaughtBy As System.Reflection.MethodBase =
                 '    System.Reflection.MethodBase.GetCurrentMethod
@@ -223,7 +224,7 @@ Partial Public Module Math
         ''' or
         ''' when <paramref name="circleR"/> is less than or equal to zero.
         ''' </remarks>
-        Public Shared Function TryCircleLineIntersection(
+        Public Shared Function TryCircleLineIntersections(
             ByVal circleX As System.Double, ByVal circleY As System.Double,
             ByVal circleR As System.Double, ByVal lineM As System.Double,
             ByVal lineB As System.Double, ByRef intersect1X As System.Double,
@@ -241,7 +242,7 @@ Partial Public Module Math
             '            'Dim CaughtBy As System.Reflection.MethodBase =
             '            '    System.Reflection.MethodBase.GetCurrentMethod
             '            Throw New System.ArgumentOutOfRangeException(
-            '                $"Arguments to {NameOf(TryCircleLineIntersection) {MSGCHIV")
+            '                $"Arguments to {NameOf(TryCircleLineIntersections) {MSGCHIV")
             '        End If
             '        If circleR <= 0.0 Then
             '            'Dim CaughtBy As System.Reflection.MethodBase =
@@ -340,7 +341,7 @@ Partial Public Module Math
             intersect2Y = lineM * intersect2X + lineB
             Return True
 
-        End Function ' TryCircleLineIntersection
+        End Function ' TryCircleLineIntersections
 
         '''' Suspended XML comments for suspended code:
         '''' <exception cref="System.ArgumentOutOfRangeException">
@@ -393,7 +394,7 @@ Partial Public Module Math
         ''' or
         ''' when <paramref name="circleR"/> is less than or equal to zero.
         ''' </remarks>
-        Public Shared Function TryCircleLineIntersection(
+        Public Shared Function TryCircleLineIntersections(
             ByVal circleX As System.Double,
             ByVal circleY As System.Double, ByVal circleR As System.Double,
             ByVal lineX1 As System.Double, ByVal lineY1 As System.Double,
@@ -415,7 +416,7 @@ Partial Public Module Math
             '           'Dim CaughtBy As System.Reflection.MethodBase =
             '           '    System.Reflection.MethodBase.GetCurrentMethod
             '           Throw New System.ArgumentOutOfRangeException(
-            '               $"Arguments to {NameOf(TryCircleLineIntersection) {MSGCHIV")
+            '               $"Arguments to {NameOf(TryCircleLineIntersections) {MSGCHIV")
             '       End If
             '        If circleR <= 0.0 Then
             '            'Dim CaughtBy As System.Reflection.MethodBase =
@@ -487,10 +488,10 @@ Partial Public Module Math
             ' B = Y - M*X; Solve for the Y-intercept.
             Dim lineB As System.Double = lineY1 - lineM * lineX1
 
-            Return TryCircleLineIntersection(circleX, circleY, circleR, lineM,
+            Return TryCircleLineIntersections(circleX, circleY, circleR, lineM,
                 lineB, intersect1X, intersect1Y, intersect2X, intersect2Y)
 
-        End Function ' TryCircleLineIntersection
+        End Function ' TryCircleLineIntersections
 
         ''' <summary>
         ''' Determines whether two circles intersect, given their center
@@ -721,22 +722,39 @@ Partial Public Module Math
         End Function ' GetIntersections
 
         ''' <summary>
-        ''' xxxxxxxxxx
+        ''' Attempts to determine where two circles intersect, given their
+        ''' center coordinates and radii.
         ''' </summary>
-        ''' <param name="x1">xxxxxxxxxx</param>
-        ''' <param name="y1">xxxxxxxxxx</param>
-        ''' <param name="r1">xxxxxxxxxx</param>
-        ''' <param name="x2">xxxxxxxxxx</param>
-        ''' <param name="y2">xxxxxxxxxx</param>
-        ''' <param name="r2">xxxxxxxxxx</param>
-        ''' <param name="i1x">xxxxxxxxxx</param>
-        ''' <param name="i1y">xxxxxxxxxx</param>
-        ''' <param name="i2x">xxxxxxxxxx</param>
-        ''' <param name="i2y">xxxxxxxxxx</param>
-        ''' <returns>xxxxxxxxxx</returns>
-        ''' <remarks> A negative radius will return <c>False</c>, to avoid an
-        ''' exception.</remarks>
-        Public Shared Function TryCirclesIntersection(
+        ''' <param name="x1">Specifies the X-coordinate of the first circle to
+        ''' consider for intersection with the second circle.</param>
+        ''' <param name="y1">Specifies the Y-coordinate of the first circle to
+        ''' consider for intersection with the second circle.</param>
+        ''' <param name="r1">Specifies the radius of the first circle to
+        ''' consider for intersection with the second circle.</param>
+        ''' <param name="x2">Specifies the X-coordinate of the second circle to
+        ''' consider for intersection with the first circle.</param>
+        ''' <param name="y2">Specifies the Y-coordinate of the second circle to
+        ''' consider for intersection with the first circle.</param>
+        ''' <param name="r2">Specifies the radius of the second circle to
+        ''' consider for intersection with the first circle.</param>
+        ''' <param name="i1X">Specifies the X-coordinate of the first
+        ''' intersection.</param>
+        ''' <param name="i1Y">Specifies the X-coordinate of the first
+        ''' intersection.</param>
+        ''' <param name="i2X">Specifies the X-coordinate of the second
+        ''' intersection.</param>
+        ''' <param name="i2Y">Specifies the X-coordinate of the second
+        ''' intersection.</param>
+        ''' <returns><c>True</c> if the the intersection(s) are found;
+        ''' otherwise, <c>False</c>.</returns>
+        ''' <remarks>
+        ''' A negative radius, or circles that do not intersect, will return
+        ''' <c>False</c>, to avoid an exception.
+        ''' Concentric circles will have either zero or infinite common points;
+        ''' the second case is considered to not be intersecting.
+        ''' Tangent circles will have only one intersection.
+        ''' </remarks>
+        Public Shared Function TryCircleCircleIntersections(
             ByVal x1 As System.Double, ByVal y1 As System.Double,
             ByVal r1 As System.Double, ByVal x2 As System.Double,
             ByVal y2 As System.Double, ByVal r2 As System.Double,
@@ -745,8 +763,16 @@ Partial Public Module Math
             As System.Boolean
 
             ' Input checking.
-            ' A zero value is useless, but possibly valid.
-            If r1 < 0.0 OrElse r2 < 0.0 Then
+            ' A zero radius seems useless, but may be valid in some unusual
+            ' case.
+            ' Non-intersecting circles fail.
+            ' Concentric circles (same center), will have either zero or
+            ' infinite common points; the second case is considered to not be
+            ' intersecting.
+            If r1 < 0.0 OrElse r2 < 0.0 _
+                OrElse Not CirclesIntersect(x1, y1, r1, x2, y2, r2) _
+                OrElse x2.Equals(x1) AndAlso y2.Equals(y1) Then
+
                 i1x = Double.NaN
                 i1y = Double.NaN
                 i2x = Double.NaN
@@ -754,15 +780,12 @@ Partial Public Module Math
                 Return False 'To avoid an exception.
             End If
 
-            If Not CirclesIntersect(x1, y1, r1, x2, y2, r2) Then
-                i1x = Double.NaN
-                i1y = Double.NaN
-                i2x = Double.NaN
-                i2y = Double.NaN
-                Return False
-            End If
-
             ' The derivation follows:
+            ' DEV: Square brackets and split lines are used below for visual
+            ' clarity across the various steps. "h", "k", and squared values are
+            ' carried through the derivation, in keeping with the standard form;
+            ' the actual parameters, and multiplication vs. squaring, are
+            ' substituted in the implementation.
 
             ' REF: How can I find the points at which two circles intersect?
             ' https://math.stackexchange.com/questions/256100/how-can-i-find-the-points-at-which-two-circles-intersect
@@ -770,19 +793,20 @@ Partial Public Module Math
             ' Standard form of a circle.
             ' [(X - h)^2] + [(Y - k)^2] = r^2
 
-            ' Localize parameters, for one point of intersection.
+            ' Localize parameters, for one point (X, Y) of intersection.
             ' [(X - h1)^2] + [(Y - k1)^2] = r1^2
             ' [(X - h2)^2] + [(Y - k2)^2] = r2^2
 
             ' Subtract the second equation from the first.
-            ' [(X - h1)^2] + [(Y - k1)^2] - {[(X - h2)^2] + [(Y - k2)^2]} = r1^2 - r2^2
+            ' [(X - h1)^2] + [(Y - k1)^2] - {[(X - h2)^2] + [(Y - k2)^2]}
+            ' = r1^2 - r2^2
 
             ' Handle negations.
             ' [(X - h1)^2] + [(Y - k1)^2]
             ' - [(X - h2)^2] - [(Y - k2)^2]
             ' = r1^2 - r2^2
 
-            ' Expand squares.
+            ' Expand the squares.
             ' [X^2 - (2*h1*X) + h1^2] + [Y^2 - (2*k1*Y) + k1^2]
             ' - [X^2 - (2*h2*X) + h2^2] - [Y^2 - (2*k2*Y) + k2^2]
             ' = r1^2 - r2^2
@@ -796,7 +820,7 @@ Partial Public Module Math
             ' - Y^2 + (2*k2*Y) - k2^2
             ' = r1^2 - r2^2
 
-            ' Handle cancellations.
+            ' Handle the cancellations.
             ' - (2*h1*X) + h1^2
             ' - (2*k1*Y) + k1^2
             ' + (2*h2*X) - h2^2
@@ -815,36 +839,55 @@ Partial Public Module Math
             ' + h1^2 - h2^2 + k1^2 - k2^2
             ' = r1^2 - r2^2
 
-            ' Arrange for the general "aX + bY = c" form of a linear equation.
+            ' Arrange for the standard "aX + bY = c" form of a linear equation.
             ' 2*(h2 - h1)*X
             ' + 2*(k2 - k1)*Y
             ' = r1^2 - r2^2 + h2^2 - h1^2 + k2^2 - k1^2
 
-            ' Arrange the "aX + bY = c" form of a linear equation for the
-            ' slope-intercept form of a line.
+            ' Arrange the "aX + bY = c" standard form of a linear equation into
+            ' the "Y = mX + b" slope-intercept form of a line.
             ' aX + bY = c
             ' bY = c - aX
             ' Y = (c - aX) / b
             ' Y = (c / b) - (a / b)X
-            ' Y = (-a / b)X + (c / b) 
+            ' Y = (-a / b)X + (c / b)
+            ' Now, M = (-a / b) and SlopeB = (c / b) 
 
             ' Substitute from the "aX + bY = c" form.
             ' Y = (-(2*(h2 - h1)) / (2*(k2 - k1)))X
-            '     + ((r1^2 - r2^2 + h2^2 - h1^2 + k2^2 - k1^2) / (2*(k2 - k1))) 
+            '     + ((r1^2 - r2^2 + h2^2 - h1^2 + k2^2 - k1^2) / (2*(k2 - k1)))
 
-            '            Return TryCircleLineIntersection(
-            '                x1, y1, r1,
-            '                (-(2 * (h2 - h1)) / (2 * (k2 - k1))),
-            '                ((r1 ^ 2 - r2 ^ 2 + h2 ^ 2 - h1 ^ 2 + k2 ^ 2 - k1 ^ 2) / (2 * (k2 - k1))),
-            '                i1x, i1y, i2x, i2y)
+            ' Substitute parameter names for clarity, squaring, and reuse.
+            ' H12 = h1*h1
+            ' H22 = h2*h2
+            ' K12 = k1*k1
+            ' K22 = k2*k2
+            ' R12 = r1*r1
+            ' R22 = r2*r2
+            ' DiffH = h2 - h1
+            ' DiffK = k2 - k1
+            ' SumRHK = R12 - R22 + H22 - H12 + K22 - K12
+            ' Y = (-(2*DiffH) / (2*DiffK))X
+            '     + (SumRHK / (2*DiffK))
 
-            Return TryCircleLineIntersection(
-                x1, y1, r1,
-                (-(2 * (x2 - x1)) / (2 * (y2 - y1))),
-                ((r1 ^ 2 - r2 ^ 2 + x2 ^ 2 - x1 ^ 2 + y2 ^ 2 - y1 ^ 2) / (2 * (y2 - y1))),
-                i1x, i1y, i2x, i2y)
+            ' Cancel the common 2.
+            ' Y = (-DiffH / DiffK)X
+            '     + (SumRHK / (2*DiffK))
 
-        End Function ' TryCirclesIntersection
+            ' Implementation:
+            Dim X12 As System.Double = x1 * x1
+            Dim X22 As System.Double = x2 * x2
+            Dim Y12 As System.Double = y1 * y1
+            Dim Y22 As System.Double = y2 * y2
+            Dim R12 As System.Double = r1 * r1
+            Dim R22 As System.Double = r2 * r2
+            Dim DiffX As System.Double = x2 - x1
+            Dim DiffY As System.Double = y2 - y1
+            Dim SumRXY As System.Double = R12 - R22 + X22 - X12 + Y22 - Y12
+            Return TryCircleLineIntersections(x1, y1, r1, -DiffX / DiffY,
+                SumRXY / (2 * DiffY), i1x, i1y, i2x, i2y)
+
+        End Function ' TryCircleCircleIntersections
 
         ''' <summary>
         ''' Converts the value of the current Circle2D to its equivalent string
