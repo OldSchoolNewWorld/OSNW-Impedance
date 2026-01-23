@@ -110,11 +110,29 @@ Namespace MathTests
                         2.4427, 5.4205))
         End Sub
 
-        '        <Theory>
-        '        Sub TryCirclesIntersection2_WorksOK()
-        '
-        '        End Sub
+        <Theory>
+        <InlineData(1.75, 6.75, 1.5, 3, 6.25, 1, 3.1698, 7.2381, 2.4427, 5.4205)>
+        Sub TryCirclesIntersection2_WorksOK(
+            x1 As System.Double, y1 As System.Double, r1 As System.Double,
+            x2 As System.Double, y2 As System.Double, r2 As System.Double,
+            expecti1x As System.Double, expecti1y As System.Double,
+            expecti2x As System.Double, expecti2y As System.Double)
 
+            Dim i1x As System.Double
+            Dim i1y As System.Double
+            Dim i2x As System.Double
+            Dim i2y As System.Double
+
+            If Not OsnwCircle2D.TryCirclesIntersection(x1, y1, r1, x2, y2, r2, i1x, i1y, i2x, i2y) Then
+                Assert.True(False)
+            End If
+
+            Assert.Equal(expecti1x, i1x, 0.01)
+            Assert.Equal(expecti1y, i1y, 0.01)
+            Assert.Equal(expecti2x, i2x, 0.01)
+            Assert.Equal(expecti2y, i2y, 0.01)
+
+        End Sub
 
     End Class ' TryCirclesIntersectionTests
 

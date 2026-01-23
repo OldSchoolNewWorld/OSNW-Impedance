@@ -737,10 +737,12 @@ Partial Public Module Math
         ''' <remarks> A negative radius will return <c>False</c>, to avoid an
         ''' exception.</remarks>
         Public Shared Function TryCirclesIntersection(
-        ByVal x1 As System.Double, ByVal y1 As System.Double, ByVal r1 As System.Double,
-        ByVal x2 As System.Double, ByVal y2 As System.Double, ByVal r2 As System.Double,
-        ByRef i1x As System.Double, ByRef i1y As System.Double,
-        ByRef i2x As System.Double, ByRef i2y As System.Double) As System.Boolean
+            ByVal x1 As System.Double, ByVal y1 As System.Double,
+            ByVal r1 As System.Double, ByVal x2 As System.Double,
+            ByVal y2 As System.Double, ByVal r2 As System.Double,
+            ByRef i1x As System.Double, ByRef i1y As System.Double,
+            ByRef i2x As System.Double, ByRef i2y As System.Double) _
+            As System.Boolean
 
             ' Input checking.
             ' A zero value is useless, but possibly valid.
@@ -762,15 +764,15 @@ Partial Public Module Math
 
             ' The derivation follows:
 
-            ' THESE TESTS CAN BE DELETED OR SUPPRESSED AFTER ALL WORKS OK.
-            ' USE KNOWN VALUES TO TEST THIS ROUTINE BEFORE COMPLETING IT.
-            Dim Factor As System.Double = 0.01
-            Dim h1 As System.Double = x1
-            Dim k1 As System.Double = y1
-            Dim h2 As System.Double = x2
-            Dim k2 As System.Double = y2
-            Dim Left1, Right1 As System.Double ' 1st intersection.
-            Dim Left2, Right2 As System.Double ' 2nd intersection.
+            '' THESE TESTS CAN BE DELETED OR SUPPRESSED AFTER ALL WORKS OK.
+            '' USE KNOWN VALUES TO TEST THIS ROUTINE BEFORE COMPLETING IT.
+            'Dim Factor As System.Double = 0.01
+            'Dim h1 As System.Double = x1
+            'Dim k1 As System.Double = y1
+            'Dim h2 As System.Double = x2
+            'Dim k2 As System.Double = y2
+            'Dim Left1, Right1 As System.Double ' 1st intersection.
+            'Dim Left2, Right2 As System.Double ' 2nd intersection.
 
             ' REF: How can I find the points at which two circles intersect?
             ' https://math.stackexchange.com/questions/256100/how-can-i-find-the-points-at-which-two-circles-intersect
@@ -778,86 +780,86 @@ Partial Public Module Math
             ' Standard form of a circle.
             ' [(X - h)^2] + [(Y - k)^2] = r^2
 
-            ' THESE TESTS CAN BE DELETED OR SUPPRESSED AFTER ALL WORKS OK.
-            ' Circle1.
-            Left1 = ((i1x - h1) ^ 2) + ((i1y - k1) ^ 2)
-            Right1 = r1 ^ 2
-            Left2 = ((i2x - h1) ^ 2) + ((i2y - k1) ^ 2)
-            Right2 = r1 ^ 2
-            If Not (EqualEnough(Left1, Right1, Factor) AndAlso
-                EqualEnough(Left2, Right2, Factor)) Then
-                Return False
-            End If
-            ' Circle2.
-            Left1 = ((i1x - h2) ^ 2) + ((i1y - k2) ^ 2)
-            Right1 = r2 ^ 2
-            Left2 = ((i2x - h2) ^ 2) + ((i2y - k2) ^ 2)
-            Right2 = r2 ^ 2
-            If Not (EqualEnough(Left1, Right1, Factor) AndAlso
-                EqualEnough(Left2, Right2, Factor)) Then
-                Return False
-            End If
+            '' THESE TESTS CAN BE DELETED OR SUPPRESSED AFTER ALL WORKS OK.
+            '' Circle1.
+            'Left1 = ((i1x - h1) ^ 2) + ((i1y - k1) ^ 2)
+            'Right1 = r1 ^ 2
+            'Left2 = ((i2x - h1) ^ 2) + ((i2y - k1) ^ 2)
+            'Right2 = r1 ^ 2
+            'If Not (EqualEnough(Left1, Right1, Factor) AndAlso
+            '    EqualEnough(Left2, Right2, Factor)) Then
+            '    Return False
+            'End If
+            '' Circle2.
+            'Left1 = ((i1x - h2) ^ 2) + ((i1y - k2) ^ 2)
+            'Right1 = r2 ^ 2
+            'Left2 = ((i2x - h2) ^ 2) + ((i2y - k2) ^ 2)
+            'Right2 = r2 ^ 2
+            'If Not (EqualEnough(Left1, Right1, Factor) AndAlso
+            '    EqualEnough(Left2, Right2, Factor)) Then
+            '    Return False
+            'End If
 
             ' Localize parameters, for one point of intersection.
             ' [(X - h1)^2] + [(Y - k1)^2] = r1^2
             ' [(X - h2)^2] + [(Y - k2)^2] = r2^2
 
-            ' THESE TESTS CAN BE DELETED OR SUPPRESSED AFTER ALL WORKS OK.
-            Left1 = (i1x - h1) ^ 2 + (i1y - k1) ^ 2
-            Right1 = r1 ^ 2
-            Left2 = (i2x - h2) ^ 2 + (i2y - k2) ^ 2
-            Right2 = r2 ^ 2
-            If Not (EqualEnough(Left1, Right1, Factor) AndAlso
-                EqualEnough(Left2, Right2, Factor)) Then
-                Return False
-            End If
+            '' THESE TESTS CAN BE DELETED OR SUPPRESSED AFTER ALL WORKS OK.
+            'Left1 = (i1x - h1) ^ 2 + (i1y - k1) ^ 2
+            'Right1 = r1 ^ 2
+            'Left2 = (i2x - h2) ^ 2 + (i2y - k2) ^ 2
+            'Right2 = r2 ^ 2
+            'If Not (EqualEnough(Left1, Right1, Factor) AndAlso
+            '    EqualEnough(Left2, Right2, Factor)) Then
+            '    Return False
+            'End If
 
             ' Subtract the second equation from the first.
             ' [(X - h1)^2] + [(Y - k1)^2] - {[(X - h2)^2] + [(Y - k2)^2]} = r1^2 - r2^2
 
-            ' THESE TESTS CAN BE DELETED OR SUPPRESSED AFTER ALL WORKS OK.
-            Left1 = (i1x - h1) ^ 2 + (i1y - k1) ^ 2 - ((i1x - h2) ^ 2 + (i1y - k2) ^ 2)
-            Right1 = r1 ^ 2 - r2 ^ 2
-            Left2 = (i2x - h1) ^ 2 + (i2y - k1) ^ 2 - ((i2x - h2) ^ 2 + (i2y - k2) ^ 2)
-            Right2 = r1 ^ 2 - r2 ^ 2
-            If Not (EqualEnough(Left1, Right1, Factor) AndAlso
-                EqualEnough(Left2, Right2, Factor)) Then
-                Return False
-            End If
+            '' THESE TESTS CAN BE DELETED OR SUPPRESSED AFTER ALL WORKS OK.
+            'Left1 = (i1x - h1) ^ 2 + (i1y - k1) ^ 2 - ((i1x - h2) ^ 2 + (i1y - k2) ^ 2)
+            'Right1 = r1 ^ 2 - r2 ^ 2
+            'Left2 = (i2x - h1) ^ 2 + (i2y - k1) ^ 2 - ((i2x - h2) ^ 2 + (i2y - k2) ^ 2)
+            'Right2 = r1 ^ 2 - r2 ^ 2
+            'If Not (EqualEnough(Left1, Right1, Factor) AndAlso
+            '    EqualEnough(Left2, Right2, Factor)) Then
+            '    Return False
+            'End If
 
             ' Handle negations.
             ' [(X - h1)^2] + [(Y - k1)^2]
             ' - [(X - h2)^2] - [(Y - k2)^2]
             ' = r1^2 - r2^2
 
-            ' THESE TESTS CAN BE DELETED OR SUPPRESSED AFTER ALL WORKS OK.
-            Left1 = (i1x - h1) ^ 2 + (i1y - k1) ^ 2 _
-                - (i1x - h2) ^ 2 - (i1y - k2) ^ 2
-            Right1 = r1 ^ 2 - r2 ^ 2
-            Left2 = (i2x - h1) ^ 2 + (i2y - k1) ^ 2 _
-                - (i2x - h2) ^ 2 - (i2y - k2) ^ 2
-            Right2 = r1 ^ 2 - r2 ^ 2
-            If Not (EqualEnough(Left1, Right1, Factor) AndAlso
-                EqualEnough(Left2, Right2, Factor)) Then
-                Return False
-            End If
+            '' THESE TESTS CAN BE DELETED OR SUPPRESSED AFTER ALL WORKS OK.
+            'Left1 = (i1x - h1) ^ 2 + (i1y - k1) ^ 2 _
+            '    - (i1x - h2) ^ 2 - (i1y - k2) ^ 2
+            'Right1 = r1 ^ 2 - r2 ^ 2
+            'Left2 = (i2x - h1) ^ 2 + (i2y - k1) ^ 2 _
+            '    - (i2x - h2) ^ 2 - (i2y - k2) ^ 2
+            'Right2 = r1 ^ 2 - r2 ^ 2
+            'If Not (EqualEnough(Left1, Right1, Factor) AndAlso
+            '    EqualEnough(Left2, Right2, Factor)) Then
+            '    Return False
+            'End If
 
             ' Expand squares.
             ' [X^2 - (2*h1*X) + h1^2] + [Y^2 - (2*k1*Y) + k1^2]
             ' - [X^2 - (2*h2*X) + h2^2] - [Y^2 - (2*k2*Y) + k2^2]
             ' = r1^2 - r2^2
 
-            ' THESE TESTS CAN BE DELETED OR SUPPRESSED AFTER ALL WORKS OK.
-            Left1 = (i1x ^ 2 - (2 * h1 * i1x) + h1 ^ 2) + (i1y ^ 2 - (2 * k1 * i1y) + k1 ^ 2) _
-                - (i1x ^ 2 - (2 * h2 * i1x) + h2 ^ 2) - (i1y ^ 2 - (2 * k2 * i1y) + k2 ^ 2)
-            Right1 = r1 ^ 2 - r2 ^ 2
-            Left2 = (i2x ^ 2 - (2 * h1 * i2x) + h1 ^ 2) + (i2y ^ 2 - (2 * k1 * i2y) + k1 ^ 2) _
-                - (i2x ^ 2 - (2 * h2 * i2x) + h2 ^ 2) - (i2y ^ 2 - (2 * k2 * i2y) + k2 ^ 2)
-            Right2 = r1 ^ 2 - r2 ^ 2
-            If Not (EqualEnough(Left1, Right1, Factor) AndAlso
-                EqualEnough(Left2, Right2, Factor)) Then
-                Return False
-            End If
+            '' THESE TESTS CAN BE DELETED OR SUPPRESSED AFTER ALL WORKS OK.
+            'Left1 = (i1x ^ 2 - (2 * h1 * i1x) + h1 ^ 2) + (i1y ^ 2 - (2 * k1 * i1y) + k1 ^ 2) _
+            '    - (i1x ^ 2 - (2 * h2 * i1x) + h2 ^ 2) - (i1y ^ 2 - (2 * k2 * i1y) + k2 ^ 2)
+            'Right1 = r1 ^ 2 - r2 ^ 2
+            'Left2 = (i2x ^ 2 - (2 * h1 * i2x) + h1 ^ 2) + (i2y ^ 2 - (2 * k1 * i2y) + k1 ^ 2) _
+            '    - (i2x ^ 2 - (2 * h2 * i2x) + h2 ^ 2) - (i2y ^ 2 - (2 * k2 * i2y) + k2 ^ 2)
+            'Right2 = r1 ^ 2 - r2 ^ 2
+            'If Not (EqualEnough(Left1, Right1, Factor) AndAlso
+            '    EqualEnough(Left2, Right2, Factor)) Then
+            '    Return False
+            'End If
 
             ' Simplify and rearrange, in steps:
 
@@ -868,21 +870,21 @@ Partial Public Module Math
             ' - Y^2 + (2*k2*Y) - k2^2
             ' = r1^2 - r2^2
 
-            ' THESE TESTS CAN BE DELETED OR SUPPRESSED AFTER ALL WORKS OK.
-            Left1 = i1x ^ 2 - (2 * h1 * i1x) + h1 ^ 2 _
-                + i1y ^ 2 - (2 * k1 * i1y) + k1 ^ 2 _
-                - i1x ^ 2 + (2 * h2 * i1x) - h2 ^ 2 _
-                - i1y ^ 2 + (2 * k2 * i1y) - k2 ^ 2
-            Right1 = r1 ^ 2 - r2 ^ 2
-            Left2 = i2x ^ 2 - (2 * h1 * i2x) + h1 ^ 2 _
-                + i2y ^ 2 - (2 * k1 * i2y) + k1 ^ 2 _
-                - i2x ^ 2 + (2 * h2 * i2x) - h2 ^ 2 _
-                - i2y ^ 2 + (2 * k2 * i2y) - k2 ^ 2
-            Right2 = r1 ^ 2 - r2 ^ 2
-            If Not (EqualEnough(Left1, Right1, Factor) AndAlso
-                EqualEnough(Left2, Right2, Factor)) Then
-                Return False
-            End If
+            '' THESE TESTS CAN BE DELETED OR SUPPRESSED AFTER ALL WORKS OK.
+            'Left1 = i1x ^ 2 - (2 * h1 * i1x) + h1 ^ 2 _
+            '    + i1y ^ 2 - (2 * k1 * i1y) + k1 ^ 2 _
+            '    - i1x ^ 2 + (2 * h2 * i1x) - h2 ^ 2 _
+            '    - i1y ^ 2 + (2 * k2 * i1y) - k2 ^ 2
+            'Right1 = r1 ^ 2 - r2 ^ 2
+            'Left2 = i2x ^ 2 - (2 * h1 * i2x) + h1 ^ 2 _
+            '    + i2y ^ 2 - (2 * k1 * i2y) + k1 ^ 2 _
+            '    - i2x ^ 2 + (2 * h2 * i2x) - h2 ^ 2 _
+            '    - i2y ^ 2 + (2 * k2 * i2y) - k2 ^ 2
+            'Right2 = r1 ^ 2 - r2 ^ 2
+            'If Not (EqualEnough(Left1, Right1, Factor) AndAlso
+            '    EqualEnough(Left2, Right2, Factor)) Then
+            '    Return False
+            'End If
 
             ' Handle cancellations.
             ' - (2*h1*X) + h1^2
@@ -891,21 +893,21 @@ Partial Public Module Math
             ' + (2*k2*Y) - k2^2
             ' = r1^2 - r2^2
 
-            ' THESE TESTS CAN BE DELETED OR SUPPRESSED AFTER ALL WORKS OK.
-            Left1 = -(2 * h1 * i1x) + h1 ^ 2 _
-             - (2 * k1 * i1y) + k1 ^ 2 _
-             + (2 * h2 * i1x) - h2 ^ 2 _
-             + (2 * k2 * i1y) - k2 ^ 2
-            Right1 = r1 ^ 2 - r2 ^ 2
-            Left2 = -(2 * h1 * i2x) + h1 ^ 2 _
-             - (2 * k1 * i2y) + k1 ^ 2 _
-             + (2 * h2 * i2x) - h2 ^ 2 _
-             + (2 * k2 * i2y) - k2 ^ 2
-            Right2 = r1 ^ 2 - r2 ^ 2
-            If Not (EqualEnough(Left1, Right1, Factor) AndAlso
-                EqualEnough(Left2, Right2, Factor)) Then
-                Return False
-            End If
+            '' THESE TESTS CAN BE DELETED OR SUPPRESSED AFTER ALL WORKS OK.
+            'Left1 = -(2 * h1 * i1x) + h1 ^ 2 _
+            ' - (2 * k1 * i1y) + k1 ^ 2 _
+            ' + (2 * h2 * i1x) - h2 ^ 2 _
+            ' + (2 * k2 * i1y) - k2 ^ 2
+            'Right1 = r1 ^ 2 - r2 ^ 2
+            'Left2 = -(2 * h1 * i2x) + h1 ^ 2 _
+            ' - (2 * k1 * i2y) + k1 ^ 2 _
+            ' + (2 * h2 * i2x) - h2 ^ 2 _
+            ' + (2 * k2 * i2y) - k2 ^ 2
+            'Right2 = r1 ^ 2 - r2 ^ 2
+            'If Not (EqualEnough(Left1, Right1, Factor) AndAlso
+            '    EqualEnough(Left2, Right2, Factor)) Then
+            '    Return False
+            'End If
 
             ' Gather like terms.
             ' (2*h2*X) - (2*h1*X)
@@ -913,19 +915,19 @@ Partial Public Module Math
             ' + h1^2 - h2^2 + k1^2 - k2^2
             ' = r1^2 - r2^2
 
-            ' THESE TESTS CAN BE DELETED OR SUPPRESSED AFTER ALL WORKS OK.
-            Left1 = (2 * h2 * i1x) - (2 * h1 * i1x) _
-                + (2 * k2 * i1y) - (2 * k1 * i1y) _
-                + h1 ^ 2 - h2 ^ 2 + k1 ^ 2 - k2 ^ 2
-            Right1 = r1 ^ 2 - r2 ^ 2
-            Left2 = (2 * h2 * i2x) - (2 * h1 * i2x) _
-                + (2 * k2 * i2y) - (2 * k1 * i2y) _
-                + h1 ^ 2 - h2 ^ 2 + k1 ^ 2 - k2 ^ 2
-            Right2 = r1 ^ 2 - r2 ^ 2
-            If Not (EqualEnough(Left1, Right1, Factor) AndAlso
-                EqualEnough(Left2, Right2, Factor)) Then
-                Return False
-            End If
+            '' THESE TESTS CAN BE DELETED OR SUPPRESSED AFTER ALL WORKS OK.
+            'Left1 = (2 * h2 * i1x) - (2 * h1 * i1x) _
+            '    + (2 * k2 * i1y) - (2 * k1 * i1y) _
+            '    + h1 ^ 2 - h2 ^ 2 + k1 ^ 2 - k2 ^ 2
+            'Right1 = r1 ^ 2 - r2 ^ 2
+            'Left2 = (2 * h2 * i2x) - (2 * h1 * i2x) _
+            '    + (2 * k2 * i2y) - (2 * k1 * i2y) _
+            '    + h1 ^ 2 - h2 ^ 2 + k1 ^ 2 - k2 ^ 2
+            'Right2 = r1 ^ 2 - r2 ^ 2
+            'If Not (EqualEnough(Left1, Right1, Factor) AndAlso
+            '    EqualEnough(Left2, Right2, Factor)) Then
+            '    Return False
+            'End If
 
             ' Extract X and Y terms.
             ' 2*(h2 - h1)*X
@@ -933,54 +935,34 @@ Partial Public Module Math
             ' + h1^2 - h2^2 + k1^2 - k2^2
             ' = r1^2 - r2^2
 
-            ' THESE TESTS CAN BE DELETED OR SUPPRESSED AFTER ALL WORKS OK.
-            Left1 = 2 * (h2 - h1) * i1x _
-                + 2 * (k2 - k1) * i1y _
-                + h1 ^ 2 - h2 ^ 2 + k1 ^ 2 - k2 ^ 2
-            Right1 = r1 ^ 2 - r2 ^ 2
-            Left2 = 2 * (h2 - h1) * i2x _
-                + 2 * (k2 - k1) * i2y _
-                + h1 ^ 2 - h2 ^ 2 + k1 ^ 2 - k2 ^ 2
-            Right2 = r1 ^ 2 - r2 ^ 2
-            If Not (EqualEnough(Left1, Right1, Factor) AndAlso
-                EqualEnough(Left2, Right2, Factor)) Then
-                Return False
-            End If
-
-            '            ' Solve for Y.
-            '            ' Y =
-            '            ' (r1^2 - r2^2 + h2^2 - h1^2 + k2^2 - k1^2 - 2*(h2 - h1)*X) / (2*(k2 - k1))
-
-            '            ' THESE TESTS CAN BE DELETED OR SUPPRESSED AFTER ALL WORKS OK.
-            '            Left1 = i1y
-            '            Right1 = (r1 ^ 2 - r2 ^ 2 + h2 ^ 2 - h1 ^ 2 + k2 ^ 2 - k1 ^ 2 - 2 * (h2 - h1) * i1x) / (2 * (k2 - k1))
-            '            Left2 = i2y
-            '            Right2 = (r1 ^ 2 - r2 ^ 2 + h2 ^ 2 - h1 ^ 2 + k2 ^ 2 - k1 ^ 2 - 2 * (h2 - h1) * i2x) / (2 * (k2 - k1))
-            '            If Not (EqualEnough(Left1, Right1, Factor) AndAlso
-            '                EqualEnough(Left2, Right2, Factor)) Then
-            '                Return False
-            '            End If
-
+            '' THESE TESTS CAN BE DELETED OR SUPPRESSED AFTER ALL WORKS OK.
+            'Left1 = 2 * (h2 - h1) * i1x _
+            '    + 2 * (k2 - k1) * i1y _
+            '    + h1 ^ 2 - h2 ^ 2 + k1 ^ 2 - k2 ^ 2
+            'Right1 = r1 ^ 2 - r2 ^ 2
+            'Left2 = 2 * (h2 - h1) * i2x _
+            '    + 2 * (k2 - k1) * i2y _
+            '    + h1 ^ 2 - h2 ^ 2 + k1 ^ 2 - k2 ^ 2
+            'Right2 = r1 ^ 2 - r2 ^ 2
+            'If Not (EqualEnough(Left1, Right1, Factor) AndAlso
+            '    EqualEnough(Left2, Right2, Factor)) Then
+            '    Return False
+            'End If
 
             ' Arrange for the general "aX + bY = c" form of a linear equation.
             ' 2*(h2 - h1)*X
             ' + 2*(k2 - k1)*Y
             ' = r1^2 - r2^2 + h2^2 - h1^2 + k2^2 - k1^2
 
-            ' THESE TESTS CAN BE DELETED OR SUPPRESSED AFTER ALL WORKS OK.
-            Left1 = 2 * (h2 - h1) * i1x + 2 * (k2 - k1) * i1y
-            Right1 = r1 ^ 2 - r2 ^ 2 + h2 ^ 2 - h1 ^ 2 + k2 ^ 2 - k1 ^ 2
-            Left2 = 2 * (h2 - h1) * i2x + 2 * (k2 - k1) * i2y
-            Right2 = r1 ^ 2 - r2 ^ 2 + h2 ^ 2 - h1 ^ 2 + k2 ^ 2 - k1 ^ 2
-            If Not (EqualEnough(Left1, Right1, Factor) AndAlso
-                EqualEnough(Left2, Right2, Factor)) Then
-                Return False
-            End If
-
-
-
-
-
+            '' THESE TESTS CAN BE DELETED OR SUPPRESSED AFTER ALL WORKS OK.
+            'Left1 = 2 * (h2 - h1) * i1x + 2 * (k2 - k1) * i1y
+            'Right1 = r1 ^ 2 - r2 ^ 2 + h2 ^ 2 - h1 ^ 2 + k2 ^ 2 - k1 ^ 2
+            'Left2 = 2 * (h2 - h1) * i2x + 2 * (k2 - k1) * i2y
+            'Right2 = r1 ^ 2 - r2 ^ 2 + h2 ^ 2 - h1 ^ 2 + k2 ^ 2 - k1 ^ 2
+            'If Not (EqualEnough(Left1, Right1, Factor) AndAlso
+            '    EqualEnough(Left2, Right2, Factor)) Then
+            '    Return False
+            'End If
 
             ' Arrange the "aX + bY = c" form of a linear equation for the
             ' slope-intercept form of a line.
@@ -990,81 +972,21 @@ Partial Public Module Math
             ' Y = (c / b) - (a / b)X
             ' Y = (-a / b)X + (c / b) 
 
-
             ' Substitute from the "aX + bY = c" form.
             ' Y = (-(2*(h2 - h1)) / (2*(k2 - k1)))X
             '     + ((r1^2 - r2^2 + h2^2 - h1^2 + k2^2 - k1^2) / (2*(k2 - k1))) 
 
+            '            Return TryCircleLineIntersection(
+            '                x1, y1, r1,
+            '                (-(2 * (h2 - h1)) / (2 * (k2 - k1))),
+            '                ((r1 ^ 2 - r2 ^ 2 + h2 ^ 2 - h1 ^ 2 + k2 ^ 2 - k1 ^ 2) / (2 * (k2 - k1))),
+            '                i1x, i1y, i2x, i2y)
 
             Return TryCircleLineIntersection(
                 x1, y1, r1,
-                (-(2 * (h2 - h1)) / (2 * (k2 - k1))),
-                ((r1 ^ 2 - r2 ^ 2 + h2 ^ 2 - h1 ^ 2 + k2 ^ 2 - k1 ^ 2) / (2 * (k2 - k1))),
+                (-(2 * (x2 - x1)) / (2 * (y2 - y1))),
+                ((r1 ^ 2 - r2 ^ 2 + x2 ^ 2 - x1 ^ 2 + y2 ^ 2 - y1 ^ 2) / (2 * (y2 - y1))),
                 i1x, i1y, i2x, i2y)
-
-
-
-            '===============================
-
-            '' Substitute into one of the circle equations to solve for X:
-
-            '' Standard form of a circle, for circle1.
-            '' [(X - h1)^2] + [(Y - k1)^2] = r1^2
-            '' (X - h1)^2 = r1^2 - [(Y - k1)^2]
-            '' X - h1 = sqrt(r1^2 - [(Y - k1)^2])
-            '' X = sqrt(r1^2 - [(Y - k1)^2]) + h1
-
-            '' Root = sqrt(r1^2 - [(Y - k1)^2])
-            '' X = h1 + Root
-
-            '' Sub into Root.
-            '' Root = sqrt(r1^2 - [([(r1^2 - r2^2 + h2^2 - h1^2 + k2^2 - k1^2 _
-            ''        - 2*(h2 - h1)*X) / (2*(k2 - k1))] - k1)^2])
-            '' X = h1 + Root
-
-
-
-            'Dim Root1 As System.Double
-            'Dim Root2 As System.Double
-
-            '' THESE TESTS CAN BE DELETED OR SUPPRESSED AFTER ALL WORKS OK.
-            'Left1 = i1x
-            'Root1 = System.Math.Sqrt(r1 ^ 2 - ((((r1 ^ 2 - r2 ^ 2 + h2 ^ 2 _
-            '    - h1 ^ 2 + k2 ^ 2 - k1 ^ 2 - 2 * (h2 - h1) * i1x) _
-            '    / (2 * (k2 - k1))) - k1) ^ 2))
-            'Right1 = h1 + Root1
-            'Left2 = i2x
-            'Root2 = System.Math.Sqrt(r1 ^ 2 - ((((r1 ^ 2 - r2 ^ 2 + h2 ^ 2 _
-            '    - h1 ^ 2 + k2 ^ 2 - k1 ^ 2 - 2 * (h2 - h1) * i2x) _
-            '    / (2 * (k2 - k1))) - k1) ^ 2))
-            'Right2 =
-            '    Root2 = h1 + Root2
-
-            'If Not (EqualEnough(Left1, Right1, Factor) AndAlso
-            '    EqualEnough(Left2, Right2, Factor)) Then
-            '    Return False
-            'End If
-
-
-
-
-
-
-
-
-
-
-            'xxxx
-
-
-            'i1x = 999.99
-            'i1y = 999.99
-            'i2x = 999.99
-            'i2y = 999.99
-
-            'xxxx
-
-            Return True ' Until implemented.
 
         End Function ' TryCirclesIntersection
 
