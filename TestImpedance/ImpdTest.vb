@@ -99,6 +99,25 @@ Namespace MathTests
 
     End Class ' TryCircleLineIntersectionTests
 
+    Public Class TryCirclesIntersectionTests
+
+        <Fact>
+        Sub TryCirclesIntersection1_WorksOK()
+            Assert.True(OsnwCircle2D.TryCirclesIntersection(
+                        1.75, 6.75, 1.5,
+                        3, 6.25, 1,
+                        3.1698, 7.2381,
+                        2.4427, 5.4205))
+        End Sub
+
+        '        <Theory>
+        '        Sub TryCirclesIntersection2_WorksOK()
+        '
+        '        End Sub
+
+
+    End Class ' TryCirclesIntersectionTests
+
 End Namespace ' MathTests
 
 #Region "Test Data"
