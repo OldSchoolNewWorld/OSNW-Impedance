@@ -101,23 +101,15 @@ Namespace MathTests
 
     Public Class TryCirclesIntersectionTests
 
-        <Fact>
-        Sub TryCirclesIntersection1_WorksOK()
-            Assert.True(OsnwCircle2D.TryCirclesIntersection(
-                        1.75, 6.75, 1.5,
-                        3, 6.25, 1,
-                        3.1698, 7.2381,
-                        2.4427, 5.4205))
-        End Sub
-
         <Theory>
-        <InlineData(1.75, 6.75, 1.5, 3, 6.25, 1, 3.1698, 7.2381, 2.4427, 5.4205)>
-        Sub TryCirclesIntersection2_WorksOK(
+        <InlineData(1.75, 6.75, 1.5, 3, 6.25, 1, 3.1692, 7.2356, 2.4428, 5.4196)>
+        Sub TryCirclesIntersection_WorksOK(
             x1 As System.Double, y1 As System.Double, r1 As System.Double,
             x2 As System.Double, y2 As System.Double, r2 As System.Double,
             expecti1x As System.Double, expecti1y As System.Double,
             expecti2x As System.Double, expecti2y As System.Double)
 
+            Const TOLERANCE As Double = 0.001
             Dim i1x As System.Double
             Dim i1y As System.Double
             Dim i2x As System.Double
@@ -127,10 +119,10 @@ Namespace MathTests
                 Assert.True(False)
             End If
 
-            Assert.Equal(expecti1x, i1x, 0.01)
-            Assert.Equal(expecti1y, i1y, 0.01)
-            Assert.Equal(expecti2x, i2x, 0.01)
-            Assert.Equal(expecti2y, i2y, 0.01)
+            Assert.Equal(expecti1x, i1x, TOLERANCE * expecti1x)
+            Assert.Equal(expecti1y, i1y, TOLERANCE * expecti1y)
+            Assert.Equal(expecti2x, i2x, TOLERANCE * expecti2x)
+            Assert.Equal(expecti2y, i2y, TOLERANCE * expecti2y)
 
         End Sub
 
