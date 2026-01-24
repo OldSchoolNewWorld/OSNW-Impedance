@@ -1,6 +1,6 @@
 ﻿'TODO:
-' Move Math tests from ad hoc to their own project.
 ' Add more good-input tests, and create bad input tests, for TryCircleCircleIntersectionsTests.
+' Move Math tests from ad hoc to their own project.
 ' Move EqualEnough routines to a new class derived from System.Double, in its own solution?
 '   Both Single and Double?
 '   Implement at least some as extensions?

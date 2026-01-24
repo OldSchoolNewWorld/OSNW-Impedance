@@ -13,33 +13,39 @@ Imports OsnwCircle2D = OSNW.Math.Circle2D
 
 Namespace MathTests
 
-    Public Class TryCircleLineIntersectionsTests
+    Public Class TestTryCircleLineIntersections
 
         <Theory>
-        <InlineData(1.75, 6.75, 1.5,
-                    (6.25 - 6.75) / (3 - 1.75), 7.45,
-                    0.3558, 7.3065,
-                    3.1428, 6.1934)>
-        <InlineData(3.0, 6.25, 1.0,
-                    (6.25 - 6.75) / (3 - 1.75), 7.45,
-                    2.0703, 6.621,
-                    3.9293, 5.8801)>
-        Sub TryCircleLineIntersections_Line_Passes(
-         circleX As System.Double, circleY As System.Double, circleR As System.Double,
-         lineM As System.Double, lineB As System.Double,
-         expect1X As System.Double, expect1Y As System.Double,
-         expect2X As System.Double, expect2Y As System.Double)
+        <InlineData(Double.PositiveInfinity, 6.75, 1.5, (6.25 - 6.75) / (3 - 1.75), 7.45)>
+        <InlineData(1.75, Double.PositiveInfinity, 1.5, (6.25 - 6.75) / (3 - 1.75), 7.45)>
+        <InlineData(1.75, 6.75, Double.PositiveInfinity, (6.25 - 6.75) / (3 - 1.75), 7.45)>
+        <InlineData(1.75, 6.75, 1.5, Double.PositiveInfinity, 7.45)>
+        <InlineData(1.75, 6.75, 1.5, (6.25 - 6.75) / (3 - 1.75), Double.PositiveInfinity)>
+        <InlineData(1.75, 6.75, 1.5, (6.25 - 6.75) / (3 - 1.75), -1.5)>
+        Sub TryCircleLineIntersectionsLine_BadInput_Fails(circleX As Double, circleY As Double, circleR As Double,
+                                                          lineM As Double, lineB As Double)
 
-            Dim Intersect1X As System.Double
-            Dim Intersect1Y As System.Double
-            Dim Intersect2X As System.Double
-            Dim Intersect2Y As System.Double
+            Dim Intersect1X, Intersect1Y, Intersect2X, Intersect2Y As Double
 
-            If Not OsnwCircle2D.TryCircleLineIntersections(
-                circleX, circleY, circleR,
-                lineM, lineB,
-                Intersect1X, Intersect1Y,
-                Intersect2X, Intersect2Y) Then
+            Assert.False(OsnwCircle2D.TryCircleLineIntersections(circleX, circleY, circleR, lineM, lineB,
+                                                                 Intersect1X, Intersect1Y, Intersect2X, Intersect2Y))
+
+        End Sub
+
+        ''' <summary>
+        ''' Tests TryCircleLineIntersections with a line defined by its slope and Y-intercept.<br/>
+        ''' </summary>
+        <Theory>
+        <InlineData(1.75, 6.75, 1.5, (6.25 - 6.75) / (3 - 1.75), 7.45, 0.3558, 7.3065, 3.1428, 6.1934)>
+        <InlineData(3.0, 6.25, 1.0, (6.25 - 6.75) / (3 - 1.75), 7.45, 2.0703, 6.621, 3.9293, 5.8801)>
+        Sub TryCircleLineIntersectionsLine_GoodInput_Succeeds(circleX As Double, circleY As Double,
+            circleR As Double, lineM As Double, lineB As Double, expect1X As Double, expect1Y As Double,
+            expect2X As Double, expect2Y As Double)
+
+            Dim Intersect1X, Intersect1Y, Intersect2X, Intersect2Y As Double
+
+            If Not OsnwCircle2D.TryCircleLineIntersections(circleX, circleY, circleR, lineM, lineB,
+                                                           Intersect1X, Intersect1Y, Intersect2X, Intersect2Y) Then
                 Assert.True(False)
             End If
 
@@ -51,6 +57,30 @@ Namespace MathTests
 
         End Sub
 
+        <Theory>
+        <InlineData(Double.PositiveInfinity, 6.75, 1.5, 3.1698, 7.2381, 2.4427, 5.4205)>
+        <InlineData(1.75, Double.PositiveInfinity, 1.5, 3.1698, 7.2381, 2.4427, 5.4205)>
+        <InlineData(1.75, 6.75, Double.PositiveInfinity, 3.1698, 7.2381, 2.4427, 5.4205)>
+        <InlineData(1.75, 6.75, 1.5, Double.PositiveInfinity, 7.2381, 2.4427, 5.4205)>
+        <InlineData(1.75, 6.75, 1.5, 3.1698, Double.PositiveInfinity, 2.4427, 5.4205)>
+        <InlineData(1.75, 6.75, 1.5, 3.1698, 7.2381, Double.PositiveInfinity, 5.4205)>
+        <InlineData(1.75, 6.75, 1.5, 3.1698, 7.2381, 2.4427, Double.PositiveInfinity)>
+        <InlineData(1.75, 6.75, -1.5, 3.1698, 7.2381, 2.4427, 5.4205)>
+        Sub TryCircleLineIntersectionsPoints_BadInput_Fails(
+             circleX As Double, circleY As Double, circleR As Double,
+             lineX1 As Double, lineY1 As Double,
+             lineX2 As Double, lineY2 As Double)
+
+            Dim Intersect1X, Intersect1Y, Intersect2X, Intersect2Y As Double
+
+            Assert.False(OsnwCircle2D.TryCircleLineIntersections(circleX, circleY, circleR, lineX1, lineY1,
+                lineX2, lineY2, Intersect1X, Intersect1Y, Intersect2X, Intersect2Y))
+
+        End Sub
+
+        ''' <summary>
+        ''' Tests TryCircleLineIntersections with a line defined by two points.<br/>
+        ''' </summary>
         <Theory>
         <InlineData(1.75, 6.75, 1.5,
                     3.1698, 7.2381,
@@ -72,17 +102,11 @@ Namespace MathTests
                     1, 8.25,
                     1, 8.049,
                     1, 5.451)> ' Vertical line reversed.
-        Sub TryCircleLineIntersections_Points_Passes(
-             circleX As System.Double, circleY As System.Double, circleR As System.Double,
-             lineX1 As System.Double, lineY1 As System.Double,
-             lineX2 As System.Double, lineY2 As System.Double,
-             expect1X As System.Double, expect1Y As System.Double,
-             expect2X As System.Double, expect2Y As System.Double)
+        Sub TryCircleLineIntersectionsPoints_GoodInput_Succeeds(circleX As Double, circleY As Double,
+            circleR As Double, lineX1 As Double, lineY1 As Double, lineX2 As Double, lineY2 As Double,
+            expect1X As Double, expect1Y As Double, expect2X As Double, expect2Y As Double)
 
-            Dim Intersect1X As System.Double
-            Dim Intersect1Y As System.Double
-            Dim Intersect2X As System.Double
-            Dim Intersect2Y As System.Double
+            Dim Intersect1X, Intersect1Y, Intersect2X, Intersect2Y As Double
 
             If Not OsnwCircle2D.TryCircleLineIntersections(circleX, circleY, circleR, lineX1, lineY1,
                 lineX2, lineY2, Intersect1X, Intersect1Y, Intersect2X, Intersect2Y) Then
@@ -99,11 +123,11 @@ Namespace MathTests
 
     End Class ' TryCircleLineIntersectionsTests
 
-    Public Class TryCircleCircleIntersectionsTests
+    Public Class TestTryCircleCircleIntersections
 
         <Theory>
         <InlineData(1.75, 6.75, 1.5, 3, 6.25, 1, 3.1692, 7.2356, 2.4428, 5.4196)>
-        Sub TryCircleCircleIntersections_WorksOK(
+        Sub TryCircleCircleIntersections_GoodInput_Succeeds(
             x1 As System.Double, y1 As System.Double, r1 As System.Double,
             x2 As System.Double, y2 As System.Double, r2 As System.Double,
             expecti1x As System.Double, expecti1y As System.Double,
