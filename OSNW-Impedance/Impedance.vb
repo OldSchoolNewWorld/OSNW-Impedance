@@ -1,7 +1,7 @@
 ﻿'TODO:
 ' Add more good-input tests, and create bad input tests, for TryCircleCircleIntersectionsTests.
 ' Move Math tests from ad hoc to their own project.
-' Move EqualEnough routines to a new class derived from System.Double, in its own solution?
+' Move OSNW.Math.EqualEnoughX routines to a new class derived from System.Double, in its own solution?
 '   Both Single and Double?
 '   Implement at least some as extensions?
 ' Convert from building an array, to building a list, of suggested solutions.
@@ -25,6 +25,7 @@ Option Infer Off
 Imports System.Diagnostics.CodeAnalysis
 Imports System.Globalization
 Imports System.Text.Json.Serialization
+Imports OSNW.Math
 
 ' REF: Electrical impedance
 ' https://en.wikipedia.org/wiki/Electrical_impedance
@@ -130,8 +131,8 @@ Public Structure Impedance
     '''     Dim Z1 As New OSNW.Numerics.Impedance(50.0, 25.0)
     '''     Dim Z2 As New OSNW.Numerics.Impedance(50.000049, 25)
     '''
-    '''     if Impedance.EqualEnough(Z2.Resistance, Z1.Resistance, Tol) AndAlso
-    '''         Impedance.EqualEnough(Z2.Reactance, Z1.Reactance, Tol)) then
+    '''     if Impedance.OSNW.Math.EqualEnoughX(Z2.Resistance, Z1.Resistance, Tol) AndAlso
+    '''         Impedance.OSNW.Math.EqualEnoughX(Z2.Reactance, Z1.Reactance, Tol)) then
     '''         '
     '''         ' Code for a match.
     '''         '
@@ -166,7 +167,7 @@ Public Structure Impedance
     ''' Dim Z0 As System.Double = 50.0
     ''' Dim SourceX As System.Double = SourceZ.Reactance
     ''' Dim LoadX As System.Double = LoadZ.Reactance
-    ''' If EqualEnoughZero(SourceX - LoadX, DFLTIMPDTOLERANCE0 * Z0) Then
+    ''' If OSNW.Math.EqualEnoughXZero(SourceX - LoadX, DFLTIMPDTOLERANCE0 * Z0) Then
     '''     '
     '''     ' Code for when reactances are considered to already match.
     '''     '
@@ -292,13 +293,13 @@ Public Structure Impedance
             'Dim CaughtBy As System.Reflection.MethodBase =
             '    System.Reflection.MethodBase.GetCurrentMethod
             Throw New System.ArgumentOutOfRangeException(
-                NameOf(z0), OSNW.math.MSGVMBGTZ)
+                NameOf(z0), OSNW.Math.MSGVMBGTZ)
         End If
         ' otherVal and refVal are presumed to have been checked when created.
 
         Dim NearlyZero As System.Double = DFLTIMPDTOLERANCE0 * z0
 
-        If Not EqualEnoughAbsolute(otherVal.Resistance, refVal.Resistance,
+        If Not OSNW.Math.EqualEnoughAbsolute(otherVal.Resistance, refVal.Resistance,
                                    NearlyZero) Then
             Return False
         End If
@@ -360,7 +361,7 @@ Public Structure Impedance
         ' This may have to be changed to determine equality within some
         ' reasonable bounds. See 
         ' <see href="https://github.com/dotnet/docs/blob/main/docs/fundamentals/runtime-libraries/system-numerics-complex.md#precision-and-complex-numbers"/>
-        ' That is now available via EqualEnough(value, refVal) above.
+        ' That is now available via OSNW.Math.EqualEnoughX(value, refVal) above.
         Return Me.ToComplex().Equals(value.ToComplex())
     End Function ' Equals
 
@@ -1005,7 +1006,7 @@ Public Structure Impedance
         '        System.Reflection.MethodBase.GetCurrentMethod
         '    Throw New System.ArgumentOutOfRangeException(NameOf(resistance),
         '                                                 MSGCHNV)
-        'ElseIf Impedance.EqualEnoughZero(resistance, TOLERANCE) Then
+        'ElseIf Impedance.OSNW.Math.EqualEnoughXZero(resistance, TOLERANCE) Then
         '    Dim CaughtBy As System.Reflection.MethodBase =
         '        System.Reflection.MethodBase.GetCurrentMethod
         '    Throw New System.ArgumentOutOfRangeException(NameOf(resistance),

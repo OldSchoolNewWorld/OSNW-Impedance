@@ -31,6 +31,11 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "OSNW-SmithChart", "..\OSNW-
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "OSNW-Math", "..\OSNW-Math\OSNW-Math.vbproj", "{BCE04232-EFFC-4736-A68F-D66E850F613C}"
 EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "UT-Math", "..\UT-Math\UT-Math.vbproj", "{BFE20D1F-57FB-438F-906A-553D92F3404D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{BCE04232-EFFC-4736-A68F-D66E850F613C} = {BCE04232-EFFC-4736-A68F-D66E850F613C}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +66,10 @@ Global
 		{BCE04232-EFFC-4736-A68F-D66E850F613C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BCE04232-EFFC-4736-A68F-D66E850F613C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BCE04232-EFFC-4736-A68F-D66E850F613C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BFE20D1F-57FB-438F-906A-553D92F3404D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BFE20D1F-57FB-438F-906A-553D92F3404D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BFE20D1F-57FB-438F-906A-553D92F3404D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BFE20D1F-57FB-438F-906A-553D92F3404D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -19,9 +19,9 @@ Public Module Math
 
     ' Just for shorthand.
     Public Const PIs As Single = System.Single.Pi
-    Public Const HALFPIs As System.Single = System.Single.Pi / 2.0
+    Public Const HALFPIs As System.Single = PIs / 2.0
     Public Const PId As System.Double = System.Double.Pi
-    Public Const HALFPId As System.Double = System.Double.Pi / 2.0
+    Public Const HALFPId As System.Double = PId / 2.0
 
     Public Const MSGCHIV As System.String = "Cannot have an infinite value."
     Public Const MSGCHNV As System.String = "Cannot have a negative value."

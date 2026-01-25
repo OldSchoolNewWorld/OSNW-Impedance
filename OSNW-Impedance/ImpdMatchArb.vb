@@ -65,7 +65,7 @@ Public Class ImageImpedanceList
     'Public Overloads Function Contains(ByVal value As System.Object) _
     '    As System.Boolean _
     '    Implements System.Collections.IList.Contains
-    ' xxxxxxxxxx THIS WOULD LIKELY NEED TO CHANGE EQUALITY TO EQUALENOUGH
+    ' xxxxxxxxxx THIS WOULD LIKELY NEED TO CHANGE EQUALITY TO OSNW.Math.EqualEnoughX
 
     '    Dim ValImpedance As Impedance = CType(value, Impedance)
     '    For i As System.Int32 = 0 To Count - 1
@@ -78,7 +78,7 @@ Public Class ImageImpedanceList
     'Public Overloads Function IndexOf(ByVal value As System.Object) _
     '    As System.Int32 _
     '    Implements System.Collections.IList.IndexOf
-    ' xxxxxxxxxx THIS WOULD LIKELY NEED TO CHANGE EQUALITY TO EQUALENOUGH
+    ' xxxxxxxxxx THIS WOULD LIKELY NEED TO CHANGE EQUALITY TO OSNW.Math.EqualEnoughX
 
     '    Dim ValImpedance As Impedance = CType(value, Impedance)
     '    For i As System.Int32 = 0 To Count - 1
@@ -523,7 +523,7 @@ Partial Public Structure Impedance
         Dim ImageB As System.Double = oneImage.ToAdmittance.Susceptance
         Dim LoadB As System.Double = loadZ.ToAdmittance.Susceptance
         Dim DeltaX As System.Double
-        If EqualEnoughZero(ImageB - LoadB, DFLTIMPDTOLERANCE0 * z0) Then
+        If OSNW.Math.EqualEnoughZero(ImageB - LoadB, DFLTIMPDTOLERANCE0 * z0) Then
 
             ' Move only on the SourceR-circle.
             DeltaX = sourceZ.Reactance - loadZ.Reactance
@@ -640,7 +640,8 @@ Partial Public Structure Impedance
         Dim LoadX As System.Double = loadZ.Reactance
         Dim DeltaB As System.Double
         Dim DeltaX As System.Double
-        If EqualEnoughZero(ImageX - LoadX, DFLTIMPDTOLERANCE0 * z0) Then
+        If OSNW.Math.EqualEnoughZero(
+            ImageX - LoadX, DFLTIMPDTOLERANCE0 * z0) Then
 
             ' Move only on the SourceG-circle.
             DeltaB = sourceZ.ToAdmittance.Susceptance -
