@@ -1,7 +1,7 @@
 ﻿'TODO:
 ' Add more good-input tests, and create bad input tests, for TryCircleCircleIntersectionsTests.
 ' Move Math tests from ad hoc to their own project.
-' Move OSNW.Math.EqualEnoughX routines to a new class derived from System.Double, in its own solution?
+' Move OSNW.Math.EqualEnough routines to a new class derived from System.Double, in its own solution?
 '   Both Single and Double?
 '   Implement at least some as extensions?
 ' Convert from building an array, to building a list, of suggested solutions.
@@ -131,8 +131,8 @@ Public Structure Impedance
     '''     Dim Z1 As New OSNW.Numerics.Impedance(50.0, 25.0)
     '''     Dim Z2 As New OSNW.Numerics.Impedance(50.000049, 25)
     '''
-    '''     if Impedance.OSNW.Math.EqualEnoughX(Z2.Resistance, Z1.Resistance, Tol) AndAlso
-    '''         Impedance.OSNW.Math.EqualEnoughX(Z2.Reactance, Z1.Reactance, Tol)) then
+    '''     if Impedance.OSNW.Math.EqualEnough(Z2.Resistance, Z1.Resistance, Tol) AndAlso
+    '''         Impedance.OSNW.Math.EqualEnough(Z2.Reactance, Z1.Reactance, Tol)) then
     '''         '
     '''         ' Code for a match.
     '''         '
@@ -167,7 +167,7 @@ Public Structure Impedance
     ''' Dim Z0 As System.Double = 50.0
     ''' Dim SourceX As System.Double = SourceZ.Reactance
     ''' Dim LoadX As System.Double = LoadZ.Reactance
-    ''' If OSNW.Math.EqualEnoughXZero(SourceX - LoadX, DFLTIMPDTOLERANCE0 * Z0) Then
+    ''' If OSNW.Math.EqualEnoughZero(SourceX - LoadX, DFLTIMPDTOLERANCE0 * Z0) Then
     '''     '
     '''     ' Code for when reactances are considered to already match.
     '''     '
@@ -361,7 +361,7 @@ Public Structure Impedance
         ' This may have to be changed to determine equality within some
         ' reasonable bounds. See 
         ' <see href="https://github.com/dotnet/docs/blob/main/docs/fundamentals/runtime-libraries/system-numerics-complex.md#precision-and-complex-numbers"/>
-        ' That is now available via OSNW.Math.EqualEnoughX(value, refVal) above.
+        ' That is now available via OSNW.Math.EqualEnough(value, refVal) above.
         Return Me.ToComplex().Equals(value.ToComplex())
     End Function ' Equals
 
@@ -1006,7 +1006,7 @@ Public Structure Impedance
         '        System.Reflection.MethodBase.GetCurrentMethod
         '    Throw New System.ArgumentOutOfRangeException(NameOf(resistance),
         '                                                 MSGCHNV)
-        'ElseIf Impedance.OSNW.Math.EqualEnoughXZero(resistance, TOLERANCE) Then
+        'ElseIf Impedance.OSNW.Math.EqualEnoughZero(resistance, TOLERANCE) Then
         '    Dim CaughtBy As System.Reflection.MethodBase =
         '        System.Reflection.MethodBase.GetCurrentMethod
         '    Throw New System.ArgumentOutOfRangeException(NameOf(resistance),

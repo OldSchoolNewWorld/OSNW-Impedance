@@ -65,7 +65,7 @@ Public Class ImageImpedanceList
     'Public Overloads Function Contains(ByVal value As System.Object) _
     '    As System.Boolean _
     '    Implements System.Collections.IList.Contains
-    ' xxxxxxxxxx THIS WOULD LIKELY NEED TO CHANGE EQUALITY TO OSNW.Math.EqualEnoughX
+    ' xxxxxxxxxx THIS WOULD LIKELY NEED TO CHANGE EQUALITY TO OSNW.Math.EqualEnough
 
     '    Dim ValImpedance As Impedance = CType(value, Impedance)
     '    For i As System.Int32 = 0 To Count - 1
@@ -78,7 +78,7 @@ Public Class ImageImpedanceList
     'Public Overloads Function IndexOf(ByVal value As System.Object) _
     '    As System.Int32 _
     '    Implements System.Collections.IList.IndexOf
-    ' xxxxxxxxxx THIS WOULD LIKELY NEED TO CHANGE EQUALITY TO OSNW.Math.EqualEnoughX
+    ' xxxxxxxxxx THIS WOULD LIKELY NEED TO CHANGE EQUALITY TO OSNW.Math.EqualEnough
 
     '    Dim ValImpedance As Impedance = CType(value, Impedance)
     '    For i As System.Int32 = 0 To Count - 1
