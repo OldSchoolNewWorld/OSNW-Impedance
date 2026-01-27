@@ -3,6 +3,8 @@ Imports Xunit
 Imports OsnwCircle2D = OSNW.Math.Circle2D
 
 
+
+
 Namespace EqualityTests
 
 End Namespace ' EqualityTests
@@ -126,12 +128,28 @@ Namespace MathTests
     Public Class TestTryCircleCircleIntersections
 
         <Theory>
-        <InlineData(1.75, 6.75, 1.5, 3, 6.25, 1, 3.1692, 7.2356, 2.4428, 5.4196)> ' General case.
-        <InlineData(2.5, 6.25, 1.5,
-                    3.5, 6.25, 1,
-                    3.625, 7.242,
-                    3.625, 5.2576)> ' Horizontal circles.
-        <InlineData(2.5, 6.25, 1.5, 3, 6.25, 1, 4, 6.25, 4, 6.25)> ' Tangent circles.
+        <InlineData(2.5, 6.25, 1.5, 2.75, 6.25, 1)> ' Inside, no overlap.
+        <InlineData(2.5, 6.25, 1.5, 5.5, 6.25, 1)> ' Outside, no overlap.
+        <InlineData(2.5, 6.25, 1.5, 2.5, 6.25, 1)> ' Concentric circles.
+        Sub TryCircleCircleIntersectionsPoints_BadInput_Fails(
+            x1 As System.Double, y1 As System.Double, r1 As System.Double,
+            x2 As System.Double, y2 As System.Double, r2 As System.Double)
+
+            Dim Intersect1X, Intersect1Y, Intersect2X, Intersect2Y As Double
+
+            Assert.False(OsnwCircle2D.TryCircleCircleIntersections(
+                x1, y1, r1,
+                x2, y2, r2,
+                Intersect1X, Intersect1Y,
+                Intersect2X, Intersect2Y))
+
+        End Sub
+
+        <Theory>
+        <InlineData(1.75, 6.75, 1.5, 3, 6.25, 1, 3.1692, 7.2356, 2.4428, 5.4196)> ' General overlap case.
+        <InlineData(2.5, 6.25, 1.5, 3.5, 6.25, 1, 3.625, 7.242, 3.625, 5.2576)> ' Horizontal overlap circles.
+        <InlineData(2.5, 6.25, 1.5, 3, 6.25, 1, 4, 6.25, 4, 6.25)> ' Horizontal inside-tangent circles.
+        <InlineData(2.5, 6.25, 1.5, 5, 6.25, 1, 4, 6.25, 4, 6.25)> ' Horizontal outside-tangent circles.
         Sub TryCircleCircleIntersectionsPoints_GoodInput_Succeeds(
             x1 As System.Double, y1 As System.Double, r1 As System.Double,
             x2 As System.Double, y2 As System.Double, r2 As System.Double,
@@ -161,12 +179,28 @@ Namespace MathTests
         End Sub
 
         <Theory>
-        <InlineData(1.75, 6.75, 1.5, 3, 6.25, 1, 3.1692, 7.2356, 2.4428, 5.4196)> ' General case.
-        <InlineData(2.5, 6.25, 1.5,
-                    3.5, 6.25, 1,
-                    3.625, 7.242,
-                    3.625, 5.2576)> ' Horizontal circles.
-        <InlineData(2.5, 6.25, 1.5, 3, 6.25, 1, 4, 6.25, 4, 6.25)> ' Tangent circles.
+        <InlineData(2.5, 6.25, 1.5, 2.75, 6.25, 1)> ' Inside, no overlap.
+        <InlineData(2.5, 6.25, 1.5, 5.5, 6.25, 1)> ' Outside, no overlap.
+        <InlineData(2.5, 6.25, 1.5, 2.5, 6.25, 1)> ' Concentric circles.
+        Sub TryCircleCircleIntersectionsCircles_BadInput_Fails(
+            x1 As System.Double, y1 As System.Double, r1 As System.Double,
+            x2 As System.Double, y2 As System.Double, r2 As System.Double)
+
+            Dim Intersect1X, Intersect1Y, Intersect2X, Intersect2Y As Double
+
+            Assert.False(OsnwCircle2D.TryCircleCircleIntersections(
+                x1, y1, r1,
+                x2, y2, r2,
+                Intersect1X, Intersect1Y,
+                Intersect2X, Intersect2Y))
+
+        End Sub
+
+        <Theory>
+        <InlineData(1.75, 6.75, 1.5, 3, 6.25, 1, 3.1692, 7.2356, 2.4428, 5.4196)> ' General overlap case.
+        <InlineData(2.5, 6.25, 1.5, 3.5, 6.25, 1, 3.625, 7.242, 3.625, 5.2576)> ' Horizontal overlap circles.
+        <InlineData(2.5, 6.25, 1.5, 3, 6.25, 1, 4, 6.25, 4, 6.25)> ' Horizontal Inside tangent circles.
+        <InlineData(2.5, 6.25, 1.5, 5, 6.25, 1, 4, 6.25, 4, 6.25)> ' Horizontal Outside tangent circles.
         Sub TryCircleCircleIntersectionsCircles_GoodInput_Succeeds(
             x1 As System.Double, y1 As System.Double, r1 As System.Double,
             x2 As System.Double, y2 As System.Double, r2 As System.Double,

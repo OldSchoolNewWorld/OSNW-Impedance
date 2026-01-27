@@ -749,14 +749,18 @@ Partial Public Module Math
         ''' intersection.</param>
         ''' <param name="intersect2Y">Specifies the X-coordinate of the second
         ''' intersection.</param>
-        ''' <returns><c>True</c> if the the intersection(s) are found;
-        ''' otherwise, <c>False</c>.</returns>
+        ''' <returns><c>True</c> if the intersections are found;
+        ''' otherwise, <c>False</c>.
+        ''' When valid, also returns the results in
+        ''' <paramref name="intersect1X"/>, <paramref name="intersect1Y"/>,
+        ''' <paramref name="intersect2X"/>, and
+        ''' <paramref name="intersect2Y"/>.</returns>
         ''' <remarks>
         ''' A negative radius, or circles that do not intersect, will return
         ''' <c>False</c>, to avoid an exception.
         ''' Concentric circles will have either zero or infinite common points;
-        ''' the second case is considered to not be intersecting.
-        ''' Tangent circles will have only one intersection.
+        ''' the second case is considered to NOT be intersecting.
+        ''' Tangent circles will have two identical (or nearly so) intersections.
         ''' </remarks>
         Public Shared Function TryCircleCircleIntersections(
             ByVal circle1X As System.Double, ByVal circle1Y As System.Double,
@@ -1280,12 +1284,16 @@ Partial Public Module Math
         ''' intersection.</param>
         ''' <param name="intersect2Y">Specifies the X-coordinate of the second
         ''' intersection.</param>
-        ''' <returns><c>True</c> if the the intersection(s) are found;
-        ''' otherwise, <c>False</c>.</returns>
+        ''' <returns><c>True</c> if the intersections are found;
+        ''' otherwise, <c>False</c>.
+        ''' When valid, also returns the results in
+        ''' <paramref name="intersect1X"/>, <paramref name="intersect1Y"/>,
+        ''' <paramref name="intersect2X"/>, and
+        ''' <paramref name="intersect2Y"/>.</returns>
         ''' <remarks>
         ''' Concentric circles will have either zero or infinite common points;
-        ''' the second case is considered to not be intersecting.
-        ''' Tangent circles will have only one intersection.
+        ''' the second case is considered to NOT be intersecting.
+        ''' Tangent circles will have two identical (or nearly so) intersections.
         ''' </remarks>
         Public Shared Function TryCircleCircleIntersections(
             ByVal circle1 As OSNW.Circle2D, ByVal circle2 As OSNW.Circle2D,
