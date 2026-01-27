@@ -132,7 +132,7 @@ Namespace MathTests
                     3.625, 7.242,
                     3.625, 5.2576)> ' Horizontal circles.
         <InlineData(2.5, 6.25, 1.5, 3, 6.25, 1, 4, 6.25, 4, 6.25)> ' Tangent circles.
-        Sub TryCircleCircleIntersections_GoodInput_Succeeds(
+        Sub TryCircleCircleIntersectionsPoints_GoodInput_Succeeds(
             x1 As System.Double, y1 As System.Double, r1 As System.Double,
             x2 As System.Double, y2 As System.Double, r2 As System.Double,
             expecti1x As System.Double, expecti1y As System.Double,
@@ -149,6 +149,42 @@ Namespace MathTests
                 x2, y2, r2,
                 i1x, i1y,
                 i2x, i2y) Then
+
+                Assert.True(False)
+            End If
+
+            Assert.Equal(expecti1x, i1x, TOLERANCE * expecti1x)
+            Assert.Equal(expecti1y, i1y, TOLERANCE * expecti1y)
+            Assert.Equal(expecti2x, i2x, TOLERANCE * expecti2x)
+            Assert.Equal(expecti2y, i2y, TOLERANCE * expecti2y)
+
+        End Sub
+
+        <Theory>
+        <InlineData(1.75, 6.75, 1.5, 3, 6.25, 1, 3.1692, 7.2356, 2.4428, 5.4196)> ' General case.
+        <InlineData(2.5, 6.25, 1.5,
+                    3.5, 6.25, 1,
+                    3.625, 7.242,
+                    3.625, 5.2576)> ' Horizontal circles.
+        <InlineData(2.5, 6.25, 1.5, 3, 6.25, 1, 4, 6.25, 4, 6.25)> ' Tangent circles.
+        Sub TryCircleCircleIntersectionsCircles_GoodInput_Succeeds(
+            x1 As System.Double, y1 As System.Double, r1 As System.Double,
+            x2 As System.Double, y2 As System.Double, r2 As System.Double,
+            expecti1x As System.Double, expecti1y As System.Double,
+            expecti2x As System.Double, expecti2y As System.Double)
+
+            Const TOLERANCE As Double = 0.001
+            Dim i1x As System.Double = expecti1x
+            Dim i1y As System.Double = expecti1y
+            Dim i2x As System.Double = expecti2x
+            Dim i2y As System.Double = expecti2y
+
+            Dim Circle1 As New OsnwCircle2D(x1, y1, r1)
+            Dim Circle2 As New OsnwCircle2D(x2, y2, r2)
+
+            If Not OsnwCircle2D.TryCircleCircleIntersections(
+                Circle1, Circle2,
+                i1x, i1y, i2x, i2y) Then
 
                 Assert.True(False)
             End If
