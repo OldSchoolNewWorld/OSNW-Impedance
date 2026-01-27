@@ -1,4 +1,8 @@
-﻿Partial Public Module Math
+﻿Imports System.Reflection.Metadata
+Imports System.Xml
+Imports OSNW.Math
+
+Partial Public Module Math
 
     ''' <summary>
     ''' A base class that represents the geometry of a generic circle, with a
@@ -725,15 +729,15 @@
         ''' Attempts to determine where two circles intersect, given their
         ''' center coordinates and radii.
         ''' </summary>
-        ''' <param name="x1">Specifies the X-coordinate of the first circle to
+        ''' <param name="h1">Specifies the X-coordinate of the first circle to
         ''' consider for intersection with the second circle.</param>
-        ''' <param name="y1">Specifies the Y-coordinate of the first circle to
+        ''' <param name="k1">Specifies the Y-coordinate of the first circle to
         ''' consider for intersection with the second circle.</param>
         ''' <param name="r1">Specifies the radius of the first circle to
         ''' consider for intersection with the second circle.</param>
-        ''' <param name="x2">Specifies the X-coordinate of the second circle to
+        ''' <param name="h2">Specifies the X-coordinate of the second circle to
         ''' consider for intersection with the first circle.</param>
-        ''' <param name="y2">Specifies the Y-coordinate of the second circle to
+        ''' <param name="k2">Specifies the Y-coordinate of the second circle to
         ''' consider for intersection with the first circle.</param>
         ''' <param name="r2">Specifies the radius of the second circle to
         ''' consider for intersection with the first circle.</param>
@@ -755,12 +759,48 @@
         ''' Tangent circles will have only one intersection.
         ''' </remarks>
         Public Shared Function TryCircleCircleIntersections(
-            ByVal x1 As System.Double, ByVal y1 As System.Double,
-            ByVal r1 As System.Double, ByVal x2 As System.Double,
-            ByVal y2 As System.Double, ByVal r2 As System.Double,
+            ByVal h1 As System.Double, ByVal k1 As System.Double,
+            ByVal r1 As System.Double, ByVal h2 As System.Double,
+            ByVal k2 As System.Double, ByVal r2 As System.Double,
             ByRef i1x As System.Double, ByRef i1y As System.Double,
             ByRef i2x As System.Double, ByRef i2y As System.Double) _
             As System.Boolean
+
+
+
+
+            ' Use these to substitute parameter names for clarity, squaring, and reuse.
+            Dim H12 As System.Double
+            Dim H22 As System.Double
+            Dim K12 As System.Double
+            Dim K22 As System.Double
+            Dim R12 As System.Double
+            Dim R22 As System.Double
+            Dim DiffX As System.Double
+            Dim DiffY As System.Double
+            Dim SumRXY As System.Double
+
+
+
+
+
+
+
+
+
+
+            ' TEMP STUFF TO ALLOW IN-PROGRESS TESTING. SET X AND Y TO MATCH
+            ' EXPECTED VALID RESULTS.
+            ' THESE TESTS CAN BE REMOVED AFTER All IN-PROGRESS VERIFICATIONS ARE GOOD.
+            Const VERIFYTOLERANCE As System.Double = 0.001
+            Const VERIFYTOLERANCE0 As System.Double = 0.001
+            Dim X As System.Double = i1x ' Expected result.
+            Dim Y As System.Double = i1y ' Expected result.
+            Dim Left As System.Double ' Interim verification value.
+            Dim Right As System.Double ' Interim verification value.
+
+
+
 
             ' Input checking.
             ' A zero radius seems useless, but may be valid in some unusual
@@ -770,8 +810,8 @@
             ' infinite common points; the second case is considered to not be
             ' intersecting.
             If r1 < 0.0 OrElse r2 < 0.0 _
-                OrElse Not CirclesIntersect(x1, y1, r1, x2, y2, r2) _
-                OrElse x2.Equals(x1) AndAlso y2.Equals(y1) Then
+                OrElse Not CirclesIntersect(h1, k1, r1, h2, k2, r2) _
+                OrElse h2.Equals(h1) AndAlso k2.Equals(k1) Then
 
                 i1x = Double.NaN
                 i1y = Double.NaN
@@ -780,12 +820,201 @@
                 Return False 'To avoid an exception.
             End If
 
+            If k2.Equals(k1) Then
+                ' Special case. The circles share the center Y-coordinate.
+                ' The derivation follows:
+                ' DEV: Square brackets, braces, and split lines are used below for
+                ' visual clarity across the various steps. "h", "k", and squared
+                ' values are carried through the derivation, in keeping with the
+                ' standard form; the actual parameters, and multiplication vs.
+                ' squaring, are substituted in the implementation.
+
+                ' Standard form of a circle.
+                ' [(X - h)^2] + [(Y - k)^2] = r^2
+                ' Localize parameters, for one point (X, Y) of intersection.
+                ' [(X - h1)^2] + [(Y - k1)^2] = r1^2
+                ' [(X - h2)^2] + [(Y - k2)^2] = r2^2
+
+
+                ' THESE TESTS CAN BE REMOVED AFTER All IN-PROGRESS VERIFICATIONS ARE GOOD.
+                Left = ((X - h1) ^ 2) + ((Y - k1) ^ 2)
+                Right = r1 ^ 2
+                If Not OSNW.Math.EqualEnough(Left, Right, VERIFYTOLERANCE) Then
+                    Return False
+                End If
+                Left = ((X - h2) ^ 2) + ((Y - k2) ^ 2)
+                Right = r2 ^ 2
+                If Not OSNW.Math.EqualEnough(Left, Right, VERIFYTOLERANCE) Then
+                    Return False
+                End If
+
+                ' Since k2=k1,
+                ' [(X - h1)^2] + [(Y - k1)^2] = r1^2
+                ' [(X - h2)^2] + [(Y - k1)^2] = r2^2
+
+                ' THESE TESTS CAN BE REMOVED AFTER All IN-PROGRESS VERIFICATIONS ARE GOOD.
+                Left = ((X - h1) ^ 2) + ((Y - k1) ^ 2)
+                Right = r1 ^ 2
+                If Not OSNW.Math.EqualEnough(Left, Right, VERIFYTOLERANCE) Then
+                    Return False
+                End If
+                Left = ((X - h2) ^ 2) + ((Y - k1) ^ 2)
+                Right = r2 ^ 2
+                If Not OSNW.Math.EqualEnough(Left, Right, VERIFYTOLERANCE) Then
+                    Return False
+                End If
+
+                ' Subtract the second equation from the first.
+                ' [(X - h1)^2] + [(Y - k1)^2]
+                ' - [(X - h2)^2] - [(Y - k1)^2]
+                ' = r1^2 - r2^2
+
+                ' THESE TESTS CAN BE REMOVED AFTER All IN-PROGRESS VERIFICATIONS ARE GOOD.
+                Left = ((X - h1) ^ 2) + ((Y - k1) ^ 2) _
+                    - ((X - h2) ^ 2) - ((Y - k1) ^ 2)
+                Right = r1 ^ 2 - r2 ^ 2
+                If Not OSNW.Math.EqualEnough(Left, Right, VERIFYTOLERANCE) Then
+                    Return False
+                End If
+
+                ' Handle the cancellations.
+                ' [(X - h1)^2]  - [(X - h2)^2] = r1^2 - r2^2
+
+                ' THESE TESTS CAN BE REMOVED AFTER All IN-PROGRESS VERIFICATIONS ARE GOOD.
+                Left = ((X - h1) ^ 2) - ((X - h2) ^ 2)
+                Right = r1 ^ 2 - r2 ^ 2
+                If Not OSNW.Math.EqualEnough(Left, Right, VERIFYTOLERANCE) Then
+                    Return False
+                End If
+
+                ' Expand the squares.
+                ' [X^2 - (2*h1*X) + h1^2]
+                ' - [X^2 - (2*h2*X) + h2^2]
+                ' = r1^2 - r2^2
+
+                ' THESE TESTS CAN BE REMOVED AFTER All IN-PROGRESS VERIFICATIONS ARE GOOD.
+                Left = (X ^ 2 - (2 * h1 * X) + h1 ^ 2) _
+                       - (X ^ 2 - (2 * h2 * X) + h2 ^ 2)
+                Right = r1 ^ 2 - r2 ^ 2
+                If Not OSNW.Math.EqualEnough(Left, Right, VERIFYTOLERANCE) Then
+                    Return False
+                End If
+
+                ' Handle negation.
+                ' X^2 - (2*h1*X) + h1^2
+                ' - X^2 + (2*h2*X) - h2^2
+                ' = r1^2 - r2^2
+
+                ' THESE TESTS CAN BE REMOVED AFTER All IN-PROGRESS VERIFICATIONS ARE GOOD.
+                Left = X ^ 2 - (2 * h1 * X) + h1 ^ 2 _
+                       - X ^ 2 + (2 * h2 * X) - h2 ^ 2
+                Right = r1 ^ 2 - r2 ^ 2
+                If Not OSNW.Math.EqualEnough(Left, Right, VERIFYTOLERANCE) Then
+                    Return False
+                End If
+
+                ' Handle the cancellation.
+                ' - (2*h1*X) + h1^2
+                ' + (2*h2*X) - h2^2
+                ' = r1^2 - r2^2
+
+                ' THESE TESTS CAN BE REMOVED AFTER All IN-PROGRESS VERIFICATIONS ARE GOOD.
+                Left = -(2 * h1 * X) + h1 ^ 2 _
+                      + (2 * h2 * X) - h2 ^ 2
+                Right = r1 ^ 2 - r2 ^ 2
+                If Not OSNW.Math.EqualEnough(Left, Right, VERIFYTOLERANCE) Then
+                    Return False
+                End If
+
+                ' Gather like terms.
+                ' 2*(h2 - h1)*X
+                ' = r1^2 - r2^2 + h2^2 - h1^2
+
+                ' THESE TESTS CAN BE REMOVED AFTER All IN-PROGRESS VERIFICATIONS ARE GOOD.
+                Left = 2 * (h2 - h1) * X
+                Right = r1 ^ 2 - r2 ^ 2 + h2 ^ 2 - h1 ^ 2
+                If Not OSNW.Math.EqualEnough(Left, Right, VERIFYTOLERANCE) Then
+                    Return False
+                End If
+
+                ' *** Solve for X. ***
+                ' X = (r1^2 - r2^2 + h2^2 - h1^2) / (2*(h2 - h1))
+
+                ' THESE TESTS CAN BE REMOVED AFTER All IN-PROGRESS VERIFICATIONS ARE GOOD.
+                Left = X
+                Right = (r1 ^ 2 - r2 ^ 2 + h2 ^ 2 - h1 ^ 2) / (2 * (h2 - h1))
+                If Not OSNW.Math.EqualEnough(Left, Right, VERIFYTOLERANCE) Then
+                    Return False
+                End If
+
+                ' Solve the standard form of a circle for Y, for one circle.
+                ' [(X - h)^2] + [(Y - k)^2] = r^2
+                ' [(X - h1)^2] + [(Y - k1)^2] = r1^2
+
+                ' Expand the squares.
+                ' (X^2 -2*h1*X + h1^2) + (Y^2 -2*k1*Y + k1^2) = r1^2
+
+                ' THESE TESTS CAN BE REMOVED AFTER All IN-PROGRESS VERIFICATIONS ARE GOOD.
+                Left = (X ^ 2 - 2 * h1 * X + h1 ^ 2) + (Y ^ 2 - 2 * k1 * Y + k1 ^ 2)
+                Right = r1 ^ 2
+                If Not OSNW.Math.EqualEnough(Left, Right, VERIFYTOLERANCE) Then
+                    Return False
+                End If
+
+                ' Gather like terms. Arrange for quadratic formula.
+                ' Y^2 -2*k1*Y + X^2 -2*h1*X + h1^2 + k1^2 - r1^2 = 0
+
+                ' THESE TESTS CAN BE REMOVED AFTER All IN-PROGRESS VERIFICATIONS ARE GOOD.
+                Left = Y ^ 2 - 2 * k1 * Y + X ^ 2 - 2 * h1 * X + h1 ^ 2 + k1 ^ 2 - r1 ^ 2
+                If Not OSNW.Math.EqualEnoughZero(Left, VERIFYTOLERANCE0 * r1) Then
+                    Return False
+                End If
+
+                ' Set up for the quadratic formula; then use that to get the two Y coordinates.
+                ' a = 1
+                ' b = -2*k1
+                ' c = X^2 -2*h1*X + h1^2 + k1^2 - r1^2
+
+                ' Implementation:
+
+                ' Substitute parameter names for clarity, squaring, and reuse.
+                H12 = h1 * h1
+                H22 = h2 * h2
+                K12 = k1 * k1
+                K22 = k2 * k2
+                R12 = r1 * r1
+                R22 = r2 * r2
+                DiffX = h2 - h1
+                DiffY = k2 - k1
+                SumRXY = R12 - R22 + H22 - H12 + K22 - K12
+
+                i1x = (R12 - R22 + H22 - H12) / (2 * DiffX)
+                Dim I1x2 As System.Double = i1x * i1x
+
+                Dim a As System.Double = 1
+                Dim b As System.Double = -2 * k1
+                Dim c As System.Double = I1x2 - 2 * h1 * i1x + H12 + K12 - R12
+                If Not TryQuadratic(a, b, c, i1y, i2y) Then
+                    i1x = System.Double.NaN
+                    i1y = System.Double.NaN
+                    i2x = System.Double.NaN
+                    i2y = System.Double.NaN
+                    Return False
+                End If
+
+                ' On getting here, the intersection points have been found.
+                i2x = i1x
+                Return True
+
+            End If
+
+            ' On getting here, the circles do not share the center Y-coordinate.
             ' The derivation follows:
-            ' DEV: Square brackets and split lines are used below for visual
-            ' clarity across the various steps. "h", "k", and squared values are
-            ' carried through the derivation, in keeping with the standard form;
-            ' the actual parameters, and multiplication vs. squaring, are
-            ' substituted in the implementation.
+            ' DEV: Square brackets, braces, and split lines are used below for
+            ' visual clarity across the various steps. "h", "k", and squared
+            ' values are carried through the derivation, in keeping with the
+            ' standard form; the actual parameters, and multiplication vs.
+            ' squaring, are substituted in the implementation.
 
             ' REF: How can I find the points at which two circles intersect?
             ' https://math.stackexchange.com/questions/256100/how-can-i-find-the-points-at-which-two-circles-intersect
@@ -797,19 +1026,66 @@
             ' [(X - h1)^2] + [(Y - k1)^2] = r1^2
             ' [(X - h2)^2] + [(Y - k2)^2] = r2^2
 
+
+            ' THESE TESTS CAN BE REMOVED AFTER All IN-PROGRESS VERIFICATIONS ARE GOOD.
+            Left = ((X - h1) ^ 2) + ((Y - k1) ^ 2)
+            Right = r1 ^ 2
+            If Not OSNW.Math.EqualEnough(Left, Right, VERIFYTOLERANCE) Then
+                Return False
+            End If
+            Left = ((X - h2) ^ 2) + ((Y - k2) ^ 2)
+            Right = r2 ^ 2
+            If Not OSNW.Math.EqualEnough(Left, Right, VERIFYTOLERANCE) Then
+                Return False
+            End If
+
+
             ' Subtract the second equation from the first.
             ' [(X - h1)^2] + [(Y - k1)^2] - {[(X - h2)^2] + [(Y - k2)^2]}
             ' = r1^2 - r2^2
+
+
+
+            ' THESE TESTS CAN BE REMOVED AFTER All IN-PROGRESS VERIFICATIONS ARE GOOD.
+            Left = ((X - h1) ^ 2) + ((Y - k1) ^ 2) - (((X - h2) ^ 2) + ((Y - k2) ^ 2))
+            Right = r1 ^ 2 - r2 ^ 2
+            If Not OSNW.Math.EqualEnough(Left, Right, VERIFYTOLERANCE) Then
+                Return False
+            End If
+
+
 
             ' Handle negations.
             ' [(X - h1)^2] + [(Y - k1)^2]
             ' - [(X - h2)^2] - [(Y - k2)^2]
             ' = r1^2 - r2^2
 
+
+            ' THESE TESTS CAN BE REMOVED AFTER All IN-PROGRESS VERIFICATIONS ARE GOOD.
+            Left = ((X - h1) ^ 2) + ((Y - k1) ^ 2) - ((X - h2) ^ 2) - ((Y - k2) ^ 2)
+            Right = r1 ^ 2 - r2 ^ 2
+            If Not OSNW.Math.EqualEnough(Left, Right, VERIFYTOLERANCE) Then
+                Return False
+            End If
+
+
+
             ' Expand the squares.
             ' [X^2 - (2*h1*X) + h1^2] + [Y^2 - (2*k1*Y) + k1^2]
             ' - [X^2 - (2*h2*X) + h2^2] - [Y^2 - (2*k2*Y) + k2^2]
             ' = r1^2 - r2^2
+
+
+
+            ' THESE TESTS CAN BE REMOVED AFTER All IN-PROGRESS VERIFICATIONS ARE GOOD.
+            Left = (X ^ 2 - (2 * h1 * X) + h1 ^ 2) + (Y ^ 2 - (2 * k1 * Y) + k1 ^ 2) _
+             - (X ^ 2 - (2 * h2 * X) + h2 ^ 2) - (Y ^ 2 - (2 * k2 * Y) + k2 ^ 2)
+            Right = r1 ^ 2 - r2 ^ 2
+            If Not OSNW.Math.EqualEnough(Left, Right, VERIFYTOLERANCE) Then
+                Return False
+            End If
+
+
 
             ' Simplify and rearrange, in steps:
 
@@ -820,6 +1096,20 @@
             ' - Y^2 + (2*k2*Y) - k2^2
             ' = r1^2 - r2^2
 
+
+
+            ' THESE TESTS CAN BE REMOVED AFTER All IN-PROGRESS VERIFICATIONS ARE GOOD.
+            Left = X ^ 2 - (2 * h1 * X) + h1 ^ 2 _
+                + Y ^ 2 - (2 * k1 * Y) + k1 ^ 2 _
+                - X ^ 2 + (2 * h2 * X) - h2 ^ 2 _
+                - Y ^ 2 + (2 * k2 * Y) - k2 ^ 2
+            Right = r1 ^ 2 - r2 ^ 2
+            If Not OSNW.Math.EqualEnough(Left, Right, VERIFYTOLERANCE) Then
+                Return False
+            End If
+
+
+
             ' Handle the cancellations.
             ' - (2*h1*X) + h1^2
             ' - (2*k1*Y) + k1^2
@@ -827,11 +1117,33 @@
             ' + (2*k2*Y) - k2^2
             ' = r1^2 - r2^2
 
+
+
+            ' THESE TESTS CAN BE REMOVED AFTER All IN-PROGRESS VERIFICATIONS ARE GOOD.
+            Left = -(2 * h1 * X) + h1 ^ 2 - (2 * k1 * Y) + k1 ^ 2 + (2 * h2 * X) - h2 ^ 2 + (2 * k2 * Y) - k2 ^ 2
+            Right = r1 ^ 2 - r2 ^ 2
+            If Not OSNW.Math.EqualEnough(Left, Right, VERIFYTOLERANCE) Then
+                Return False
+            End If
+
+
+
             ' Gather like terms.
             ' (2*h2*X) - (2*h1*X)
             ' + (2*k2*Y) - (2*k1*Y)
             ' + h1^2 - h2^2 + k1^2 - k2^2
             ' = r1^2 - r2^2
+
+
+
+            ' THESE TESTS CAN BE REMOVED AFTER All IN-PROGRESS VERIFICATIONS ARE GOOD.
+            Left = (2 * h2 * X) - (2 * h1 * X) + (2 * k2 * Y) - (2 * k1 * Y) + h1 ^ 2 - h2 ^ 2 + k1 ^ 2 - k2 ^ 2
+            Right = r1 ^ 2 - r2 ^ 2
+            If Not OSNW.Math.EqualEnough(Left, Right, VERIFYTOLERANCE) Then
+                Return False
+            End If
+
+
 
             ' Extract X and Y terms.
             ' 2*(h2 - h1)*X
@@ -839,10 +1151,34 @@
             ' + h1^2 - h2^2 + k1^2 - k2^2
             ' = r1^2 - r2^2
 
+
+
+            ' THESE TESTS CAN BE REMOVED AFTER All IN-PROGRESS VERIFICATIONS ARE GOOD.
+            Left = 2 * (h2 - h1) * X _
+                + 2 * (k2 - k1) * Y _
+                + h1 ^ 2 - h2 ^ 2 + k1 ^ 2 - k2 ^ 2
+            Right = r1 ^ 2 - r2 ^ 2
+            If Not OSNW.Math.EqualEnough(Left, Right, VERIFYTOLERANCE) Then
+                Return False
+            End If
+
+
+
             ' Arrange for the standard "aX + bY = c" form of a linear equation.
             ' 2*(h2 - h1)*X
             ' + 2*(k2 - k1)*Y
             ' = r1^2 - r2^2 + h2^2 - h1^2 + k2^2 - k1^2
+
+
+
+            ' THESE TESTS CAN BE REMOVED AFTER All IN-PROGRESS VERIFICATIONS ARE GOOD.
+            Left = 2 * (h2 - h1) * X + 2 * (k2 - k1) * Y
+            Right = r1 ^ 2 - r2 ^ 2 + h2 ^ 2 - h1 ^ 2 + k2 ^ 2 - k1 ^ 2
+            If Not OSNW.Math.EqualEnough(Left, Right, VERIFYTOLERANCE) Then
+                Return False
+            End If
+
+
 
             ' Arrange the "aX + bY = c" standard form of a linear equation into
             ' the "Y = mX + b" slope-intercept form of a line.
@@ -853,9 +1189,26 @@
             ' Y = (-a / b)X + (c / b)
             ' Now, M = (-a / b) and SlopeB = (c / b) 
 
+
+
+
+
+
             ' Substitute from the "aX + bY = c" form.
-            ' Y = (-(2*(h2 - h1)) / (2*(k2 - k1)))X
+            ' Y = (-(2*(h2 - h1)) / (2*(k2 - k1)))*X
             '     + ((r1^2 - r2^2 + h2^2 - h1^2 + k2^2 - k1^2) / (2*(k2 - k1)))
+
+
+
+            ' THESE TESTS CAN BE REMOVED AFTER All IN-PROGRESS VERIFICATIONS ARE GOOD.
+            Left = Y
+            Right = (-(2 * (h2 - h1)) / (2 * (k2 - k1))) * X _
+                 + ((r1 ^ 2 - r2 ^ 2 + h2 ^ 2 - h1 ^ 2 + k2 ^ 2 - k1 ^ 2) / (2 * (k2 - k1)))
+            If Not OSNW.Math.EqualEnough(Left, Right, VERIFYTOLERANCE) Then
+                Return False
+            End If
+
+
 
             ' Substitute parameter names for clarity, squaring, and reuse.
             ' H12 = h1*h1
@@ -867,24 +1220,51 @@
             ' DiffH = h2 - h1
             ' DiffK = k2 - k1
             ' SumRHK = R12 - R22 + H22 - H12 + K22 - K12
-            ' Y = (-(2*DiffH) / (2*DiffK))X
+            ' Y = (-(2*DiffH) / (2*DiffK))*X
             '     + (SumRHK / (2*DiffK))
+
+
+
+            ' THESE TESTS CAN BE REMOVED AFTER All IN-PROGRESS VERIFICATIONS ARE GOOD.
+            Dim DiffH As System.Double = h2 - h1
+            Dim DiffK As System.Double = k2 - k1
+            Dim SumRHK As System.Double = (r1 * r1) - (r2 * r2) _
+                + (h2 * h2) - (h1 * h1) + (k2 * k2) - (k1 * k1)
+            Left = Y
+            Right = (-(2 * DiffH) / (2 * DiffK)) * X _
+                 + (SumRHK / (2 * DiffK))
+            If Not OSNW.Math.EqualEnough(Left, Right, VERIFYTOLERANCE) Then
+                Return False
+            End If
+
+
 
             ' Cancel the common 2.
-            ' Y = (-DiffH / DiffK)X
+            ' Y = (-DiffH / DiffK)*X
             '     + (SumRHK / (2*DiffK))
 
+
+
+            ' THESE TESTS CAN BE REMOVED AFTER All IN-PROGRESS VERIFICATIONS ARE GOOD.
+            Left = Y
+            Right = (-DiffH / DiffK) * X + (SumRHK / (2 * DiffK))
+            If Not OSNW.Math.EqualEnough(Left, Right, VERIFYTOLERANCE) Then
+                Return False
+            End If
+
+
+
             ' Implementation:
-            Dim X12 As System.Double = x1 * x1
-            Dim X22 As System.Double = x2 * x2
-            Dim Y12 As System.Double = y1 * y1
-            Dim Y22 As System.Double = y2 * y2
-            Dim R12 As System.Double = r1 * r1
-            Dim R22 As System.Double = r2 * r2
-            Dim DiffX As System.Double = x2 - x1
-            Dim DiffY As System.Double = y2 - y1
-            Dim SumRXY As System.Double = R12 - R22 + X22 - X12 + Y22 - Y12
-            Return TryCircleLineIntersections(x1, y1, r1, -DiffX / DiffY,
+            H12 = h1 * h1
+            H22 = h2 * h2
+            K12 = k1 * k1
+            K22 = k2 * k2
+            R12 = r1 * r1
+            R22 = r2 * r2
+            DiffX = h2 - h1
+            DiffY = k2 - k1
+            SumRXY = R12 - R22 + H22 - H12 + K22 - K12
+            Return TryCircleLineIntersections(h1, k1, r1, -DiffX / DiffY,
                 SumRXY / (2 * DiffY), i1x, i1y, i2x, i2y)
 
         End Function ' TryCircleCircleIntersections
