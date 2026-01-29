@@ -1274,9 +1274,11 @@ Partial Public Module Math
             DiffY = circle2Y - circle1Y
             SumRXY = circle1R2 - circle2R2 + circle2X2 - circle1X2 _
                 + circle2Y2 - circle1Y2
-            Return TryCircleLineIntersections(circle1X, circle1Y, circle1R,
-                -DiffX / DiffY, SumRXY / (2 * DiffY), intersect1X, intersect1Y,
-                intersect2X, intersect2Y)
+            Dim LineM As System.Double = -DiffX / DiffY
+            Dim LineB As System.Double = SumRXY / (2 * DiffY)
+            Return TryCircleLineIntersections(
+                circle1X, circle1Y, circle1R, LineM, LineB,
+                intersect1X, intersect1Y, intersect2X, intersect2Y)
 
         End Function ' TryCircleCircleIntersections
 
