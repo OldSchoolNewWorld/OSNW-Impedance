@@ -1,6 +1,8 @@
 ﻿'TODO:
+' Split TryCircleCircleIntersections() into separately called subs to cut down on its size?
+' Check for more Math tests to move from ad hoc to their own project.
 ' Add more good-input tests, and create bad input tests, for TryCircleCircleIntersectionsTests.
-' Move Math tests from ad hoc to their own project.
+' Circle2D.GetIntersections() may be redundant now.
 ' Move OSNW.Math.EqualEnough routines to a new class derived from System.Double, in its own solution?
 '   Both Single and Double?
 '   Implement at least some as extensions?

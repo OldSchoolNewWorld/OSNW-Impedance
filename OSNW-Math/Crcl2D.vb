@@ -1,8 +1,4 @@
-﻿Imports System.Reflection.Metadata
-Imports System.Xml
-Imports OSNW.Math
-
-Partial Public Module Math
+﻿Partial Public Module Math
 
     ''' <summary>
     ''' A base class that represents the geometry of a generic circle, with a
@@ -18,12 +14,22 @@ Partial Public Module Math
         ''' Represents the X-coordinate of the center of the <c>Circle2D</c>, on
         ''' a Cartesian grid. Dimensions are in generic "units".
         ''' </summary>
+        ''' <exception cref="System.ArgumentOutOfRangeException"> Thrown when
+        ''' the value is infinite.</exception>"
         Public Property CenterX As System.Double
             Get
                 Return Me.m_CenterX
             End Get
             Set(value As System.Double)
+
+                ' Input checking.
+                If System.Double.IsInfinity(value) Then
+                    Throw New System.ArgumentOutOfRangeException(
+                        NameOf(CenterX), MSGCHIV)
+                End If
+
                 Me.m_CenterX = value
+
             End Set
         End Property
 
@@ -32,12 +38,22 @@ Partial Public Module Math
         ''' Represents the Y-coordinate of the center of the <c>Circle2D</c>, on
         ''' a Cartesian grid. Dimensions are in generic "units".
         ''' </summary>
+        ''' <exception cref="System.ArgumentOutOfRangeException"> Thrown when
+        ''' the value is infinite.</exception>"
         Public Property CenterY As System.Double
             Get
                 Return Me.m_CenterY
             End Get
             Set(value As System.Double)
+
+                ' Input checking.
+                If System.Double.IsInfinity(value) Then
+                    Throw New System.ArgumentOutOfRangeException(
+                        NameOf(CenterY), MSGCHIV)
+                End If
+
                 Me.m_CenterY = value
+
             End Set
         End Property
 
@@ -46,6 +62,8 @@ Partial Public Module Math
         ''' Represents the radius of the <c>Circle2D</c>, on a Cartesian grid.
         ''' Dimensions are in generic "units".
         ''' </summary>
+        ''' <exception cref="System.ArgumentOutOfRangeException"> Thrown when
+        ''' the value is infinite.</exception>"
         Public Property Radius As System.Double
             Get
                 Return Me.m_Radius
@@ -53,6 +71,10 @@ Partial Public Module Math
             Set(value As System.Double)
 
                 ' Input checking.
+                If System.Double.IsInfinity(value) Then
+                    Throw New System.ArgumentOutOfRangeException(
+                        NameOf(Radius), MSGCHIV)
+                End If
                 ' A zero radius seems useless, but may be valid in some unusual
                 ' case.
                 If value < 0.0 Then
@@ -71,6 +93,8 @@ Partial Public Module Math
         ''' Represents the diameter of the <c>Circle2D</c>, on a Cartesian grid.
         ''' Dimensions are in generic "units".
         ''' </summary>
+        ''' <exception cref="System.ArgumentOutOfRangeException"> Thrown when
+        ''' the value is infinite.</exception>"
         Public Property Diameter As System.Double
             ' DEV: Being functionally redundant, this may need to be excluded
             ' from any serialization process.
@@ -80,6 +104,10 @@ Partial Public Module Math
             Set(value As System.Double)
 
                 ' Input checking.
+                If System.Double.IsInfinity(value) Then
+                    Throw New System.ArgumentOutOfRangeException(
+                        NameOf(Diameter), MSGCHIV)
+                End If
                 ' A zero radius seems useless, but may be valid in some unusual
                 ' case.
                 If value < 0.0 Then
@@ -125,11 +153,25 @@ Partial Public Module Math
         ''' "units".</param>
         ''' <param name="radius">Specifies the radius of the <c>Circle2D</c>, on
         ''' a Cartesian grid. Dimensions are in generic "units".</param>
+        ''' <exception cref="System.ArgumentOutOfRangeException"> Thrown when
+        ''' any parameter is infinite.</exception>
+        ''' <exception cref="System.ArgumentOutOfRangeException">
+        ''' Thrown when <paramref name="radius"/> is negative.
+        ''' </exception>"
         Public Sub New(ByVal centerX As System.Double,
                        ByVal centerY As System.Double,
                        ByVal radius As System.Double)
 
             ' Input checking.
+            If System.Double.IsInfinity(centerX) OrElse
+                System.Double.IsInfinity(centerY) OrElse
+                System.Double.IsInfinity(radius) Then
+
+                Dim CaughtBy As System.Reflection.MethodBase =
+                    System.Reflection.MethodBase.GetCurrentMethod
+                Throw New System.ArgumentOutOfRangeException(
+                    $"Arguments to {NameOf(CaughtBy)} {MSGCHIV}")
+            End If
             ' A zero radius seems useless, but may be valid in some unusual
             ' case.
             If radius < 0.0 Then
@@ -156,10 +198,24 @@ Partial Public Module Math
         ''' "units".</param>
         ''' <param name="radius">Specifies the radius of the <c>Circle2D</c>, on
         ''' a Cartesian grid. Dimensions are in generic "units".</param>
+        ''' <exception cref="System.ArgumentOutOfRangeException">
+        ''' Thrown when any parameter is infinite.
+        ''' </exception>
+        ''' <exception cref="System.ArgumentOutOfRangeException">
+        ''' Thrown when <paramref name="radius"/> is negative.
+        ''' </exception>"
         Public Sub New(ByVal center As Point2D,
                        ByVal radius As System.Double)
 
             ' Input checking.
+            If System.Double.IsInfinity(center.X) OrElse
+                System.Double.IsInfinity(center.Y) OrElse
+                System.Double.IsInfinity(radius) Then
+                Dim CaughtBy As System.Reflection.MethodBase =
+                    System.Reflection.MethodBase.GetCurrentMethod
+                Throw New System.ArgumentOutOfRangeException(
+                    $"Arguments to {NameOf(CaughtBy)} {MSGCHIV}")
+            End If
             ' A zero radius seems useless, but may be valid in some unusual
             ' case.
             If radius < 0.0 Then
@@ -518,8 +574,8 @@ Partial Public Module Math
         ''' <remarks>
         ''' Tangent circles will have only one intersection. Concentric circles
         ''' will have either zero or infinite common points. The second case is
-        ''' considered not to be intersecting. A negative radius will return
-        ''' <c>False</c>, to avoid an exception.
+        ''' considered not to be intersecting. Any infinite value, or any
+        ''' negative radius, will return <c>False</c>, to avoid an exception.
         ''' </remarks>
         Public Shared Function CirclesIntersect(ByVal x1 As System.Double,
             ByVal y1 As System.Double, ByVal r1 As System.Double,
@@ -527,6 +583,15 @@ Partial Public Module Math
             ByVal r2 As System.Double) As System.Boolean
 
             ' Input checking.
+            If System.Double.IsInfinity(x1) OrElse
+                System.Double.IsInfinity(y1) OrElse
+                System.Double.IsInfinity(r1) OrElse
+                System.Double.IsInfinity(x2) OrElse
+                System.Double.IsInfinity(y2) OrElse
+                System.Double.IsInfinity(r2) Then
+
+                Return False ' To avoid an exception.
+            End If
             If (r1 < 0.0) OrElse (r2 < 0.0) Then
                 Return False ' To avoid an exception.
             End If
@@ -562,23 +627,30 @@ Partial Public Module Math
                 ByVal circle2 As Circle2D) As System.Boolean
 
             ' xxxxxxxxxx NO TEST HAS BEEN ADDED FOR THIS. xxxxxxxxxx
+
+            ' No input checking. circle1 and circle2 are presumed to have been
+            ' checked when created.
+
             Return CirclesIntersect(
                 circle1.CenterX, circle1.CenterY, circle1.Radius,
                 circle2.CenterX, circle2.CenterY, circle2.Radius)
+
         End Function ' CirclesIntersect
 
         ''' <summary>
         ''' Calculates the intersection points of two circles defined by their
         ''' center coordinates and radii.
         ''' </summary>
-        ''' <param name="c1X">Specifies the X-coordinate of circle1.</param>
-        ''' <param name="c1Y">Specifies the Y-coordinate of circle1.</param>
-        ''' <param name="c1R">Specifies the radius of circle1.</param>
-        ''' <param name="c2X">Specifies the X-coordinate of circle2.</param>
-        ''' <param name="c2Y">Specifies the Y-coordinate of circle2.</param>
-        ''' <param name="c2R">Specifies the radius of circle1.</param>
+        ''' <param name="x1">Specifies the X-coordinate of circle1.</param>
+        ''' <param name="y1">Specifies the Y-coordinate of circle1.</param>
+        ''' <param name="r1">Specifies the radius of circle1.</param>
+        ''' <param name="x2">Specifies the X-coordinate of circle2.</param>
+        ''' <param name="y2">Specifies the Y-coordinate of circle2.</param>
+        ''' <param name="r2">Specifies the radius of circle1.</param>
         ''' <returns>A list of 0, 1, or 2 intersection points as
         ''' <see cref="OSNW.Math.Point2D"/> structure(s).</returns>
+        ''' <exception cref="System.ArgumentOutOfRangeException"> Thrown when
+        ''' any parameter is infinite.</exception>
         ''' <exception cref="ArgumentOutOfRangeException">when either radius is
         ''' less than or equal to zero.</exception>
         ''' <remarks>
@@ -587,20 +659,32 @@ Partial Public Module Math
         ''' point is returned. If the circles intersect at two points, a list
         ''' with both points is returned.
         ''' </remarks>
-        Public Shared Function GetIntersections(ByVal c1X As System.Double,
-                ByVal c1Y As System.Double, ByVal c1R As System.Double,
-                ByVal c2X As System.Double, ByVal c2Y As System.Double,
-                ByVal c2R As System.Double) _
+        Public Shared Function GetIntersections(ByVal x1 As System.Double,
+                ByVal y1 As System.Double, ByVal r1 As System.Double,
+                ByVal x2 As System.Double, ByVal y2 As System.Double,
+                ByVal r2 As System.Double) _
                 As System.Collections.Generic.List(Of Point2D)
 
             ' DEV: This is the worker for the related routines.
 
             ' Input checking.
-            If c1R <= 0 OrElse c2R <= 0 Then
+            If System.Double.IsInfinity(x1) OrElse
+                System.Double.IsInfinity(y1) OrElse
+                System.Double.IsInfinity(r1) OrElse
+                System.Double.IsInfinity(x2) OrElse
+                System.Double.IsInfinity(y2) OrElse
+                System.Double.IsInfinity(r2) Then
+
+                Dim CaughtBy As System.Reflection.MethodBase =
+                    System.Reflection.MethodBase.GetCurrentMethod
+                Throw New System.ArgumentOutOfRangeException(
+                    $"Arguments to {NameOf(CaughtBy)} {MSGCHIV}")
+            End If
+            If r1 <= 0 OrElse r2 <= 0 Then
                 'Dim CaughtBy As System.Reflection.MethodBase =
                 '    System.Reflection.MethodBase.GetCurrentMethod
                 Dim ErrMsg As System.String = String.Format(
-                    "{0}={1}, {2}={3}", NameOf(c1R), c1R, NameOf(c2R), c2R)
+                    "{0}={1}, {2}={3}", NameOf(r1), r1, NameOf(r2), r2)
                 Throw New System.ArgumentOutOfRangeException(
                     ErrMsg, OSNW.Math.MSGVMBGTZ)
             End If
@@ -611,23 +695,23 @@ Partial Public Module Math
             ' Concentric circles would have either zero or infinite intersecting
             ' points.
             If OSNW.Math.EqualEnough(
-                    c1X, c2X, OSNW.Math.DFLTGRAPHICTOLERANCE) AndAlso
+                    x1, x2, OSNW.Math.DFLTGRAPHICTOLERANCE) AndAlso
                 OSNW.Math.EqualEnough(
-                    c1Y, c2Y, OSNW.Math.DFLTGRAPHICTOLERANCE) Then
+                    y1, y2, OSNW.Math.DFLTGRAPHICTOLERANCE) Then
 
                 Return Intersections ' Still empty.
             End If
 
             ' Calculate the distance between the centers of the circles.
-            Dim DeltaX As System.Double = c2X - c1X
-            Dim DeltaY As System.Double = c2Y - c1Y
+            Dim DeltaX As System.Double = x2 - x1
+            Dim DeltaY As System.Double = y2 - y1
             Dim DeltaCtr As System.Double =
                 System.Math.Sqrt(DeltaX * DeltaX + DeltaY * DeltaY)
 
             ' Check if circles are too far apart or if one is contained within,
             ' but not tangent to, the other.
-            If DeltaCtr > (c1R + c2R) OrElse
-                DeltaCtr < System.Math.Abs(c1R - c2R) Then
+            If DeltaCtr > (r1 + r2) OrElse
+                DeltaCtr < System.Math.Abs(r1 - r2) Then
 
                 Return Intersections ' Still empty.
             End If
@@ -637,12 +721,12 @@ Partial Public Module Math
             ' one or two intersections.
 
             ' Check if the circles are outside-tangent to each other.
-            If OSNW.Math.EqualEnough(c1R + c2R, DeltaCtr,
+            If OSNW.Math.EqualEnough(r1 + r2, DeltaCtr,
                                      OSNW.Math.DFLTGRAPHICTOLERANCE) Then
                 ' One intersection point.
-                Dim C1Frac As System.Double = c1R / DeltaCtr
+                Dim C1Frac As System.Double = r1 / DeltaCtr
                 Intersections.Add(New Point2D(
-                                  c1X + C1Frac * DeltaX, c1Y + C1Frac * DeltaY))
+                                  x1 + C1Frac * DeltaX, y1 + C1Frac * DeltaY))
                 Return Intersections
             End If
 
@@ -650,22 +734,22 @@ Partial Public Module Math
             ' Two circles of the same radius cannot be inside-tangent to each
             ' other.
             If Not OSNW.Math.EqualEnough(
-                c1R, c2R, OSNW.Math.DFLTGRAPHICTOLERANCE) Then
+                r1, r2, OSNW.Math.DFLTGRAPHICTOLERANCE) Then
 
-                If OSNW.Math.EqualEnough(System.Math.Abs(c1R - c2R), DeltaCtr,
+                If OSNW.Math.EqualEnough(System.Math.Abs(r1 - r2), DeltaCtr,
                                          OSNW.Math.DFLTGRAPHICTOLERANCE) Then
                     ' They are inside-tangent.
-                    If c1R > c2R Then
-                        Dim C1Frac As System.Double = c1R / DeltaCtr
+                    If r1 > r2 Then
+                        Dim C1Frac As System.Double = r1 / DeltaCtr
                         Intersections.Add(New Point2D(
-                                              c1X + (C1Frac * DeltaX),
-                                              c1Y + (C1Frac * DeltaY)))
+                                              x1 + (C1Frac * DeltaX),
+                                              y1 + (C1Frac * DeltaY)))
                         Return Intersections
                     Else
-                        Dim C2Frac As System.Double = c2R / DeltaCtr
+                        Dim C2Frac As System.Double = r2 / DeltaCtr
                         Intersections.Add(New Point2D(
-                                              c2X + (C2Frac * -DeltaX),
-                                              c2Y + (C2Frac * -DeltaY)))
+                                              x2 + (C2Frac * -DeltaX),
+                                              y2 + (C2Frac * -DeltaY)))
                         Return Intersections
                     End If
                 End If
@@ -676,10 +760,10 @@ Partial Public Module Math
 
             ' Calculate two intersection points.
             Dim OnceA As System.Double =
-                (c1R * c1R - c2R * c2R + DeltaCtr * DeltaCtr) / (2 * DeltaCtr)
-            Dim OnceH As System.Double = System.Math.Sqrt(c1R * c1R - OnceA * OnceA)
-            Dim X0 As System.Double = c1X + OnceA * (DeltaX / DeltaCtr)
-            Dim Y0 As System.Double = c1Y + OnceA * (DeltaY / DeltaCtr)
+                (r1 * r1 - r2 * r2 + DeltaCtr * DeltaCtr) / (2 * DeltaCtr)
+            Dim OnceH As System.Double = System.Math.Sqrt(r1 * r1 - OnceA * OnceA)
+            Dim X0 As System.Double = x1 + OnceA * (DeltaX / DeltaCtr)
+            Dim Y0 As System.Double = y1 + OnceA * (DeltaY / DeltaCtr)
 
             ' Two intersection points.
             Dim intersection1 As New Point2D(
@@ -706,9 +790,13 @@ Partial Public Module Math
             ByVal circle1 As Circle2D, ByVal circle2 As Circle2D) _
             As System.Collections.Generic.List(Of Point2D)
 
+            ' No input checking. circle1 and circle2 are presumed to have been
+            ' checked when created.
+
             Return GetIntersections(
                 circle1.CenterX, circle1.CenterY, circle1.Radius,
                 circle2.CenterX, circle2.CenterY, circle2.Radius)
+
         End Function ' GetIntersections
 
         ''' <summary>
@@ -721,6 +809,9 @@ Partial Public Module Math
         ''' <see cref="OSNW.Math.Point2D"/> objects.</returns>
         Public Function GetIntersections(ByVal otherCircle As Circle2D) _
             As System.Collections.Generic.List(Of Point2D)
+
+            ' No input checking. otherCircle is presumed to have been checked
+            ' when created.
 
             Return GetIntersections(Me, otherCircle)
         End Function ' GetIntersections
@@ -756,11 +847,11 @@ Partial Public Module Math
         ''' <paramref name="intersect2X"/>, and
         ''' <paramref name="intersect2Y"/>.</returns>
         ''' <remarks>
-        ''' A negative radius, or circles that do not intersect, will return
-        ''' <c>False</c>, to avoid an exception.
+        ''' Any infinite value, any negative radius, or circles that do not
+        ''' intersect, will return <c>False</c>, to avoid an exception.
         ''' Concentric circles will have either zero or infinite common points;
-        ''' the second case is considered to NOT be intersecting.
-        ''' Tangent circles will have two identical (or nearly so) intersections.
+        ''' the second case is considered to NOT be intersecting. Tangent
+        ''' circles will have two identical (or nearly so) intersections.
         ''' </remarks>
         Public Shared Function TryCircleCircleIntersections(
             ByVal circle1X As System.Double, ByVal circle1Y As System.Double,
@@ -772,7 +863,22 @@ Partial Public Module Math
             ByRef intersect2Y As System.Double) _
             As System.Boolean
 
+            ' DEV: This is the worker for the overload routine.
+
             ' Input checking.
+            If System.Double.IsInfinity(circle1X) OrElse
+                System.Double.IsInfinity(circle1Y) OrElse
+                System.Double.IsInfinity(circle1R) OrElse
+                System.Double.IsInfinity(circle2X) OrElse
+                System.Double.IsInfinity(circle2Y) OrElse
+                System.Double.IsInfinity(circle2R) Then
+
+                intersect1X = Double.NaN
+                intersect1Y = Double.NaN
+                intersect2X = Double.NaN
+                intersect2Y = Double.NaN
+                Return False 'To avoid an exception.
+            End If
             ' A zero radius seems useless, but may be valid in some unusual
             ' case.
             ' Non-intersecting circles fail.
@@ -1306,7 +1412,8 @@ Partial Public Module Math
         ''' <remarks>
         ''' Concentric circles will have either zero or infinite common points;
         ''' the second case is considered to NOT be intersecting.
-        ''' Tangent circles will have two identical (or nearly so) intersections.
+        ''' Tangent circles will have two identical (or nearly so)
+        ''' intersections.
         ''' </remarks>
         Public Shared Function TryCircleCircleIntersections(
             ByVal circle1 As OSNW.Circle2D, ByVal circle2 As OSNW.Circle2D,
