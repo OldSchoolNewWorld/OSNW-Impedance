@@ -128,6 +128,8 @@ Namespace MathTests
     Public Class TestTryCircleCircleIntersections
 
         <Theory>
+        <InlineData(1.75, 6.75, -1.5, 3, 6.25, 1)> ' Negative radius.
+        <InlineData(1.75, 6.75, 1.5, 3, 6.25, -1)> ' Negative radius.
         <InlineData(2.5, 6.25, 1.5, 2.75, 6.25, 1)> ' Inside, no overlap.
         <InlineData(2.5, 6.25, 1.5, 5.5, 6.25, 1)> ' Outside, no overlap.
         <InlineData(2.5, 6.25, 1.5, 2.5, 6.25, 1)> ' Concentric circles.
@@ -157,24 +159,43 @@ Namespace MathTests
             expecti2x As System.Double, expecti2y As System.Double)
 
             Const TOLERANCE As Double = 0.001
-            Dim i1x As System.Double = expecti1x
-            Dim i1y As System.Double = expecti1y
-            Dim i2x As System.Double = expecti2x
-            Dim i2y As System.Double = expecti2y
 
-            If Not OsnwCircle2D.TryCircleCircleIntersections(
-                x1, y1, r1,
-                x2, y2, r2,
-                i1x, i1y,
-                i2x, i2y) Then
+            Dim Out1x As System.Double
+            Dim Out1y As System.Double
+            Dim Out2x As System.Double
+            Dim Out2y As System.Double
 
+            ' Run the in-progress tests, supplying the expected results.
+            Out1x = expecti1x
+            Out1y = expecti1y
+            Out2x = expecti2x
+            Out2y = expecti2y
+            If Not OsnwCircle2D.TryCircleCircleIntersections(x1, y1, r1, x2, y2, r2, Out1x, Out1y, Out2x, Out2y) Then
+                ' It failed internally.
                 Assert.True(False)
+            Else
+                ' It thinks all went ok; check actual results.
+                Assert.Equal(expecti1x, Out1x, TOLERANCE * expecti1x)
+                Assert.Equal(expecti1y, Out1y, TOLERANCE * expecti1y)
+                Assert.Equal(expecti2x, Out2x, TOLERANCE * expecti2x)
+                Assert.Equal(expecti2y, Out2y, TOLERANCE * expecti2y)
             End If
 
-            Assert.Equal(expecti1x, i1x, TOLERANCE * expecti1x)
-            Assert.Equal(expecti1y, i1y, TOLERANCE * expecti1y)
-            Assert.Equal(expecti2x, i2x, TOLERANCE * expecti2x)
-            Assert.Equal(expecti2y, i2y, TOLERANCE * expecti2y)
+            ' Test the normal process, without providing any hints.
+            Out1x = 0.0
+            Out1y = 0.0
+            Out2x = 0.0
+            Out2y = 0.0
+            If Not OsnwCircle2D.TryCircleCircleIntersections(x1, y1, r1, x2, y2, r2, Out1x, Out1y, Out2x, Out2y) Then
+                ' It failed internally.
+                Assert.True(False)
+            Else
+                ' It thinks all went ok; check the actual results.
+                Assert.Equal(expecti1x, Out1x, TOLERANCE * expecti1x)
+                Assert.Equal(expecti1y, Out1y, TOLERANCE * expecti1y)
+                Assert.Equal(expecti2x, Out2x, TOLERANCE * expecti2x)
+                Assert.Equal(expecti2y, Out2y, TOLERANCE * expecti2y)
+            End If
 
         End Sub
 
@@ -208,25 +229,46 @@ Namespace MathTests
             expecti2x As System.Double, expecti2y As System.Double)
 
             Const TOLERANCE As Double = 0.001
-            Dim i1x As System.Double = expecti1x
-            Dim i1y As System.Double = expecti1y
-            Dim i2x As System.Double = expecti2x
-            Dim i2y As System.Double = expecti2y
 
             Dim Circle1 As New OsnwCircle2D(x1, y1, r1)
             Dim Circle2 As New OsnwCircle2D(x2, y2, r2)
 
-            If Not OsnwCircle2D.TryCircleCircleIntersections(
-                Circle1, Circle2,
-                i1x, i1y, i2x, i2y) Then
+            Dim Out1x As System.Double
+            Dim Out1y As System.Double
+            Dim Out2x As System.Double
+            Dim Out2y As System.Double
 
+            ' Run the in-progress tests, supplying the expected results.
+            Out1x = expecti1x
+            Out1y = expecti1y
+            Out2x = expecti2x
+            Out2y = expecti2y
+            If Not OsnwCircle2D.TryCircleCircleIntersections(Circle1, Circle2, Out1x, Out1y, Out2x, Out2y) Then
+                ' It failed internally.
                 Assert.True(False)
+            Else
+                ' It thinks all went ok; check actual results.
+                Assert.Equal(expecti1x, Out1x, TOLERANCE * expecti1x)
+                Assert.Equal(expecti1y, Out1y, TOLERANCE * expecti1y)
+                Assert.Equal(expecti2x, Out2x, TOLERANCE * expecti2x)
+                Assert.Equal(expecti2y, Out2y, TOLERANCE * expecti2y)
             End If
 
-            Assert.Equal(expecti1x, i1x, TOLERANCE * expecti1x)
-            Assert.Equal(expecti1y, i1y, TOLERANCE * expecti1y)
-            Assert.Equal(expecti2x, i2x, TOLERANCE * expecti2x)
-            Assert.Equal(expecti2y, i2y, TOLERANCE * expecti2y)
+            ' Test the normal process, without providing any hints.
+            Out1x = 0.0
+            Out1y = 0.0
+            Out2x = 0.0
+            Out2y = 0.0
+            If Not OsnwCircle2D.TryCircleCircleIntersections(Circle1, Circle2, Out1x, Out1y, Out2x, Out2y) Then
+                ' It failed internally.
+                Assert.True(False)
+            Else
+                ' It thinks all went ok; check the actual results.
+                Assert.Equal(expecti1x, Out1x, TOLERANCE * expecti1x)
+                Assert.Equal(expecti1y, Out1y, TOLERANCE * expecti1y)
+                Assert.Equal(expecti2x, Out2x, TOLERANCE * expecti2x)
+                Assert.Equal(expecti2y, Out2y, TOLERANCE * expecti2y)
+            End If
 
         End Sub
 
