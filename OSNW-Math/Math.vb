@@ -30,7 +30,7 @@ Public Module Math
     Public Const MSGVMBGTE1 As System.String =
         "Must be greater than or equal to 1."
     Public Const MSGVMBGTZ As System.String =
-        "Must be a positive, non-zero value."
+        "Must be a positive, non-zero value." ' Must be greater than zero.
 
 #End Region ' Constants
 
@@ -118,20 +118,14 @@ Public Module Math
         As System.Boolean
 
         ' Input checking.
-        If refVal.Equals(0.0) Then
-            'Dim CaughtBy As System.Reflection.MethodBase =
-            '    System.Reflection.MethodBase.GetCurrentMethod
+        If otherVal.Equals(0.0) OrElse refVal.Equals(0.0) Then
+            Dim CaughtBy As System.Reflection.MethodBase =
+                System.Reflection.MethodBase.GetCurrentMethod
             Throw New System.ArgumentOutOfRangeException(
-                NameOf(refVal), MSGUEEZ)
-        End If
-        If otherVal.Equals(0.0) Then
-            'Dim CaughtBy As System.Reflection.MethodBase =
-            '    System.Reflection.MethodBase.GetCurrentMethod
-            Throw New System.ArgumentOutOfRangeException(
-                NameOf(otherVal), MSGUEEZ)
+                $"Arguments to {NameOf(CaughtBy)} {MSGCHZV} {MSGUEEZ}")
         End If
 
-        Return System.Math.Abs(otherVal - refVal) <
+        Return System.Math.Abs(otherVal - refVal) <=
             System.Math.Abs(ratio * refVal)
 
     End Function ' EqualEnough
@@ -155,8 +149,8 @@ Public Module Math
         Public Y As System.Double
 
         ''' <summary>
-        ''' Initializes a New instance of the <see cref="Point2D"/>
-        ''' class with the specified coordinates.
+        ''' Initializes a new instance of the <see cref="Point2D"/> class with
+        ''' the specified coordinates.
         ''' </summary>
         Public Sub New(ByVal x As System.Double, ByVal y As System.Double)
             ' No input checking.
@@ -164,6 +158,13 @@ Public Module Math
             Me.Y = y
         End Sub ' New
 
+        ''' <summary>
+        ''' Converts the numeric value of this instance to its equivalent string
+        ''' representation.
+        ''' </summary>
+        ''' <returns>
+        ''' The string representation of the value of this instance.
+        ''' </returns>
         Public Overrides Function ToString() As System.String
             Return String.Format("<{0}, {1}>", Me.X, Me.Y)
         End Function ' ToString
@@ -171,29 +172,29 @@ Public Module Math
     End Structure ' Point2D
 
     ''' <summary>
-    ''' Represents an ordered pair of X and Y double precision coordinates that
-    ''' define a point in a three-dimensional space.
+    ''' Represents an ordered triplet of X, Y and Z double precision coordinates
+    ''' that define a point in a three-dimensional space.
     ''' </summary>
     Public Structure Point3D
 
         ''' <summary>
-        ''' Represents the X-coordinate of this <see cref='Point2D'/>.
+        ''' Represents the X-coordinate of this <see cref='Point3D'/>.
         ''' </summary>
         Public X As System.Double
 
         ''' <summary>
-        ''' Represents the Y-coordinate of this <see cref='Point2D'/>.
+        ''' Represents the Y-coordinate of this <see cref='Point3D'/>.
         ''' </summary>
         Public Y As System.Double
 
         ''' <summary>
-        ''' Represents the Z-coordinate of this <see cref='Point2D'/>.
+        ''' Represents the Z-coordinate of this <see cref='Point3D'/>.
         ''' </summary>
         Public Z As System.Double
 
         ''' <summary>
-        ''' Initializes a New instance of the <see cref="Point2D"/>
-        ''' class with the specified coordinates.
+        ''' Initializes a New instance of the <see cref="Point3D"/> class with
+        ''' the specified coordinates.
         ''' </summary>
         Public Sub New(ByVal x As System.Double, ByVal y As System.Double, ByVal z As System.Double)
             ' No input checking.
@@ -202,28 +203,18 @@ Public Module Math
             Me.Z = z
         End Sub ' New
 
+        ''' <summary>
+        ''' Converts the numeric value of this instance to its equivalent string
+        ''' representation.
+        ''' </summary>
+        ''' <returns>
+        ''' The string representation of the value of this instance.
+        ''' </returns>
         Public Overrides Function ToString() As System.String
             Return System.String.Format("<{0}, {1}, {2}>", Me.X, Me.Y, Me.Z)
         End Function ' ToString
 
     End Structure ' Point3D
-
-    ''' <summary>
-    ''' Computes the distance between two points in a 3D space.
-    ''' </summary>
-    ''' <param name="p1">Specifies one point.</param>
-    ''' <param name="p2">Specifies the other point.</param>
-    ''' <returns>The distance between the two points.</returns>
-    Public Function Distance3D(ByVal p1 As Point3D, ByVal p2 As Point3D) _
-        As System.Double
-
-        ' Based on the Pythagorean theorem.
-        Dim DeltaX As System.Double = p2.X - p1.X
-        Dim DeltaY As System.Double = p2.Y - p1.Y
-        Dim DeltaZ As System.Double = p2.Z - p1.Z
-        Return System.Math.Sqrt(
-            (DeltaX * DeltaX) + (DeltaY * DeltaY) + (DeltaZ * DeltaZ))
-    End Function ' Distance3D
 
     ''' <summary>
     ''' Computes the distance between two points in a 3D space.
@@ -244,6 +235,23 @@ Public Module Math
         Dim DeltaX As System.Double = x2 - x1
         Dim DeltaY As System.Double = y2 - y1
         Dim DeltaZ As System.Double = z2 - z1
+        Return System.Math.Sqrt(
+            (DeltaX * DeltaX) + (DeltaY * DeltaY) + (DeltaZ * DeltaZ))
+    End Function ' Distance3D
+
+    ''' <summary>
+    ''' Computes the distance between two points in a 3D space.
+    ''' </summary>
+    ''' <param name="p1">Specifies one point.</param>
+    ''' <param name="p2">Specifies the other point.</param>
+    ''' <returns>The distance between the two points.</returns>
+    Public Function Distance3D(ByVal p1 As Point3D, ByVal p2 As Point3D) _
+        As System.Double
+
+        ' Based on the Pythagorean theorem.
+        Dim DeltaX As System.Double = p2.X - p1.X
+        Dim DeltaY As System.Double = p2.Y - p1.Y
+        Dim DeltaZ As System.Double = p2.Z - p1.Z
         Return System.Math.Sqrt(
             (DeltaX * DeltaX) + (DeltaY * DeltaY) + (DeltaZ * DeltaZ))
     End Function ' Distance3D

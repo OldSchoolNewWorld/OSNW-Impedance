@@ -63,7 +63,7 @@
         ''' Dimensions are in generic "units".
         ''' </summary>
         ''' <exception cref="System.ArgumentOutOfRangeException"> Thrown when
-        ''' the value is infinite.</exception>"
+        ''' the value is infinite or negative.</exception>"
         Public Property Radius As System.Double
             Get
                 Return Me.m_Radius
@@ -75,13 +75,13 @@
                     Throw New System.ArgumentOutOfRangeException(
                         NameOf(Radius), MSGCHIV)
                 End If
-                ' A zero radius seems useless, but may be valid in some unusual
+                ' A zero radius seems useless, but may be valid in some specific
                 ' case.
                 If value < 0.0 Then
                     'Dim CaughtBy As System.Reflection.MethodBase =
                     '    System.Reflection.MethodBase.GetCurrentMethod
                     Throw New System.ArgumentOutOfRangeException(
-                        NameOf(value), OSNW.Math.MSGCHNV)
+                        NameOf(Radius), OSNW.Math.MSGCHNV)
                 End If
 
                 Me.m_Radius = value
@@ -94,7 +94,7 @@
         ''' Dimensions are in generic "units".
         ''' </summary>
         ''' <exception cref="System.ArgumentOutOfRangeException"> Thrown when
-        ''' the value is infinite.</exception>"
+        ''' the value is infinite or negative.</exception>"
         Public Property Diameter As System.Double
             ' DEV: Being functionally redundant, this may need to be excluded
             ' from any serialization process.
@@ -108,13 +108,13 @@
                     Throw New System.ArgumentOutOfRangeException(
                         NameOf(Diameter), MSGCHIV)
                 End If
-                ' A zero radius seems useless, but may be valid in some unusual
+                ' A zero radius seems useless, but may be valid in some specific
                 ' case.
                 If value < 0.0 Then
                     'Dim CaughtBy As System.Reflection.MethodBase =
                     '    System.Reflection.MethodBase.GetCurrentMethod
                     Throw New System.ArgumentOutOfRangeException(
-                        NameOf(value), OSNW.Math.MSGCHNV)
+                        NameOf(Diameter), OSNW.Math.MSGCHNV)
                 End If
 
                 Me.Radius = value / 2.0
@@ -129,11 +129,10 @@
         ''' <summary>
         ''' A default constructor that creates a new instance of the
         ''' <c>Circle2D</c> class with default center coordinates and radius.
+        ''' The default is a unit circle centered at the origin.
         ''' </summary>
-        ''' <remarks>
-        ''' A default constructor is required to allow inheritance.
-        ''' </remarks>
         Public Sub New()
+            ' A default constructor is required to allow inheritance.
             With Me
                 '.m_CenterX = 0.0
                 '.m_CenterY = 0.0
@@ -172,7 +171,7 @@
                 Throw New System.ArgumentOutOfRangeException(
                     $"Arguments to {NameOf(CaughtBy)} {MSGCHIV}")
             End If
-            ' A zero radius seems useless, but may be valid in some unusual
+            ' A zero radius seems useless, but may be valid in some specific
             ' case.
             If radius < 0.0 Then
                 'Dim CaughtBy As System.Reflection.MethodBase =
@@ -216,7 +215,7 @@
                 Throw New System.ArgumentOutOfRangeException(
                     $"Arguments to {NameOf(CaughtBy)} {MSGCHIV}")
             End If
-            ' A zero radius seems useless, but may be valid in some unusual
+            ' A zero radius seems useless, but may be valid in some specific
             ' case.
             If radius < 0.0 Then
                 'Dim CaughtBy As System.Reflection.MethodBase =
@@ -274,15 +273,16 @@
         ''' <paramref name="intersect2Y"/>.</returns>
         ''' <remarks>
         ''' A vertical line (infinite slope) will not have a Y-intercept, except
-        ''' when that line passes through the circle center, a case which would
+        ''' when that line passes through the circle center - a case which would
         ''' have infinite common points.
         ''' <br/>
         ''' To avoid throwing an exception, <c>False</c> is returned
-        ''' when <paramref name="circleX"/>, <paramref name="circleY"/>,
-        ''' <paramref name="circleR"/>, <paramref name="lineM"/>, or
-        ''' <paramref name="lineB"/> is infinite,
+        ''' when any of <paramref name="circleX"/>, <paramref name="circleY"/>,
+        ''' <paramref name="circleR"/>, <paramref name="lineM"/>,
+        ''' <paramref name="lineB"/>, or
+        ''' <paramref name="circleR"/> is infinite,
         ''' or
-        ''' when <paramref name="circleR"/> is less than or equal to zero.
+        ''' when <paramref name="circleR"/> is negative.
         ''' </remarks>
         Public Shared Function TryCircleLineIntersections(
             ByVal circleX As System.Double, ByVal circleY As System.Double,
@@ -294,28 +294,31 @@
 
             ' Input checking.
             ' Suspended to avoid exceptions:
-            '        If System.Double.IsInfinity(circleX) OrElse
-            '            System.Double.IsInfinity(circleY) OrElse
-            '            System.Double.IsInfinity(circleR) OrElse
-            '            System.Double.IsInfinity(lineM) OrElse
-            '            System.Double.IsInfinity(lineB) Then
-            '            'Dim CaughtBy As System.Reflection.MethodBase =
-            '            '    System.Reflection.MethodBase.GetCurrentMethod
-            '            Throw New System.ArgumentOutOfRangeException(
-            '                $"Arguments to {NameOf(TryCircleLineIntersections) {MSGCHIV")
-            '        End If
-            '        If circleR <= 0.0 Then
-            '            'Dim CaughtBy As System.Reflection.MethodBase =
-            '            '    System.Reflection.MethodBase.GetCurrentMethod
-            '            Throw New System.ArgumentOutOfRangeException(
-            '                NameOf(circleR), MSGVMBGTZ)
-            '        End If
+            'If System.Double.IsInfinity(circleX) OrElse
+            '    System.Double.IsInfinity(circleY) OrElse
+            '    System.Double.IsInfinity(circleR) OrElse
+            '    System.Double.IsInfinity(lineM) OrElse
+            '    System.Double.IsInfinity(lineB) Then
+            '    'Dim CaughtBy As System.Reflection.MethodBase =
+            '    '    System.Reflection.MethodBase.GetCurrentMethod
+            '    Throw New System.ArgumentOutOfRangeException(
+            '        $"Arguments to {NameOf(TryCircleLineIntersections)} {MSGCHIV}")
+            'End If
+            '' A zero radius seems useless, but may be valid in some specific
+            '' case.
+            'If circleR < 0.0 Then
+            '    'Dim CaughtBy As System.Reflection.MethodBase =
+            '    '    System.Reflection.MethodBase.GetCurrentMethod
+            '    Throw New System.ArgumentOutOfRangeException(
+            '            NameOf(circleR), OSNW.Math.MSGCHNV)
+            'End If
             If System.Double.IsInfinity(circleX) OrElse
                 System.Double.IsInfinity(circleY) OrElse
                 System.Double.IsInfinity(circleR) OrElse
                 System.Double.IsInfinity(lineM) OrElse
                 System.Double.IsInfinity(lineB) OrElse
-                circleR <= 0.0 Then
+                System.Double.IsInfinity(circleR) OrElse
+                circleR < 0.0 Then
                 Return False
             End If
 
@@ -879,7 +882,7 @@
                 intersect2Y = Double.NaN
                 Return False 'To avoid an exception.
             End If
-            ' A zero radius seems useless, but may be valid in some unusual
+            ' A zero radius seems useless, but may be valid in some specific
             ' case.
             ' Non-intersecting circles fail.
             ' Concentric circles (same center), will have either zero or
