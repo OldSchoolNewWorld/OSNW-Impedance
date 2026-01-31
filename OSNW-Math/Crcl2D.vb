@@ -324,73 +324,50 @@
 
             ' The derivation follows:
             ' Standard form of a circle and a line.
-            ' (X - circleX)^2 + (Y - circleY)^2 = circleR^2
-            ' Y = lineM * X + B
+            ' (X - CenterX)^2 + (Y - CenterY)^2 = Radius^2
+            ' Y = M*X + B
 
-            ' Localize parameters, for one point of intersection.
-            ' (intersect1X - circleX)^2 + (intersect1Y - circleY)^2 = circleR^2
-            ' y1 = lineM * intersect1X + lineB
+            ' Localize the parameters for one generic (X, Y) point of
+            ' intersection.
+            ' (X - circleX)^2 + (Y - circleY)^2 = circleR^2
+            ' Y = lineM*X + lineB
 
             ' A point at the intersection of the circle and the line conforms to
-            ' both equations.
-            ' (intersect1X - circleX)^2
-            '     + ((lineM * intersect1X + lineB)- circleY)^2 = circleR^2
-            ' (intersect1X - circleX)^2
-            '     + (lineM * intersect1X + lineB - circleY)^2 = circleR^2
-
-            ' Rewrite for visibility.
-            ' (intersect1X - circleX)^2
-            ' + ((lineM * intersect1X) + lineB - circleY)^2
-            ' = circleR^2
+            ' both equations. Substitute Y from the second equation into Y in
+            ' the first equation.
+            ' (X - circleX)^2 + (lineM*X + lineB - circleY)^2 = circleR^2
 
             ' Expand the squares.
-            ' intersect1X^2 - (2 * circleX * intersect1X) + circleX^2
-            ' + (lineM * intersect1X)
-            '     * ((lineM * intersect1X) + lineB - circleY)
-            ' + lineB * ((lineM * intersect1X) + lineB - circleY)
-            ' - circleY * ((lineM * intersect1X) + lineB - circleY)
+            ' X^2 - 2*X*circleX + circleX^2
+            ' + lineM*X*(lineM*X + lineB - circleY)
+            ' + lineB*(lineM*X + lineB - circleY)
+            ' - circleY*(lineM*X + lineB - circleY)
             ' = circleR^2
 
             ' Distribute the multiplications.
-            ' intersect1X^2 -2*circleX*intersect1X + circleX^2
-            ' + (lineM*intersect1X*lineM*intersect1X + lineM*intersect1X*lineB
-            '     - lineM*intersect1X*circleY)
-            ' + (lineB*lineM*intersect1X + lineB*lineB - lineB*circleY)
-            ' - (circleY*lineM*intersect1X + circleY*lineB - circleY*circleY)
-            ' = circleR^2
+            ' X^2 - 2*X*circleX + circleX^2
+            ' + lineM^2*X^2 + lineM*lineB*X - lineM*circleY*X
+            ' + lineM*lineB*X + lineB^2 - lineB*circleY
+            ' - lineM*circleY*X - lineB*circleY + circleY^2 - circleR^2
+            ' = 0
 
-            ' Normalize terms.
-            ' intersect1X^2 -2*circleX*intersect1X + circleX^2
-            ' + lineM^2*intersect1X^2 + lineM*lineB*intersect1X
-            '     - lineM*circleY*intersect1X
-            ' + lineB*lineM*intersect1X + lineB^2 - lineB*circleY
-            ' - circleY*lineM*intersect1X - circleY*lineB + circleY*circleY
-            ' = circleR^2
-
-            ' Gather like terms. Arrange for quadratic formula.
-            ' intersect1X^2 + (lineM^2)*intersect1X^2
-            ' -(2*circleX)*intersect1X + (2*lineM*lineB)*intersect1X
-            '     - (2*lineM*circleY)*intersect1X
+            ' Gather like terms.
+            ' X^2 + lineM^2*X^2
+            ' + (2*lineM*lineB)*X - (2*circleX)*X - (2*lineM*circleY)*X
             ' + circleX^2 + lineB^2 - 2*lineB*circleY + circleY^2 - circleR^2
             ' = 0
 
-            ' Extract X terms.
-            ' (1 + (lineM^2))*intersect1X^2
-            ' + (lineM*(lineB - circleY) - circleX)*2*intersect1X
-            ' circleX^2 + lineB*(lineB - 2*circleY) + circleY^2 - circleR^2
-            ' = 0
+            ' Extract the X terms, then the common 2, then the common lineM.
+            ' (1 + lineM^2)*X^2
+            ' + 2*([lineM*(lineB - circleY)] - circleX)*X
+            ' + circleX^2 + lineB^2 - 2*lineB*circleY + circleY^2 - circleR^2
 
             ' Set up for the quadratic formula.
-            ' a = (1 + (lineM^2))
-            ' b = (lineM*(lineB - circleY) - circleX)*2
-            ' c = circleX^2 + lineB*(lineB - 2*circleY) + circleY^2 - circleR^2
+            Dim a As Double = 1 + lineM ^ 2
+            Dim b As Double = 2 * ((lineM * (lineB - circleY)) - circleX)
+            Dim c As Double = circleX ^ 2 + lineB ^ 2 - 2 * lineB * circleY _
+                + circleY ^ 2 - circleR ^ 2
 
-            ' Implementation:
-
-            Dim a As System.Double = 1 + (lineM ^ 2)
-            Dim b As System.Double = 2 * (lineM * (lineB - circleY) - circleX)
-            Dim c As System.Double = circleX ^ 2 +
-                lineB * (lineB - 2 * circleY) + circleY ^ 2 - circleR ^ 2
             If Not TryQuadratic(a, b, c, intersect1X, intersect2X) Then
                 intersect1X = System.Double.NaN
                 intersect1Y = System.Double.NaN
