@@ -390,8 +390,8 @@
         '''' <paramref name="lineX2"/>, <paramref name="lineY1"/>, or
         '''' <paramref name="lineY2"/> is infinite.
         '''' </exception>
-        '''' <exception cref="System.ArgumentOutOfRangeException">
-        '''' Thrown when <paramref name="circleR"/> is less than or equal to zero.
+        '''' <exception cref="System.ArgumentOutOfRangeException">Thrown when
+        '''' <paramref name="circleR"/> is less than or equal to zero.
         '''' </exception>
         ''' <summary>
         ''' Attempts to solve where a line intersects a circle, given the center
@@ -403,13 +403,13 @@
         ''' <param name="circleY">Specifies the Y-coordinate of the center of
         ''' the circle.</param>
         ''' <param name="circleR">Specifies the radius of the circle.</param>
-        ''' <param name="lineX1">Specifies the X-coordinate of the first point
+        ''' <param name="line1X">Specifies the X-coordinate of the first point
         ''' on the line.</param>
-        ''' <param name="lineY1">Specifies the Y-coordinate of the first point
+        ''' <param name="line1Y">Specifies the Y-coordinate of the first point
         ''' on the line.</param>
-        ''' <param name="lineX2">Specifies the X-coordinate of the second point
+        ''' <param name="line2X">Specifies the X-coordinate of the second point
         ''' on the line.</param>
-        ''' <param name="lineY2">Specifies the Y-coordinate of the second point
+        ''' <param name="line2Y">Specifies the Y-coordinate of the second point
         ''' on the line.</param>
         ''' <param name="intersect1X">Specifies the X-coordinate of one
         ''' intersection.</param>
@@ -428,8 +428,8 @@
         ''' <remarks>
         ''' To avoid throwing an exception, <c>False</c> is returned
         ''' when <paramref name="circleX"/>, <paramref name="circleY"/>,
-        ''' <paramref name="circleR"/>, <paramref name="lineX1"/>,
-        ''' or <paramref name="lineY1"/>, or <paramref name="lineY2"/> is
+        ''' <paramref name="circleR"/>, <paramref name="line1X"/>,
+        ''' or <paramref name="line1Y"/>, or <paramref name="line2Y"/> is
         ''' infinite,
         ''' or
         ''' when <paramref name="circleR"/> is less than or equal to zero.
@@ -437,8 +437,8 @@
         Public Shared Function TryCircleLineIntersections(
             ByVal circleX As System.Double,
             ByVal circleY As System.Double, ByVal circleR As System.Double,
-            ByVal lineX1 As System.Double, ByVal lineY1 As System.Double,
-            ByVal lineX2 As System.Double, ByVal lineY2 As System.Double,
+            ByVal line1X As System.Double, ByVal line1Y As System.Double,
+            ByVal line2X As System.Double, ByVal line2Y As System.Double,
             ByRef intersect1X As System.Double,
             ByRef intersect1Y As System.Double,
             ByRef intersect2X As System.Double,
@@ -449,14 +449,14 @@
             '       If System.Double.IsInfinity(circleX) OrElse
             '           System.Double.IsInfinity(circleY) OrElse
             '           System.Double.IsInfinity(circleR) OrElse
-            '           System.Double.IsInfinity(lineX1) OrElse
-            '           System.Double.IsInfinity(lineY1) OrElse
-            '           System.Double.IsInfinity(lineX2) OrElse
-            '           System.Double.IsInfinity(lineY2) Then
+            '           System.Double.IsInfinity(line1X) OrElse
+            '           System.Double.IsInfinity(line1Y) OrElse
+            '           System.Double.IsInfinity(line2X) OrElse
+            '           System.Double.IsInfinity(line2Y) Then
             '           'Dim CaughtBy As System.Reflection.MethodBase =
             '           '    System.Reflection.MethodBase.GetCurrentMethod
             '           Throw New System.ArgumentOutOfRangeException(
-            '               $"Arguments to {NameOf(TryCircleLineIntersections) {MSGCHIV")
+            '               $"Arguments to {NameOf(TryCircleLineIntersections)} {MSGCHIV}")
             '       End If
             '        If circleR <= 0.0 Then
             '            'Dim CaughtBy As System.Reflection.MethodBase =
@@ -467,21 +467,21 @@
             If System.Double.IsInfinity(circleX) OrElse
                 System.Double.IsInfinity(circleY) OrElse
                 System.Double.IsInfinity(circleR) OrElse
-                System.Double.IsInfinity(lineX1) OrElse
-                System.Double.IsInfinity(lineY1) OrElse
-                System.Double.IsInfinity(lineX2) OrElse
-                System.Double.IsInfinity(lineY2) OrElse
+                System.Double.IsInfinity(line1X) OrElse
+                System.Double.IsInfinity(line1Y) OrElse
+                System.Double.IsInfinity(line2X) OrElse
+                System.Double.IsInfinity(line2Y) OrElse
                 circleR <= 0.0 Then
                 Return False
             End If
 
             ' Check for a vertical line.
-            Dim DeltaX As System.Double = lineX2 - lineX1
+            Dim DeltaX As System.Double = line2X - line1X
             If DeltaX.Equals(0.0) Then
-                ' Vertical line; X = lineX1.
+                ' Vertical line; X = line1X.
 
                 ' Can there be an intersection?
-                If System.Math.Abs(lineX1 - circleX) > circleR Then
+                If System.Math.Abs(line1X - circleX) > circleR Then
                     ' No intersection possible.
                     intersect1X = System.Double.NaN
                     intersect1Y = System.Double.NaN
@@ -491,28 +491,31 @@
                 End If
 
                 ' The derivation follows:
-                ' Standard form of a circle and a line.
+                ' Standard form of a circle.
                 ' (X - h)^2 + (Y - k)^2 = r^2
 
-                ' Substitute parameters into well-known circle equation.
+                ' Substitute parameters into standard form equation. Solve for
+                ' X.
                 ' (X - circleX)^2 + (Y - circleY)^2 = circleR^2
                 ' (Y - circleY)^2 = circleR^2 - (X - circleX)^2
                 ' Y - circleY = sqrt(circleR^2 - (X - circleX)^2)
                 ' Y = circleY + sqrt(circleR^2 - (X - circleX)^2)
-                ' Y = circleY + sqrt(circleR^2 - (lineX1 - circleX)^2)
+
+                ' Use that at one point.
+                ' Y = circleY + sqrt(circleR^2 - (line1X - circleX)^2)
 
                 ' Get the Y values.
-                ' Root = sqrt(circleR^2 - (lineX1 - circleX)^2)
+                ' Root = sqrt(circleR^2 - (line1X - circleX)^2)
                 ' intersect1Y = circleY + Root
                 ' intersect2Y = circleY - Root
 
-                Dim Minus As System.Double = lineX1 - circleX
+                Dim Minus As System.Double = line1X - circleX
                 Dim Root As System.Double =
                     System.Math.Sqrt((circleR * circleR) - (Minus * Minus))
                 intersect1Y = circleY + Root
                 intersect2Y = circleY - Root
-                intersect1X = lineX1
-                intersect2X = lineX1 ' Yes, the same assignment.
+                intersect1X = line1X
+                intersect2X = line1X ' Yes, the same assignment.
                 Return True
 
             End If ' Vertical line.
@@ -521,12 +524,12 @@
 
             ' Get the slope of the line.
             ' M = (Y2 - Y1) / (X2 - X1); generic slope.
-            Dim lineM As System.Double = (lineY2 - lineY1) / DeltaX
+            Dim lineM As System.Double = (line2Y - line1Y) / DeltaX
 
             ' Get the equation for the line.
             ' Y = M*X + B; Standard form line.
             ' B = Y - M*X; Solve for the Y-intercept.
-            Dim lineB As System.Double = lineY1 - lineM * lineX1
+            Dim lineB As System.Double = line1Y - lineM * line1X
 
             Return TryCircleLineIntersections(circleX, circleY, circleR, lineM,
                 lineB, intersect1X, intersect1Y, intersect2X, intersect2Y)
@@ -586,8 +589,8 @@
                 ' One inside the other.
                 Return False
             ElseIf x2.Equals(x1) AndAlso y2.Equals(y1) Then
-                ' They are concentric, with either zero or infinite common points.
-                ' The second case is considered not to be intersecting.
+                ' They are concentric, with either zero or infinite common
+                ' points. The second case is considered not to be intersecting.
                 Return False
             End If
             Return True
@@ -672,24 +675,26 @@
             Dim Intersections _
                 As New System.Collections.Generic.List(Of Point2D)
 
-            ' Concentric circles would have either zero or infinite intersecting
-            ' points.
-            If OSNW.Math.EqualEnough(
-                    x1, x2, OSNW.Math.DFLTGRAPHICTOLERANCE) AndAlso
-                OSNW.Math.EqualEnough(
-                    y1, y2, OSNW.Math.DFLTGRAPHICTOLERANCE) Then
-
-                Return Intersections ' Still empty.
-            End If
-
             ' Calculate the distance between the centers of the circles.
             Dim DeltaX As System.Double = x2 - x1
             Dim DeltaY As System.Double = y2 - y1
             Dim DeltaCtr As System.Double =
                 System.Math.Sqrt(DeltaX * DeltaX + DeltaY * DeltaY)
 
-            ' Check if circles are too far apart or if one is contained within,
-            ' but not tangent to, the other.
+            ' Concentric circles would have either zero or infinite intersecting
+            ' points.
+            ' Select a zero reference.
+            Dim MaxAbs As System.Double =
+                OSNW.Math.MaxValAbs({x1, y1, r1, x2, y2, r2})
+            Dim ZeroVal As System.Double =
+                OSNW.Math.DFLTGRAPHICTOLERANCE * MaxAbs
+
+            If OSNW.Math.EqualEnoughZero(DeltaCtr, ZeroVal) Then
+                Return Intersections ' Still empty.
+            End If
+
+            ' Check if the circles are too far apart or if one is contained
+            ' within the other. Tangent circles do not match this test.
             If DeltaCtr > (r1 + r2) OrElse
                 DeltaCtr < System.Math.Abs(r1 - r2) Then
 

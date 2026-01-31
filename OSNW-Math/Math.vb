@@ -290,4 +290,72 @@ Public Module Math
 
     End Function ' TryQuadratic
 
+    ''' <summary>
+    ''' Compares an array of values to compute which is greater.
+    ''' </summary>
+    ''' <param name="values">Specifies the array of values to be
+    ''' examined.</param>
+    ''' <returns>The greatest value in the array.</returns>
+    ''' <remarks>
+    ''' An empty array returns <c>System.Double.NaN</c>.
+    ''' <example>
+    ''' <br/>
+    ''' This example shows how to call <c>MaxVal</c>.
+    ''' <code>
+    ''' Dim MaxAll As System.Double =
+    '''     OSNW.Math.MaxValAbs({x1, y1, r1, x2, y2, r2})
+    ''' </code></example>
+    ''' </remarks>
+    Public Function MaxVal(
+        ByVal ParamArray values() As System.Double) As System.Double
+
+        ' xxxxxxxxxx NO TEST HAS BEEN ADDED FOR THIS. xxxxxxxxxx
+
+        If values.Length <= 0 Then
+            Return System.Double.NaN
+        End If
+        Dim Max As System.Double
+        For Each OneValue As System.Double In values
+            If OneValue > Max Then
+                Max = OneValue
+            End If
+        Next
+        Return Max
+    End Function ' MaxSet
+
+    ''' <summary>
+    ''' Compares an array of values to compute which has the greatest magnitude.
+    ''' </summary>
+    ''' <param name="values">Specifies the array of values to be
+    ''' examined.</param>
+    ''' <returns>The magnitude greatest absolute value in the array.</returns>
+    ''' <remarks>
+    ''' An empty array returns <c>System.Double.NaN</c>. When the array is not
+    ''' empty, this always returns a positive magnitude.
+    ''' <br/><example>
+    ''' This example shows how to call <c>MaxValAbs</c>.
+    ''' <code>
+    ''' Dim MaxAll As System.Double =
+    '''     OSNW.Math.MaxValAbs({x1, y1, r1, x2, y2, r2})
+    ''' </code></example>
+    ''' </remarks>
+    Public Function MaxValAbs(
+        ByVal ParamArray values() As System.Double) As System.Double
+
+        ' xxxxxxxxxx NO TEST HAS BEEN ADDED FOR THIS. xxxxxxxxxx
+
+        If values.Length <= 0 Then
+            Return 0.0
+        End If
+        Dim Max As System.Double
+        Dim AbsVal As System.Double
+        For Each OneValue As System.Double In values
+            AbsVal = System.Math.Abs(OneValue)
+            If AbsVal > Max Then
+                Max = AbsVal
+            End If
+        Next
+        Return AbsVal
+    End Function ' MaxSetAbs
+
 End Module ' Math

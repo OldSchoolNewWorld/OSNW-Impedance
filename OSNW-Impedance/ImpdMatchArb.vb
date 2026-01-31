@@ -260,7 +260,7 @@ Public Class ImageImpedanceList
     '''' be added.</param>
     '''' <exception cref="System.NotSupportedException">
     '''' When the <see cref="ImageImpedanceList"/> is read-only or the
-    '''' <see cref="ImageImpedanceList"/> ***** has a fixed size *****.
+    '''' <see cref="ImageImpedanceList"/> *** has a fixed size ***.
     '''' </exception>
     '''' <returns>The <see cref="ImageImpedanceList"/> index at which the
     '''' <paramref name="value"/> has been added.</returns>
@@ -276,7 +276,7 @@ Public Class ImageImpedanceList
     '''' <param name="value">xxxxxxxxxx</param>
     '''' <exception cref="System.NotSupportedException">
     '''' When the <see cref="ImageImpedanceList"/> is read-only or the
-    '''' <see cref="ImageImpedanceList"/> ***** has a fixed size *****.
+    '''' <see cref="ImageImpedanceList"/> *** has a fixed size ***.
     '''' </exception>
     '''' <returns>Never returns a value. An exception is always thrown.</returns>
     'Public Shared Shadows Function Add(value As System.Object) As System.Int32
