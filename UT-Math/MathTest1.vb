@@ -1,4 +1,3 @@
-Imports System
 Imports Xunit
 Imports OsnwCircle2D = OSNW.Math.Circle2D
 
@@ -13,7 +12,85 @@ End Namespace ' EqualityTests
 
 
 
-Namespace MathTests
+Namespace NumericTests
+
+#Region "MaxValTests"
+
+    Public Class TestGeometricMean
+
+        ' Test data found at:
+        ' https://www.statisticshowto.com/geometric-mean/
+
+        <Fact>
+        Sub GeometricMean_Ex1_Succeeds()
+            Dim Tolerance As Double = 0.001
+            Assert.True(OSNW.Math.EqualEnough(3.3019, OSNW.Math.GeometricMean({2, 3, 6}), Tolerance))
+        End Sub
+
+        <Fact>
+        Sub GeometricMean_Ex2_Succeeds()
+            Dim Tolerance As Double = 0.001
+            Assert.True(OSNW.Math.EqualEnough(6.81, OSNW.Math.GeometricMean({4, 8, 3, 9, 17}), Tolerance))
+        End Sub
+
+        <Fact>
+        Sub GeometricMean_Ex3_Succeeds()
+            Dim Tolerance As Double = 0.001
+            Assert.True(OSNW.Math.EqualEnough(0.3528, OSNW.Math.GeometricMean({1 / 2, 1 / 4, 1 / 5, 9 / 72, 7 / 4}), Tolerance))
+        End Sub
+
+    End Class
+
+    Public Class TestMaxVal
+
+        <Fact>
+        Sub MaxVal_InlineArray_Succeeds()
+            Assert.True(OSNW.Math.MaxVal({1, 3, 5, 4, 2}).Equals(5))
+        End Sub
+
+        <Fact>
+        Sub MaxVal_Negative_Succeeds()
+            Assert.True(OSNW.Math.MaxVal({1, 3, -5, 4, 2}).Equals(4))
+        End Sub
+
+        <Fact>
+        Sub MaxVal_PassedArray_Succeeds()
+            Dim Values As Double() = {1, 3, 5, 4, 2}
+            Assert.True(OSNW.Math.MaxVal(Values).Equals(5))
+        End Sub
+
+    End Class
+
+    Public Class TestMaxValAbs
+
+        <Fact>
+        Sub MaxValAbs_InlineArray_Succeeds()
+            Assert.True(OSNW.Math.MaxValAbs({1, 3, 5, 4, 2}).Equals(5))
+        End Sub
+
+        <Fact>
+        Sub MaxValAbs_Negative_Succeeds()
+            Assert.True(OSNW.Math.MaxValAbs({1, 3, -5, 4, 2}).Equals(5))
+        End Sub
+
+        <Fact>
+        Sub MaxValAbs_PassedArray_Succeeds()
+            Dim Val1 As Double = 1
+            Dim Val2 As Double = 3
+            Dim Val3 As Double = -5
+            Dim Val4 As Double = 4
+            Dim Val5 As Double = 2
+            Dim Values As Double() = {Val1, Val2, Val3, Val4, Val5}
+            Assert.True(OSNW.Math.MaxValAbs(Values).Equals(5))
+        End Sub
+
+    End Class
+
+#End Region ' "MaxValTests"
+
+End Namespace ' NumericTests    
+
+Namespace GeometricTests
 
     Public Class TestTryCircleLineIntersections
 
@@ -152,7 +229,7 @@ Namespace MathTests
         <InlineData(2.5, 6.25, 1.5, 3.5, 6.25, 1, 3.625, 7.242, 3.625, 5.2576)> ' Horizontal overlap circles.
         <InlineData(2.5, 6.25, 1.5, 3, 6.25, 1, 4, 6.25, 4, 6.25)> ' Horizontal inside-tangent circles.
         <InlineData(2.5, 6.25, 1.5, 5, 6.25, 1, 4, 6.25, 4, 6.25)> ' Horizontal outside-tangent circles.
-        Sub TryCircleCircleIntersectionsPoints_GoodInput_Succeeds(
+        Sub TryCircleCircleIntersectionsPoints_Hint_Succeeds(
             x1 As System.Double, y1 As System.Double, r1 As System.Double,
             x2 As System.Double, y2 As System.Double, r2 As System.Double,
             expecti1x As System.Double, expecti1y As System.Double,
@@ -160,16 +237,12 @@ Namespace MathTests
 
             Const TOLERANCE As Double = 0.001
 
-            Dim Out1x As System.Double
-            Dim Out1y As System.Double
-            Dim Out2x As System.Double
-            Dim Out2y As System.Double
-
             ' Run the in-progress tests, supplying the expected results.
-            Out1x = expecti1x
-            Out1y = expecti1y
-            Out2x = expecti2x
-            Out2y = expecti2y
+            Dim Out1x As System.Double = expecti1x
+            Dim Out1y As System.Double = expecti1y
+            Dim Out2x As System.Double = expecti2x
+            Dim Out2y As System.Double = expecti2y
+
             If Not OsnwCircle2D.TryCircleCircleIntersections(x1, y1, r1, x2, y2, r2, Out1x, Out1y, Out2x, Out2y) Then
                 ' It failed internally.
                 Assert.True(False)
@@ -181,16 +254,32 @@ Namespace MathTests
                 Assert.Equal(expecti2y, Out2y, TOLERANCE * expecti2y)
             End If
 
-            ' Test the normal process, without providing any hints.
-            Out1x = 0.0
-            Out1y = 0.0
-            Out2x = 0.0
-            Out2y = 0.0
+        End Sub
+
+        <Theory>
+        <InlineData(1.75, 6.75, 1.5, 3, 6.25, 1, 3.1692, 7.2356, 2.4428, 5.4196)> ' General overlap case.
+        <InlineData(2.5, 6.25, 1.5, 3.5, 6.25, 1, 3.625, 7.242, 3.625, 5.2576)> ' Horizontal overlap circles.
+        <InlineData(2.5, 6.25, 1.5, 3, 6.25, 1, 4, 6.25, 4, 6.25)> ' Horizontal inside-tangent circles.
+        <InlineData(2.5, 6.25, 1.5, 5, 6.25, 1, 4, 6.25, 4, 6.25)> ' Horizontal outside-tangent circles.
+        Sub TryCircleCircleIntersectionsPoints_NoHint_Succeeds(
+            x1 As System.Double, y1 As System.Double, r1 As System.Double,
+            x2 As System.Double, y2 As System.Double, r2 As System.Double,
+            expecti1x As System.Double, expecti1y As System.Double,
+            expecti2x As System.Double, expecti2y As System.Double)
+
+            Const TOLERANCE As Double = 0.001
+
+            ' Skip in-progress tests, not supplying the expected results.
+            Dim Out1x As System.Double
+            Dim Out1y As System.Double
+            Dim Out2x As System.Double
+            Dim Out2y As System.Double
+
             If Not OsnwCircle2D.TryCircleCircleIntersections(x1, y1, r1, x2, y2, r2, Out1x, Out1y, Out2x, Out2y) Then
                 ' It failed internally.
                 Assert.True(False)
             Else
-                ' It thinks all went ok; check the actual results.
+                ' It thinks all went ok; check actual results.
                 Assert.Equal(expecti1x, Out1x, TOLERANCE * expecti1x)
                 Assert.Equal(expecti1y, Out1y, TOLERANCE * expecti1y)
                 Assert.Equal(expecti2x, Out2x, TOLERANCE * expecti2x)
@@ -222,7 +311,7 @@ Namespace MathTests
         <InlineData(2.5, 6.25, 1.5, 3.5, 6.25, 1, 3.625, 7.242, 3.625, 5.2576)> ' Horizontal overlap circles.
         <InlineData(2.5, 6.25, 1.5, 3, 6.25, 1, 4, 6.25, 4, 6.25)> ' Horizontal Inside tangent circles.
         <InlineData(2.5, 6.25, 1.5, 5, 6.25, 1, 4, 6.25, 4, 6.25)> ' Horizontal Outside tangent circles.
-        Sub TryCircleCircleIntersectionsCircles_GoodInput_Succeeds(
+        Sub TryCircleCircleIntersectionsCircles_Hint_Succeeds(
             x1 As System.Double, y1 As System.Double, r1 As System.Double,
             x2 As System.Double, y2 As System.Double, r2 As System.Double,
             expecti1x As System.Double, expecti1y As System.Double,
@@ -233,16 +322,12 @@ Namespace MathTests
             Dim Circle1 As New OsnwCircle2D(x1, y1, r1)
             Dim Circle2 As New OsnwCircle2D(x2, y2, r2)
 
-            Dim Out1x As System.Double
-            Dim Out1y As System.Double
-            Dim Out2x As System.Double
-            Dim Out2y As System.Double
-
             ' Run the in-progress tests, supplying the expected results.
-            Out1x = expecti1x
-            Out1y = expecti1y
-            Out2x = expecti2x
-            Out2y = expecti2y
+            Dim Out1x As System.Double = expecti1x
+            Dim Out1y As System.Double = expecti1y
+            Dim Out2x As System.Double = expecti2x
+            Dim Out2y As System.Double = expecti2y
+
             If Not OsnwCircle2D.TryCircleCircleIntersections(Circle1, Circle2, Out1x, Out1y, Out2x, Out2y) Then
                 ' It failed internally.
                 Assert.True(False)
@@ -254,11 +339,33 @@ Namespace MathTests
                 Assert.Equal(expecti2y, Out2y, TOLERANCE * expecti2y)
             End If
 
-            ' Test the normal process, without providing any hints.
-            Out1x = 0.0
-            Out1y = 0.0
-            Out2x = 0.0
-            Out2y = 0.0
+        End Sub
+
+
+
+
+        <Theory>
+        <InlineData(1.75, 6.75, 1.5, 3, 6.25, 1, 3.1692, 7.2356, 2.4428, 5.4196)> ' General overlap case.
+        <InlineData(2.5, 6.25, 1.5, 3.5, 6.25, 1, 3.625, 7.242, 3.625, 5.2576)> ' Horizontal overlap circles.
+        <InlineData(2.5, 6.25, 1.5, 3, 6.25, 1, 4, 6.25, 4, 6.25)> ' Horizontal Inside tangent circles.
+        <InlineData(2.5, 6.25, 1.5, 5, 6.25, 1, 4, 6.25, 4, 6.25)> ' Horizontal Outside tangent circles.
+        Sub TryCircleCircleIntersectionsCircles_NoHint_Succeeds(
+            x1 As System.Double, y1 As System.Double, r1 As System.Double,
+            x2 As System.Double, y2 As System.Double, r2 As System.Double,
+            expecti1x As System.Double, expecti1y As System.Double,
+            expecti2x As System.Double, expecti2y As System.Double)
+
+            Const TOLERANCE As Double = 0.001
+
+            Dim Circle1 As New OsnwCircle2D(x1, y1, r1)
+            Dim Circle2 As New OsnwCircle2D(x2, y2, r2)
+
+            ' Skip in-progress tests, not supplying the expected results.
+            Dim Out1x As System.Double
+            Dim Out1y As System.Double
+            Dim Out2x As System.Double
+            Dim Out2y As System.Double
+
             If Not OsnwCircle2D.TryCircleCircleIntersections(Circle1, Circle2, Out1x, Out1y, Out2x, Out2y) Then
                 ' It failed internally.
                 Assert.True(False)
@@ -274,4 +381,4 @@ Namespace MathTests
 
     End Class ' TryCircleCircleIntersectionsTests
 
-End Namespace ' MathTests
+End Namespace ' GeometricTests

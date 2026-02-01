@@ -9,12 +9,76 @@ Public Module Math
 
     ''' <summary>
     ''' This sets a practical limit on the precision of equality detection in
-    ''' graphics operations. It is intended to prevent issues arising from
-    ''' floating point precision limitations. This should account for
-    ''' indistinguishable, sub-pixel, differences on any current monitor or
-    ''' printer. A smaller value DEcreases the liklihood of detecting equality;
-    ''' a larger value INcreases the liklihood of detecting equality.
+    ''' mathematical operations. It is intended to prevent issues arising from
+    ''' minor inequalities due to floating point precision limitations. A
+    ''' smaller value DEcreases the liklihood of detecting equality; a larger
+    ''' value INcreases the liklihood of detecting equality.
     ''' </summary>
+    ''' <remarks>
+    ''' This is intended to be used as a factor to be multiplied by some
+    ''' practical reference value.<br/>
+    ''' <example>
+    ''' This example uses the <c>DFLTEQUALITYTOLERANCE</c> value to determine if
+    ''' two values are close enough to be treated as being equal. In the case of
+    ''' <see cref="OSNW.Math.EqualEnough(Double, Double, Double)"/>,
+    ''' the reference value is the "refVal" parameter.
+    ''' <code>
+    ''' Public Shared Sub EqualityTest
+    '''
+    '''     Dim Tol As System.Double = OSNW.Math.DFLTEQUALITYTOLERANCE
+    '''     Dim RefVal As System.Double = 50.0
+    '''     Dim TestVal As System.Double = 50.000049
+    '''
+    '''     if OSNW.Math.EqualEnough(TestVal, RefVal, Tol) then
+    '''         '
+    '''         ' Code for a match.
+    '''         '
+    '''     else
+    '''         '
+    '''         ' Code for a mismatch.
+    '''         '
+    '''     end if
+    '''
+    ''' End Sub
+    ''' </code></example>
+    ''' </remarks>
+    Public Const DFLTEQUALITYTOLERANCE As System.Double = 0.000_001
+
+    ''' <summary>
+    ''' This sets a practical limit on the precision of equality detection in
+    ''' graphics operations. It is intended to prevent issues arising from
+    ''' floating point precision limitations. A smaller value DEcreases the
+    ''' liklihood of detecting equality; a larger value INcreases the liklihood
+    ''' of detecting equality.
+    ''' </summary>
+    ''' <remarks>
+    ''' The default value will generally accommodate indistinguishable,
+    ''' sub-pixel, differences on any current monitor or printer.<br/>
+    ''' <example>
+    ''' This example uses the <c>DFLTGRAPHICTOLERANCE</c> value to determine if
+    ''' two values are close enough to be treated as being equal. In the case of
+    ''' <see cref="OSNW.Math.EqualEnough(Double, Double, Double)"/>,
+    ''' the reference value is the "refVal" parameter.
+    ''' <code>
+    ''' Public Shared Sub GraphicEqualityTest
+    '''
+    '''     Dim RefVal As System.Double = 100.0
+    '''     Dim TestVal As System.Double = 100.00005
+    '''     Dim Tol As System.Double = OSNW.Math.DFLTGRAPHICTOLERANCE
+    '''
+    '''     if OSNW.Math.EqualEnough(TestVal, RefVal, Tol) then
+    '''         '
+    '''         ' Code for a match.
+    '''         '
+    '''     else
+    '''         '
+    '''         ' Code for a mismatch.
+    '''         '
+    '''     end if
+    '''
+    ''' End Sub
+    ''' </code></example>
+    ''' </remarks>
     Public Const DFLTGRAPHICTOLERANCE As System.Double = 0.0001
 
     ' Just for shorthand.
@@ -309,11 +373,11 @@ Public Module Math
     Public Function MaxVal(
         ByVal ParamArray values() As System.Double) As System.Double
 
-        ' xxxxxxxxxx NO TEST HAS BEEN ADDED FOR THIS. xxxxxxxxxx
-
+        ' Input checking.
         If values.Length <= 0 Then
             Return System.Double.NaN
         End If
+
         Dim Max As System.Double
         For Each OneValue As System.Double In values
             If OneValue > Max Then
@@ -321,6 +385,7 @@ Public Module Math
             End If
         Next
         Return Max
+
     End Function ' MaxSet
 
     ''' <summary>
@@ -342,11 +407,11 @@ Public Module Math
     Public Function MaxValAbs(
         ByVal ParamArray values() As System.Double) As System.Double
 
-        ' xxxxxxxxxx NO TEST HAS BEEN ADDED FOR THIS. xxxxxxxxxx
-
+        ' Input checking.
         If values.Length <= 0 Then
-            Return 0.0
+            Return System.Double.NaN
         End If
+
         Dim Max As System.Double
         Dim AbsVal As System.Double
         For Each OneValue As System.Double In values
@@ -355,7 +420,24 @@ Public Module Math
                 Max = AbsVal
             End If
         Next
-        Return AbsVal
+        Return Max
+
     End Function ' MaxSetAbs
+
+    Public Function GeometricMean(
+        ByVal ParamArray values() As System.Double) As System.Double
+
+        ' Input checking.
+        If values.Length = 0 Then
+            Return System.Double.NaN
+        End If
+
+        Dim Product As System.Double = 1.0
+        For Each OneValue As System.Double In values
+            Product *= OneValue
+        Next
+        Return System.Math.Pow(Product, 1.0 / values.Length)
+
+    End Function ' GeometricMean
 
 End Module ' Math

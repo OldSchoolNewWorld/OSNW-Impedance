@@ -1,4 +1,6 @@
-﻿Partial Public Module Math
+﻿Imports System.Net
+
+Partial Public Module Math
 
     ''' <summary>
     ''' A base class that represents the geometry of a generic circle, with a
@@ -245,6 +247,7 @@
         '''' <exception cref="System.ArgumentOutOfRangeException"> Thrown when
         '''' <paramref name="circleR"/> is less than or equal to zero.
         '''' </exception>
+        '''' ''''''''''''''''''''''''''''''''''
         ''' <summary>
         ''' Attempts to solve where a line intersects a circle, given the center
         ''' coordinates and radius of the circle, along with the slope and
@@ -292,7 +295,6 @@
             ByRef intersect2X As System.Double,
             ByRef intersect2Y As System.Double) As System.Boolean
 
-            ' Input checking.
             ' Suspended to avoid exceptions:
             'If System.Double.IsInfinity(circleX) OrElse
             '    System.Double.IsInfinity(circleY) OrElse
@@ -312,6 +314,8 @@
             '    Throw New System.ArgumentOutOfRangeException(
             '            NameOf(circleR), OSNW.Math.MSGCHNV)
             'End If
+            ' ''''''''''''''''''''''''''''''''''
+            ' Input checking.
             If System.Double.IsInfinity(circleX) OrElse
                 System.Double.IsInfinity(circleY) OrElse
                 System.Double.IsInfinity(circleR) OrElse
@@ -323,52 +327,60 @@
             End If
 
             ' The derivation follows:
-            ' Standard form of a circle and a line.
-            ' (X - CenterX)^2 + (Y - CenterY)^2 = Radius^2
-            ' Y = M*X + B
+            ' DEV: Any square brackets, braces, and split lines below are used
+            ' for visual clarity across the various steps. "h", "k", "r", "m",
+            ' "b", and squared values are carried through the derivation, in
+            ' keeping with the standard form. The actual parameters, and
+            ' multiplication vs. squaring, are substituted in the
+            ' implementation.
 
-            ' Localize the parameters for one generic (X, Y) point of
-            ' intersection.
-            ' (X - circleX)^2 + (Y - circleY)^2 = circleR^2
-            ' Y = lineM*X + lineB
+            ' Standard form of a circle and a line.
+            ' (X - h)^2 + (Y - k)^2 = r^2
+            ' Y = m*X + b
 
             ' A point at the intersection of the circle and the line conforms to
-            ' both equations. Substitute Y from the second equation into Y in
-            ' the first equation.
-            ' (X - circleX)^2 + (lineM*X + lineB - circleY)^2 = circleR^2
+            ' both equations. Substitute the second equation into the first.
+            ' (X - h)^2 + (m*X + b - k)^2 = r^2
 
             ' Expand the squares.
-            ' X^2 - 2*X*circleX + circleX^2
-            ' + lineM*X*(lineM*X + lineB - circleY)
-            ' + lineB*(lineM*X + lineB - circleY)
-            ' - circleY*(lineM*X + lineB - circleY)
-            ' = circleR^2
+            ' X^2 - 2*h*X + h^2
+            ' + m*X*(m*X + b - k)
+            ' + b*(m*X + b - k)
+            ' - k*(m*X + b - k)
+            ' = r^2
 
             ' Distribute the multiplications.
-            ' X^2 - 2*X*circleX + circleX^2
-            ' + lineM^2*X^2 + lineM*lineB*X - lineM*circleY*X
-            ' + lineM*lineB*X + lineB^2 - lineB*circleY
-            ' - lineM*circleY*X - lineB*circleY + circleY^2 - circleR^2
+            ' X^2 - 2*h*X + h^2
+            ' + m^2*X^2 + m*b*X - m*k*X
+            ' + m*b*X + b^2 - b*k
+            ' - m*k*X - b*k + k^2 - r^2
             ' = 0
 
             ' Gather like terms.
-            ' X^2 + lineM^2*X^2
-            ' + (2*lineM*lineB)*X - (2*circleX)*X - (2*lineM*circleY)*X
-            ' + circleX^2 + lineB^2 - 2*lineB*circleY + circleY^2 - circleR^2
+            ' X^2 + m^2*X^2
+            ' + (2*m*b)*X - (2*h)*X - (2*m*k)*X
+            ' + h^2 + b^2 - 2*b*k + k^2 - r^2
             ' = 0
 
-            ' Extract the X terms, then the common 2, then the common lineM.
-            ' (1 + lineM^2)*X^2
-            ' + 2*([lineM*(lineB - circleY)] - circleX)*X
-            ' + circleX^2 + lineB^2 - 2*lineB*circleY + circleY^2 - circleR^2
+            ' Extract the X terms, then the common 2, then the common m.
+            ' (1 + m^2)*X^2
+            ' + 2*([m*(b - k)] - h)*X
+            ' + h^2 + b^2 - 2*b*k + k^2 - r^2
 
             ' Set up for the quadratic formula.
-            Dim a As Double = 1 + lineM ^ 2
-            Dim b As Double = 2 * ((lineM * (lineB - circleY)) - circleX)
-            Dim c As Double = circleX ^ 2 + lineB ^ 2 - 2 * lineB * circleY _
-                + circleY ^ 2 - circleR ^ 2
+            Dim CircleX2 As System.Double = circleX * circleX
+            Dim CircleY2 As System.Double = circleY * circleY
+            Dim CircleR2 As System.Double = circleR * circleR
+            Dim LineM2 As System.Double = lineM * lineM
+            Dim LineB2 As System.Double = lineB * lineB
+            Dim QuadA As Double = 1 + LineM2
+            Dim QuadB As Double = 2 * ((lineM * (lineB - circleY)) - circleX)
+            Dim QuadC As Double = CircleX2 + LineB2 - 2 * lineB * circleY _
+                + CircleY2 - CircleR2
 
-            If Not TryQuadratic(a, b, c, intersect1X, intersect2X) Then
+            If Not TryQuadratic(
+                QuadA, QuadB, QuadC, intersect1X, intersect2X) Then
+
                 intersect1X = System.Double.NaN
                 intersect1Y = System.Double.NaN
                 intersect2X = System.Double.NaN
@@ -393,6 +405,7 @@
         '''' <exception cref="System.ArgumentOutOfRangeException">Thrown when
         '''' <paramref name="circleR"/> is less than or equal to zero.
         '''' </exception>
+        '''' ''''''''''''''''''''''''''''''''''
         ''' <summary>
         ''' Attempts to solve where a line intersects a circle, given the center
         ''' coordinates and radius of the circle, along with the coordinates of
@@ -444,7 +457,6 @@
             ByRef intersect2X As System.Double,
             ByRef intersect2Y As System.Double) As System.Boolean
 
-            ' Input checking.
             ' Suspended to avoid exceptions:
             '       If System.Double.IsInfinity(circleX) OrElse
             '           System.Double.IsInfinity(circleY) OrElse
@@ -464,6 +476,8 @@
             '            Throw New System.ArgumentOutOfRangeException(
             '                NameOf(circleR), MSGVMBGTZ)
             '        End If
+            '''' ''''''''''''''''''''''''''''''''''
+            ' Input checking.
             If System.Double.IsInfinity(circleX) OrElse
                 System.Double.IsInfinity(circleY) OrElse
                 System.Double.IsInfinity(circleR) OrElse
@@ -564,6 +578,8 @@
             ByVal y1 As System.Double, ByVal r1 As System.Double,
             ByVal x2 As System.Double, ByVal y2 As System.Double,
             ByVal r2 As System.Double) As System.Boolean
+
+            ' xxxxxxxxxx NO TEST HAS BEEN ADDED FOR THIS. xxxxxxxxxx
 
             ' Input checking.
             If System.Double.IsInfinity(x1) OrElse
