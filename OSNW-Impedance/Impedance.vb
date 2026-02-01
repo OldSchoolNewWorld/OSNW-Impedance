@@ -1,4 +1,6 @@
 ﻿'TODO:
+' Add tests for the CirclesIntersect() routines.
+' Add checks for negative tolerances.
 ' Split TryCircleCircleIntersections() into separately called subs to cut down on its size?
 ' Check for more Math tests to move from ad hoc to their own project.
 ' Add more good-input tests, and create bad input tests, for TryCircleCircleIntersectionsTests.

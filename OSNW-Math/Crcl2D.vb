@@ -566,6 +566,91 @@ Partial Public Module Math
         ''' consider for intersection with the first circle.</param>
         ''' <param name="r2">Specifies the radius of the second circle to
         ''' consider for intersection with the first circle.</param>
+        ''' <param name="tolerance">Specifies the maximum offset from zero which
+        ''' is assumed to represent zero.</param>
+        ''' <returns><c>True</c> if the circles intersect; otherwise,
+        ''' <c>False</c>.</returns>
+        ''' <remarks>
+        ''' Any infinite value, negative radius, or a negative tolerance, will
+        ''' return <c>False</c>, to avoid an exception. Tangent circles, where
+        ''' any gap is deemed to be zero, will have only one intersection.
+        ''' Concentric circles, where the X- and Y-coordinates are deemed equal,
+        ''' will have either zero or infinite common points. The second case is
+        ''' considered to not be intersecting.
+        ''' <br/>The tangent and concentric states are based on the specified
+        ''' <paramref name="tolerance"/>. This does comparisons based on scale,
+        ''' not on an absolute numeric value. The control value is
+        ''' <paramref name="tolerance"/> multiplied by the largest magnitude
+        ''' among the dimensions, to determine the minimum difference that
+        ''' excludes equality.
+        ''' Select <paramref name="tolerance"/> such that it is a good
+        ''' representation of zero relative to other known or expected
+        ''' values.
+        ''' </remarks>
+        Public Shared Function CirclesIntersect(ByVal x1 As System.Double,
+            ByVal y1 As System.Double, ByVal r1 As System.Double,
+            ByVal x2 As System.Double, ByVal y2 As System.Double,
+            ByVal r2 As System.Double, ByVal tolerance As System.Double) _
+            As System.Boolean
+
+            ' xxxxxxxxxx NO TEST HAS BEEN ADDED FOR THIS. xxxxxxxxxx
+
+            ' Input checking.
+            If System.Double.IsInfinity(x1) OrElse
+                System.Double.IsInfinity(y1) OrElse
+                System.Double.IsInfinity(r1) OrElse
+                System.Double.IsInfinity(x2) OrElse
+                System.Double.IsInfinity(y2) OrElse
+                System.Double.IsInfinity(r2) OrElse
+                System.Double.IsInfinity(tolerance) Then
+
+                Return False ' To avoid an exception.
+            End If
+            If (r1 < 0.0) OrElse (r2 < 0.0) OrElse (tolerance < 0.0) Then
+                Return False ' To avoid an exception.
+            End If
+
+            ' Check for solvability.
+            Dim ToleranceAbs As System.Double =
+                System.Math.Abs(tolerance * MaxValAbs(x1, y1, r1, x2, y2, r2))
+            Dim CtrSeparation As System.Double =
+                System.Double.Hypot(x2 - x1, y2 - y1)
+            If CtrSeparation > (r1 + r2 + ToleranceAbs) Then
+                ' Consider to be two isolated circles.
+                Return False
+            ElseIf CtrSeparation <
+                (System.Math.Abs(r2 - r1) - ToleranceAbs) Then
+
+                ' Consider to have one inside the other.
+                Return False
+            ElseIf EqualEnoughAbsolute(x2, x1, tolerance) AndAlso
+                EqualEnoughAbsolute(y2, y1, tolerance) Then
+
+                ' Consider the circles to be concentric, with either zero or
+                ' infinite common points. The second case is considered to not
+                ' be intersecting.
+                Return False
+            End If
+            Return True
+
+        End Function ' CirclesIntersect
+
+        ''' <summary>
+        ''' Determines whether two circles intersect, given their center
+        ''' coordinates and radii.
+        ''' </summary>
+        ''' <param name="x1">Specifies the X-coordinate of the first circle to
+        ''' consider for intersection with the second circle.</param>
+        ''' <param name="y1">Specifies the Y-coordinate of the first circle to
+        ''' consider for intersection with the second circle.</param>
+        ''' <param name="r1">Specifies the radius of the first circle to
+        ''' consider for intersection with the second circle.</param>
+        ''' <param name="x2">Specifies the X-coordinate of the second circle to
+        ''' consider for intersection with the first circle.</param>
+        ''' <param name="y2">Specifies the Y-coordinate of the second circle to
+        ''' consider for intersection with the first circle.</param>
+        ''' <param name="r2">Specifies the radius of the second circle to
+        ''' consider for intersection with the first circle.</param>
         ''' <returns><c>True</c> if the circles intersect; otherwise,
         ''' <c>False</c>.</returns>
         ''' <remarks>
@@ -581,35 +666,80 @@ Partial Public Module Math
 
             ' xxxxxxxxxx NO TEST HAS BEEN ADDED FOR THIS. xxxxxxxxxx
 
-            ' Input checking.
-            If System.Double.IsInfinity(x1) OrElse
-                System.Double.IsInfinity(y1) OrElse
-                System.Double.IsInfinity(r1) OrElse
-                System.Double.IsInfinity(x2) OrElse
-                System.Double.IsInfinity(y2) OrElse
-                System.Double.IsInfinity(r2) Then
+            '' Input checking.
+            'If System.Double.IsInfinity(x1) OrElse
+            '    System.Double.IsInfinity(y1) OrElse
+            '    System.Double.IsInfinity(r1) OrElse
+            '    System.Double.IsInfinity(x2) OrElse
+            '    System.Double.IsInfinity(y2) OrElse
+            '    System.Double.IsInfinity(r2) Then
 
-                Return False ' To avoid an exception.
-            End If
-            If (r1 < 0.0) OrElse (r2 < 0.0) Then
-                Return False ' To avoid an exception.
-            End If
+            '    Return False ' To avoid an exception.
+            'End If
+            'If (r1 < 0.0) OrElse (r2 < 0.0) Then
+            '    Return False ' To avoid an exception.
+            'End If
 
-            ' Check for solvability.
-            Dim CtrSeparation As System.Double =
-            System.Double.Hypot(x2 - x1, y2 - y1)
-            If CtrSeparation > (r1 + r2) Then
-                ' Two isolated circles.
-                Return False
-            ElseIf CtrSeparation < System.Math.Abs(r2 - r1) Then
-                ' One inside the other.
-                Return False
-            ElseIf x2.Equals(x1) AndAlso y2.Equals(y1) Then
-                ' They are concentric, with either zero or infinite common
-                ' points. The second case is considered not to be intersecting.
-                Return False
-            End If
-            Return True
+            '' Check for solvability.
+            'Dim CtrSeparation As System.Double =
+            'System.Double.Hypot(x2 - x1, y2 - y1)
+            'If CtrSeparation > (r1 + r2) Then
+            '    ' Two isolated circles.
+            '    Return False
+            'ElseIf CtrSeparation < System.Math.Abs(r2 - r1) Then
+            '    ' One inside the other.
+            '    Return False
+            'ElseIf x2.Equals(x1) AndAlso y2.Equals(y1) Then
+            '    ' They are concentric, with either zero or infinite common
+            '    ' points. The second case is considered not to be intersecting.
+            '    Return False
+            'End If
+            'Return True
+
+            Return CirclesIntersect(x1, y1, r1, x2, y2, r2, 0.0)
+
+        End Function ' CirclesIntersect
+
+        ''' <summary>
+        ''' Determines whether two circles intersect.
+        ''' </summary>
+        ''' <param name="circle1">Specifies the <c>Circle2D</c> to consider for
+        ''' intersection with <paramref name="circle2"/>.</param>
+        ''' <param name="circle2">Specifies the <c>Circle2D</c> to consider for
+        ''' intersection with <paramref name="circle1"/>.</param>
+        ''' <param name="tolerance">Specifies the maximum offset from zero which
+        ''' is assumed to represent zero.</param>
+        ''' <returns><c>True</c> if the circles intersect; otherwise,
+        ''' <c>False</c>.</returns>
+        ''' <remarks>
+        ''' Any infinite dimension, negative radius, or a negative tolerance, will
+        ''' return <c>False</c>, to avoid an exception. Tangent circles, where
+        ''' any gap is deemed to be zero, will have only one intersection.
+        ''' Concentric circles, where the X- and Y-coordinates are deemed equal,
+        ''' will have either zero or infinite common points. The second case is
+        ''' considered to not be intersecting.
+        ''' <br/>The tangent and concentric states are based on the specified
+        ''' <paramref name="tolerance"/>. This does comparisons based on scale,
+        ''' not on an absolute numeric value. The control value is
+        ''' <paramref name="tolerance"/> multiplied by the largest magnitude
+        ''' among the dimensions, to determine the minimum difference that
+        ''' excludes equality.
+        ''' Select <paramref name="tolerance"/> such that it is a good
+        ''' representation of zero relative to other known or expected
+        ''' values.
+        ''' </remarks>
+        Public Shared Function CirclesIntersect(ByVal circle1 As Circle2D,
+                ByVal circle2 As Circle2D, ByVal tolerance As System.Double) _
+                As System.Boolean
+
+            ' xxxxxxxxxx NO TEST HAS BEEN ADDED FOR THIS. xxxxxxxxxx
+
+            ' No input checking. circle1 and circle2 are presumed to have been
+            ' checked when created.
+
+            Return CirclesIntersect(
+                circle1.CenterX, circle1.CenterY, circle1.Radius,
+                circle2.CenterX, circle2.CenterY, circle2.Radius, tolerance)
 
         End Function ' CirclesIntersect
 
@@ -632,7 +762,7 @@ Partial Public Module Math
 
             Return CirclesIntersect(
                 circle1.CenterX, circle1.CenterY, circle1.Radius,
-                circle2.CenterX, circle2.CenterY, circle2.Radius)
+                circle2.CenterX, circle2.CenterY, circle2.Radius, 0.0)
 
         End Function ' CirclesIntersect
 
