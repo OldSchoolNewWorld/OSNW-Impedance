@@ -321,7 +321,7 @@ Public Module Math
     End Function ' Distance3D
 
     ''' <summary>
-    ''' Attempts to solve the "a*x^2 + b*x + c = 0" quadratic equation for real
+    ''' Attempts to solve the "aX^2 + bX + c = 0" quadratic equation for real
     ''' solutions.
     ''' </summary>
     ''' <param name="a">Specifies the <paramref name="a"/> in the well-known
@@ -333,6 +333,41 @@ Public Module Math
     ''' <returns><c>True</c> if the process succeeds; otherwise, <c>False</c>.
     ''' When valid, also returns the results in <paramref name="x1"/> and
     ''' <paramref name="x2"/>.</returns>
+    ''' <remarks>
+    ''' <br/><example>
+    ''' This example shows how to use <c>TryQuadratic</c>.
+    ''' <code>
+    ''' Dim A As System.Double = something
+    ''' Dim B As System.Double = something
+    ''' Dim C As System.Double = something
+    ''' Dim X1 As System.Double
+    ''' Dim X2 As System.Double
+    ''' 
+    ''' If OSNW.Math.TryQuadratic(A, B, C, X1, X2) Then
+    '''     '
+    '''     Use X1 and X2 for further processing.
+    '''     '
+    ''' else
+    '''     '
+    '''     ' Respond to the failure with a warning, exception, or default
+    '''     ' value.
+    '''     '
+    ''' End If
+    ''' 
+    '''     - or -
+    ''' 
+    ''' If not OSNW.Math.TryQuadratic(A, B, C, X1, X2) Then
+    '''     '
+    '''     ' Respond to the failure with a warning, default value,
+    '''     ' or exception.
+    '''     ' Early exit.
+    '''     '
+    ''' End If
+    ''' '
+    ''' Use X1 and X2 for further processing.
+    ''' '
+    ''' </code></example>
+    ''' </remarks>
     Public Function TryQuadratic(ByVal a As System.Double,
         ByVal b As System.Double, ByVal c As System.Double,
         ByRef x1 As System.Double, ByRef x2 As System.Double) As System.Boolean
@@ -362,8 +397,7 @@ Public Module Math
     ''' <returns>The greatest value in the array.</returns>
     ''' <remarks>
     ''' An empty array returns <c>System.Double.NaN</c>.
-    ''' <example>
-    ''' <br/>
+    ''' <br/><example>
     ''' This example shows how to call <c>MaxVal</c>.
     ''' <code>
     ''' Dim MaxAll As System.Double =

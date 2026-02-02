@@ -359,24 +359,39 @@ Partial Public Module Math
             ' Gather like terms.
             ' X^2 + m^2*X^2
             ' + (2*m*b)*X - (2*h)*X - (2*m*k)*X
-            ' + h^2 + b^2 - 2*b*k + k^2 - r^2
+            ' + h^2 + k^2 - r^2 + b^2 - 2*b*k
             ' = 0
 
-            ' Extract the X terms, then the common 2, then the common m.
-            ' (1 + m^2)*X^2
-            ' + 2*([m*(b - k)] - h)*X
-            ' + h^2 + b^2 - 2*b*k + k^2 - r^2
+            ' Rework the second row.
+            ' + (2*m*b)*X - (2*h)*X - (2*m*k)*X
+            ' Extract the common X.
+            ' + [(2*m*b) - (2*h) - (2*m*k)]*X
+            ' Extract the common X.
+            ' + 2*[(m*b) - (h) - (m*k)]*X
+            ' Rearrange.
+            ' + 2*[(m*b) - (m*k) - (h)]*X
+            ' Extract the common m.
+            ' + 2*[m*{(b) - (k)} - (h)]*X
 
-            ' Set up for the quadratic formula.
+            ' Use the reworked the second row.
+            ' (1 + m^2)*X^2
+            ' + 2*(m*((b) - (k)) - (h))*X
+            ' + h^2 + k^2 - r^2 + b^2 - 2*b*k
+            ' = 0
+
+            ' Implementation:
+
+            ' Force multiplication vs. raising to a power.
             Dim CircleX2 As System.Double = circleX * circleX
             Dim CircleY2 As System.Double = circleY * circleY
             Dim CircleR2 As System.Double = circleR * circleR
             Dim LineM2 As System.Double = lineM * lineM
             Dim LineB2 As System.Double = lineB * lineB
+
+            ' Set up "a*x^2 + b*x + c = 0" for use in the quadratic formula.
             Dim QuadA As Double = 1 + LineM2
             Dim QuadB As Double = 2 * ((lineM * (lineB - circleY)) - circleX)
-            Dim QuadC As Double = CircleX2 + LineB2 - 2 * lineB * circleY _
-                + CircleY2 - CircleR2
+            Dim QuadC As Double = CircleX2 + CircleY2 - CircleR2 + LineB2 - 2 * lineB * circleY
 
             If Not TryQuadratic(
                 QuadA, QuadB, QuadC, intersect1X, intersect2X) Then
