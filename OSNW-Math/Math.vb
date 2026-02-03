@@ -128,6 +128,8 @@ Public Module Math
         ByVal refVal As System.Double, ByVal maxDiff As System.Double) _
         As System.Boolean
 
+        ' xxxxxxxxxx NO TEST HAS BEEN ADDED FOR THIS. xxxxxxxxxx
+
         ' No input checking.
         Return System.Math.Abs(otherVal - refVal) <= maxDiff
     End Function ' EqualEnoughAbsolute
@@ -149,6 +151,8 @@ Public Module Math
     ''' values.</remarks>
     Public Function EqualEnoughZero(ByVal value As System.Double,
         ByVal zeroTolerance As System.Double) As System.Boolean
+
+        ' xxxxxxxxxx NO TEST HAS BEEN ADDED FOR THIS. xxxxxxxxxx
 
         ' No input checking.
         Return System.Math.Abs(value) <= System.Math.Abs(zeroTolerance)
@@ -180,6 +184,8 @@ Public Module Math
     Public Function EqualEnough(ByVal otherVal As System.Double,
         ByVal refVal As System.Double, ByVal ratio As System.Double) _
         As System.Boolean
+
+        ' xxxxxxxxxx NO TEST HAS BEEN ADDED FOR THIS. xxxxxxxxxx
 
         ' Input checking.
         If otherVal.Equals(0.0) OrElse refVal.Equals(0.0) Then
@@ -281,6 +287,43 @@ Public Module Math
     End Structure ' Point3D
 
     ''' <summary>
+    ''' Computes the distance between two points in a 2D plane.
+    ''' </summary>
+    ''' <param name="x0">Specifies the X-coordinate of one point.</param>
+    ''' <param name="y0">Specifies the Y-coordinate of one point.</param>
+    ''' <param name="x1">Specifies the X-coordinate of the other point.</param>
+    ''' <param name="y1">Specifies the Y-coordinate of the other point.</param>
+    ''' <returns>The distance between the two points.</returns>
+    Public Function Distance(ByVal x0 As System.Double,
+        ByVal y0 As System.Double, ByVal x1 As System.Double,
+        ByVal y1 As System.Double) As System.Double
+
+        ' xxxxxxxxxx NO TEST HAS BEEN ADDED FOR THIS. xxxxxxxxxx
+
+        ' Based on the Pythagorean theorem.
+        Dim DeltaX As System.Double = x1 - x0
+        Dim DeltaY As System.Double = y1 - y0
+        Return System.Math.Sqrt((DeltaX * DeltaX) + (DeltaY * DeltaY))
+    End Function ' Distance
+
+    ''' <summary>
+    ''' Computes the distance between two points in a 2D plane.
+    ''' </summary>
+    ''' <param name="p0">Specifies one point.</param>
+    ''' <param name="p1">Specifies the other point.</param>
+    ''' <returns>The distance between the two points.</returns>
+    Public Function Distance(ByVal p0 As Point2D, ByVal p1 As Point2D) _
+        As System.Double
+
+        ' xxxxxxxxxx NO TEST HAS BEEN ADDED FOR THIS. xxxxxxxxxx
+
+        ' Based on the Pythagorean theorem.
+        Dim DeltaX As System.Double = p1.X - p0.X
+        Dim DeltaY As System.Double = p1.Y - p0.Y
+        Return System.Math.Sqrt((DeltaX * DeltaX) + (DeltaY * DeltaY))
+    End Function ' Distance
+
+    ''' <summary>
     ''' Computes the distance between two points in a 3D space.
     ''' </summary>
     ''' <param name="x0">Specifies the X-coordinate of one point.</param>
@@ -290,10 +333,12 @@ Public Module Math
     ''' <param name="y1">Specifies the Y-coordinate of the other point.</param>
     ''' <param name="z1">Specifies the Z-coordinate of the other point.</param>
     ''' <returns>The distance between the two points.</returns>
-    Public Function Distance3D(ByVal x0 As System.Double,
+    Public Function Distance(ByVal x0 As System.Double,
         ByVal y0 As System.Double, ByVal z0 As System.Double,
         ByVal x1 As System.Double, ByVal y1 As System.Double,
         ByVal z1 As System.Double) As System.Double
+
+        ' xxxxxxxxxx NO TEST HAS BEEN ADDED FOR THIS. xxxxxxxxxx
 
         ' Based on the Pythagorean theorem.
         Dim DeltaX As System.Double = x1 - x0
@@ -301,7 +346,7 @@ Public Module Math
         Dim DeltaZ As System.Double = z1 - z0
         Return System.Math.Sqrt(
             (DeltaX * DeltaX) + (DeltaY * DeltaY) + (DeltaZ * DeltaZ))
-    End Function ' Distance3D
+    End Function ' Distance
 
     ''' <summary>
     ''' Computes the distance between two points in a 3D space.
@@ -309,8 +354,10 @@ Public Module Math
     ''' <param name="p0">Specifies one point.</param>
     ''' <param name="p1">Specifies the other point.</param>
     ''' <returns>The distance between the two points.</returns>
-    Public Function Distance3D(ByVal p0 As Point3D, ByVal p1 As Point3D) _
+    Public Function Distance(ByVal p0 As Point3D, ByVal p1 As Point3D) _
         As System.Double
+
+        ' xxxxxxxxxx NO TEST HAS BEEN ADDED FOR THIS. xxxxxxxxxx
 
         ' Based on the Pythagorean theorem.
         Dim DeltaX As System.Double = p1.X - p0.X
@@ -318,7 +365,7 @@ Public Module Math
         Dim DeltaZ As System.Double = p1.Z - p0.Z
         Return System.Math.Sqrt(
             (DeltaX * DeltaX) + (DeltaY * DeltaY) + (DeltaZ * DeltaZ))
-    End Function ' Distance3D
+    End Function ' Distance
 
     ''' <summary>
     ''' Attempts to solve the "aX^2 + bX + c = 0" quadratic equation for real
@@ -372,6 +419,8 @@ Public Module Math
         ByVal b As System.Double, ByVal c As System.Double,
         ByRef x0 As System.Double, ByRef x1 As System.Double) As System.Boolean
 
+        ' xxxxxxxxxx NO TEST HAS BEEN ADDED FOR THIS. xxxxxxxxxx
+
         ' Input checking.
         Dim Discriminant As System.Double = b * b - 4.0 * a * c
         If a.Equals(0.0) OrElse Discriminant < 0.0 Then
@@ -408,7 +457,7 @@ Public Module Math
         ByVal ParamArray values() As System.Double) As System.Double
 
         ' Input checking.
-        If values.Length <= 0 Then
+        If values.Length.Equals(0) Then
             Return System.Double.NaN
         End If
 
@@ -442,7 +491,7 @@ Public Module Math
         ByVal ParamArray values() As System.Double) As System.Double
 
         ' Input checking.
-        If values.Length <= 0 Then
+        If values.Length.Equals(0) Then
             Return System.Double.NaN
         End If
 
@@ -483,5 +532,92 @@ Public Module Math
         Return System.Math.Pow(Product, 1.0 / values.Length)
 
     End Function ' GeometricMean
+
+    ''' <summary>
+    ''' Calculates the length of a hypotenuse using the Pythagorean theorem.
+    ''' </summary>
+    ''' <param name="values">An array of values: Hypotenuse(V1, V2, V3,...Vn)</param>
+    ''' <returns>Hypotenuse As System.Double</returns>
+    ''' <remarks>
+    ''' This works in more than just 2 dimensions;
+    ''' 2D: Hypotenuse(X, Y);
+    ''' 3D: Hypotenuse(X, Y, Z);
+    ''' nD: Hypotenuse(V1, V2, V3,...Vn)
+    ''' <br/>An empty array returns <c>System.Double.NaN</c>.
+    ''' </remarks>
+    Public Function Hypotenuse(ByVal ParamArray values() As System.Double
+                               ) As System.Double
+
+        ' xxxxxxxxxx NO TEST HAS BEEN ADDED FOR THIS. xxxxxxxxxx
+
+        ' This may need to do input checking because, for instance, a triangle could not
+        ' have a side with zero or negative length in practical cases. Then again, some physics 
+        ' problems deal with values not normally seen. Also, impedances can have a negative
+        ' component.
+        ' Is there any harm in allowing other values?  A Cartesian coordinate calculation could
+        ' have negative lengths unless something is done to make them result in positive values.
+        ' At least for now, negatives are allowed. The squaring prevents any impact from negative
+        ' values. Similarly, zeroes are allowed because of the lack of significant consequence. A
+        ' triangle with a zero side would be a line.
+        '
+        ' 2D: Hypotenuse(X, Y)
+        ' 3D: Hypotenuse(X, Y, Z)
+        ' Assumed to work out in 4, 5, ... dimensions.
+        ' http://en.wikipedia.org/wiki/Pythagorean_theorem has remarks regarding
+        ' an "n-dimensional Pythagorean theorem".
+
+        ' Input checking.
+        If values.Length.Equals(0) Then
+            Return System.Double.NaN
+        End If
+
+        Dim Sum As System.Double = 0.0
+        For Each OneValue As System.Double In values
+            Sum += OneValue * OneValue
+        Next
+        Return System.Math.Sqrt(Sum)
+
+    End Function ' Hypotenuse
+
+    ''' <summary>
+    ''' Rounds a double-precision floating-point value to the nearest multiple
+    ''' of the specified value. A parameter specifies how to round the interim
+    ''' value if it is midway between two other numbers.
+    ''' </summary>
+    ''' <param name="nearest">Specification for the value to which
+    ''' <paramref name="value"/> should be rounded.</param>
+    ''' <param name="value">A double-precision, floating-point, number to be
+    ''' rounded.</param>
+    ''' <param name="mode">Specification for how to round
+    ''' <paramref name="value"/> if it is midway between two potential results.
+    ''' This is optional. If not specified, System.MidpointRounding.ToEven is
+    ''' assumed.</param>
+    ''' <returns>
+    ''' The nearest multiple of <paramref name="value"/>. If the interim
+    ''' rounding point value is halfway between two digits, one of which is even
+    ''' and the other odd, then <paramref name="mode"/> determines which of the
+    ''' two is used.
+    ''' </returns>
+    ''' <exception cref="System.ArgumentException"> Thrown when
+    ''' <paramref name="nearest"/> is negative or zero.</exception>
+    Public Function RoundTo(ByVal nearest As System.Double,
+        ByVal value As System.Double,
+        Optional ByVal mode As System.MidpointRounding =
+            System.MidpointRounding.ToEven) _
+        As System.Double
+
+        ' xxxxxxxxxx NO TEST HAS BEEN ADDED FOR THIS. xxxxxxxxxx
+
+        ' Input checking.
+        If nearest <= 0.0 Then
+            'Dim CaughtBy As System.Reflection.MethodBase =
+            '    System.Reflection.MethodBase.GetCurrentMethod
+            Throw New System.ArgumentOutOfRangeException(NameOf(nearest), MSGVMBGTZ)
+        End If
+
+        Dim Interim As System.Double = System.Math.Round(value / nearest, mode)
+        Return Interim * nearest
+
+    End Function ' RoundTo
 
 End Module ' Math
