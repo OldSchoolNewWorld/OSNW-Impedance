@@ -1253,20 +1253,20 @@ Partial Public Module Math
         ''' intersection with the second circle.</param>
         ''' <param name="circle1">Specifies the second circle to consider
         ''' for intersection with the first circle.</param>
-        ''' <param name="intersect1X">Specifies the X-coordinate of the first
+        ''' <param name="intersect0X">Specifies the X-coordinate of the first
         ''' intersection.</param>
-        ''' <param name="intersect1Y">Specifies the X-coordinate of the first
+        ''' <param name="intersect0Y">Specifies the X-coordinate of the first
         ''' intersection.</param>
-        ''' <param name="intersect2X">Specifies the X-coordinate of the second
+        ''' <param name="intersect1X">Specifies the X-coordinate of the second
         ''' intersection.</param>
-        ''' <param name="intersect2Y">Specifies the X-coordinate of the second
+        ''' <param name="intersect1Y">Specifies the X-coordinate of the second
         ''' intersection.</param>
         ''' <returns><c>True</c> if the intersections are found;
         ''' otherwise, <c>False</c>.
         ''' When valid, also returns the results in
-        ''' <paramref name="intersect1X"/>, <paramref name="intersect1Y"/>,
-        ''' <paramref name="intersect2X"/>, and
-        ''' <paramref name="intersect2Y"/>.</returns>
+        ''' <paramref name="intersect0X"/>, <paramref name="intersect0Y"/>,
+        ''' <paramref name="intersect1X"/>, and
+        ''' <paramref name="intersect1Y"/>.</returns>
         ''' <remarks>
         ''' Concentric circles will have either zero or infinite common points;
         ''' the second case is considered to NOT be intersecting.
@@ -1275,10 +1275,10 @@ Partial Public Module Math
         ''' </remarks>
         Public Shared Function TryCircleCircleIntersections(
             ByVal circle0 As OSNW.Circle2D, ByVal circle1 As OSNW.Circle2D,
+            ByRef intersect0X As System.Double,
+            ByRef intersect0Y As System.Double,
             ByRef intersect1X As System.Double,
-            ByRef intersect1Y As System.Double,
-            ByRef intersect2X As System.Double,
-            ByRef intersect2Y As System.Double) _
+            ByRef intersect1Y As System.Double) _
             As System.Boolean
 
             ' No input checking. circle0 and circle1 are presumed to have been
@@ -1286,7 +1286,7 @@ Partial Public Module Math
 
             Return TryCircleCircleIntersections(circle0.CenterX,
                 circle0.CenterY, circle0.Radius, circle1.CenterX,
-                circle1.CenterY, circle1.Radius, intersect1X, intersect1Y, intersect2X, intersect2Y)
+                circle1.CenterY, circle1.Radius, intersect0X, intersect0Y, intersect1X, intersect1Y)
 
         End Function ' TryCircleCircleIntersections
 
