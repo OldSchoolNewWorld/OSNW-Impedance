@@ -283,22 +283,22 @@ Public Module Math
     ''' <summary>
     ''' Computes the distance between two points in a 3D space.
     ''' </summary>
-    ''' <param name="x1">Specifies the X-coordinate of one point.</param>
-    ''' <param name="y1">Specifies the Y-coordinate of one point.</param>
-    ''' <param name="z1">Specifies the Z-coordinate of one point.</param>
-    ''' <param name="x2">Specifies the X-coordinate of the other point.</param>
-    ''' <param name="y2">Specifies the Y-coordinate of the other point.</param>
-    ''' <param name="z2">Specifies the Z-coordinate of the other point.</param>
+    ''' <param name="x0">Specifies the X-coordinate of one point.</param>
+    ''' <param name="y0">Specifies the Y-coordinate of one point.</param>
+    ''' <param name="z0">Specifies the Z-coordinate of one point.</param>
+    ''' <param name="x1">Specifies the X-coordinate of the other point.</param>
+    ''' <param name="y1">Specifies the Y-coordinate of the other point.</param>
+    ''' <param name="z1">Specifies the Z-coordinate of the other point.</param>
     ''' <returns>The distance between the two points.</returns>
-    Public Function Distance3D(ByVal x1 As System.Double,
-        ByVal y1 As System.Double, ByVal z1 As System.Double,
-        ByVal x2 As System.Double, ByVal y2 As System.Double,
-        ByVal z2 As System.Double) As System.Double
+    Public Function Distance3D(ByVal x0 As System.Double,
+        ByVal y0 As System.Double, ByVal z0 As System.Double,
+        ByVal x1 As System.Double, ByVal y1 As System.Double,
+        ByVal z1 As System.Double) As System.Double
 
         ' Based on the Pythagorean theorem.
-        Dim DeltaX As System.Double = x2 - x1
-        Dim DeltaY As System.Double = y2 - y1
-        Dim DeltaZ As System.Double = z2 - z1
+        Dim DeltaX As System.Double = x1 - x0
+        Dim DeltaY As System.Double = y1 - y0
+        Dim DeltaZ As System.Double = z1 - z0
         Return System.Math.Sqrt(
             (DeltaX * DeltaX) + (DeltaY * DeltaY) + (DeltaZ * DeltaZ))
     End Function ' Distance3D
@@ -306,16 +306,16 @@ Public Module Math
     ''' <summary>
     ''' Computes the distance between two points in a 3D space.
     ''' </summary>
-    ''' <param name="p1">Specifies one point.</param>
-    ''' <param name="p2">Specifies the other point.</param>
+    ''' <param name="p0">Specifies one point.</param>
+    ''' <param name="p1">Specifies the other point.</param>
     ''' <returns>The distance between the two points.</returns>
-    Public Function Distance3D(ByVal p1 As Point3D, ByVal p2 As Point3D) _
+    Public Function Distance3D(ByVal p0 As Point3D, ByVal p1 As Point3D) _
         As System.Double
 
         ' Based on the Pythagorean theorem.
-        Dim DeltaX As System.Double = p2.X - p1.X
-        Dim DeltaY As System.Double = p2.Y - p1.Y
-        Dim DeltaZ As System.Double = p2.Z - p1.Z
+        Dim DeltaX As System.Double = p1.X - p0.X
+        Dim DeltaY As System.Double = p1.Y - p0.Y
+        Dim DeltaZ As System.Double = p1.Z - p0.Z
         Return System.Math.Sqrt(
             (DeltaX * DeltaX) + (DeltaY * DeltaY) + (DeltaZ * DeltaZ))
     End Function ' Distance3D
@@ -331,8 +331,8 @@ Public Module Math
     ''' <param name="c">Specifies the <paramref name="c"/> in the well-known
     ''' formula.</param>
     ''' <returns><c>True</c> if the process succeeds; otherwise, <c>False</c>.
-    ''' When valid, also returns the results in <paramref name="x1"/> and
-    ''' <paramref name="x2"/>.</returns>
+    ''' When valid, also returns the results in <paramref name="x0"/> and
+    ''' <paramref name="x1"/>.</returns>
     ''' <remarks>
     ''' <br/><example>
     ''' This example shows how to use <c>TryQuadratic</c>.
@@ -340,12 +340,12 @@ Public Module Math
     ''' Dim A As System.Double = something
     ''' Dim B As System.Double = something
     ''' Dim C As System.Double = something
-    ''' Dim X1 As System.Double
-    ''' Dim X2 As System.Double
+    ''' Dim x0 As System.Double
+    ''' Dim x1 As System.Double
     ''' 
-    ''' If OSNW.Math.TryQuadratic(A, B, C, X1, X2) Then
+    ''' If OSNW.Math.TryQuadratic(A, B, C, x0, x1) Then
     '''     '
-    '''     Use X1 and X2 for further processing.
+    '''     Use x0 and x1 for further processing.
     '''     '
     ''' else
     '''     '
@@ -356,7 +356,7 @@ Public Module Math
     ''' 
     '''     - or -
     ''' 
-    ''' If not OSNW.Math.TryQuadratic(A, B, C, X1, X2) Then
+    ''' If not OSNW.Math.TryQuadratic(A, B, C, x0, x1) Then
     '''     '
     '''     ' Respond to the failure with a warning, default value,
     '''     ' or exception.
@@ -364,27 +364,27 @@ Public Module Math
     '''     '
     ''' End If
     ''' '
-    ''' Use X1 and X2 for further processing.
+    ''' Use x0 and x1 for further processing.
     ''' '
     ''' </code></example>
     ''' </remarks>
     Public Function TryQuadratic(ByVal a As System.Double,
         ByVal b As System.Double, ByVal c As System.Double,
-        ByRef x1 As System.Double, ByRef x2 As System.Double) As System.Boolean
+        ByRef x0 As System.Double, ByRef x1 As System.Double) As System.Boolean
 
         ' Input checking.
         Dim Discriminant As System.Double = b * b - 4.0 * a * c
         If a.Equals(0.0) OrElse Discriminant < 0.0 Then
             ' Not a quadratic equation.
+            x0 = Double.NaN
             x1 = Double.NaN
-            x2 = Double.NaN
             Return False
         End If
 
         Dim DiscRoot As System.Double = System.Math.Sqrt(Discriminant)
         Dim A2 As System.Double = 2.0 * a
-        x1 = (-b + DiscRoot) / A2
-        x2 = (-b - DiscRoot) / A2
+        x0 = (-b + DiscRoot) / A2
+        x1 = (-b - DiscRoot) / A2
         Return True
 
     End Function ' TryQuadratic
@@ -401,7 +401,7 @@ Public Module Math
     ''' This example shows how to call <c>MaxVal</c>.
     ''' <code>
     ''' Dim MaxAll As System.Double =
-    '''     OSNW.Math.MaxValAbs({x1, y1, r1, x2, y2, r2})
+    '''     OSNW.Math.MaxVal({x0, y0, r0, x1, y1, r1})
     ''' </code></example>
     ''' </remarks>
     Public Function MaxVal(
@@ -420,7 +420,7 @@ Public Module Math
         Next
         Return Max
 
-    End Function ' MaxSet
+    End Function ' MaxVal
 
     ''' <summary>
     ''' Compares an array of values to compute which has the greatest magnitude.
@@ -435,7 +435,7 @@ Public Module Math
     ''' This example shows how to call <c>MaxValAbs</c>.
     ''' <code>
     ''' Dim MaxAll As System.Double =
-    '''     OSNW.Math.MaxValAbs({x1, y1, r1, x2, y2, r2})
+    '''     OSNW.Math.MaxValAbs({x0, y0, r0, x1, y1, r1})
     ''' </code></example>
     ''' </remarks>
     Public Function MaxValAbs(
@@ -458,6 +458,16 @@ Public Module Math
 
     End Function ' MaxSetAbs
 
+    ''' <summary>
+    ''' xxxxxxxxxx
+    ''' </summary>
+    ''' <param name="values">xxxxxxxxxx</param>
+    ''' <returns>xxxxxxxxxx</returns>
+    ''' <remarks>
+    ''' xxxxxxxxxx
+    ''' ADD AN EXAMPLE
+    ''' xxxxxxxxxx
+    ''' </remarks>
     Public Function GeometricMean(
         ByVal ParamArray values() As System.Double) As System.Double
 

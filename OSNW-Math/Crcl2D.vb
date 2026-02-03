@@ -260,20 +260,20 @@ Partial Public Module Math
         ''' <param name="circleR">Specifies the radius of the circle.</param>
         ''' <param name="lineM">Specifies the slope of the line.</param>
         ''' <param name="lineB">Specifies the Y-intercept of the line.</param>
-        ''' <param name="intersect1X">Specifies the X-coordinate of one
+        ''' <param name="intersect0X">Specifies the X-coordinate of one
         ''' intersection.</param>
-        ''' <param name="intersect1Y">Specifies the Y-coordinate of one
+        ''' <param name="intersect0Y">Specifies the Y-coordinate of one
         ''' intersection.</param>
-        ''' <param name="intersect2X">Specifies the X-coordinate of the other
+        ''' <param name="intersect1X">Specifies the X-coordinate of the other
         ''' intersection.</param>
-        ''' <param name="intersect2Y">Specifies the Y-coordinate of the other
+        ''' <param name="intersect1Y">Specifies the Y-coordinate of the other
         ''' intersection.</param>
         ''' <returns><c>True</c> if the process succeeds; otherwise,
         ''' <c>False</c>.
         ''' When valid, also returns the results in
-        ''' <paramref name="intersect1X"/>, <paramref name="intersect1Y"/>,
-        ''' <paramref name="intersect2X"/>, and
-        ''' <paramref name="intersect2Y"/>.</returns>
+        ''' <paramref name="intersect0X"/>, <paramref name="intersect0Y"/>,
+        ''' <paramref name="intersect1X"/>, and
+        ''' <paramref name="intersect1Y"/>.</returns>
         ''' <remarks>
         ''' A vertical line (infinite slope) will not have a Y-intercept, except
         ''' when that line passes through the circle center - a case which would
@@ -290,10 +290,10 @@ Partial Public Module Math
         Public Shared Function TryCircleLineIntersections(
             ByVal circleX As System.Double, ByVal circleY As System.Double,
             ByVal circleR As System.Double, ByVal lineM As System.Double,
-            ByVal lineB As System.Double, ByRef intersect1X As System.Double,
-            ByRef intersect1Y As System.Double,
-            ByRef intersect2X As System.Double,
-            ByRef intersect2Y As System.Double) As System.Boolean
+            ByVal lineB As System.Double, ByRef intersect0X As System.Double,
+            ByRef intersect0Y As System.Double,
+            ByRef intersect1X As System.Double,
+            ByRef intersect1Y As System.Double) As System.Boolean
 
             ' Suspended to avoid exceptions:
             'If System.Double.IsInfinity(circleX) OrElse
@@ -394,18 +394,18 @@ Partial Public Module Math
             Dim QuadC As Double = CircleX2 + CircleY2 - CircleR2 + LineB2 - 2 * lineB * circleY
 
             If Not TryQuadratic(
-                QuadA, QuadB, QuadC, intersect1X, intersect2X) Then
+                QuadA, QuadB, QuadC, intersect0X, intersect1X) Then
 
+                intersect0X = System.Double.NaN
+                intersect0Y = System.Double.NaN
                 intersect1X = System.Double.NaN
                 intersect1Y = System.Double.NaN
-                intersect2X = System.Double.NaN
-                intersect2Y = System.Double.NaN
                 Return False
             End If
 
             ' Substitute into "y = mx + b".
+            intersect0Y = lineM * intersect0X + lineB
             intersect1Y = lineM * intersect1X + lineB
-            intersect2Y = lineM * intersect2X + lineB
             Return True
 
         End Function ' TryCircleLineIntersections
@@ -439,19 +439,19 @@ Partial Public Module Math
         ''' on the line.</param>
         ''' <param name="line2Y">Specifies the Y-coordinate of the second point
         ''' on the line.</param>
-        ''' <param name="intersect1X">Specifies the X-coordinate of one
+        ''' <param name="intersect0X">Specifies the X-coordinate of one
         ''' intersection.</param>
-        ''' <param name="intersect1Y">Specifies the Y-coordinate of one
+        ''' <param name="intersect0Y">Specifies the Y-coordinate of one
         ''' intersection.</param>
-        ''' <param name="intersect2X">Specifies the X-coordinate of the other
+        ''' <param name="intersect1X">Specifies the X-coordinate of the other
         ''' intersection.</param>
-        ''' <param name="intersect2Y">Specifies the Y-coordinate of the other
+        ''' <param name="intersect1Y">Specifies the Y-coordinate of the other
         ''' intersection.</param>
         ''' <returns>
         ''' <c>True</c> if the process succeeds; otherwise, <c>False</c>. When
-        ''' valid, also returns the results in <paramref name="intersect1X"/>,
-        ''' <paramref name="intersect1Y"/>, <paramref name="intersect2X"/>, and
-        ''' <paramref name="intersect2Y"/>.
+        ''' valid, also returns the results in <paramref name="intersect0X"/>,
+        ''' <paramref name="intersect0Y"/>, <paramref name="intersect1X"/>, and
+        ''' <paramref name="intersect1Y"/>.
         ''' </returns>
         ''' <remarks>
         ''' To avoid throwing an exception, <c>False</c> is returned
@@ -467,10 +467,10 @@ Partial Public Module Math
             ByVal circleY As System.Double, ByVal circleR As System.Double,
             ByVal line1X As System.Double, ByVal line1Y As System.Double,
             ByVal line2X As System.Double, ByVal line2Y As System.Double,
+            ByRef intersect0X As System.Double,
+            ByRef intersect0Y As System.Double,
             ByRef intersect1X As System.Double,
-            ByRef intersect1Y As System.Double,
-            ByRef intersect2X As System.Double,
-            ByRef intersect2Y As System.Double) As System.Boolean
+            ByRef intersect1Y As System.Double) As System.Boolean
 
             ' Suspended to avoid exceptions:
             '       If System.Double.IsInfinity(circleX) OrElse
@@ -512,10 +512,10 @@ Partial Public Module Math
                 ' Can there be an intersection?
                 If System.Math.Abs(line1X - circleX) > circleR Then
                     ' No intersection possible.
+                    intersect0X = System.Double.NaN
+                    intersect0Y = System.Double.NaN
                     intersect1X = System.Double.NaN
                     intersect1Y = System.Double.NaN
-                    intersect2X = System.Double.NaN
-                    intersect2Y = System.Double.NaN
                     Return False
                 End If
 
@@ -535,16 +535,16 @@ Partial Public Module Math
 
                 ' Get the Y values.
                 ' Root = sqrt(circleR^2 - (line1X - circleX)^2)
-                ' intersect1Y = circleY + Root
-                ' intersect2Y = circleY - Root
+                ' intersect0Y = circleY + Root
+                ' intersect1Y = circleY - Root
 
                 Dim Minus As System.Double = line1X - circleX
                 Dim Root As System.Double =
                     System.Math.Sqrt((circleR * circleR) - (Minus * Minus))
-                intersect1Y = circleY + Root
-                intersect2Y = circleY - Root
-                intersect1X = line1X
-                intersect2X = line1X ' Yes, the same assignment.
+                intersect0Y = circleY + Root
+                intersect1Y = circleY - Root
+                intersect0X = line1X
+                intersect1X = line1X ' Yes, the same assignment.
                 Return True
 
             End If ' Vertical line.
@@ -561,7 +561,7 @@ Partial Public Module Math
             Dim lineB As System.Double = line1Y - lineM * line1X
 
             Return TryCircleLineIntersections(circleX, circleY, circleR, lineM,
-                lineB, intersect1X, intersect1Y, intersect2X, intersect2Y)
+                lineB, intersect0X, intersect0Y, intersect1X, intersect1Y)
 
         End Function ' TryCircleLineIntersections
 
@@ -569,17 +569,17 @@ Partial Public Module Math
         ''' Determines whether two circles intersect, given their center
         ''' coordinates and radii.
         ''' </summary>
-        ''' <param name="x1">Specifies the X-coordinate of the first circle to
+        ''' <param name="x0">Specifies the X-coordinate of the first circle to
         ''' consider for intersection with the second circle.</param>
-        ''' <param name="y1">Specifies the Y-coordinate of the first circle to
+        ''' <param name="y0">Specifies the Y-coordinate of the first circle to
         ''' consider for intersection with the second circle.</param>
-        ''' <param name="r1">Specifies the radius of the first circle to
+        ''' <param name="r0">Specifies the radius of the first circle to
         ''' consider for intersection with the second circle.</param>
-        ''' <param name="x2">Specifies the X-coordinate of the second circle to
+        ''' <param name="x1">Specifies the X-coordinate of the second circle to
         ''' consider for intersection with the first circle.</param>
-        ''' <param name="y2">Specifies the Y-coordinate of the second circle to
+        ''' <param name="y1">Specifies the Y-coordinate of the second circle to
         ''' consider for intersection with the first circle.</param>
-        ''' <param name="r2">Specifies the radius of the second circle to
+        ''' <param name="r1">Specifies the radius of the second circle to
         ''' consider for intersection with the first circle.</param>
         ''' <param name="tolerance">Specifies the maximum offset from zero which
         ''' is assumed to represent zero.</param>
@@ -602,44 +602,44 @@ Partial Public Module Math
         ''' representation of zero relative to other known or expected
         ''' values.
         ''' </remarks>
-        Public Shared Function CirclesIntersect(ByVal x1 As System.Double,
-            ByVal y1 As System.Double, ByVal r1 As System.Double,
-            ByVal x2 As System.Double, ByVal y2 As System.Double,
-            ByVal r2 As System.Double, ByVal tolerance As System.Double) _
+        Public Shared Function CirclesIntersect(ByVal x0 As System.Double,
+            ByVal y0 As System.Double, ByVal r0 As System.Double,
+            ByVal x1 As System.Double, ByVal y1 As System.Double,
+            ByVal r1 As System.Double, ByVal tolerance As System.Double) _
             As System.Boolean
 
             ' xxxxxxxxxx NO TEST HAS BEEN ADDED FOR THIS. xxxxxxxxxx
 
             ' Input checking.
-            If System.Double.IsInfinity(x1) OrElse
+            If System.Double.IsInfinity(x0) OrElse
+                System.Double.IsInfinity(y0) OrElse
+                System.Double.IsInfinity(r0) OrElse
+                System.Double.IsInfinity(x1) OrElse
                 System.Double.IsInfinity(y1) OrElse
                 System.Double.IsInfinity(r1) OrElse
-                System.Double.IsInfinity(x2) OrElse
-                System.Double.IsInfinity(y2) OrElse
-                System.Double.IsInfinity(r2) OrElse
                 System.Double.IsInfinity(tolerance) Then
 
                 Return False ' To avoid an exception.
             End If
-            If (r1 < 0.0) OrElse (r2 < 0.0) OrElse (tolerance < 0.0) Then
+            If (r0 < 0.0) OrElse (r1 < 0.0) OrElse (tolerance < 0.0) Then
                 Return False ' To avoid an exception.
             End If
 
             ' Check for solvability.
             Dim ToleranceAbs As System.Double =
-                System.Math.Abs(tolerance * MaxValAbs(x1, y1, r1, x2, y2, r2))
+                System.Math.Abs(tolerance * MaxValAbs(x0, y0, r0, x1, y1, r1))
             Dim CtrSeparation As System.Double =
-                System.Double.Hypot(x2 - x1, y2 - y1)
-            If CtrSeparation > (r1 + r2 + ToleranceAbs) Then
+                System.Double.Hypot(x1 - x0, y1 - y0)
+            If CtrSeparation > (r0 + r1 + ToleranceAbs) Then
                 ' Consider to be two isolated circles.
                 Return False
             ElseIf CtrSeparation <
-                (System.Math.Abs(r2 - r1) - ToleranceAbs) Then
+                (System.Math.Abs(r1 - r0) - ToleranceAbs) Then
 
                 ' Consider to have one inside the other.
                 Return False
-            ElseIf EqualEnoughAbsolute(x2, x1, tolerance) AndAlso
-                EqualEnoughAbsolute(y2, y1, tolerance) Then
+            ElseIf EqualEnoughAbsolute(x1, x0, tolerance) AndAlso
+                EqualEnoughAbsolute(y1, y0, tolerance) Then
 
                 ' Consider the circles to be concentric, with either zero or
                 ' infinite common points. The second case is considered to not
@@ -654,17 +654,17 @@ Partial Public Module Math
         ''' Determines whether two circles intersect, given their center
         ''' coordinates and radii.
         ''' </summary>
-        ''' <param name="x1">Specifies the X-coordinate of the first circle to
+        ''' <param name="x0">Specifies the X-coordinate of the first circle to
         ''' consider for intersection with the second circle.</param>
-        ''' <param name="y1">Specifies the Y-coordinate of the first circle to
+        ''' <param name="y0">Specifies the Y-coordinate of the first circle to
         ''' consider for intersection with the second circle.</param>
-        ''' <param name="r1">Specifies the radius of the first circle to
+        ''' <param name="r0">Specifies the radius of the first circle to
         ''' consider for intersection with the second circle.</param>
-        ''' <param name="x2">Specifies the X-coordinate of the second circle to
+        ''' <param name="x1">Specifies the X-coordinate of the second circle to
         ''' consider for intersection with the first circle.</param>
-        ''' <param name="y2">Specifies the Y-coordinate of the second circle to
+        ''' <param name="y1">Specifies the Y-coordinate of the second circle to
         ''' consider for intersection with the first circle.</param>
-        ''' <param name="r2">Specifies the radius of the second circle to
+        ''' <param name="r1">Specifies the radius of the second circle to
         ''' consider for intersection with the first circle.</param>
         ''' <returns><c>True</c> if the circles intersect; otherwise,
         ''' <c>False</c>.</returns>
@@ -674,54 +674,54 @@ Partial Public Module Math
         ''' considered not to be intersecting. Any infinite value, or any
         ''' negative radius, will return <c>False</c>, to avoid an exception.
         ''' </remarks>
-        Public Shared Function CirclesIntersect(ByVal x1 As System.Double,
-            ByVal y1 As System.Double, ByVal r1 As System.Double,
-            ByVal x2 As System.Double, ByVal y2 As System.Double,
-            ByVal r2 As System.Double) As System.Boolean
+        Public Shared Function CirclesIntersect(ByVal x0 As System.Double,
+            ByVal y0 As System.Double, ByVal r0 As System.Double,
+            ByVal x1 As System.Double, ByVal y1 As System.Double,
+            ByVal r1 As System.Double) As System.Boolean
 
             ' xxxxxxxxxx NO TEST HAS BEEN ADDED FOR THIS. xxxxxxxxxx
 
             '' Input checking.
-            'If System.Double.IsInfinity(x1) OrElse
+            'If System.Double.IsInfinity(x0) OrElse
+            '    System.Double.IsInfinity(y0) OrElse
+            '    System.Double.IsInfinity(r0) OrElse
+            '    System.Double.IsInfinity(x1) OrElse
             '    System.Double.IsInfinity(y1) OrElse
-            '    System.Double.IsInfinity(r1) OrElse
-            '    System.Double.IsInfinity(x2) OrElse
-            '    System.Double.IsInfinity(y2) OrElse
-            '    System.Double.IsInfinity(r2) Then
+            '    System.Double.IsInfinity(r1) Then
 
             '    Return False ' To avoid an exception.
             'End If
-            'If (r1 < 0.0) OrElse (r2 < 0.0) Then
+            'If (r0 < 0.0) OrElse (r1 < 0.0) Then
             '    Return False ' To avoid an exception.
             'End If
 
             '' Check for solvability.
             'Dim CtrSeparation As System.Double =
-            'System.Double.Hypot(x2 - x1, y2 - y1)
-            'If CtrSeparation > (r1 + r2) Then
+            'System.Double.Hypot(x1 - x0, y1 - y0)
+            'If CtrSeparation > (r0 + r1) Then
             '    ' Two isolated circles.
             '    Return False
-            'ElseIf CtrSeparation < System.Math.Abs(r2 - r1) Then
+            'ElseIf CtrSeparation < System.Math.Abs(r1 - r0) Then
             '    ' One inside the other.
             '    Return False
-            'ElseIf x2.Equals(x1) AndAlso y2.Equals(y1) Then
+            'ElseIf x1.Equals(x0) AndAlso y1.Equals(y0) Then
             '    ' They are concentric, with either zero or infinite common
             '    ' points. The second case is considered not to be intersecting.
             '    Return False
             'End If
             'Return True
 
-            Return CirclesIntersect(x1, y1, r1, x2, y2, r2, 0.0)
+            Return CirclesIntersect(x0, y0, r0, x1, y1, r1, 0.0)
 
         End Function ' CirclesIntersect
 
         ''' <summary>
         ''' Determines whether two circles intersect.
         ''' </summary>
-        ''' <param name="circle1">Specifies the <c>Circle2D</c> to consider for
-        ''' intersection with <paramref name="circle2"/>.</param>
-        ''' <param name="circle2">Specifies the <c>Circle2D</c> to consider for
+        ''' <param name="circle0">Specifies the <c>Circle2D</c> to consider for
         ''' intersection with <paramref name="circle1"/>.</param>
+        ''' <param name="circle1">Specifies the <c>Circle2D</c> to consider for
+        ''' intersection with <paramref name="circle0"/>.</param>
         ''' <param name="tolerance">Specifies the maximum offset from zero which
         ''' is assumed to represent zero.</param>
         ''' <returns><c>True</c> if the circles intersect; otherwise,
@@ -743,41 +743,41 @@ Partial Public Module Math
         ''' representation of zero relative to other known or expected
         ''' values.
         ''' </remarks>
-        Public Shared Function CirclesIntersect(ByVal circle1 As Circle2D,
-                ByVal circle2 As Circle2D, ByVal tolerance As System.Double) _
+        Public Shared Function CirclesIntersect(ByVal circle0 As Circle2D,
+                ByVal circle1 As Circle2D, ByVal tolerance As System.Double) _
                 As System.Boolean
 
             ' xxxxxxxxxx NO TEST HAS BEEN ADDED FOR THIS. xxxxxxxxxx
 
-            ' No input checking. circle1 and circle2 are presumed to have been
+            ' No input checking. circle0 and circle1 are presumed to have been
             ' checked when created.
 
             Return CirclesIntersect(
-                circle1.CenterX, circle1.CenterY, circle1.Radius,
-                circle2.CenterX, circle2.CenterY, circle2.Radius, tolerance)
+                circle0.CenterX, circle0.CenterY, circle0.Radius,
+                circle1.CenterX, circle1.CenterY, circle1.Radius, tolerance)
 
         End Function ' CirclesIntersect
 
         ''' <summary>
         ''' Determines whether two circles intersect.
         ''' </summary>
-        ''' <param name="circle1">Specifies the <c>Circle2D</c> to consider for
-        ''' intersection with <paramref name="circle2"/>.</param>
-        ''' <param name="circle2">Specifies the <c>Circle2D</c> to consider for
+        ''' <param name="circle0">Specifies the <c>Circle2D</c> to consider for
         ''' intersection with <paramref name="circle1"/>.</param>
+        ''' <param name="circle1">Specifies the <c>Circle2D</c> to consider for
+        ''' intersection with <paramref name="circle0"/>.</param>
         ''' <returns><c>True</c> if the circles intersect; otherwise,
         ''' <c>False</c>.</returns>
-        Public Shared Function CirclesIntersect(ByVal circle1 As Circle2D,
-                ByVal circle2 As Circle2D) As System.Boolean
+        Public Shared Function CirclesIntersect(ByVal circle0 As Circle2D,
+                ByVal circle1 As Circle2D) As System.Boolean
 
             ' xxxxxxxxxx NO TEST HAS BEEN ADDED FOR THIS. xxxxxxxxxx
 
-            ' No input checking. circle1 and circle2 are presumed to have been
+            ' No input checking. circle0 and circle1 are presumed to have been
             ' checked when created.
 
             Return CirclesIntersect(
-                circle1.CenterX, circle1.CenterY, circle1.Radius,
-                circle2.CenterX, circle2.CenterY, circle2.Radius, 0.0)
+                circle0.CenterX, circle0.CenterY, circle0.Radius,
+                circle1.CenterX, circle1.CenterY, circle1.Radius, 0.0)
 
         End Function ' CirclesIntersect
 
@@ -785,12 +785,12 @@ Partial Public Module Math
         ''' Calculates the intersection points of two circles defined by their
         ''' center coordinates and radii.
         ''' </summary>
+        ''' <param name="x0">Specifies the X-coordinate of circle0.</param>
+        ''' <param name="y0">Specifies the Y-coordinate of circle0.</param>
+        ''' <param name="r0">Specifies the radius of circle0.</param>
         ''' <param name="x1">Specifies the X-coordinate of circle1.</param>
         ''' <param name="y1">Specifies the Y-coordinate of circle1.</param>
-        ''' <param name="r1">Specifies the radius of circle1.</param>
-        ''' <param name="x2">Specifies the X-coordinate of circle2.</param>
-        ''' <param name="y2">Specifies the Y-coordinate of circle2.</param>
-        ''' <param name="r2">Specifies the radius of circle1.</param>
+        ''' <param name="r1">Specifies the radius of circle0.</param>
         ''' <returns>A list of 0, 1, or 2 intersection points as
         ''' <see cref="OSNW.Math.Point2D"/> structure(s).</returns>
         ''' <exception cref="System.ArgumentOutOfRangeException"> Thrown when
@@ -803,32 +803,32 @@ Partial Public Module Math
         ''' point is returned. If the circles intersect at two points, a list
         ''' with both points is returned.
         ''' </remarks>
-        Public Shared Function GetIntersections(ByVal x1 As System.Double,
-                ByVal y1 As System.Double, ByVal r1 As System.Double,
-                ByVal x2 As System.Double, ByVal y2 As System.Double,
-                ByVal r2 As System.Double) _
+        Public Shared Function GetIntersections(ByVal x0 As System.Double,
+                ByVal y0 As System.Double, ByVal r0 As System.Double,
+                ByVal x1 As System.Double, ByVal y1 As System.Double,
+                ByVal r1 As System.Double) _
                 As System.Collections.Generic.List(Of Point2D)
 
             ' DEV: This is the worker for the related routines.
 
             ' Input checking.
-            If System.Double.IsInfinity(x1) OrElse
+            If System.Double.IsInfinity(x0) OrElse
+                System.Double.IsInfinity(y0) OrElse
+                System.Double.IsInfinity(r0) OrElse
+                System.Double.IsInfinity(x1) OrElse
                 System.Double.IsInfinity(y1) OrElse
-                System.Double.IsInfinity(r1) OrElse
-                System.Double.IsInfinity(x2) OrElse
-                System.Double.IsInfinity(y2) OrElse
-                System.Double.IsInfinity(r2) Then
+                System.Double.IsInfinity(r1) Then
 
                 Dim CaughtBy As System.Reflection.MethodBase =
                     System.Reflection.MethodBase.GetCurrentMethod
                 Throw New System.ArgumentOutOfRangeException(
                     $"Arguments to {NameOf(CaughtBy)} {MSGCHIV}")
             End If
-            If r1 <= 0 OrElse r2 <= 0 Then
+            If r0 <= 0 OrElse r1 <= 0 Then
                 'Dim CaughtBy As System.Reflection.MethodBase =
                 '    System.Reflection.MethodBase.GetCurrentMethod
                 Dim ErrMsg As System.String = String.Format(
-                    "{0}={1}, {2}={3}", NameOf(r1), r1, NameOf(r2), r2)
+                    "{0}={1}, {2}={3}", NameOf(r0), r0, NameOf(r1), r1)
                 Throw New System.ArgumentOutOfRangeException(
                     ErrMsg, OSNW.Math.MSGVMBGTZ)
             End If
@@ -837,8 +837,8 @@ Partial Public Module Math
                 As New System.Collections.Generic.List(Of Point2D)
 
             ' Calculate the distance between the centers of the circles.
-            Dim DeltaX As System.Double = x2 - x1
-            Dim DeltaY As System.Double = y2 - y1
+            Dim DeltaX As System.Double = x1 - x0
+            Dim DeltaY As System.Double = y1 - y0
             Dim DeltaCtr As System.Double =
                 System.Math.Sqrt(DeltaX * DeltaX + DeltaY * DeltaY)
 
@@ -846,7 +846,7 @@ Partial Public Module Math
             ' points.
             ' Select a zero reference.
             Dim MaxAbs As System.Double =
-                OSNW.Math.MaxValAbs({x1, y1, r1, x2, y2, r2})
+                OSNW.Math.MaxValAbs({x0, y0, r0, x1, y1, r1})
             Dim ZeroVal As System.Double =
                 OSNW.Math.DFLTGRAPHICTOLERANCE * MaxAbs
 
@@ -856,8 +856,8 @@ Partial Public Module Math
 
             ' Check if the circles are too far apart or if one is contained
             ' within the other. Tangent circles do not match this test.
-            If DeltaCtr > (r1 + r2) OrElse
-                DeltaCtr < System.Math.Abs(r1 - r2) Then
+            If DeltaCtr > (r0 + r1) OrElse
+                DeltaCtr < System.Math.Abs(r0 - r1) Then
 
                 Return Intersections ' Still empty.
             End If
@@ -867,12 +867,12 @@ Partial Public Module Math
             ' one or two intersections.
 
             ' Check if the circles are outside-tangent to each other.
-            If OSNW.Math.EqualEnough(r1 + r2, DeltaCtr,
+            If OSNW.Math.EqualEnough(r0 + r1, DeltaCtr,
                                      OSNW.Math.DFLTGRAPHICTOLERANCE) Then
                 ' One intersection point.
-                Dim C1Frac As System.Double = r1 / DeltaCtr
+                Dim C1Frac As System.Double = r0 / DeltaCtr
                 Intersections.Add(New Point2D(
-                                  x1 + C1Frac * DeltaX, y1 + C1Frac * DeltaY))
+                                  x0 + C1Frac * DeltaX, y0 + C1Frac * DeltaY))
                 Return Intersections
             End If
 
@@ -880,22 +880,22 @@ Partial Public Module Math
             ' Two circles of the same radius cannot be inside-tangent to each
             ' other.
             If Not OSNW.Math.EqualEnough(
-                r1, r2, OSNW.Math.DFLTGRAPHICTOLERANCE) Then
+                r0, r1, OSNW.Math.DFLTGRAPHICTOLERANCE) Then
 
-                If OSNW.Math.EqualEnough(System.Math.Abs(r1 - r2), DeltaCtr,
+                If OSNW.Math.EqualEnough(System.Math.Abs(r0 - r1), DeltaCtr,
                                          OSNW.Math.DFLTGRAPHICTOLERANCE) Then
                     ' They are inside-tangent.
-                    If r1 > r2 Then
-                        Dim C1Frac As System.Double = r1 / DeltaCtr
+                    If r0 > r1 Then
+                        Dim C1Frac As System.Double = r0 / DeltaCtr
                         Intersections.Add(New Point2D(
-                                              x1 + (C1Frac * DeltaX),
-                                              y1 + (C1Frac * DeltaY)))
+                                              x0 + (C1Frac * DeltaX),
+                                              y0 + (C1Frac * DeltaY)))
                         Return Intersections
                     Else
-                        Dim C2Frac As System.Double = r2 / DeltaCtr
+                        Dim C2Frac As System.Double = r1 / DeltaCtr
                         Intersections.Add(New Point2D(
-                                              x2 + (C2Frac * -DeltaX),
-                                              y2 + (C2Frac * -DeltaY)))
+                                              x1 + (C2Frac * -DeltaX),
+                                              y1 + (C2Frac * -DeltaY)))
                         Return Intersections
                     End If
                 End If
@@ -906,18 +906,18 @@ Partial Public Module Math
 
             ' Calculate two intersection points.
             Dim OnceA As System.Double =
-                (r1 * r1 - r2 * r2 + DeltaCtr * DeltaCtr) / (2 * DeltaCtr)
-            Dim OnceH As System.Double = System.Math.Sqrt(r1 * r1 - OnceA * OnceA)
-            Dim X0 As System.Double = x1 + OnceA * (DeltaX / DeltaCtr)
-            Dim Y0 As System.Double = y1 + OnceA * (DeltaY / DeltaCtr)
+                (r0 * r0 - r1 * r1 + DeltaCtr * DeltaCtr) / (2 * DeltaCtr)
+            Dim OnceH As System.Double = System.Math.Sqrt(r0 * r0 - OnceA * OnceA)
+            Dim ResultX0 As System.Double = x0 + OnceA * (DeltaX / DeltaCtr)
+            Dim ResultY0 As System.Double = y0 + OnceA * (DeltaY / DeltaCtr)
 
             ' Two intersection points.
             Dim intersection1 As New Point2D(
-                X0 + OnceH * (DeltaY / DeltaCtr),
-                Y0 - OnceH * (DeltaX / DeltaCtr))
+                ResultX0 + OnceH * (DeltaY / DeltaCtr),
+                ResultY0 - OnceH * (DeltaX / DeltaCtr))
             Dim intersection2 As New Point2D(
-                X0 - OnceH * (DeltaY / DeltaCtr),
-                Y0 + OnceH * (DeltaX / DeltaCtr))
+                ResultX0 - OnceH * (DeltaY / DeltaCtr),
+                ResultY0 + OnceH * (DeltaX / DeltaCtr))
             Intersections.Add(intersection1)
             Intersections.Add(intersection2)
             Return Intersections
@@ -925,23 +925,23 @@ Partial Public Module Math
         End Function ' GetIntersections
 
         ''' <summary>
-        ''' Calculates the intersection points between <paramref name="circle1"/>
-        ''' and <paramref name="circle2"/>.
+        ''' Calculates the intersection points between <paramref name="circle0"/>
+        ''' and <paramref name="circle1"/>.
         ''' </summary>
-        ''' <param name="circle1">Specifies the first circle.</param>
-        ''' <param name="circle2">Specifies the second circle.</param>
+        ''' <param name="circle0">Specifies the first circle.</param>
+        ''' <param name="circle1">Specifies the second circle.</param>
         ''' <returns>A list of intersection points as
         ''' <see cref="OSNW.Math.Point2D"/> objects.</returns>
         Public Shared Function GetIntersections(
-            ByVal circle1 As Circle2D, ByVal circle2 As Circle2D) _
+            ByVal circle0 As Circle2D, ByVal circle1 As Circle2D) _
             As System.Collections.Generic.List(Of Point2D)
 
-            ' No input checking. circle1 and circle2 are presumed to have been
+            ' No input checking. circle0 and circle1 are presumed to have been
             ' checked when created.
 
             Return GetIntersections(
-                circle1.CenterX, circle1.CenterY, circle1.Radius,
-                circle2.CenterX, circle2.CenterY, circle2.Radius)
+                circle0.CenterX, circle0.CenterY, circle0.Radius,
+                circle1.CenterX, circle1.CenterY, circle1.Radius)
 
         End Function ' GetIntersections
 
@@ -966,17 +966,17 @@ Partial Public Module Math
         ''' Attempts to determine where two circles intersect, given their
         ''' center coordinates and radii.
         ''' </summary>
-        ''' <param name="circle1X">Specifies the X-coordinate of the first
+        ''' <param name="circle0X">Specifies the X-coordinate of the first
         ''' circle to consider for intersection with the second circle.</param>
-        ''' <param name="circle1Y">Specifies the Y-coordinate of the first
+        ''' <param name="circle0Y">Specifies the Y-coordinate of the first
         ''' circle to consider for intersection with the second circle.</param>
-        ''' <param name="circle1R">Specifies the radius of the first circle to
+        ''' <param name="circle0R">Specifies the radius of the first circle to
         ''' consider for intersection with the second circle.</param>
-        ''' <param name="circle2X">Specifies the X-coordinate of the second
+        ''' <param name="circle1X">Specifies the X-coordinate of the second
         ''' circle to consider for intersection with the first circle.</param>
-        ''' <param name="circle2Y">Specifies the Y-coordinate of the second
+        ''' <param name="circle1Y">Specifies the Y-coordinate of the second
         ''' circle to consider for intersection with the first circle.</param>
-        ''' <param name="circle2R">Specifies the radius of the second circle to
+        ''' <param name="circle1R">Specifies the radius of the second circle to
         ''' consider for intersection with the first circle.</param>
         ''' <param name="intersect1X">Specifies the X-coordinate of the first
         ''' intersection.</param>
@@ -1000,9 +1000,9 @@ Partial Public Module Math
         ''' circles will have two identical (or nearly so) intersections.
         ''' </remarks>
         Public Shared Function TryCircleCircleIntersections(
-            ByVal circle1X As System.Double, ByVal circle1Y As System.Double,
-            ByVal circle1R As System.Double, ByVal circle2X As System.Double,
-            ByVal circle2Y As System.Double, ByVal circle2R As System.Double,
+            ByVal circle0X As System.Double, ByVal circle0Y As System.Double,
+            ByVal circle0R As System.Double, ByVal circle1X As System.Double,
+            ByVal circle1Y As System.Double, ByVal circle1R As System.Double,
             ByRef intersect1X As System.Double,
             ByRef intersect1Y As System.Double,
             ByRef intersect2X As System.Double,
@@ -1012,12 +1012,12 @@ Partial Public Module Math
             ' DEV: This is the worker for the overload routine.
 
             ' Input checking.
-            If System.Double.IsInfinity(circle1X) OrElse
+            If System.Double.IsInfinity(circle0X) OrElse
+                System.Double.IsInfinity(circle0Y) OrElse
+                System.Double.IsInfinity(circle0R) OrElse
+                System.Double.IsInfinity(circle1X) OrElse
                 System.Double.IsInfinity(circle1Y) OrElse
-                System.Double.IsInfinity(circle1R) OrElse
-                System.Double.IsInfinity(circle2X) OrElse
-                System.Double.IsInfinity(circle2Y) OrElse
-                System.Double.IsInfinity(circle2R) Then
+                System.Double.IsInfinity(circle1R) Then
 
                 intersect1X = Double.NaN
                 intersect1Y = Double.NaN
@@ -1031,11 +1031,11 @@ Partial Public Module Math
             ' Concentric circles (same center), will have either zero or
             ' infinite common points; the second case is considered to not be
             ' intersecting.
-            If circle1R < 0.0 OrElse circle2R < 0.0 _
-                OrElse Not CirclesIntersect(circle1X, circle1Y, circle1R,
-                                            circle2X, circle2Y, circle2R) _
-                OrElse circle2X.Equals(circle1X) _
-                       AndAlso circle2Y.Equals(circle1Y) Then
+            If circle0R < 0.0 OrElse circle1R < 0.0 _
+                OrElse Not CirclesIntersect(circle0X, circle0Y, circle0R,
+                                            circle1X, circle1Y, circle1R) _
+                OrElse circle1X.Equals(circle0X) _
+                       AndAlso circle1Y.Equals(circle0Y) Then
 
                 intersect1X = Double.NaN
                 intersect1Y = Double.NaN
@@ -1055,12 +1055,12 @@ Partial Public Module Math
                 intersect1X.Equals(0.0) AndAlso intersect1Y.Equals(0.0) AndAlso
                 intersect2X.Equals(0.0) AndAlso intersect2Y.Equals(0.0))
             ' Variables to allow the derivations to be verified.
-            Dim H1 As System.Double = circle1X
-            Dim H2 As System.Double = circle2X
-            Dim K1 As System.Double = circle1Y
-            Dim K2 As System.Double = circle2Y
-            Dim R1 As System.Double = circle1R
-            Dim R2 As System.Double = circle2R
+            Dim H1 As System.Double = circle0X
+            Dim H2 As System.Double = circle1X
+            Dim K1 As System.Double = circle0Y
+            Dim K2 As System.Double = circle1Y
+            Dim R1 As System.Double = circle0R
+            Dim R2 As System.Double = circle1R
             Dim H12 As System.Double = H1 * H1
             Dim H22 As System.Double = H2 * H2
             Dim K12 As System.Double = K1 * K1
@@ -1076,17 +1076,17 @@ Partial Public Module Math
 
             ' Use these to substitute parameter names for clarity, squaring, and
             ' reuse.
+            Dim circle0X2 As System.Double = circle0X * circle0X
             Dim circle1X2 As System.Double = circle1X * circle1X
-            Dim circle2X2 As System.Double = circle2X * circle2X
+            Dim circle0Y2 As System.Double = circle0Y * circle0Y
             Dim circle1Y2 As System.Double = circle1Y * circle1Y
-            Dim circle2Y2 As System.Double = circle2Y * circle2Y
+            Dim circle0R2 As System.Double = circle0R * circle0R
             Dim circle1R2 As System.Double = circle1R * circle1R
-            Dim circle2R2 As System.Double = circle2R * circle2R
             Dim DiffX As System.Double
             Dim DiffY As System.Double
             Dim SumRXY As System.Double
 
-            If circle2Y.Equals(circle1Y) Then
+            If circle1Y.Equals(circle0Y) Then
                 ' Special case. The circles share the center Y-coordinate.
 
                 ' The derivation follows:
@@ -1272,7 +1272,7 @@ Partial Public Module Math
                 ' ARE GOOD.
                 If TestMode Then
                     Left = Y ^ 2 - 2 * K1 * Y + X ^ 2 - 2 * H1 * X + H1 ^ 2 + K1 ^ 2 - R1 ^ 2
-                    If Not OSNW.Math.EqualEnoughZero(Left, VERIFYTOLERANCE0 * circle1R) Then
+                    If Not OSNW.Math.EqualEnoughZero(Left, VERIFYTOLERANCE0 * circle0R) Then
                         Return False
                     End If
                 End If
@@ -1285,15 +1285,15 @@ Partial Public Module Math
 
                 ' Implementation:
 
-                intersect1X = (circle1R2 - circle2R2 + circle2X2 - circle1X2) _
-                              / (2 * (circle2X - circle1X))
+                intersect1X = (circle0R2 - circle1R2 + circle1X2 - circle0X2) _
+                              / (2 * (circle1X - circle0X))
                 Dim intersect1x2 As System.Double = intersect1X * intersect1X
 
                 Dim a As System.Double = 1
-                Dim b As System.Double = -2 * circle1Y
+                Dim b As System.Double = -2 * circle0Y
                 Dim c As System.Double =
-                    intersect1x2 - 2 * circle1X * intersect1X _
-                    + circle1X2 + circle1Y2 - circle1R2
+                    intersect1x2 - 2 * circle0X * intersect1X _
+                    + circle0X2 + circle0Y2 - circle0R2
                 If Not TryQuadratic(a, b, c, intersect1Y, intersect2Y) Then
                     intersect1X = System.Double.NaN
                     intersect1Y = System.Double.NaN
@@ -1522,14 +1522,14 @@ Partial Public Module Math
             ' Implementation:
 
             ' Substitute parameter names for clarity, squaring, and reuse.
-            DiffX = circle2X - circle1X
-            DiffY = circle2Y - circle1Y
-            SumRXY = circle1R2 - circle2R2 + circle2X2 - circle1X2 _
-                + circle2Y2 - circle1Y2
+            DiffX = circle1X - circle0X
+            DiffY = circle1Y - circle0Y
+            SumRXY = circle0R2 - circle1R2 + circle1X2 - circle0X2 _
+                + circle1Y2 - circle0Y2
             Dim LineM As System.Double = -DiffX / DiffY
             Dim LineB As System.Double = SumRXY / (2 * DiffY)
             Return TryCircleLineIntersections(
-                circle1X, circle1Y, circle1R, LineM, LineB,
+                circle0X, circle0Y, circle0R, LineM, LineB,
                 intersect1X, intersect1Y, intersect2X, intersect2Y)
 
         End Function ' TryCircleCircleIntersections
@@ -1537,9 +1537,9 @@ Partial Public Module Math
         ''' <summary>
         ''' Attempts to determine where two circles intersect.
         ''' </summary>
-        ''' <param name="circle1">Specifies the first circle to consider for
+        ''' <param name="circle0">Specifies the first circle to consider for
         ''' intersection with the second circle.</param>
-        ''' <param name="circle2">Specifies the second circle to consider
+        ''' <param name="circle1">Specifies the second circle to consider
         ''' for intersection with the first circle.</param>
         ''' <param name="intersect1X">Specifies the X-coordinate of the first
         ''' intersection.</param>
@@ -1562,19 +1562,19 @@ Partial Public Module Math
         ''' intersections.
         ''' </remarks>
         Public Shared Function TryCircleCircleIntersections(
-            ByVal circle1 As OSNW.Circle2D, ByVal circle2 As OSNW.Circle2D,
+            ByVal circle0 As OSNW.Circle2D, ByVal circle1 As OSNW.Circle2D,
             ByRef intersect1X As System.Double,
             ByRef intersect1Y As System.Double,
             ByRef intersect2X As System.Double,
             ByRef intersect2Y As System.Double) _
             As System.Boolean
 
-            ' No input checking. circle1 and circle2 are presumed to have been
+            ' No input checking. circle0 and circle1 are presumed to have been
             ' checked when created.
 
-            Return TryCircleCircleIntersections(circle1.CenterX,
-                circle1.CenterY, circle1.Radius, circle2.CenterX,
-                circle2.CenterY, circle2.Radius, intersect1X, intersect1Y, intersect2X, intersect2Y)
+            Return TryCircleCircleIntersections(circle0.CenterX,
+                circle0.CenterY, circle0.Radius, circle1.CenterX,
+                circle1.CenterY, circle1.Radius, intersect1X, intersect1Y, intersect2X, intersect2Y)
 
         End Function ' TryCircleCircleIntersections
 
