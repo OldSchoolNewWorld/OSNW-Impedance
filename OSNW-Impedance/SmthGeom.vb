@@ -3,7 +3,6 @@ Option Strict On
 Option Compare Binary
 Option Infer Off
 
-Imports OsnwPoint2D = OSNW.Math.Point2D
 Imports OsnwCircle2D = OSNW.Math.Circle2D
 
 ' This document contains items related to the geometry of a Smith Chart. These
@@ -540,7 +539,7 @@ Public Class SmithMainCircle
             ' Then find the intercections of the two circles.
             Dim XCirc As New XCircle(Me, reactance)
             Dim Intersections As System.Collections.Generic.List(
-                Of OsnwPoint2D) = OsnwCircle2D.GetIntersections(RCirc, XCirc)
+                Of Math2D.Point) = OsnwCircle2D.GetIntersections(RCirc, XCirc)
 
             ' The R- and X-circles will intersect at two distinct points, with
             ' one at the open circuit point.

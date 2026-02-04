@@ -5,8 +5,8 @@ Option Infer Off
 
 Imports OSNW.Numerics
 Imports Xunit
-Imports OsnwPoint2D = OSNW.Math.Point2D
 Imports OsnwCircle2D = OSNW.Math.Circle2D
+Imports OsnwPoint2D = OSNW.Math2D.Point
 
 Namespace GeometryTests
 
@@ -360,7 +360,7 @@ Namespace GeometryTests
             ' NOTE: The order in which the circles are specified dictates the order in which the intersections are stored.
             Dim C1 As New OsnwCircle2D(c1X, c1Y, c1R)
             Dim C2 As New OsnwCircle2D(c2X, c2Y, c2R)
-            Dim Intersections As System.Collections.Generic.List(Of OSNW.Point2D) = C1.GetIntersections(C2)
+            Dim Intersections As System.Collections.Generic.List(Of OsnwPoint2D) = C1.GetIntersections(C2)
             Assert.Equal(2, Intersections.Count)
             Assert.Equal(expect1x, Intersections(0).X, 0.01)
             Assert.Equal(expect1y, Intersections(0).Y, 0.01)
@@ -384,7 +384,7 @@ Namespace GeometryTests
             ' Testing via GetIntersections(otherCircle As GenericCircle) exercises all three overloads.
             Dim C1 As New OsnwCircle2D(c1X, c1Y, c1R)
             Dim C2 As New OsnwCircle2D(c2X, c2Y, c2R)
-            Dim Intersections As System.Collections.Generic.List(Of OsnwPoint2D) = C1.GetIntersections(C2)
+            Dim Intersections As System.Collections.Generic.List(Of OSNW.Math2D.Point) = C1.GetIntersections(C2)
             Assert.Equal(1, Intersections.Count)
             Assert.Equal(expect1x, Intersections(0).X, 0.01)
             Assert.Equal(expect1y, Intersections(0).Y, 0.01)

@@ -2,7 +2,7 @@
 
  A Mathematical Library for various purposes.
  Numeric constants
- String constants
+ Message string constants
  Types
    Structure Point2D
    Structure Point3D
@@ -13,3 +13,4 @@
    Function TryCircleLineIntersections
    Function CirclesIntersect
    Function TryCircleCircleIntersections
+Use of routines with "Try" in their name.

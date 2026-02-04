@@ -29,7 +29,6 @@ Option Infer Off
 Imports System.Diagnostics.CodeAnalysis
 Imports System.Globalization
 Imports System.Text.Json.Serialization
-Imports OSNW.Math
 
 ' REF: Electrical impedance
 ' https://en.wikipedia.org/wiki/Electrical_impedance

@@ -1,4 +1,6 @@
-﻿Partial Public Module Math
+﻿Imports Point2D = OSNW.Math2D.Point
+
+Partial Public Module Math
 
     ''' <summary>
     ''' A base class that represents the geometry of a generic circle, with a
@@ -203,7 +205,7 @@
         ''' <exception cref="System.ArgumentOutOfRangeException">
         ''' Thrown when <paramref name="radius"/> is negative.
         ''' </exception>"
-        Public Sub New(ByVal center As Point2D,
+        Public Sub New(ByVal center As Math2D.Point,
                        ByVal radius As System.Double)
 
             ' Input checking.
@@ -791,7 +793,7 @@
         ''' <param name="y1">Specifies the Y-coordinate of circle1.</param>
         ''' <param name="r1">Specifies the radius of circle0.</param>
         ''' <returns>A list of 0, 1, or 2 intersection points as
-        ''' <see cref="OSNW.Math.Point2D"/> structure(s).</returns>
+        ''' <see cref="Point2D"/> structure(s).</returns>
         ''' <exception cref="System.ArgumentOutOfRangeException"> Thrown when
         ''' any parameter is infinite.</exception>
         ''' <exception cref="ArgumentOutOfRangeException">when either radius is
@@ -932,7 +934,7 @@
         ''' <param name="circle0">Specifies the first circle.</param>
         ''' <param name="circle1">Specifies the second circle.</param>
         ''' <returns>A list of intersection points as
-        ''' <see cref="OSNW.Math.Point2D"/> objects.</returns>
+        ''' <see cref="Point2D"/> objects.</returns>
         Public Shared Function GetIntersections(
             ByVal circle0 As Circle2D, ByVal circle1 As Circle2D) _
             As System.Collections.Generic.List(Of Point2D)
@@ -953,7 +955,7 @@
         ''' <param name="otherCircle">Specifies the other circle with which to find
         ''' intersections.</param>
         ''' <returns>A list of intersection points as
-        ''' <see cref="OSNW.Math.Point2D"/> objects.</returns>
+        ''' <see cref="Point2D"/> objects.</returns>
         Public Function GetIntersections(ByVal otherCircle As Circle2D) _
             As System.Collections.Generic.List(Of Point2D)
 
@@ -1278,7 +1280,7 @@
         ''' intersections.
         ''' </remarks>
         Public Shared Function TryCircleCircleIntersections(
-            ByVal circle0 As OSNW.Circle2D, ByVal circle1 As OSNW.Circle2D,
+            ByVal circle0 As Circle2D, ByVal circle1 As Circle2D,
             ByRef intersect0X As System.Double,
             ByRef intersect0Y As System.Double,
             ByRef intersect1X As System.Double,

@@ -3,6 +3,9 @@ Option Strict On
 Option Compare Binary
 Option Infer Off
 
+Imports Point2D = OSNW.Math2D.Point
+Imports Point3D = OSNW.Math3D.Point
+
 Public Module Math
 
 #Region "Constants"
@@ -203,110 +206,6 @@ Public Module Math
 #End Region ' "EqualEnough Implementations"
 
     ''' <summary>
-    ''' Represents an ordered pair of X and Y double precision coordinates that
-    ''' define a point in a two-dimensional plane.
-    ''' </summary>
-    Public Structure Point2D
-
-        ''' <summary>
-        ''' Represents the X-coordinate of this <see cref='Point2D'/>.
-        ''' </summary>
-        Public X As System.Double
-
-        ''' <summary>
-        ''' Represents the Y-coordinate of this <see cref='Point2D'/>.
-        ''' </summary>
-        Public Y As System.Double
-
-        ''' <summary>
-        ''' Initializes a new instance of the <see cref="Point2D"/> class with
-        ''' the specified coordinates.
-        ''' </summary>
-        Public Sub New(ByVal x As System.Double, ByVal y As System.Double)
-            ' No input checking.
-            Me.X = x
-            Me.Y = y
-        End Sub ' New
-
-        ''' <summary>
-        ''' Converts the numeric value of this instance to its equivalent string
-        ''' representation.
-        ''' </summary>
-        ''' <returns>
-        ''' The string representation of the value of this instance.
-        ''' </returns>
-        Public Overrides Function ToString() As System.String
-            Return String.Format("<{0}, {1}>", Me.X, Me.Y)
-        End Function ' ToString
-
-    End Structure ' Point2D
-
-    ''' <summary>
-    ''' Represents an ordered triplet of X, Y and Z double precision coordinates
-    ''' that define a point in a three-dimensional space.
-    ''' </summary>
-    Public Structure Point3D
-
-        ''' <summary>
-        ''' Represents the X-coordinate of this <see cref='Point3D'/>.
-        ''' </summary>
-        Public X As System.Double
-
-        ''' <summary>
-        ''' Represents the Y-coordinate of this <see cref='Point3D'/>.
-        ''' </summary>
-        Public Y As System.Double
-
-        ''' <summary>
-        ''' Represents the Z-coordinate of this <see cref='Point3D'/>.
-        ''' </summary>
-        Public Z As System.Double
-
-        ''' <summary>
-        ''' Initializes a New instance of the <see cref="Point3D"/> class with
-        ''' the specified coordinates.
-        ''' </summary>
-        Public Sub New(ByVal x As System.Double, ByVal y As System.Double, ByVal z As System.Double)
-            ' No input checking.
-            Me.X = x
-            Me.Y = y
-            Me.Z = z
-        End Sub ' New
-
-        ''' <summary>
-        ''' Converts the numeric value of this instance to its equivalent string
-        ''' representation.
-        ''' </summary>
-        ''' <returns>
-        ''' The string representation of the value of this instance.
-        ''' </returns>
-        Public Overrides Function ToString() As System.String
-            Return System.String.Format("<{0}, {1}, {2}>", Me.X, Me.Y, Me.Z)
-        End Function ' ToString
-
-    End Structure ' Point3D
-
-    ''' <summary>
-    ''' Computes the distance between two points in a 2D plane.
-    ''' </summary>
-    ''' <param name="x0">Specifies the X-coordinate of one point.</param>
-    ''' <param name="y0">Specifies the Y-coordinate of one point.</param>
-    ''' <param name="x1">Specifies the X-coordinate of the other point.</param>
-    ''' <param name="y1">Specifies the Y-coordinate of the other point.</param>
-    ''' <returns>The distance between the two points.</returns>
-    Public Function Distance(ByVal x0 As System.Double,
-        ByVal y0 As System.Double, ByVal x1 As System.Double,
-        ByVal y1 As System.Double) As System.Double
-
-        ' xxxxxxxxxx NO TEST HAS BEEN ADDED FOR THIS. xxxxxxxxxx
-
-        ' Based on the Pythagorean theorem.
-        Dim DeltaX As System.Double = x1 - x0
-        Dim DeltaY As System.Double = y1 - y0
-        Return System.Math.Sqrt((DeltaX * DeltaX) + (DeltaY * DeltaY))
-    End Function ' Distance
-
-    ''' <summary>
     ''' Computes the distance between two points in a 2D plane.
     ''' </summary>
     ''' <param name="p0">Specifies one point.</param>
@@ -321,31 +220,6 @@ Public Module Math
         Dim DeltaX As System.Double = p1.X - p0.X
         Dim DeltaY As System.Double = p1.Y - p0.Y
         Return System.Math.Sqrt((DeltaX * DeltaX) + (DeltaY * DeltaY))
-    End Function ' Distance
-
-    ''' <summary>
-    ''' Computes the distance between two points in a 3D space.
-    ''' </summary>
-    ''' <param name="x0">Specifies the X-coordinate of one point.</param>
-    ''' <param name="y0">Specifies the Y-coordinate of one point.</param>
-    ''' <param name="z0">Specifies the Z-coordinate of one point.</param>
-    ''' <param name="x1">Specifies the X-coordinate of the other point.</param>
-    ''' <param name="y1">Specifies the Y-coordinate of the other point.</param>
-    ''' <param name="z1">Specifies the Z-coordinate of the other point.</param>
-    ''' <returns>The distance between the two points.</returns>
-    Public Function Distance(ByVal x0 As System.Double,
-        ByVal y0 As System.Double, ByVal z0 As System.Double,
-        ByVal x1 As System.Double, ByVal y1 As System.Double,
-        ByVal z1 As System.Double) As System.Double
-
-        ' xxxxxxxxxx NO TEST HAS BEEN ADDED FOR THIS. xxxxxxxxxx
-
-        ' Based on the Pythagorean theorem.
-        Dim DeltaX As System.Double = x1 - x0
-        Dim DeltaY As System.Double = y1 - y0
-        Dim DeltaZ As System.Double = z1 - z0
-        Return System.Math.Sqrt(
-            (DeltaX * DeltaX) + (DeltaY * DeltaY) + (DeltaZ * DeltaZ))
     End Function ' Distance
 
     ''' <summary>
