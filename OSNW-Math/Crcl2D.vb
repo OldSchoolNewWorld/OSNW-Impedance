@@ -1,6 +1,4 @@
-﻿Imports System.Net
-
-Partial Public Module Math
+﻿Partial Public Module Math
 
     ''' <summary>
     ''' A base class that represents the geometry of a generic circle, with a
@@ -388,11 +386,12 @@ Partial Public Module Math
             Dim LineM2 As System.Double = lineM * lineM
             Dim LineB2 As System.Double = lineB * lineB
 
-            ' Set up "a*x^2 + b*x + c = 0" for use in the quadratic formula.
+            ' Set up and use "a*x^2 + b*x + c = 0" terms in the quadratic
+            ' formula.
             Dim QuadA As Double = 1 + LineM2
             Dim QuadB As Double = 2 * ((lineM * (lineB - circleY)) - circleX)
-            Dim QuadC As Double = CircleX2 + CircleY2 - CircleR2 + LineB2 - 2 * lineB * circleY
-
+            Dim QuadC As Double = CircleX2 + CircleY2 - CircleR2 + LineB2 -
+                2 * lineB * circleY
             If Not TryQuadratic(
                 QuadA, QuadB, QuadC, intersect0X, intersect1X) Then
 
@@ -796,7 +795,7 @@ Partial Public Module Math
         ''' <exception cref="System.ArgumentOutOfRangeException"> Thrown when
         ''' any parameter is infinite.</exception>
         ''' <exception cref="ArgumentOutOfRangeException">when either radius is
-        ''' less than or equal to zero.</exception>
+        ''' negative.</exception>
         ''' <remarks>
         ''' If there are no intersection points, an empty list is returned. If
         ''' the circles are tangent to each other, a list with one intersection
@@ -824,13 +823,15 @@ Partial Public Module Math
                 Throw New System.ArgumentOutOfRangeException(
                     $"Arguments to {NameOf(CaughtBy)} {MSGCHIV}")
             End If
-            If r0 <= 0 OrElse r1 <= 0 Then
+            ' A zero radius seems useless, but may be valid in some specific
+            ' case.
+            If r0 < 0 OrElse r1 < 0 Then
                 'Dim CaughtBy As System.Reflection.MethodBase =
                 '    System.Reflection.MethodBase.GetCurrentMethod
                 Dim ErrMsg As System.String = String.Format(
                     "{0}={1}, {2}={3}", NameOf(r0), r0, NameOf(r1), r1)
                 Throw New System.ArgumentOutOfRangeException(
-                    ErrMsg, OSNW.Math.MSGVMBGTZ)
+                    ErrMsg, OSNW.Math.MSGCHNV)
             End If
 
             Dim Intersections _
@@ -871,8 +872,8 @@ Partial Public Module Math
                                      OSNW.Math.DFLTGRAPHICTOLERANCE) Then
                 ' One intersection point.
                 Dim C1Frac As System.Double = r0 / DeltaCtr
-                Intersections.Add(New Point2D(
-                                  x0 + C1Frac * DeltaX, y0 + C1Frac * DeltaY))
+                Intersections.Add(New Point2D(x0 + C1Frac * DeltaX,
+                                              y0 + C1Frac * DeltaY))
                 Return Intersections
             End If
 
@@ -1134,6 +1135,8 @@ Partial Public Module Math
                 intersect0X = (r02 - r12 + x12 - x02) / (2 * (x1 - x0))
                 Intersect0X2 = intersect0X * intersect0X
 
+                ' Set up and use "a*x^2 + b*x + c = 0" terms in the quadratic
+                ' formula.
                 Dim a As System.Double = 1
                 Dim b As System.Double = -2 * y0
                 Dim c As System.Double =
@@ -1160,6 +1163,7 @@ Partial Public Module Math
             ' standard form; the actual parameters, and multiplication vs.
             ' squaring, are substituted in the implementation.
 
+            ' The basic approach is laid out here and broken out below:
             ' REF: How can I find the points at which two circles intersect?
             ' https://math.stackexchange.com/questions/256100/how-can-i-find-the-points-at-which-two-circles-intersect
 
@@ -1286,7 +1290,8 @@ Partial Public Module Math
 
             Return TryCircleCircleIntersections(circle0.CenterX,
                 circle0.CenterY, circle0.Radius, circle1.CenterX,
-                circle1.CenterY, circle1.Radius, intersect0X, intersect0Y, intersect1X, intersect1Y)
+                circle1.CenterY, circle1.Radius, intersect0X, intersect0Y,
+                intersect1X, intersect1Y)
 
         End Function ' TryCircleCircleIntersections
 
