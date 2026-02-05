@@ -65,12 +65,12 @@ Namespace NumericTests
 
         <Fact>
         Sub MaxValAbs_InlineArray_Succeeds()
-            Assert.True(OSNW.Math.MaxValAbs({1, 3, 5, 4, 2}).Equals(5))
+            Assert.True(OSNW.Math.MaxMag({1, 3, 5, 4, 2}).Equals(5))
         End Sub
 
         <Fact>
         Sub MaxValAbs_Negative_Succeeds()
-            Assert.True(OSNW.Math.MaxValAbs({1, 3, -5, 4, 2}).Equals(5))
+            Assert.True(OSNW.Math.MaxMag({1, 3, -5, 4, 2}).Equals(5))
         End Sub
 
         <Fact>
@@ -81,7 +81,7 @@ Namespace NumericTests
             Dim Val4 As Double = 4
             Dim Val5 As Double = 2
             Dim Values As Double() = {Val1, Val2, Val3, Val4, Val5}
-            Assert.True(OSNW.Math.MaxValAbs(Values).Equals(5))
+            Assert.True(OSNW.Math.MaxMag(Values).Equals(5))
         End Sub
 
     End Class

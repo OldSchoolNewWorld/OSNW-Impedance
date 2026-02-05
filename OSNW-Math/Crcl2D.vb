@@ -1,4 +1,4 @@
-﻿Imports Point2D = OSNW.Math2D.Point
+﻿Imports OsnwPoint2D = OSNW.Math2D.Point
 
 Partial Public Module Math
 
@@ -98,8 +98,8 @@ Partial Public Module Math
         ''' <exception cref="System.ArgumentOutOfRangeException"> Thrown when
         ''' the value is infinite or negative.</exception>"
         Public Property Diameter As System.Double
-            ' DEV: Being functionally redundant, this may need to be excluded
-            ' from any serialization process.
+            ' DEV: Being technically redundant, this may need to be excluded
+            ' from serialization.
             Get
                 Return Me.Radius * 2.0
             End Get
@@ -524,14 +524,14 @@ Partial Public Module Math
                 ' Standard form of a circle.
                 ' (X - h)^2 + (Y - k)^2 = r^2
 
-                ' Substitute parameters into standard form equation. Solve for
-                ' X.
+                ' Substitute the parameters into the standard form equation and
+                ' solve for Y.
                 ' (X - circleX)^2 + (Y - circleY)^2 = circleR^2
                 ' (Y - circleY)^2 = circleR^2 - (X - circleX)^2
                 ' Y - circleY = sqrt(circleR^2 - (X - circleX)^2)
                 ' Y = circleY + sqrt(circleR^2 - (X - circleX)^2)
 
-                ' Use that at one point.
+                ' Use that at one intersecting point.
                 ' Y = circleY + sqrt(circleR^2 - (line1X - circleX)^2)
 
                 ' Get the Y values.
@@ -628,7 +628,7 @@ Partial Public Module Math
 
             ' Check for solvability.
             Dim ToleranceAbs As System.Double =
-                System.Math.Abs(tolerance * MaxValAbs(x0, y0, r0, x1, y1, r1))
+                System.Math.Abs(tolerance * MaxMag(x0, y0, r0, x1, y1, r1))
             Dim CtrSeparation As System.Double =
                 System.Double.Hypot(x1 - x0, y1 - y0)
             If CtrSeparation > (r0 + r1 + ToleranceAbs) Then
@@ -793,7 +793,7 @@ Partial Public Module Math
         ''' <param name="y1">Specifies the Y-coordinate of circle1.</param>
         ''' <param name="r1">Specifies the radius of circle0.</param>
         ''' <returns>A list of 0, 1, or 2 intersection points as
-        ''' <see cref="Point2D"/> structure(s).</returns>
+        ''' <see cref="OsnwPoint2D"/> structure(s).</returns>
         ''' <exception cref="System.ArgumentOutOfRangeException"> Thrown when
         ''' any parameter is infinite.</exception>
         ''' <exception cref="ArgumentOutOfRangeException">when either radius is
@@ -808,7 +808,7 @@ Partial Public Module Math
                 ByVal y0 As System.Double, ByVal r0 As System.Double,
                 ByVal x1 As System.Double, ByVal y1 As System.Double,
                 ByVal r1 As System.Double) _
-                As System.Collections.Generic.List(Of Point2D)
+                As System.Collections.Generic.List(Of OsnwPoint2D)
 
             ' DEV: This is the worker for the related routines.
 
@@ -837,7 +837,7 @@ Partial Public Module Math
             End If
 
             Dim Intersections _
-                As New System.Collections.Generic.List(Of Point2D)
+                As New System.Collections.Generic.List(Of OsnwPoint2D)
 
             ' Calculate the distance between the centers of the circles.
             Dim DeltaX As System.Double = x1 - x0
@@ -849,7 +849,7 @@ Partial Public Module Math
             ' points.
             ' Select a zero reference.
             Dim MaxAbs As System.Double =
-                OSNW.Math.MaxValAbs({x0, y0, r0, x1, y1, r1})
+                OSNW.Math.MaxMag({x0, y0, r0, x1, y1, r1})
             Dim ZeroVal As System.Double =
                 OSNW.Math.DFLTGRAPHICTOLERANCE * MaxAbs
 
@@ -874,8 +874,8 @@ Partial Public Module Math
                                      OSNW.Math.DFLTGRAPHICTOLERANCE) Then
                 ' One intersection point.
                 Dim C1Frac As System.Double = r0 / DeltaCtr
-                Intersections.Add(New Point2D(x0 + C1Frac * DeltaX,
-                                              y0 + C1Frac * DeltaY))
+                Intersections.Add(New OsnwPoint2D(x0 + C1Frac * DeltaX,
+                                                  y0 + C1Frac * DeltaY))
                 Return Intersections
             End If
 
@@ -890,15 +890,13 @@ Partial Public Module Math
                     ' They are inside-tangent.
                     If r0 > r1 Then
                         Dim C1Frac As System.Double = r0 / DeltaCtr
-                        Intersections.Add(New Point2D(
-                                              x0 + (C1Frac * DeltaX),
-                                              y0 + (C1Frac * DeltaY)))
+                        Intersections.Add(New OsnwPoint2D(
+                            x0 + (C1Frac * DeltaX), y0 + (C1Frac * DeltaY)))
                         Return Intersections
                     Else
                         Dim C2Frac As System.Double = r1 / DeltaCtr
-                        Intersections.Add(New Point2D(
-                                              x1 + (C2Frac * -DeltaX),
-                                              y1 + (C2Frac * -DeltaY)))
+                        Intersections.Add(New OsnwPoint2D(
+                            x1 + (C2Frac * -DeltaX), y1 + (C2Frac * -DeltaY)))
                         Return Intersections
                     End If
                 End If
@@ -915,10 +913,10 @@ Partial Public Module Math
             Dim ResultY0 As System.Double = y0 + OnceA * (DeltaY / DeltaCtr)
 
             ' Two intersection points.
-            Dim intersection1 As New Point2D(
+            Dim intersection1 As New OsnwPoint2D(
                 ResultX0 + OnceH * (DeltaY / DeltaCtr),
                 ResultY0 - OnceH * (DeltaX / DeltaCtr))
-            Dim intersection2 As New Point2D(
+            Dim intersection2 As New OsnwPoint2D(
                 ResultX0 - OnceH * (DeltaY / DeltaCtr),
                 ResultY0 + OnceH * (DeltaX / DeltaCtr))
             Intersections.Add(intersection1)
@@ -934,10 +932,10 @@ Partial Public Module Math
         ''' <param name="circle0">Specifies the first circle.</param>
         ''' <param name="circle1">Specifies the second circle.</param>
         ''' <returns>A list of intersection points as
-        ''' <see cref="Point2D"/> objects.</returns>
+        ''' <see cref="OsnwPoint2D"/> objects.</returns>
         Public Shared Function GetIntersections(
             ByVal circle0 As Circle2D, ByVal circle1 As Circle2D) _
-            As System.Collections.Generic.List(Of Point2D)
+            As System.Collections.Generic.List(Of OsnwPoint2D)
 
             ' No input checking. circle0 and circle1 are presumed to have been
             ' checked when created.
@@ -955,9 +953,9 @@ Partial Public Module Math
         ''' <param name="otherCircle">Specifies the other circle with which to find
         ''' intersections.</param>
         ''' <returns>A list of intersection points as
-        ''' <see cref="Point2D"/> objects.</returns>
+        ''' <see cref="OsnwPoint2D"/> objects.</returns>
         Public Function GetIntersections(ByVal otherCircle As Circle2D) _
-            As System.Collections.Generic.List(Of Point2D)
+            As System.Collections.Generic.List(Of OsnwPoint2D)
 
             ' No input checking. otherCircle is presumed to have been checked
             ' when created.

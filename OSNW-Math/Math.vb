@@ -3,9 +3,6 @@ Option Strict On
 Option Compare Binary
 Option Infer Off
 
-Imports Point2D = OSNW.Math2D.Point
-Imports Point3D = OSNW.Math3D.Point
-
 Public Module Math
 
 #Region "Constants"
@@ -206,42 +203,6 @@ Public Module Math
 #End Region ' "EqualEnough Implementations"
 
     ''' <summary>
-    ''' Computes the distance between two points in a 2D plane.
-    ''' </summary>
-    ''' <param name="p0">Specifies one point.</param>
-    ''' <param name="p1">Specifies the other point.</param>
-    ''' <returns>The distance between the two points.</returns>
-    Public Function Distance(ByVal p0 As Point2D, ByVal p1 As Point2D) _
-        As System.Double
-
-        ' xxxxxxxxxx NO TEST HAS BEEN ADDED FOR THIS. xxxxxxxxxx
-
-        ' Based on the Pythagorean theorem.
-        Dim DeltaX As System.Double = p1.X - p0.X
-        Dim DeltaY As System.Double = p1.Y - p0.Y
-        Return System.Math.Sqrt((DeltaX * DeltaX) + (DeltaY * DeltaY))
-    End Function ' Distance
-
-    ''' <summary>
-    ''' Computes the distance between two points in a 3D space.
-    ''' </summary>
-    ''' <param name="p0">Specifies one point.</param>
-    ''' <param name="p1">Specifies the other point.</param>
-    ''' <returns>The distance between the two points.</returns>
-    Public Function Distance(ByVal p0 As Point3D, ByVal p1 As Point3D) _
-        As System.Double
-
-        ' xxxxxxxxxx NO TEST HAS BEEN ADDED FOR THIS. xxxxxxxxxx
-
-        ' Based on the Pythagorean theorem.
-        Dim DeltaX As System.Double = p1.X - p0.X
-        Dim DeltaY As System.Double = p1.Y - p0.Y
-        Dim DeltaZ As System.Double = p1.Z - p0.Z
-        Return System.Math.Sqrt(
-            (DeltaX * DeltaX) + (DeltaY * DeltaY) + (DeltaZ * DeltaZ))
-    End Function ' Distance
-
-    ''' <summary>
     ''' Attempts to solve the "aX^2 + bX + c = 0" quadratic equation for real
     ''' solutions.
     ''' </summary>
@@ -320,6 +281,9 @@ Public Module Math
     ''' <returns>The greatest value in the array.</returns>
     ''' <remarks>
     ''' An empty array returns <c>System.Double.NaN</c>.
+    ''' <see cref="MaxVal"/> and <see cref="MaxMag"/> differ in their handling
+    ''' of negative arguments: MaxVal({4, -5} returns 4; MaxMag({4, -5} returns
+    ''' -5.
     ''' <br/><example>
     ''' This example shows how to call <c>MaxVal</c>.
     ''' <code>
@@ -348,20 +312,23 @@ Public Module Math
     ''' <summary>
     ''' Compares an array of values to compute which has the greatest magnitude.
     ''' </summary>
-    ''' <param name="values">Specifies the array of values to be
-    ''' examined.</param>
-    ''' <returns>The magnitude greatest absolute value in the array.</returns>
+    ''' <param name="values">Specifies an array of values to examine.</param>
+    ''' <returns>The magnitude of greatest absolute value in the
+    ''' array.</returns>
     ''' <remarks>
     ''' An empty array returns <c>System.Double.NaN</c>. When the array is not
     ''' empty, this always returns a positive magnitude.
+    ''' <see cref="MaxVal"/> and <see cref="MaxMag"/> differ in their handling
+    ''' of negative arguments: MaxVal({4, -5} returns 4; MaxMag({4, -5} returns
+    ''' -5.
     ''' <br/><example>
-    ''' This example shows how to call <c>MaxValAbs</c>.
+    ''' This example shows how to call <c>MaxMag</c>.
     ''' <code>
     ''' Dim MaxAll As System.Double =
-    '''     OSNW.Math.MaxValAbs({x0, y0, r0, x1, y1, r1})
+    '''     OSNW.Math.MaxMag({x0, y0, r0, x1, y1, r1})
     ''' </code></example>
     ''' </remarks>
-    Public Function MaxValAbs(
+    Public Function MaxMag(
         ByVal ParamArray values() As System.Double) As System.Double
 
         ' Input checking.
@@ -379,7 +346,7 @@ Public Module Math
         Next
         Return Max
 
-    End Function ' MaxSetAbs
+    End Function ' MaxMag
 
     ''' <summary>
     ''' xxxxxxxxxx
@@ -406,52 +373,6 @@ Public Module Math
         Return System.Math.Pow(Product, 1.0 / values.Length)
 
     End Function ' GeometricMean
-
-    ''' <summary>
-    ''' Calculates the length of a hypotenuse using the Pythagorean theorem.
-    ''' </summary>
-    ''' <param name="values">An array of values: Hypotenuse(V1, V2, V3,...Vn)</param>
-    ''' <returns>Hypotenuse As System.Double</returns>
-    ''' <remarks>
-    ''' This works in more than just 2 dimensions;
-    ''' 2D: Hypotenuse(X, Y);
-    ''' 3D: Hypotenuse(X, Y, Z);
-    ''' nD: Hypotenuse(V1, V2, V3,...Vn)
-    ''' <br/>An empty array returns <c>System.Double.NaN</c>.
-    ''' </remarks>
-    Public Function Hypotenuse(ByVal ParamArray values() As System.Double
-                               ) As System.Double
-
-        ' xxxxxxxxxx NO TEST HAS BEEN ADDED FOR THIS. xxxxxxxxxx
-
-        ' This may need to do input checking because, for instance, a triangle could not
-        ' have a side with zero or negative length in practical cases. Then again, some physics 
-        ' problems deal with values not normally seen. Also, impedances can have a negative
-        ' component.
-        ' Is there any harm in allowing other values?  A Cartesian coordinate calculation could
-        ' have negative lengths unless something is done to make them result in positive values.
-        ' At least for now, negatives are allowed. The squaring prevents any impact from negative
-        ' values. Similarly, zeroes are allowed because of the lack of significant consequence. A
-        ' triangle with a zero side would be a line.
-        '
-        ' 2D: Hypotenuse(X, Y)
-        ' 3D: Hypotenuse(X, Y, Z)
-        ' Assumed to work out in 4, 5, ... dimensions.
-        ' http://en.wikipedia.org/wiki/Pythagorean_theorem has remarks regarding
-        ' an "n-dimensional Pythagorean theorem".
-
-        ' Input checking.
-        If values.Length.Equals(0) Then
-            Return System.Double.NaN
-        End If
-
-        Dim Sum As System.Double = 0.0
-        For Each OneValue As System.Double In values
-            Sum += OneValue * OneValue
-        Next
-        Return System.Math.Sqrt(Sum)
-
-    End Function ' Hypotenuse
 
     ''' <summary>
     ''' Rounds a double-precision floating-point value to the nearest multiple

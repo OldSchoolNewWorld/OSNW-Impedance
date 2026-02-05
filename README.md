@@ -1,6 +1,7 @@
 # OSNW-Math
 
  A Mathematical Library for various purposes.
+
  Numeric constants
  Message string constants
  Types

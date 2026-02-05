@@ -13,10 +13,11 @@
         ''' point.</param>
         ''' <returns>The distance between the two points.</returns>
         ''' <remarks>
-        ''' <see cref="OSNW.Math2D.Distance(Double, Double, Double, Double)"/>
-        ''' and  <see cref="OSNW.Math2D.Point.Distance(OSNW.Math2D.Point)"/> are
-        ''' effectively the same thing. Use whichever best suits the variables
-        ''' at hand.
+        ''' <see cref="Math2D.Distance(Double, Double, Double, Double)"/>,
+        ''' <see cref="Math2D.Distance(Math2D.Point, Math2D.Point)"/>,
+        ''' and <see cref="OSNW.Math2D.Point.Distance(OSNW.Math2D.Point)"/>
+        ''' are effectively the same thing. Use whichever best suits the
+        ''' variables at hand.
         ''' </remarks>
         Public Shared Function Distance(ByVal x0 As System.Double,
             ByVal y0 As System.Double, ByVal x1 As System.Double,
@@ -62,13 +63,16 @@
             ''' <param name="other">Specifies a distant <c>Point2D</c>.</param>
             ''' <returns>The distance between the two points.</returns>
             ''' <remarks>
-            ''' <see cref="OSNW.Math2D.Distance(Double, Double, Double,
-            ''' Double)"/> and
-            ''' <see cref="OSNW.Math2D.Point.Distance(OSNW.Math2D.Point)"/> are
-            ''' effectively the same thing. Use whichever best suits the
+            ''' <see cref="Math2D.Distance(Double, Double, Double, Double)"/>,
+            ''' <see cref="Math2D.Distance(Math2D.Point, Math2D.Point)"/>,
+            ''' and <see cref="OSNW.Math2D.Point.Distance(OSNW.Math2D.Point)"/>
+            ''' are effectively the same thing. Use whichever best suits the
             ''' variables at hand.
             ''' </remarks>
             Public Function Distance(ByVal other As Point) As System.Double
+
+                ' xxxxxxxxxx NO TEST HAS BEEN ADDED FOR THIS. xxxxxxxxxx
+
                 Return Math2D.Distance(Me.X, Me.Y, other.X, other.Y)
             End Function ' Distance
 
@@ -84,6 +88,27 @@
             End Function ' ToString
 
         End Class ' Point
+
+        ''' <summary>
+        ''' Computes the distance between two points in a 2D plane.
+        ''' </summary>
+        ''' <param name="p0">Specifies one point.</param>
+        ''' <param name="p1">Specifies the other point.</param>
+        ''' <returns>The distance between the two points.</returns>
+        ''' <remarks>
+        ''' <see cref="Math2D.Distance(Double, Double, Double, Double)"/>,
+        ''' <see cref="Math2D.Distance(Math2D.Point, Math2D.Point)"/>,
+        ''' and <see cref="OSNW.Math2D.Point.Distance(OSNW.Math2D.Point)"/>
+        ''' are effectively the same thing. Use whichever best suits the
+        ''' variables at hand.
+        ''' </remarks>
+        Public Shared Function Distance(ByVal p0 As Math2D.Point,
+            ByVal p1 As Math2D.Point) As System.Double
+
+            ' xxxxxxxxxx NO TEST HAS BEEN ADDED FOR THIS. xxxxxxxxxx
+
+            Return Math2D.Distance(p0.X, p0.Y, p1.X, p1.Y)
+        End Function ' Distance
 
     End Structure ' Math2D
 
@@ -103,11 +128,12 @@
         ''' point.</param>
         ''' <returns>The distance between the two points.</returns>
         ''' <remarks>
-        ''' <see cref="OSNW.Math3D.Distance(Double, Double, Double, Double,
-        ''' Double, Double)"/> and
-        ''' <see cref="OSNW.Math3D.Point.Distance(OSNW.Math3D.Point)"/> are
-        ''' effectively the same thing. Use whichever best suits the variables
-        ''' at hand.
+        ''' <see cref="Math3D.Distance(Double, Double, Double, Double, Double,
+        ''' Double)"/>,
+        ''' <see cref="Math3D.Distance(Math3D.Point, Math3D.Point)"/>,
+        ''' and <see cref="OSNW.Math3D.Point.Distance(OSNW.Math3D.Point)"/>
+        ''' are effectively the same thing. Use whichever best suits the
+        ''' variables at hand.
         ''' </remarks>
         Public Shared Function Distance(ByVal x0 As System.Double,
             ByVal y0 As System.Double, ByVal z0 As System.Double,
@@ -146,7 +172,7 @@
             Public Z As System.Double
 
             ''' <summary>
-            ''' Initializes a New instance of the <c>Point3D</c> class with the
+            ''' Initializes a new instance of the <c>Point3D</c> class with the
             ''' specified coordinates.
             ''' </summary>
             Public Sub New(ByVal x As System.Double, ByVal y As System.Double,
@@ -164,14 +190,16 @@
             ''' <param name="other">Specifies a distant <c>Point3D</c>.</param>
             ''' <returns>The distance between the two points.</returns>
             ''' <remarks>
-            ''' <see cref="OSNW.Math3D.Distance(Double, Double, Double, Double,
-            ''' Double, Double)"/> and
-            ''' <see cref="OSNW.Math3D.Point.Distance(OSNW.Math3D.Point)"/>
+            ''' <see cref="Math3D.Distance(Double, Double, Double, Double,
+            ''' Double, Double)"/>,
+            ''' <see cref="Math3D.Distance(Math3D.Point, Math3D.Point)"/>,
+            ''' and <see cref="OSNW.Math3D.Point.Distance(OSNW.Math3D.Point)"/>
             ''' are effectively the same thing. Use whichever best suits the
             ''' variables at hand.
             ''' </remarks>
-            ''' 
             Public Function Distance(ByVal other As Point) As System.Double
+                ' xxxxxxxxxx NO TEST HAS BEEN ADDED FOR THIS. xxxxxxxxxx
+
                 Return Math3D.Distance(Me.X, Me.Y, Me.Z,
                                        other.X, other.Y, other.Z)
             End Function ' Distance
@@ -188,6 +216,28 @@
             End Function ' ToString
 
         End Class ' Point
+
+        ''' <summary>
+        ''' Computes the distance between two points in a 3D space.
+        ''' </summary>
+        ''' <param name="p0">Specifies one point.</param>
+        ''' <param name="p1">Specifies the other point.</param>
+        ''' <returns>The distance between the two points.</returns>
+        ''' <remarks>
+        ''' <see cref="Math3D.Distance(Double, Double, Double, Double, Double,
+        ''' Double)"/>,
+        ''' <see cref="Math3D.Distance(Math3D.Point, Math3D.Point)"/>,
+        ''' and <see cref="OSNW.Math3D.Point.Distance(OSNW.Math3D.Point)"/>
+        ''' are effectively the same thing. Use whichever best suits the
+        ''' variables at hand.
+        ''' </remarks>
+        Public Shared Function Distance(ByVal p0 As Math3D.Point,
+            ByVal p1 As Math3D.Point) As System.Double
+
+            ' xxxxxxxxxx NO TEST HAS BEEN ADDED FOR THIS. xxxxxxxxxx
+
+            Return Math3D.Distance(p0.X, p0.Y, p0.Z, p1.X, p1.Y, p1.Z)
+        End Function ' Distance
 
     End Structure ' Math3D
 
