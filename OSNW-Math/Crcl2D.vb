@@ -782,186 +782,148 @@ Partial Public Module Math
 
         End Function ' CirclesIntersect
 
-        ''' <summary>
-        ''' Calculates the intersection points of two circles defined by their
-        ''' center coordinates and radii.
-        ''' </summary>
-        ''' <param name="x0">Specifies the X-coordinate of circle0.</param>
-        ''' <param name="y0">Specifies the Y-coordinate of circle0.</param>
-        ''' <param name="r0">Specifies the radius of circle0.</param>
-        ''' <param name="x1">Specifies the X-coordinate of circle1.</param>
-        ''' <param name="y1">Specifies the Y-coordinate of circle1.</param>
-        ''' <param name="r1">Specifies the radius of circle0.</param>
-        ''' <returns>A list of 0, 1, or 2 intersection points as
-        ''' <see cref="OsnwPoint2D"/> structure(s).</returns>
-        ''' <exception cref="System.ArgumentOutOfRangeException"> Thrown when
-        ''' any parameter is infinite.</exception>
-        ''' <exception cref="ArgumentOutOfRangeException">when either radius is
-        ''' negative.</exception>
-        ''' <remarks>
-        ''' If there are no intersection points, an empty list is returned. If
-        ''' the circles are tangent to each other, a list with one intersection
-        ''' point is returned. If the circles intersect at two points, a list
-        ''' with both points is returned.
-        ''' </remarks>
-        Public Shared Function GetIntersections(ByVal x0 As System.Double,
-                ByVal y0 As System.Double, ByVal r0 As System.Double,
-                ByVal x1 As System.Double, ByVal y1 As System.Double,
-                ByVal r1 As System.Double) _
-                As System.Collections.Generic.List(Of OsnwPoint2D)
+        '''' <summary>
+        '''' Calculates the intersection points of two circles defined by their
+        '''' center coordinates and radii.
+        '''' </summary>
+        '''' <param name="x0">Specifies the X-coordinate of circle0.</param>
+        '''' <param name="y0">Specifies the Y-coordinate of circle0.</param>
+        '''' <param name="r0">Specifies the radius of circle0.</param>
+        '''' <param name="x1">Specifies the X-coordinate of circle1.</param>
+        '''' <param name="y1">Specifies the Y-coordinate of circle1.</param>
+        '''' <param name="r1">Specifies the radius of circle0.</param>
+        '''' <returns>A list of 0, 1, or 2 intersection points as
+        '''' <see cref="OsnwPoint2D"/> structure(s).</returns>
+        '''' <exception cref="System.ArgumentOutOfRangeException"> Thrown when
+        '''' any parameter is infinite.</exception>
+        '''' <exception cref="ArgumentOutOfRangeException">when either radius is
+        '''' negative.</exception>
+        '''' <remarks>
+        '''' If there are no intersection points, an empty list is returned. If
+        '''' the circles are tangent to each other, a list with one intersection
+        '''' point is returned. If the circles intersect at two points, a list
+        '''' with both points is returned.
+        '''' </remarks>
+        'Public Shared Function GetIntersections(ByVal x0 As System.Double,
+        '        ByVal y0 As System.Double, ByVal r0 As System.Double,
+        '        ByVal x1 As System.Double, ByVal y1 As System.Double,
+        '        ByVal r1 As System.Double) _
+        '        As System.Collections.Generic.List(Of OsnwPoint2D)
 
-            ' DEV: This is the worker for the related routines.
+        '    ' DEV: This is the worker for the related routines.
 
-            ' Input checking.
-            If System.Double.IsInfinity(x0) OrElse
-                System.Double.IsInfinity(y0) OrElse
-                System.Double.IsInfinity(r0) OrElse
-                System.Double.IsInfinity(x1) OrElse
-                System.Double.IsInfinity(y1) OrElse
-                System.Double.IsInfinity(r1) Then
+        '    ' Input checking.
+        '    If System.Double.IsInfinity(x0) OrElse
+        '        System.Double.IsInfinity(y0) OrElse
+        '        System.Double.IsInfinity(r0) OrElse
+        '        System.Double.IsInfinity(x1) OrElse
+        '        System.Double.IsInfinity(y1) OrElse
+        '        System.Double.IsInfinity(r1) Then
 
-                Dim CaughtBy As System.Reflection.MethodBase =
-                    System.Reflection.MethodBase.GetCurrentMethod
-                Throw New System.ArgumentOutOfRangeException(
-                    $"Arguments to {NameOf(CaughtBy)} {MSGCHIV}")
-            End If
-            ' A zero radius seems useless, but may be valid in some specific
-            ' case.
-            If r0 < 0 OrElse r1 < 0 Then
-                'Dim CaughtBy As System.Reflection.MethodBase =
-                '    System.Reflection.MethodBase.GetCurrentMethod
-                Dim ErrMsg As System.String = String.Format(
-                    "{0}={1}, {2}={3}", NameOf(r0), r0, NameOf(r1), r1)
-                Throw New System.ArgumentOutOfRangeException(
-                    ErrMsg, OSNW.Math.MSGCHNV)
-            End If
+        '        Dim CaughtBy As System.Reflection.MethodBase =
+        '            System.Reflection.MethodBase.GetCurrentMethod
+        '        Throw New System.ArgumentOutOfRangeException(
+        '            $"Arguments to {NameOf(CaughtBy)} {MSGCHIV}")
+        '    End If
+        '    ' A zero radius seems useless, but may be valid in some specific
+        '    ' case.
+        '    If r0 < 0 OrElse r1 < 0 Then
+        '        'Dim CaughtBy As System.Reflection.MethodBase =
+        '        '    System.Reflection.MethodBase.GetCurrentMethod
+        '        Dim ErrMsg As System.String = String.Format(
+        '            "{0}={1}, {2}={3}", NameOf(r0), r0, NameOf(r1), r1)
+        '        Throw New System.ArgumentOutOfRangeException(
+        '            ErrMsg, OSNW.Math.MSGCHNV)
+        '    End If
 
-            Dim Intersections _
-                As New System.Collections.Generic.List(Of OsnwPoint2D)
+        '    Dim Intersections _
+        '        As New System.Collections.Generic.List(Of OsnwPoint2D)
 
-            ' Calculate the distance between the centers of the circles.
-            Dim DeltaX As System.Double = x1 - x0
-            Dim DeltaY As System.Double = y1 - y0
-            Dim DeltaCtr As System.Double =
-                System.Math.Sqrt(DeltaX * DeltaX + DeltaY * DeltaY)
+        '    ' Calculate the distance between the centers of the circles.
+        '    Dim DeltaX As System.Double = x1 - x0
+        '    Dim DeltaY As System.Double = y1 - y0
+        '    Dim DeltaCtr As System.Double =
+        '        System.Math.Sqrt(DeltaX * DeltaX + DeltaY * DeltaY)
 
-            ' Concentric circles would have either zero or infinite intersecting
-            ' points.
-            ' Select a zero reference.
-            Dim MaxAbs As System.Double =
-                OSNW.Math.MaxMag({x0, y0, r0, x1, y1, r1})
-            Dim ZeroVal As System.Double =
-                OSNW.Math.DFLTGRAPHICTOLERANCE * MaxAbs
+        '    ' Concentric circles would have either zero or infinite intersecting
+        '    ' points.
+        '    ' Select a zero reference.
+        '    Dim MaxAbs As System.Double =
+        '        OSNW.Math.MaxMag({x0, y0, r0, x1, y1, r1})
+        '    Dim ZeroVal As System.Double =
+        '        OSNW.Math.DFLTGRAPHICTOLERANCE * MaxAbs
 
-            If OSNW.Math.EqualEnoughZero(DeltaCtr, ZeroVal) Then
-                Return Intersections ' Still empty.
-            End If
+        '    If OSNW.Math.EqualEnoughZero(DeltaCtr, ZeroVal) Then
+        '        Return Intersections ' Still empty.
+        '    End If
 
-            ' Check if the circles are too far apart or if one is contained
-            ' within the other. Tangent circles do not match this test.
-            If DeltaCtr > (r0 + r1) OrElse
-                DeltaCtr < System.Math.Abs(r0 - r1) Then
+        '    ' Check if the circles are too far apart or if one is contained
+        '    ' within the other. Tangent circles do not match this test.
+        '    If DeltaCtr > (r0 + r1) OrElse
+        '        DeltaCtr < System.Math.Abs(r0 - r1) Then
 
-                Return Intersections ' Still empty.
-            End If
+        '        Return Intersections ' Still empty.
+        '    End If
 
-            ' On getting this far, the circles are neither isolated nor have one
-            ' separately contained within the other. There should now be either
-            ' one or two intersections.
+        '    ' On getting this far, the circles are neither isolated nor have one
+        '    ' separately contained within the other. There should now be either
+        '    ' one or two intersections.
 
-            ' Check if the circles are outside-tangent to each other.
-            If OSNW.Math.EqualEnough(r0 + r1, DeltaCtr,
-                                     OSNW.Math.DFLTGRAPHICTOLERANCE) Then
-                ' One intersection point.
-                Dim C1Frac As System.Double = r0 / DeltaCtr
-                Intersections.Add(New OsnwPoint2D(x0 + C1Frac * DeltaX,
-                                                  y0 + C1Frac * DeltaY))
-                Return Intersections
-            End If
+        '    ' Check if the circles are outside-tangent to each other.
+        '    If OSNW.Math.EqualEnough(r0 + r1, DeltaCtr,
+        '                             OSNW.Math.DFLTGRAPHICTOLERANCE) Then
+        '        ' One intersection point.
+        '        Dim C1Frac As System.Double = r0 / DeltaCtr
+        '        Intersections.Add(New OsnwPoint2D(x0 + C1Frac * DeltaX,
+        '                                          y0 + C1Frac * DeltaY))
+        '        Return Intersections
+        '    End If
 
-            ' Check if the circles are inside-tangent to each other.
-            ' Two circles of the same radius cannot be inside-tangent to each
-            ' other.
-            If Not OSNW.Math.EqualEnough(
-                r0, r1, OSNW.Math.DFLTGRAPHICTOLERANCE) Then
+        '    ' Check if the circles are inside-tangent to each other.
+        '    ' Two circles of the same radius cannot be inside-tangent to each
+        '    ' other.
+        '    If Not OSNW.Math.EqualEnough(
+        '        r0, r1, OSNW.Math.DFLTGRAPHICTOLERANCE) Then
 
-                If OSNW.Math.EqualEnough(System.Math.Abs(r0 - r1), DeltaCtr,
-                                         OSNW.Math.DFLTGRAPHICTOLERANCE) Then
-                    ' They are inside-tangent.
-                    If r0 > r1 Then
-                        Dim C1Frac As System.Double = r0 / DeltaCtr
-                        Intersections.Add(New OsnwPoint2D(
-                            x0 + (C1Frac * DeltaX), y0 + (C1Frac * DeltaY)))
-                        Return Intersections
-                    Else
-                        Dim C2Frac As System.Double = r1 / DeltaCtr
-                        Intersections.Add(New OsnwPoint2D(
-                            x1 + (C2Frac * -DeltaX), y1 + (C2Frac * -DeltaY)))
-                        Return Intersections
-                    End If
-                End If
-            End If
+        '        If OSNW.Math.EqualEnough(System.Math.Abs(r0 - r1), DeltaCtr,
+        '                                 OSNW.Math.DFLTGRAPHICTOLERANCE) Then
+        '            ' They are inside-tangent.
+        '            If r0 > r1 Then
+        '                Dim C1Frac As System.Double = r0 / DeltaCtr
+        '                Intersections.Add(New OsnwPoint2D(
+        '                    x0 + (C1Frac * DeltaX), y0 + (C1Frac * DeltaY)))
+        '                Return Intersections
+        '            Else
+        '                Dim C2Frac As System.Double = r1 / DeltaCtr
+        '                Intersections.Add(New OsnwPoint2D(
+        '                    x1 + (C2Frac * -DeltaX), y1 + (C2Frac * -DeltaY)))
+        '                Return Intersections
+        '            End If
+        '        End If
+        '    End If
 
-            ' (The initial version of) the sequence below was generated by
-            ' Visual Studio AI.
+        '    ' (The initial version of) the sequence below was generated by
+        '    ' Visual Studio AI.
 
-            ' Calculate two intersection points.
-            Dim OnceA As System.Double =
-                (r0 * r0 - r1 * r1 + DeltaCtr * DeltaCtr) / (2 * DeltaCtr)
-            Dim OnceH As System.Double = System.Math.Sqrt(r0 * r0 - OnceA * OnceA)
-            Dim ResultX0 As System.Double = x0 + OnceA * (DeltaX / DeltaCtr)
-            Dim ResultY0 As System.Double = y0 + OnceA * (DeltaY / DeltaCtr)
+        '    ' Calculate two intersection points.
+        '    Dim OnceA As System.Double =
+        '        (r0 * r0 - r1 * r1 + DeltaCtr * DeltaCtr) / (2 * DeltaCtr)
+        '    Dim OnceH As System.Double = System.Math.Sqrt(r0 * r0 - OnceA * OnceA)
+        '    Dim ResultX0 As System.Double = x0 + OnceA * (DeltaX / DeltaCtr)
+        '    Dim ResultY0 As System.Double = y0 + OnceA * (DeltaY / DeltaCtr)
 
-            ' Two intersection points.
-            Dim intersection1 As New OsnwPoint2D(
-                ResultX0 + OnceH * (DeltaY / DeltaCtr),
-                ResultY0 - OnceH * (DeltaX / DeltaCtr))
-            Dim intersection2 As New OsnwPoint2D(
-                ResultX0 - OnceH * (DeltaY / DeltaCtr),
-                ResultY0 + OnceH * (DeltaX / DeltaCtr))
-            Intersections.Add(intersection1)
-            Intersections.Add(intersection2)
-            Return Intersections
+        '    ' Two intersection points.
+        '    Dim intersection1 As New OsnwPoint2D(
+        '        ResultX0 + OnceH * (DeltaY / DeltaCtr),
+        '        ResultY0 - OnceH * (DeltaX / DeltaCtr))
+        '    Dim intersection2 As New OsnwPoint2D(
+        '        ResultX0 - OnceH * (DeltaY / DeltaCtr),
+        '        ResultY0 + OnceH * (DeltaX / DeltaCtr))
+        '    Intersections.Add(intersection1)
+        '    Intersections.Add(intersection2)
+        '    Return Intersections
 
-        End Function ' GetIntersections
-
-        ''' <summary>
-        ''' Calculates the intersection points between <paramref name="circle0"/>
-        ''' and <paramref name="circle1"/>.
-        ''' </summary>
-        ''' <param name="circle0">Specifies the first circle.</param>
-        ''' <param name="circle1">Specifies the second circle.</param>
-        ''' <returns>A list of intersection points as
-        ''' <see cref="OsnwPoint2D"/> objects.</returns>
-        Public Shared Function GetIntersections(
-            ByVal circle0 As Circle2D, ByVal circle1 As Circle2D) _
-            As System.Collections.Generic.List(Of OsnwPoint2D)
-
-            ' No input checking. circle0 and circle1 are presumed to have been
-            ' checked when created.
-
-            Return GetIntersections(
-                circle0.CenterX, circle0.CenterY, circle0.Radius,
-                circle1.CenterX, circle1.CenterY, circle1.Radius)
-
-        End Function ' GetIntersections
-
-        ''' <summary>
-        ''' Calculates the intersection points between the current instance and
-        ''' <paramref name="otherCircle"/>.
-        ''' </summary>
-        ''' <param name="otherCircle">Specifies the other circle with which to find
-        ''' intersections.</param>
-        ''' <returns>A list of intersection points as
-        ''' <see cref="OsnwPoint2D"/> objects.</returns>
-        Public Function GetIntersections(ByVal otherCircle As Circle2D) _
-            As System.Collections.Generic.List(Of OsnwPoint2D)
-
-            ' No input checking. otherCircle is presumed to have been checked
-            ' when created.
-
-            Return GetIntersections(Me, otherCircle)
-        End Function ' GetIntersections
+        'End Function ' GetIntersections
 
         ''' <summary>
         ''' Attempts to determine where two circles intersect, given their

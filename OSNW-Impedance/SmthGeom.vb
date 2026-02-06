@@ -538,16 +538,15 @@ Public Class SmithMainCircle
             ' Create the X-circle that passes through the impedance plot.
             ' Then find the intercections of the two circles.
             Dim XCirc As New XCircle(Me, reactance)
-            Dim Intersections As System.Collections.Generic.List(
-                Of Math2D.Point) = OsnwCircle2D.GetIntersections(RCirc, XCirc)
+            Dim intersect0X As System.Double
+            Dim intersect0Y As System.Double
+            Dim intersect1X As System.Double
+            Dim intersect1Y As System.Double
+            OsnwCircle2D.TryCircleCircleIntersections(RCirc, XCirc, intersect0X,
+                intersect0Y, intersect1X, intersect1Y)
 
             ' The R- and X-circles will intersect at two distinct points, with
             ' one at the open circuit point.
-            If Intersections.Count <> 2 Then
-                'Dim CaughtBy As System.Reflection.MethodBase =
-                '    System.Reflection.MethodBase.GetCurrentMethod
-                Throw New System.ApplicationException(Impedance.MSGIIC)
-            End If
 
             ' Assign the values.
             ' One intersection will be at the open circuit point; the other will
@@ -555,13 +554,13 @@ Public Class SmithMainCircle
             ' maybe not finding a Y value exactly on the resonance line, assume
             ' the closest Y to be the one on the resonance line.
 
-            If System.Math.Abs(Intersections(0).Y - Me.CenterY) <
-                System.Math.Abs(Intersections(1).Y - Me.CenterY) Then
-                plotX = Intersections(1).X
-                plotY = Intersections(1).Y
+            If System.Math.Abs(intersect0Y - Me.CenterY) <
+                System.Math.Abs(intersect1Y - Me.CenterY) Then
+                plotX = intersect1X
+                plotY = intersect1Y
             Else
-                plotX = Intersections(0).X
-                plotY = Intersections(0).Y
+                plotX = intersect0X
+                plotY = intersect0Y
             End If
             Return True
 

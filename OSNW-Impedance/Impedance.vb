@@ -1,10 +1,12 @@
 ﻿'TODO:
+' Circle2D.GetIntersections() is redundant now and has been suppressed.
+'   Test at some point to see if the AI version there gets better results than
+'     the derived operation in TryCircleCircleIntersections().
 ' Add tests for the Math routines.
 ' Add checks for negative tolerances.
 ' Split TryCircleCircleIntersections() into separately called subs to cut down on its size?
 ' Check for more Math tests to move from ad hoc to their own project.
 ' Add more good-input tests, and create bad input tests, for TryCircleCircleIntersectionsTests.
-' Circle2D.GetIntersections() may be redundant now.
 ' Move OSNW.Math.EqualEnough routines to a new class derived from System.Double, in its own solution?
 '   Both Single and Double?
 '   Implement at least some as extensions?
