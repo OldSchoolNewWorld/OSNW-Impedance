@@ -227,7 +227,7 @@ Public Module Math
     ''' 
     ''' If OSNW.Math.TryQuadratic(A, B, C, x0, x1) Then
     '''     '
-    '''     Use x0 and x1 for further processing.
+    '''     ' Use x0 and x1 for further processing.
     '''     '
     ''' else
     '''     '
@@ -245,8 +245,9 @@ Public Module Math
     '''     ' Early exit.
     '''     '
     ''' End If
+    '''
     ''' '
-    ''' Use x0 and x1 for further processing.
+    ''' ' Use x0 and x1 for further processing.
     ''' '
     ''' </code></example>
     ''' </remarks>
@@ -274,16 +275,16 @@ Public Module Math
     End Function ' TryQuadratic
 
     ''' <summary>
-    ''' Compares an array of values to compute which is greater.
+    ''' Compares an array of values to compute which has the greatest value.
     ''' </summary>
     ''' <param name="values">Specifies the array of values to be
     ''' examined.</param>
     ''' <returns>The greatest value in the array.</returns>
     ''' <remarks>
     ''' An empty array returns <c>System.Double.NaN</c>.
-    ''' <see cref="MaxVal"/> and <see cref="MaxMag"/> differ in their handling
-    ''' of negative arguments: MaxVal({4, -5} returns 4; MaxMag({4, -5} returns
-    ''' -5.
+    ''' <c>MaxVal</c> and <see cref="MaxMag"/> differ in their handling of
+    ''' negative arguments: <c>MaxVal({4, -5})</c> returns 4;
+    ''' <c>MaxMag({4, -5})</c> returns -5.
     ''' <br/><example>
     ''' This example shows how to call <c>MaxVal</c>.
     ''' <code>
@@ -318,9 +319,9 @@ Public Module Math
     ''' <remarks>
     ''' An empty array returns <c>System.Double.NaN</c>. When the array is not
     ''' empty, this always returns a positive magnitude.
-    ''' <see cref="MaxVal"/> and <see cref="MaxMag"/> differ in their handling
-    ''' of negative arguments: MaxVal({4, -5} returns 4; MaxMag({4, -5} returns
-    ''' -5.
+    ''' <see cref="MaxVal"/> and <c>MaxMag</c> differ in their handling of
+    ''' negative arguments: <c>MaxVal({4, -5})</c> returns 4;
+    ''' <c>MaxMag({4, -5})</c> returns -5.
     ''' <br/><example>
     ''' This example shows how to call <c>MaxMag</c>.
     ''' <code>
@@ -349,14 +350,17 @@ Public Module Math
     End Function ' MaxMag
 
     ''' <summary>
-    ''' xxxxxxxxxx
+    ''' Computes the geometric mean of an array of values.
     ''' </summary>
-    ''' <param name="values">xxxxxxxxxx</param>
-    ''' <returns>xxxxxxxxxx</returns>
+    ''' <param name="values">Specifies the array of values to be
+    ''' evaluated.</param>
+    ''' <returns>The geometric mean of the values.</returns>
     ''' <remarks>
-    ''' xxxxxxxxxx
-    ''' ADD AN EXAMPLE
-    ''' xxxxxxxxxx
+    ''' <example>
+    ''' This example shows how to call <c>GeometricMean</c>.
+    ''' <code>
+    ''' Dim M as System.Double = OSNW.Math.GeometricMean({2, 3, 6})
+    ''' </code></example>
     ''' </remarks>
     Public Function GeometricMean(
         ByVal ParamArray values() As System.Double) As System.Double
