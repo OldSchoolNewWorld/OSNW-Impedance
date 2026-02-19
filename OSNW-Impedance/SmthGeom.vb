@@ -3,7 +3,7 @@ Option Strict On
 Option Compare Binary
 Option Infer Off
 
-Imports OsnwCircle2D = OSNW.Math.Circle2D
+Imports OsnwCircle2D = OSNW.Math.D2.Circle
 
 ' This document contains items related to the geometry of a Smith Chart. These
 ' geometry items may seem better suited to being included in a Smith Chart

@@ -5,6 +5,18 @@ Option Infer Off
 
 Public Module Math
 
+    Public Structure D2
+        ' Just a place to define a name that is spread around.
+    End Structure
+
+    Public Structure D3
+        ' Just a place to define a name that is spread around.
+    End Structure
+
+
+
+
+
 #Region "Constants"
 
     ''' <summary>
@@ -84,8 +96,10 @@ Public Module Math
     ' Just for shorthand.
     Public Const PIs As Single = System.Single.Pi
     Public Const HALFPIs As System.Single = PIs / 2.0
+    Public Const TWOPIs As System.Single = PIs * 2.0
     Public Const PId As System.Double = System.Double.Pi
     Public Const HALFPId As System.Double = PId / 2.0
+    Public Const TWOPId As System.Double = PId * 2.0
 
     Public Const MSGCHIV As System.String = "Cannot have an infinite value."
     Public Const MSGCHNV As System.String = "Cannot have a negative value."

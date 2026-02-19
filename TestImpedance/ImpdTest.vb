@@ -8,6 +8,8 @@ Imports OSNW.Numerics
 Imports Xunit
 Imports OsnwImpd = OSNW.Numerics.Impedance
 Imports OsnwNumSS = OSNW.Numerics.StandardizationStyles
+Imports OsnwMath2D = OSNW.Math.D2
+Imports OsnwPoint2D = OSNW.Math.D2.Point
 
 #Region "Test Data"
 

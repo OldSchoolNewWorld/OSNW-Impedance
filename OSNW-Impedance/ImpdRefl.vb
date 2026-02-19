@@ -769,6 +769,8 @@ Partial Public Structure Impedance
         Dim TanAlpha As System.Double
         Dim RadAngle As System.Double
 
+        ' SHOULD ALL OF THESE BE THE SAME OR DOES SOME MANIPULATION NEED TO BE
+        ' DONE FOR POSSIBILITIES OUTSIE THE -PI/2 TO PI/2 RANGE?
         If PlotY < MainCirc.CenterY Then
             TanAlpha = Opposite / Adjacent
             RadAngle = System.Math.Atan(TanAlpha)

@@ -1,9 +1,11 @@
 Imports Xunit
-Imports OsnwCircle2D = OSNW.Math.Circle2D
+Imports OsnwCircle2D = OSNW.Math.D2.Circle
+Imports OsnwEllipse2D = OSNW.Math.D2.Ellipse
 
 
 
 
+'xxxxxxxxxxxxxxxxxxxx
 Namespace EqualityTests
 
 End Namespace ' EqualityTests
@@ -341,9 +343,6 @@ Namespace GeometricTests
 
         End Sub
 
-
-
-
         <Theory>
         <InlineData(1.75, 6.75, 1.5, 3, 6.25, 1, 3.1692, 7.2356, 2.4428, 5.4196)> ' General overlap case.
         <InlineData(2.5, 6.25, 1.5, 3.5, 6.25, 1, 3.625, 7.242, 3.625, 5.2576)> ' Horizontal overlap circles.
@@ -380,5 +379,18 @@ Namespace GeometricTests
         End Sub
 
     End Class ' TryCircleCircleIntersectionsTests
+
+    Public Class TestNewEllipse
+
+        <Fact>
+        Public Sub NewEllipse_WorksOK()
+
+            ' NOT A GOOD TEST.
+            ' JUST A WAY TO WALK DATA THROUGH DEBUGGING.
+            Dim Ellipse As New OsnwEllipse2D(4, 2, 3, 6, 30 * Double.Pi / 180)
+
+        End Sub
+
+    End Class
 
 End Namespace ' GeometricTests

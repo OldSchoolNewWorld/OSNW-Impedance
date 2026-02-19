@@ -5,8 +5,9 @@ Option Infer Off
 
 Imports OSNW.Numerics
 Imports Xunit
-Imports OsnwCircle2D = OSNW.Math.Circle2D
-Imports OsnwPoint2D = OSNW.Math2D.Point
+Imports OsnwCircle2D = OSNW.Math.D2.Circle
+Imports OsnwPoint2D = OSNW.Math.D2.Point
+Imports OsnwEllipse2D = OSNW.Math.D2.Ellipse
 
 Namespace GeometryTests
 
