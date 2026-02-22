@@ -2,22 +2,38 @@ Option Explicit On
 Option Strict On
 Option Compare Binary
 Option Infer Off
+Imports System.ComponentModel.Design
 
+''' <summary>
+''' A root name for a collection of types and routines for various generic
+''' mathematical operations.
+''' </summary>
+''' <remarks>This primarily consists of functionality created to support the
+''' needs of other OSNW implementations.</remarks>
 Public Module Math
 
+
+    ''' <summary>
+    ''' A collection of types and methods for mathematical operations on a
+    ''' 2-dimensional plane.
+    ''' </summary>
     Public Structure D2
-        ' Just a place to define a name that is spread around.
+        ' This is just a place to define a name that is further defined in other
+        ' documents.
     End Structure
 
+    ''' <summary>
+    ''' A collection of types and methods for mathematical operations in a
+    ''' 3-dimensional space.
+    ''' </summary>
     Public Structure D3
-        ' Just a place to define a name that is spread around.
+        ' This is just a place to define a name that is further defined in other
+        ' documents.
     End Structure
-
-
-
-
 
 #Region "Constants"
+    ' These are constants that are used throughout the OSNW code. Ingeneral,
+    ' they are not specific to any particular use case.
 
     ''' <summary>
     ''' This sets a practical limit on the precision of equality detection in
@@ -92,6 +108,9 @@ Public Module Math
     ''' </code></example>
     ''' </remarks>
     Public Const DFLTGRAPHICTOLERANCE As System.Double = 0.0001
+
+    Public Const OSNWDFLTMPR As System.MidpointRounding =
+        System.MidpointRounding.ToEven
 
     ' Just for shorthand.
     Public Const PIs As Single = System.Single.Pi
@@ -206,7 +225,7 @@ Public Module Math
             Dim CaughtBy As System.Reflection.MethodBase =
                 System.Reflection.MethodBase.GetCurrentMethod
             Throw New System.ArgumentOutOfRangeException(
-                $"Arguments to {NameOf(CaughtBy)} {MSGCHZV} {MSGUEEZ}")
+                $"Arguments to {NameOf(EqualEnough)} {MSGCHZV} {MSGUEEZ}")
         End If
 
         Return System.Math.Abs(otherVal - refVal) <=
@@ -216,113 +235,7 @@ Public Module Math
 
 #End Region ' "EqualEnough Implementations"
 
-    ''' <summary>
-    ''' Attempts to solve the "aX^2 + bX + c = 0" quadratic equation for real
-    ''' solutions.
-    ''' </summary>
-    ''' <param name="a">Specifies the <paramref name="a"/> in the well-known
-    ''' formula.</param>
-    ''' <param name="b">Specifies the <paramref name="b"/> in the well-known
-    ''' formula.</param>
-    ''' <param name="c">Specifies the <paramref name="c"/> in the well-known
-    ''' formula.</param>
-    ''' <returns><c>True</c> if the process succeeds; otherwise, <c>False</c>.
-    ''' When valid, also returns the results in <paramref name="x0"/> and
-    ''' <paramref name="x1"/>.</returns>
-    ''' <remarks>
-    ''' <br/><example>
-    ''' This example shows how to use <c>TryQuadratic</c>.
-    ''' <code>
-    ''' Dim A As System.Double = something
-    ''' Dim B As System.Double = something
-    ''' Dim C As System.Double = something
-    ''' Dim x0 As System.Double
-    ''' Dim x1 As System.Double
-    ''' 
-    ''' If OSNW.Math.TryQuadratic(A, B, C, x0, x1) Then
-    '''     '
-    '''     ' Use x0 and x1 for further processing.
-    '''     '
-    ''' else
-    '''     '
-    '''     ' Respond to the failure with a warning, exception, or default
-    '''     ' value.
-    '''     '
-    ''' End If
-    ''' 
-    '''     - or -
-    ''' 
-    ''' If not OSNW.Math.TryQuadratic(A, B, C, x0, x1) Then
-    '''     '
-    '''     ' Respond to the failure with a warning, default value,
-    '''     ' or exception.
-    '''     ' Early exit.
-    '''     '
-    ''' End If
-    '''
-    ''' '
-    ''' ' Use x0 and x1 for further processing.
-    ''' '
-    ''' </code></example>
-    ''' </remarks>
-    Public Function TryQuadratic(ByVal a As System.Double,
-        ByVal b As System.Double, ByVal c As System.Double,
-        ByRef x0 As System.Double, ByRef x1 As System.Double) As System.Boolean
-
-        ' xxxxxxxxxx NO TEST HAS BEEN ADDED FOR THIS. xxxxxxxxxx
-
-        ' Input checking.
-        Dim Discriminant As System.Double = b * b - 4.0 * a * c
-        If a.Equals(0.0) OrElse Discriminant < 0.0 Then
-            ' Not a quadratic equation.
-            x0 = Double.NaN
-            x1 = Double.NaN
-            Return False
-        End If
-
-        Dim DiscRoot As System.Double = System.Math.Sqrt(Discriminant)
-        Dim A2 As System.Double = 2.0 * a
-        x0 = (-b + DiscRoot) / A2
-        x1 = (-b - DiscRoot) / A2
-        Return True
-
-    End Function ' TryQuadratic
-
-    ''' <summary>
-    ''' Compares an array of values to compute which has the greatest value.
-    ''' </summary>
-    ''' <param name="values">Specifies the array of values to be
-    ''' examined.</param>
-    ''' <returns>The greatest value in the array.</returns>
-    ''' <remarks>
-    ''' An empty array returns <c>System.Double.NaN</c>.
-    ''' <c>MaxVal</c> and <see cref="MaxMag"/> differ in their handling of
-    ''' negative arguments: <c>MaxVal({4, -5})</c> returns 4;
-    ''' <c>MaxMag({4, -5})</c> returns -5.
-    ''' <br/><example>
-    ''' This example shows how to call <c>MaxVal</c>.
-    ''' <code>
-    ''' Dim MaxAll As System.Double =
-    '''     OSNW.Math.MaxVal({x0, y0, r0, x1, y1, r1})
-    ''' </code></example>
-    ''' </remarks>
-    Public Function MaxVal(
-        ByVal ParamArray values() As System.Double) As System.Double
-
-        ' Input checking.
-        If values.Length.Equals(0) Then
-            Return System.Double.NaN
-        End If
-
-        Dim Max As System.Double
-        For Each OneValue As System.Double In values
-            If OneValue > Max Then
-                Max = OneValue
-            End If
-        Next
-        Return Max
-
-    End Function ' MaxVal
+#Region "Minimum/Maximum Implementations"
 
     ''' <summary>
     ''' Compares an array of values to compute which has the greatest magnitude.
@@ -333,17 +246,17 @@ Public Module Math
     ''' <remarks>
     ''' An empty array returns <c>System.Double.NaN</c>. When the array is not
     ''' empty, this always returns a positive magnitude.
-    ''' <see cref="MaxVal"/> and <c>MaxMag</c> differ in their handling of
-    ''' negative arguments: <c>MaxVal({4, -5})</c> returns 4;
-    ''' <c>MaxMag({4, -5})</c> returns -5.
+    ''' <see cref="MaxValue"/> and <c>MaxMagnitude</c> differ in their handling
+    ''' of negative arguments: <c>MaxValue({4, -5})</c> returns 4;
+    ''' <c>MaxMagnitude({4, -5})</c> returns 5.
     ''' <br/><example>
-    ''' This example shows how to call <c>MaxMag</c>.
+    ''' This example shows how to call <c>MaxMagnitude</c>.
     ''' <code>
     ''' Dim MaxAll As System.Double =
-    '''     OSNW.Math.MaxMag({x0, y0, r0, x1, y1, r1})
+    '''     OSNW.Math.MaxMagnitude({x0, y0, r0, x1, y1, r1})
     ''' </code></example>
     ''' </remarks>
-    Public Function MaxMag(
+    Public Function MaxMagnitude(
         ByVal ParamArray values() As System.Double) As System.Double
 
         ' Input checking.
@@ -351,7 +264,7 @@ Public Module Math
             Return System.Double.NaN
         End If
 
-        Dim Max As System.Double
+        Dim Max As System.Double ' Starts at zero.
         Dim AbsVal As System.Double
         For Each OneValue As System.Double In values
             AbsVal = System.Math.Abs(OneValue)
@@ -361,7 +274,120 @@ Public Module Math
         Next
         Return Max
 
-    End Function ' MaxMag
+    End Function ' MaxMagnitude
+
+    ''' <summary>
+    ''' Compares an array of values to compute which has the greatest value.
+    ''' </summary>
+    ''' <param name="values">Specifies the array of values to be
+    ''' examined.</param>
+    ''' <returns>The greatest value in the array.</returns>
+    ''' <remarks>
+    ''' An empty array returns <c>System.Double.NaN</c>.
+    ''' <see cref="MaxValue"/> and <c>MaxMagnitude</c> differ in their handling
+    ''' of negative arguments: <c>MaxValue({4, -5})</c> returns 4;
+    ''' <c>MaxMagnitude({4, -5})</c> returns 5.
+    ''' <br/><example>
+    ''' This example shows how to call <c>MaxValue</c>.
+    ''' <code>
+    ''' Dim MaxAll As System.Double =
+    '''     OSNW.Math.MaxValue({x0, y0, r0, x1, y1, r1})
+    ''' </code></example>
+    ''' </remarks>
+    Public Function MaxValue(
+        ByVal ParamArray values() As System.Double) As System.Double
+
+        ' Input checking.
+        If values.Length.Equals(0) Then
+            Return System.Double.NaN
+        End If
+
+        Dim Max As System.Double ' Starts at zero.
+        For Each OneValue As System.Double In values
+            If OneValue > Max Then
+                Max = OneValue
+            End If
+        Next
+        Return Max
+
+    End Function ' MaxValue
+
+    ''' <summary>
+    ''' Compares an array of values to compute which has the smallest magnitude.
+    ''' </summary>
+    ''' <param name="values">Specifies an array of values to examine.</param>
+    ''' <returns>The magnitude of smallest absolute value in the
+    ''' array.</returns>
+    ''' <remarks>
+    ''' An empty array returns <c>System.Double.NaN</c>. When the array is not
+    ''' empty, this always returns a positive magnitude.
+    ''' <see cref="MinValue"/> and <c>MinMagnitude</c> differ in their handling
+    ''' of negative arguments: <c>MinValue({4, -5})</c> returns -5;
+    ''' <c>MinMagnitude({4, -5})</c> returns 4.
+    ''' <br/><example>
+    ''' This example shows how to call <c>MinMagnitude</c>.
+    ''' <code>
+    ''' Dim MinAll As System.Double =
+    '''     OSNW.Math.MinMagnitude({x0, y0, r0, x1, y1, r1})
+    ''' </code></example>
+    ''' </remarks>
+    Public Function MinMagnitude(
+        ByVal ParamArray values() As System.Double) As System.Double
+
+        ' Input checking.
+        If values.Length.Equals(0) Then
+            Return System.Double.NaN
+        End If
+
+        Dim Min As System.Double = values(0)
+        Dim AbsVal As System.Double
+        For Each OneValue As System.Double In values
+            AbsVal = System.Math.Abs(OneValue)
+            If AbsVal < Min Then
+                Min = AbsVal
+            End If
+        Next
+        Return Min
+
+    End Function ' MinMagnitude
+
+    ''' <summary>
+    ''' Compares an array of values to compute which has the smallest value.
+    ''' </summary>
+    ''' <param name="values">Specifies the array of values to be
+    ''' examined.</param>
+    ''' <returns>The smallest value in the array.</returns>
+    ''' <remarks>
+    ''' An empty array returns <c>System.Double.NaN</c>.
+    ''' <see cref="MinValue"/> and <c>MinMagnitude</c> differ in their handling
+    ''' of negative arguments: <c>MinValue({4, -5})</c> returns -5;
+    ''' <c>MinMagnitude({4, -5})</c> returns 4.
+    ''' <br/><example>
+    ''' This example shows how to call <c>MinValue</c>.
+    ''' <code>
+    ''' Dim MinAll As System.Double =
+    '''     OSNW.Math.MinValue({x0, y0, r0, x1, y1, r1})
+    ''' </code></example>
+    ''' </remarks>
+    Public Function MinValue(
+        ByVal ParamArray values() As System.Double) As System.Double
+
+        ' Input checking.
+        If values.Length.Equals(0) Then
+            Return System.Double.NaN
+        End If
+
+        Dim Min As System.Double = values(0)
+        For Each OneValue As System.Double In values
+            If OneValue < Min Then
+                Min = OneValue
+            End If
+        Next
+        Return Min
+
+    End Function ' MinValue
+
+#End Region ' "Minimum/Maximum Implementations"
 
     ''' <summary>
     ''' Computes the geometric mean of an array of values.
@@ -370,6 +396,11 @@ Public Module Math
     ''' evaluated.</param>
     ''' <returns>The geometric mean of the values.</returns>
     ''' <remarks>
+    ''' An empty array returns <c>System.Double.NaN</c>.<br/>
+    ''' The geometric mean is the nth root of the product of n values. It is
+    ''' only valid for positive, non-zero values. To avoid an exception, any
+    ''' negative or zero value causes the result to be
+    ''' <c>System.Double.NaN</c>.<br/>
     ''' <example>
     ''' This example shows how to call <c>GeometricMean</c>.
     ''' <code>
@@ -377,7 +408,7 @@ Public Module Math
     ''' </code></example>
     ''' </remarks>
     Public Function GeometricMean(
-        ByVal ParamArray values() As System.Double) As System.Double
+        ByVal ParamArray values As System.Double()) As System.Double
 
         ' Input checking.
         If values.Length = 0 Then
@@ -386,8 +417,12 @@ Public Module Math
 
         Dim Product As System.Double = 1.0
         For Each OneValue As System.Double In values
+            If OneValue <= 0.0 Then
+                Return System.Double.NaN ' Early exit.
+            End If
             Product *= OneValue
         Next
+        ' On getting here,
         Return System.Math.Pow(Product, 1.0 / values.Length)
 
     End Function ' GeometricMean
@@ -415,8 +450,7 @@ Public Module Math
     ''' <paramref name="nearest"/> is negative or zero.</exception>
     Public Function RoundTo(ByVal nearest As System.Double,
         ByVal value As System.Double,
-        Optional ByVal mode As System.MidpointRounding =
-            System.MidpointRounding.ToEven) _
+        Optional ByVal mode As System.MidpointRounding = OSNWDFLTMPR) _
         As System.Double
 
         ' xxxxxxxxxx NO TEST HAS BEEN ADDED FOR THIS. xxxxxxxxxx
@@ -432,5 +466,216 @@ Public Module Math
         Return Interim * nearest
 
     End Function ' RoundTo
+
+    '''' <summary>
+    '''' Attempts to solve the "aX^2 + bX + c = 0" quadratic equation for real
+    '''' solutions.
+    '''' </summary>
+    '''' <param name="a">Specifies the <paramref name="a"/> in the well-known
+    '''' formula.</param>
+    '''' <param name="b">Specifies the <paramref name="b"/> in the well-known
+    '''' form.</param>
+    '''' <param name="c">Specifies the <paramref name="c"/> in the well-known
+    '''' form.</param>
+    '''' <param name="x0">Returns one of the x values.</param>
+    '''' <param name="x1">Returns one of the x values.</param>
+    '''' <param name="symmetryX">Returns the x-value of the axis of
+    '''' symmetry.</param>
+    '''' <param name="symmetryY">Returns the y-value where x=symmetryX.</param>
+    '''' <returns><c>True</c> if the process succeeds; otherwise, <c>False</c>.
+    '''' When valid, also returns the results in <paramref name="x0"/> and
+    '''' <paramref name="x1"/>.</returns>
+    '''' <remarks>
+    '''' <br/><example>
+    '''' This example shows how to use <c>TryQuadratic</c>.
+    '''' <code>
+    '''' Dim A As System.Double = something
+    '''' Dim B As System.Double = something
+    '''' Dim C As System.Double = something
+    '''' Dim x0 As System.Double
+    '''' Dim x1 As System.Double
+    '''' Dim SymmetryX As System.Double
+    '''' Dim SymmetryY As System.Double
+    '''' 
+    '''' If OSNW.Math.TryQuadratic(A, B, C, x0, x1, SymmetryX, SymmetryY) Then
+    ''''     '
+    ''''     ' Use x0 and x1 for further processing.
+    ''''     '
+    '''' else
+    ''''     '
+    ''''     ' Respond to the failure with a warning, exception, or default
+    ''''     ' value.
+    ''''     '
+    '''' End If
+    '''' 
+    ''''     - or -
+    '''' 
+    '''' If not OSNW.Math.TryQuadratic(A, B, C, x0, x1) Then
+    ''''     '
+    ''''     ' Respond to the failure with a warning, default value,
+    ''''     ' or exception.
+    ''''     ' Early exit.
+    ''''     '
+    '''' End If
+    ''''
+    '''' '
+    '''' ' Use x0 and x1 for further processing.
+    '''' '
+    '''' </code></example>
+    '''' 
+    '''' 
+    '''' 
+    '''' <br/>
+    '''' 
+    '''' The most familiar use of this is to find the points where the graph of
+    '''' the quadratic equation crosses the x-axis.
+    '''' 
+    '''' 
+    '''' This is normally used to find two places where a curve intersects a
+    '''' line, or to find the points of tangency between two curves. In those
+    '''' cases, the coefficients are derived from
+    '''' <code>
+    '''' There are a, b, and c coefficients that lead to two duplicate results.
+    '''' The formula is x = (-b +/- sqrt(b^2 - 4ac)) / 2a.
+    '''' Duplicates emerge when:
+    '''' (-b + sqrt(b^2 - 4ac)) / 2a = (-b - sqrt(b^2 - 4ac)) / 2a
+    '''' Multiplying both sides by 2a.
+    '''' -b + sqrt(b^2 - 4ac) = -b - sqrt(b^2 - 4ac)
+    '''' Adding b to both sides.
+    '''' sqrt(b^2 - 4ac) = -sqrt(b^2 - 4ac)
+    '''' same = -same only happens when same is zero, so:
+    '''' sqrt(b^2 - 4ac) = 0
+    '''' Squaring both sides gives:
+    '''' b^2 - 4ac = 0
+    '''' Duplicates emerge when the discriminant (b^2 - 4ac) is zero. Also, when
+    '''' b^2 = 4ac.
+    '''' In that case, the formula reduces to x = -b / 2a. This is a single solution that
+    '''' is returned twice.
+    '''' </code>
+    '''' 
+    '''' 
+    '''' 
+    '''' 
+    '''' 
+    '''' 
+    '''' 
+    '''' 
+    '''' 
+    '''' </remarks>
+    'Public Function TryQuadratic(ByVal a As System.Double,
+    '    ByVal b As System.Double, ByVal c As System.Double,
+    '    ByRef x0 As System.Double, ByRef x1 As System.Double,
+    '    ByRef symmetryX As System.Double, ByRef symmetryY As System.Double) _
+    '    As System.Boolean
+
+    '    '' Input checking.
+    '    'Dim Discriminant As System.Double = b * b - 4 * a * c
+    '    'If a.Equals(0.0) OrElse Discriminant < 0.0 Then
+    '    '    ' Not a quadratic equation.
+    '    '    x0 = Double.NaN
+    '    '    x1 = Double.NaN
+    '    '    Return False
+    '    'End If
+
+    '    'Dim DiscRoot As System.Double = System.Math.Sqrt(Discriminant)
+    '    'Dim A2 As System.Double = 2.0 * a
+    '    'x0 = (-b + DiscRoot) / A2
+    '    'x1 = (-b - DiscRoot) / A2
+    '    'Return True
+
+    '    ' Input checking.
+    '    Dim B2 As System.Double = b * b
+    '    Dim AC4 As System.Double = 4 * a * c
+    '    If a.Equals(0.0) OrElse AC4 > B2 Then
+    '        ' Not a quadratic equation.
+    '        x0 = Double.NaN
+    '        x1 = Double.NaN
+    '        symmetryX = Double.NaN
+    '        symmetryY = Double.NaN
+    '        Return False
+    '    End If
+
+    '    Dim DiscRoot As System.Double = System.Math.Sqrt(B2 - AC4)
+    '    Dim A2 As System.Double = 2.0 * a
+    '    x0 = (-b + DiscRoot) / A2
+    '    x1 = (-b - DiscRoot) / A2
+    '    symmetryX = -b / A2
+    '    symmetryY = a * symmetryX ^ 2 + b * symmetryX + c
+    '    Return True
+
+    'End Function ' TryQuadratic
+
+    Public Function TryQuadratic(ByVal a As System.Double,
+        ByVal b As System.Double, ByVal c As System.Double,
+        ByRef x0 As System.Double, ByRef x1 As System.Double,
+        ByRef symmetryX As System.Double, ByRef symmetryY As System.Double) _
+        As System.Boolean
+
+        ' REF: Quadratic formula
+        ' https://en.wikipedia.org/wiki/Quadratic_formula
+
+        '' Input checking.
+        'Dim Discriminant As System.Double = b * b - 4 * a * c
+        'If a.Equals(0.0) OrElse Discriminant < 0.0 Then
+        '    ' Not a quadratic equation.
+        '    x0 = Double.NaN
+        '    x1 = Double.NaN
+        '    Return False
+        'End If
+
+        'Dim DiscRoot As System.Double = System.Math.Sqrt(Discriminant)
+        'Dim A2 As System.Double = 2.0 * a
+        'x0 = (-b + DiscRoot) / A2
+        'x1 = (-b - DiscRoot) / A2
+        'Return True
+
+        ' Input checking.
+        Dim AC4 As System.Double = 4 * a * c
+        Dim SqrB As System.Double = b * b
+        If a.Equals(0.0) OrElse AC4 > SqrB Then
+            ' Not a quadratic equation.
+            x0 = Double.NaN
+            x1 = Double.NaN
+            symmetryX = Double.NaN
+            symmetryY = Double.NaN
+            Return False
+        End If
+
+        Dim Diff As System.Double = SqrB - AC4
+        Dim DiscRoot As System.Double = System.Math.Sqrt(Diff)
+        Dim A2 As System.Double = 2.0 * a
+
+        '        Dim UseTol As System.Double = DFLTEQUALITYTOLERANCE)
+        Dim UseZeroTol As System.Double = 0.01 * System.Math.Abs(b)
+        Dim C2 As System.Double = 2.0 * c
+        If EqualEnoughZero(-b + DiscRoot, UseZeroTol) Then
+            ' (-b + DiscRoot) near zero:
+
+            ' Consider these values to be close enough to cause catastrophic
+            ' cancellation due to subtraction of nearly-equal values, which can
+            ' degrade the precision of the results.
+            ' REF: Numerical calculation
+            ' https://en.wikipedia.org/wiki/Quadratic_formula#Numerical_calculation
+            ' REF: Square root in the denominator
+            ' https://en.wikipedia.org/wiki/Quadratic_formula#Square_root_in_the_denominator
+
+            ' Use the alternate approach.
+            x0 = C2 / (-b + DiscRoot)
+            x1 = (-b + DiscRoot) / A2
+        ElseIf EqualEnoughZero(-b - DiscRoot, UseZeroTol) Then
+            ' (-b - DiscRoot) near zero:
+
+            x0 = (-b - DiscRoot) / A2
+            x1 = C2 / (-b - DiscRoot)
+        Else
+            x0 = (-b + DiscRoot) / A2
+            x1 = (-b - DiscRoot) / A2
+        End If
+
+
+
+        Return True
+
+    End Function ' TryQuadratic
 
 End Module ' Math

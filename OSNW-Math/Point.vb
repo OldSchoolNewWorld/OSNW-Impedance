@@ -24,7 +24,7 @@ Partial Public Module Math
         ''' <remarks>Out-of-range values of both <paramref name="angle"/> and
         ''' <paramref name="rotation"/> are accepted but the result is
         ''' normalized.</remarks>
-        Private Shared Function RotateNormalRad(ByVal angle As System.Double,
+        Public Shared Function RotateNormalRad(ByVal angle As System.Double,
             rotation As System.Double) As System.Double
 
             ' xxxxxxxxxx NO TEST HAS BEEN ADDED FOR THIS. xxxxxxxxxx
@@ -52,7 +52,7 @@ Partial Public Module Math
             End While
             Return NewAngle
 
-        End Function ' RotateAngleRad
+        End Function ' RotateNormalRad
 
         ''' <summary>
         ''' Returns the normalized angle that is the result of rotating the
@@ -68,10 +68,16 @@ Partial Public Module Math
         ''' <exception cref="System.ArgumentOutOfRangeException">
         ''' Thrown when any parameter is infinite.
         ''' </exception>
-        ''' <remarks>Out-of-range values of both <paramref name="angle"/> and
+        ''' <remarks>
+        ''' Out-of-range values of both <paramref name="angle"/> and
         ''' <paramref name="rotation"/> are accepted but the result is
-        ''' normalized.</remarks>
-        Private Shared Function RotateAngleDeg(ByVal angle As System.Double,
+        ''' normalized.<br/>
+        ''' <see cref="Math.D2.RotateNormalRad(Double, Double)"/>, and
+        ''' <see cref="Math.D2.RotateNormalDeg(System.Double, Double)"/> are
+        ''' effectively the same thing. Use whichever best suits the variables
+        ''' at hand.
+        ''' </remarks>
+        Public Shared Function RotateNormalDeg(ByVal angle As System.Double,
             rotation As System.Double) As System.Double
 
             ' xxxxxxxxxx NO TEST HAS BEEN ADDED FOR THIS. xxxxxxxxxx
@@ -99,7 +105,7 @@ Partial Public Module Math
             End While
             Return NewAngle
 
-        End Function ' RotateAngleDeg
+        End Function ' RotateNormalDeg
 
         ''' <summary>
         ''' Represents an ordered pair of X and Y double precision coordinates
@@ -154,7 +160,7 @@ Partial Public Module Math
                     Dim CaughtBy As System.Reflection.MethodBase =
                         System.Reflection.MethodBase.GetCurrentMethod
                     Throw New System.ArgumentOutOfRangeException(
-                        $"Arguments to {NameOf(CaughtBy)} {MSGCHIV}")
+                        $"Arguments to {NameOf(RotatedRad)} {MSGCHIV}")
                 End If
 
                 ' Determine the current angle and radial length.

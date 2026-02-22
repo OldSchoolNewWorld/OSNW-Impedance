@@ -1,22 +1,22 @@
+Imports Newtonsoft.Json.Linq
 Imports Xunit
 Imports OsnwCircle2D = OSNW.Math.D2.Circle
 Imports OsnwEllipse2D = OSNW.Math.D2.Ellipse
 
 
-
-
-'xxxxxxxxxxxxxxxxxxxx
-Namespace EqualityTests
-
-End Namespace ' EqualityTests
-'xxxxxxxxxxxxxxxxxxxx
-
-
-
-
 Namespace NumericTests
 
-#Region "MaxValTests"
+
+
+    'xxxxxxxxxxxxxxxxxxxx
+#Region "EqualityTests"
+
+#End Region ' "EqualityTests"
+    'xxxxxxxxxxxxxxxxxxxx
+
+
+
+#Region "GeometricMeanTests"
 
     Public Class TestGeometricMean
 
@@ -24,71 +24,199 @@ Namespace NumericTests
         ' https://www.statisticshowto.com/geometric-mean/
 
         <Fact>
-        Sub GeometricMean_Ex1_Succeeds()
+        Sub GeometricMean_GoodEx1_Succeeds()
             Dim Tolerance As Double = 0.001
-            Assert.True(OSNW.Math.EqualEnough(3.3019, OSNW.Math.GeometricMean({2, 3, 6}), Tolerance))
+            Dim M As Double = OSNW.Math.GeometricMean({2, 3, 6})
+            Assert.True(OSNW.Math.EqualEnough(3.3019, M, Tolerance))
         End Sub
 
         <Fact>
-        Sub GeometricMean_Ex2_Succeeds()
+        Sub GeometricMean_GoodEx2_Succeeds()
             Dim Tolerance As Double = 0.001
-            Assert.True(OSNW.Math.EqualEnough(6.81, OSNW.Math.GeometricMean({4, 8, 3, 9, 17}), Tolerance))
+            Dim M As Double = OSNW.Math.GeometricMean({4, 8, 3, 9, 17})
+            Assert.True(OSNW.Math.EqualEnough(6.81, M, Tolerance))
         End Sub
 
         <Fact>
-        Sub GeometricMean_Ex3_Succeeds()
+        Sub GeometricMean_GoodEx3_Succeeds()
             Dim Tolerance As Double = 0.001
-            Assert.True(OSNW.Math.EqualEnough(0.3528, OSNW.Math.GeometricMean({1 / 2, 1 / 4, 1 / 5, 9 / 72, 7 / 4}), Tolerance))
+            Dim M As Double = OSNW.Math.GeometricMean({1 / 2, 1 / 4, 1 / 5, 9 / 72, 7 / 4})
+            Assert.True(OSNW.Math.EqualEnough(0.3528, M, Tolerance))
+        End Sub
+
+        '<Theory>
+        '<InlineData(3.3019, {2, 3, 6})>
+        '<InlineData(6.81, {4, 8, 3, 9, 17})>
+        '<InlineData(0.3528, {1 / 2, 1 / 4, 1 / 5, 9 / 72, 7 / 4})>
+        'Sub GeometricMean_GoodInput_Succeeds(ByVal expect As Double,
+        '                                     ByVal ParamArray values As Double())
+
+        '    ' REF: Creating parameterised tests in xUnit with [InlineData], [ClassData], and [MemberData]
+        '    ' may have info to make this doable via <Theory>.
+        '    ' https://andrewlock.net/creating-parameterised-tests-in-xunit-with-inlinedata-classdata-and-memberdata/
+
+        '    Dim Tolerance As Double = 0.001
+        '    Dim M As Double = OSNW.Math.GeometricMean(values)
+        '    Assert.True(OSNW.Math.EqualEnough(expect, M, Tolerance))
+        'End Sub
+
+        <Fact>
+        Sub GeometricMean_Negative_Fails()
+            Dim M As Double = OSNW.Math.GeometricMean({2, -3, 6})
+            Assert.True(Double.IsNaN(M))
+        End Sub
+
+        <Fact>
+        Sub GeometricMean_Zero_Fails()
+            Dim M As Double = OSNW.Math.GeometricMean({2, 0, 6})
+            Assert.True(Double.IsNaN(M))
         End Sub
 
     End Class
 
-    Public Class TestMaxVal
+#End Region ' "GeometricMeanTests"
+
+#Region "MinMaxTests"
+
+    Public Class TestMaxValue
 
         <Fact>
-        Sub MaxVal_InlineArray_Succeeds()
-            Assert.True(OSNW.Math.MaxVal({1, 3, 5, 4, 2}).Equals(5))
+        Sub MaxValue_InlineArray_Succeeds()
+            Assert.True(OSNW.Math.MaxValue({1, 3, 5, 4, 2}).Equals(5))
         End Sub
 
         <Fact>
-        Sub MaxVal_Negative_Succeeds()
-            Assert.True(OSNW.Math.MaxVal({1, 3, -5, 4, 2}).Equals(4))
+        Sub MaxValue_Negative_Succeeds()
+            Assert.True(OSNW.Math.MaxValue({1, 3, -5, 4, 2}).Equals(4))
         End Sub
 
         <Fact>
-        Sub MaxVal_PassedArray_Succeeds()
+        Sub MaxValue_PassedArray_Succeeds()
             Dim Values As Double() = {1, 3, 5, 4, 2}
-            Assert.True(OSNW.Math.MaxVal(Values).Equals(5))
+            Assert.True(OSNW.Math.MaxValue(Values).Equals(5))
         End Sub
 
     End Class
 
-    Public Class TestMaxValAbs
+    Public Class TestMaxMagnitude
 
         <Fact>
-        Sub MaxValAbs_InlineArray_Succeeds()
-            Assert.True(OSNW.Math.MaxMag({1, 3, 5, 4, 2}).Equals(5))
+        Sub MaxMagnitude_InlineArray_Succeeds()
+            Assert.True(OSNW.Math.MaxMagnitude({1, 3, 5, 4, 2}).Equals(5))
         End Sub
 
         <Fact>
-        Sub MaxValAbs_Negative_Succeeds()
-            Assert.True(OSNW.Math.MaxMag({1, 3, -5, 4, 2}).Equals(5))
+        Sub MaxMagnitude_Negative_Succeeds()
+            Assert.True(OSNW.Math.MaxMagnitude({1, 3, -5, 4, 2}).Equals(5))
         End Sub
 
         <Fact>
-        Sub MaxValAbs_PassedArray_Succeeds()
+        Sub MaxMagnitude_PassedArray_Succeeds()
             Dim Val1 As Double = 1
             Dim Val2 As Double = 3
             Dim Val3 As Double = -5
             Dim Val4 As Double = 4
             Dim Val5 As Double = 2
             Dim Values As Double() = {Val1, Val2, Val3, Val4, Val5}
-            Assert.True(OSNW.Math.MaxMag(Values).Equals(5))
+            Assert.True(OSNW.Math.MaxMagnitude(Values).Equals(5))
         End Sub
 
     End Class
 
-#End Region ' "MaxValTests"
+    Public Class TestMinValue
+
+        <Fact>
+        Sub MinValue_InlineArray_Succeeds()
+            Assert.True(OSNW.Math.MinValue({5, 3, 1, 4, 2}).Equals(1))
+        End Sub
+
+        <Fact>
+        Sub MinValue_Negative_Succeeds()
+            Assert.True(OSNW.Math.MinValue({1, 3, -5, 4, 2}).Equals(-5))
+        End Sub
+
+        <Fact>
+        Sub MinValue_PassedArray_Succeeds()
+            Dim Values As Double() = {5, 3, 1, 4, 2}
+            Assert.True(OSNW.Math.MinValue(Values).Equals(1))
+        End Sub
+
+    End Class
+
+    Public Class TestMinMagnitude
+
+        <Fact>
+        Sub MinMagnitude_InlineArray_Succeeds()
+            Assert.True(OSNW.Math.MinMagnitude({5, 3, 1, 4, 2}).Equals(1))
+        End Sub
+
+        <Fact>
+        Sub MinMagnitude_Negative_Succeeds()
+            Assert.True(OSNW.Math.MinMagnitude({5, 3, -1, 4, 2}).Equals(1))
+        End Sub
+
+        <Fact>
+        Sub MinMagnitude_PassedArray_Succeeds()
+            Dim Val1 As Double = 5
+            Dim Val2 As Double = 3
+            Dim Val3 As Double = -1
+            Dim Val4 As Double = 4
+            Dim Val5 As Double = 2
+            Dim Values As Double() = {Val1, Val2, Val3, Val4, Val5}
+            Assert.True(OSNW.Math.MinMagnitude(Values).Equals(1))
+        End Sub
+
+    End Class
+
+    Public Class TestTryQuadratic
+
+        ' FIND A SET OF VALUES THAT TRIGGER THE ALTERNATE APPROACH.
+        <Theory>
+        <InlineData(1.0, -3.0, 2.0, 1.0, 2.0, True)> ' Two real roots.
+        <InlineData(1 / 2.0, -3.0, 5 / 2.0, 1.0, 5.0, True)> ' Two real roots.
+        <InlineData(1.0, -1634.0, 2.0, 1.633_998_776E3, 0.001224, True)> ' Two real roots.
+        Sub TryQuadratic_GoodInput_Succeeds(
+            ByVal a As System.Double, ByVal b As System.Double, ByVal c As System.Double,
+            ByRef expectX0 As System.Double, ByRef expectX1 As System.Double, expectSuccess As Boolean)
+
+            Dim X0, X1 As System.Double
+            Dim SymmetryX, SymmetryY As System.Double
+            Dim Success As Boolean = OSNW.Math.TryQuadratic(a, b, c, X0, X1, SymmetryX, SymmetryY)
+            Assert.Equal(expectSuccess, Success)
+            If Success Then
+                Assert.True((OSNW.Math.EqualEnough(X0, expectX0, 0.001) AndAlso
+                                 OSNW.Math.EqualEnough(X1, expectX1, 0.001)) OrElse
+                            (OSNW.Math.EqualEnough(X0, expectX1, 0.001) AndAlso
+                                 OSNW.Math.EqualEnough(X1, expectX0, 0.001)))
+                Dim ZeroTol As Double =
+                    OSNW.Math.DFLTEQUALITYTOLERANCE * OSNW.Math.MaxMagnitude({a, b, c})
+                Dim Y0 As Double = a * X0 ^ 2 + b * X0 + c
+                Dim Y1 As Double = a * X1 ^ 2 + b * X1 + c
+
+                '817 + 816.998_776_0 = 1.633_998_776e3
+                '817 - 816.998_776_0=1.224e-3
+
+                Assert.True(OSNW.Math.EqualEnoughZero(Y0, ZeroTol) AndAlso
+                            OSNW.Math.EqualEnoughZero(Y1, ZeroTol))
+            End If
+        End Sub
+
+        <Theory>
+        <InlineData(0.0, -3.0, 2.0)> ' a=Zero.
+        <InlineData(1.0, -3.0, 99.0)> ' Discriminant.
+        Sub TryQuadratic_BadInput_Fails(
+             ByVal a As System.Double, ByVal b As System.Double, ByVal c As System.Double)
+
+            Dim x0, x1 As System.Double
+            Dim SymmetryX As System.Double
+            Dim SymmetryY As System.Double
+            Dim Success As Boolean = OSNW.Math.TryQuadratic(a, b, c, x0, x1, SymmetryX, SymmetryY)
+            Assert.False(Success)
+        End Sub
+
+    End Class
+
+#End Region ' "MinMaxTests"
 
 End Namespace ' NumericTests    
 
@@ -96,20 +224,22 @@ Namespace GeometricTests
 
     Public Class TestTryCircleLineIntersections
 
+        Const POSINF As Double = Double.PositiveInfinity
+
         <Theory>
-        <InlineData(Double.PositiveInfinity, 6.75, 1.5, (6.25 - 6.75) / (3 - 1.75), 7.45)>
-        <InlineData(1.75, Double.PositiveInfinity, 1.5, (6.25 - 6.75) / (3 - 1.75), 7.45)>
-        <InlineData(1.75, 6.75, Double.PositiveInfinity, (6.25 - 6.75) / (3 - 1.75), 7.45)>
-        <InlineData(1.75, 6.75, 1.5, Double.PositiveInfinity, 7.45)>
-        <InlineData(1.75, 6.75, 1.5, (6.25 - 6.75) / (3 - 1.75), Double.PositiveInfinity)>
+        <InlineData(POSINF, 6.75, 1.5, (6.25 - 6.75) / (3 - 1.75), 7.45)>
+        <InlineData(1.75, POSINF, 1.5, (6.25 - 6.75) / (3 - 1.75), 7.45)>
+        <InlineData(1.75, 6.75, POSINF, (6.25 - 6.75) / (3 - 1.75), 7.45)>
+        <InlineData(1.75, 6.75, 1.5, POSINF, 7.45)>
+        <InlineData(1.75, 6.75, 1.5, (6.25 - 6.75) / (3 - 1.75), POSINF)>
         <InlineData(1.75, 6.75, 1.5, (6.25 - 6.75) / (3 - 1.75), -1.5)>
-        Sub TryCircleLineIntersectionsLine_BadInput_Fails(circleX As Double, circleY As Double, circleR As Double,
-                                                          lineM As Double, lineB As Double)
+        Sub TryCircleLineIntersectionsLine_BadInput_Fails(circleX As Double, circleY As Double,
+            circleR As Double, lineM As Double, lineB As Double)
 
             Dim Intersect1X, Intersect1Y, Intersect2X, Intersect2Y As Double
 
             Assert.False(OsnwCircle2D.TryCircleLineIntersections(circleX, circleY, circleR, lineM, lineB,
-                                                                 Intersect1X, Intersect1Y, Intersect2X, Intersect2Y))
+                Intersect1X, Intersect1Y, Intersect2X, Intersect2Y))
 
         End Sub
 
@@ -139,18 +269,17 @@ Namespace GeometricTests
         End Sub
 
         <Theory>
-        <InlineData(Double.PositiveInfinity, 6.75, 1.5, 3.1698, 7.2381, 2.4427, 5.4205)>
-        <InlineData(1.75, Double.PositiveInfinity, 1.5, 3.1698, 7.2381, 2.4427, 5.4205)>
-        <InlineData(1.75, 6.75, Double.PositiveInfinity, 3.1698, 7.2381, 2.4427, 5.4205)>
-        <InlineData(1.75, 6.75, 1.5, Double.PositiveInfinity, 7.2381, 2.4427, 5.4205)>
-        <InlineData(1.75, 6.75, 1.5, 3.1698, Double.PositiveInfinity, 2.4427, 5.4205)>
-        <InlineData(1.75, 6.75, 1.5, 3.1698, 7.2381, Double.PositiveInfinity, 5.4205)>
-        <InlineData(1.75, 6.75, 1.5, 3.1698, 7.2381, 2.4427, Double.PositiveInfinity)>
+        <InlineData(POSINF, 6.75, 1.5, 3.1698, 7.2381, 2.4427, 5.4205)>
+        <InlineData(1.75, POSINF, 1.5, 3.1698, 7.2381, 2.4427, 5.4205)>
+        <InlineData(1.75, 6.75, POSINF, 3.1698, 7.2381, 2.4427, 5.4205)>
+        <InlineData(1.75, 6.75, 1.5, POSINF, 7.2381, 2.4427, 5.4205)>
+        <InlineData(1.75, 6.75, 1.5, 3.1698, POSINF, 2.4427, 5.4205)>
+        <InlineData(1.75, 6.75, 1.5, 3.1698, 7.2381, POSINF, 5.4205)>
+        <InlineData(1.75, 6.75, 1.5, 3.1698, 7.2381, 2.4427, POSINF)>
         <InlineData(1.75, 6.75, -1.5, 3.1698, 7.2381, 2.4427, 5.4205)>
         Sub TryCircleLineIntersectionsPoints_BadInput_Fails(
              circleX As Double, circleY As Double, circleR As Double,
-             lineX1 As Double, lineY1 As Double,
-             lineX2 As Double, lineY2 As Double)
+             lineX1 As Double, lineY1 As Double, lineX2 As Double, lineY2 As Double)
 
             Dim Intersect1X, Intersect1Y, Intersect2X, Intersect2Y As Double
 

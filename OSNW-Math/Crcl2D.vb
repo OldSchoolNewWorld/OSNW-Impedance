@@ -173,7 +173,7 @@ Partial Public Module Math
                     Dim CaughtBy As System.Reflection.MethodBase =
                     System.Reflection.MethodBase.GetCurrentMethod
                     Throw New System.ArgumentOutOfRangeException(
-                    $"Arguments to {NameOf(CaughtBy)} {MSGCHIV}")
+                    $"Arguments to {CaughtBy} {MSGCHIV}")
                 End If
                 ' A zero radius seems useless, but may be valid in some specific
                 ' case.
@@ -217,7 +217,7 @@ Partial Public Module Math
                     Dim CaughtBy As System.Reflection.MethodBase =
                     System.Reflection.MethodBase.GetCurrentMethod
                     Throw New System.ArgumentOutOfRangeException(
-                    $"Arguments to {NameOf(CaughtBy)} {MSGCHIV}")
+                    $"Arguments to {CaughtBy} {MSGCHIV}")
                 End If
                 ' A zero radius seems useless, but may be valid in some specific
                 ' case.
@@ -393,11 +393,14 @@ Partial Public Module Math
                 ' Set up and use "a*x^2 + b*x + c = 0" terms in the quadratic
                 ' formula.
                 Dim QuadA As Double = 1 + LineM2
-                Dim QuadB As Double = 2 * ((lineM * (lineB - circleY)) - circleX)
-                Dim QuadC As Double = CircleX2 + CircleY2 - CircleR2 + LineB2 -
-                2 * lineB * circleY
-                If Not TryQuadratic(
-                QuadA, QuadB, QuadC, intersect0X, intersect1X) Then
+                Dim QuadB As Double =
+                    2 * ((lineM * (lineB - circleY)) - circleX)
+                Dim QuadC As Double = CircleX2 + CircleY2 - CircleR2 + LineB2 _
+                                      - 2 * lineB * circleY
+                Dim SymmetryX As System.Double
+                Dim SymmetryY As System.Double
+                If Not TryQuadratic(QuadA, QuadB, QuadC, intersect0X,
+                                    intersect1X, SymmetryX, SymmetryY) Then
 
                     intersect0X = System.Double.NaN
                     intersect0Y = System.Double.NaN
@@ -630,7 +633,7 @@ Partial Public Module Math
 
                 ' Check for solvability.
                 Dim ToleranceAbs As System.Double =
-                System.Math.Abs(tolerance * MaxMag(x0, y0, r0, x1, y1, r1))
+                System.Math.Abs(tolerance * MaxMagnitude(x0, y0, r0, x1, y1, r1))
                 Dim CtrSeparation As System.Double =
                 System.Double.Hypot(x1 - x0, y1 - y0)
                 If CtrSeparation > (r0 + r1 + ToleranceAbs) Then
@@ -825,7 +828,7 @@ Partial Public Module Math
             '        Dim CaughtBy As System.Reflection.MethodBase =
             '            System.Reflection.MethodBase.GetCurrentMethod
             '        Throw New System.ArgumentOutOfRangeException(
-            '            $"Arguments to {NameOf(CaughtBy)} {MSGCHIV}")
+            '            $"Arguments to {NameOf(GetIntersections)} {MSGCHIV}")
             '    End If
             '    ' A zero radius seems useless, but may be valid in some specific
             '    ' case.
@@ -851,7 +854,7 @@ Partial Public Module Math
             '    ' points.
             '    ' Select a zero reference.
             '    Dim MaxAbs As System.Double =
-            '        OSNW.Math.MaxMag({x0, y0, r0, x1, y1, r1})
+            '        OSNW.Math.MaxMagnitude({x0, y0, r0, x1, y1, r1})
             '    Dim ZeroVal As System.Double =
             '        OSNW.Math.DFLTGRAPHICTOLERANCE * MaxAbs
 
@@ -1105,7 +1108,10 @@ Partial Public Module Math
                     Dim b As System.Double = -2 * y0
                     Dim c As System.Double =
                     Intersect0X2 - 2 * x0 * intersect0X + x02 + y02 - r02
-                    If Not TryQuadratic(a, b, c, intersect0Y, intersect1Y) Then
+                    Dim SymmetryX As System.Double
+                    Dim SymmetryY As System.Double
+                    If Not TryQuadratic(a, b, c, intersect0Y, intersect1Y,
+                                        SymmetryX, SymmetryY) Then
                         intersect0X = System.Double.NaN
                         intersect0Y = System.Double.NaN
                         intersect1X = System.Double.NaN
