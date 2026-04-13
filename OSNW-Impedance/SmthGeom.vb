@@ -26,7 +26,7 @@ Public Class PlotDetails
     Private ReadOnly m_MainCircle As SmithMainCircle
     ''' <summary>
     ''' Represents the <see cref="SmithMainCircle"/> associated with the
-    ''' impedance plot, located on a Cartesian grid.
+    ''' impedance plot, located on a Cartesian plane.
     ''' Dimensions are in generic "units".
     ''' </summary>
     Public ReadOnly Property MainCircle As SmithMainCircle
@@ -37,7 +37,7 @@ Public Class PlotDetails
 
     Private ReadOnly m_PlotX As System.Double
     ''' <summary>
-    ''' Represents the X-coordinate of the impedance plot, on a Cartesian grid.
+    ''' Represents the X-coordinate of the impedance plot, on a Cartesian plane.
     ''' Dimensions are in generic "units" relative to the grid on which
     ''' <see cref="MainCircle"/> is located, not the <see cref="MainCircle"/>
     ''' itself.
@@ -50,7 +50,7 @@ Public Class PlotDetails
 
     Private ReadOnly m_PlotY As System.Double
     ''' <summary>
-    ''' Represents the Y-coordinate of the impedance plot, on a Cartesian grid.
+    ''' Represents the Y-coordinate of the impedance plot, on a Cartesian plane.
     ''' Dimensions are in generic "units" relative to the grid on which
     ''' <see cref="MainCircle"/> is located, not to <see cref="MainCircle"/>
     ''' itself.
@@ -194,9 +194,9 @@ Public Class PlotDetails
     ''' specified grid coordinates and characteristic impedance.
     ''' </summary>
     ''' <param name="plotX">Specifies the X-coordinate of the impedance plot, on
-    ''' a Cartesian grid. Dimensions are in generic "units".</param>
+    ''' a Cartesian plane. Dimensions are in generic "units".</param>
     ''' <param name="plotY">Specifies the Y-coordinate of the impedance plot, on
-    ''' a Cartesian grid. Dimensions are in generic "units".</param>
+    ''' a Cartesian plane. Dimensions are in generic "units".</param>
     Public Sub New(
         ByVal mainCircle As SmithMainCircle, ByVal plotX As System.Double,
         ByVal plotY As System.Double)
@@ -212,7 +212,7 @@ End Class ' PlotDetails
 ''' <summary>
 ''' A class that represents the geometry of the outer circle of a Smith Chart,
 ''' with a center, diameter, and characteristic impedance, for use on a
-''' Cartesian grid. Dimensions are in generic "units".
+''' Cartesian plane. Dimensions are in generic "units".
 ''' </summary>
 Public Class SmithMainCircle
     Inherits OsnwCircle2D
@@ -520,7 +520,7 @@ Public Class SmithMainCircle
         Try
 
             ' Calculate values relative to the host outer circle.
-            ' Then populate values relative to the Cartesian grid.
+            ' Then populate values relative to the Cartesian plane.
 
             ' Create the R-circle that passes through the impedance plot.
             Dim RCirc As New RCircle(Me, resistance)
@@ -604,8 +604,9 @@ Public Class SmithMainCircle
         Dim RadiusR As System.Double
 
         ' Check for the special case with the plot ON the resonance line.
-        If OSNW.Math.EqualEnough(plotY, Me.CenterY,
-                                 OSNW.Math.DFLTGRAPHICTOLERANCE) Then
+        If OSNW.Math.EqualEnough(plotY, OSNW.Math.DFLTGRAPHICTOLERANCE,
+            Me.CenterY) Then
+
             ' From GetRadiusR:
             '     RadiusR = Me.GridRadius / ((resistance / Me.Z0) + 1)
             '     RadiusR * ((resistance / Me.Z0) + 1) = Me.GridRadius
@@ -788,7 +789,7 @@ Public Class RCircle
 
         Try
             ' Calculate values relative to the host outer circle.
-            ' Then populate values relative to the Cartesian grid.
+            ' Then populate values relative to the Cartesian plane.
             gridRadius = Me.MainCircle.GetRadiusR(Me.Resistance)
             gridCenterX = Me.MainCircle.RightEdgeX - gridRadius
             gridCenterY = Me.MainCircle.CenterY
@@ -899,7 +900,7 @@ Public Class XCircle
 
         Try
             ' Calculate values relative to the host outer circle.
-            ' Then populate values relative to the Cartesian grid.
+            ' Then populate values relative to the Cartesian plane.
             With Me
                 gridRadius = .MainCircle.GetRadiusX(.Reactance)
                 gridCenterX = .MainCircle.RightEdgeX
@@ -1007,7 +1008,7 @@ Public Class GCircle
 
         Try
             ' Calculate values relative to the host outer circle.
-            ' Then populate values relative to the Cartesian grid.
+            ' Then populate values relative to the Cartesian plane.
             gridRadius = Me.MainCircle.GetRadiusG(Me.Conductance)
             gridCenterX = Me.MainCircle.LeftEdgeX + gridRadius
             gridCenterY = Me.MainCircle.CenterY
@@ -1117,7 +1118,7 @@ Public Class BCircle
 
         Try
             ' Calculate values relative to the host outer circle.
-            ' Then populate values relative to the Cartesian grid.
+            ' Then populate values relative to the Cartesian plane.
             With Me
                 .Radius = .MainCircle.GetRadiusX(.Susceptance)
                 .CenterX = .MainCircle.LeftEdgeX
@@ -1338,7 +1339,7 @@ Public Class ZPlot
 
     Private m_GridCenterX As System.Double
     ''' <summary>
-    ''' Represents the X-coordinate of the <c>ZPlot</c>, on a Cartesian grid.
+    ''' Represents the X-coordinate of the <c>ZPlot</c>, on a Cartesian plane.
     ''' Dimensions are in generic "units" relative to the grid on which the
     ''' <see cref="SmithMainCircle"/> is located, not the
     ''' <see cref="SmithMainCircle"/> itself.
@@ -1354,7 +1355,7 @@ Public Class ZPlot
 
     Private m_GridCenterY As System.Double
     ''' <summary>
-    ''' Represents the Y-coordinate of the <c>ZPlot</c>, on a Cartesian grid.
+    ''' Represents the Y-coordinate of the <c>ZPlot</c>, on a Cartesian plane.
     ''' Dimensions are in generic "units" relative to the grid on which the
     ''' <see cref="SmithMainCircle"/> is located, not the
     ''' <see cref="SmithMainCircle"/> itself.
@@ -1404,7 +1405,7 @@ Public Class ZPlot
 
         Try
             ' Calculate values relative to the host outer circle.
-            ' Then populate values relative to the Cartesian grid.
+            ' Then populate values relative to the Cartesian plane.
             Me.MainCircle.GetPlotXY(
                 Me.Resistance, Me.Reactance, Me.GridCenterX, Me.GridCenterX)
             Return True

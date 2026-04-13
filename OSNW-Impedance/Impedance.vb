@@ -291,7 +291,7 @@ Public Structure Impedance
     ''' would cause a failure here, this uses <see cref="EqualEnoughZero"/>.
     ''' </remarks>
     Public Shared Function EqualEnough(ByVal z0 As System.Double,
-        ByVal otherVal As Impedance, ByVal refVal As Impedance) _
+        ByVal refVal As Impedance, ByVal otherVal As Impedance) _
         As System.Boolean
 
         ' Input checking.
@@ -305,8 +305,9 @@ Public Structure Impedance
 
         Dim NearlyZero As System.Double = DFLTIMPDTOLERANCE0 * z0
 
-        If Not OSNW.Math.EqualEnoughAbsolute(otherVal.Resistance, refVal.Resistance,
-                                   NearlyZero) Then
+        If Not OSNW.Math.EqualEnoughAbsolute(
+            refVal.Resistance, NearlyZero, otherVal.Resistance) Then
+
             Return False
         End If
         If EqualEnoughZero(otherVal.Reactance, NearlyZero) OrElse
@@ -317,8 +318,8 @@ Public Structure Impedance
                 EqualEnoughZero(refVal.Reactance, NearlyZero)
         Else
             ' Not zero; reactances must match.
-            Return OSNW.Math.EqualEnough(otherVal.Reactance, refVal.Reactance,
-                                         DFLTIMPDTOLERANCE)
+            Return OSNW.Math.EqualEnough(otherVal.Reactance, DFLTIMPDTOLERANCE,
+                                         refVal.Reactance)
         End If
 
     End Function ' EqualEnough

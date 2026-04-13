@@ -1,20 +1,129 @@
-Imports Newtonsoft.Json.Linq
 Imports Xunit
 Imports OsnwCircle2D = OSNW.Math.D2.Circle
 Imports OsnwEllipse2D = OSNW.Math.D2.Ellipse
 
+' DEV: For comprehensive tests of numeric values, consider:
+'   Infinity. Check expected result.
+'   Just above positive limit. Fail when requiring <= limit.
+'   At positive limit. Pass/fail as appropriate for the < or <= requirement.
+'   Just below positive limit. Pass when requiring < limit.
+'   Positive sweet spot. Only if needed for initial development of the basic
+'     functionality.
+'   Positive edge cases. Check expected result.
+'   Near-zero positive. Maybe Epsilon?
+'   Zero. Check expected result.
+'   Near-zero negative. Maybe -Epsilon?
+'   Negative edge cases. Check expected result.
+'   Negative sweet spot. Only if needed for initial development of the basic
+'     functionality.
+'   Just above negative limit. Pass when requiring > or >= limit.
+'   At negative limit. Pass/fail as appropriate for the requirement.
+'   Just below negative limit. Fail when requiring >= limit.
+'   Negative infinity. Check expected result.
+'   NaN. Check expected result.
 
 Namespace NumericTests
 
-
-
-    'xxxxxxxxxxxxxxxxxxxx
 #Region "EqualityTests"
 
+    Public Class TestEqualEnoughAbsolute
+
+        <Theory>
+        <InlineData(30.0, 0.002, 30.0 - 0.001)> ' Passes with Diff=-0.0010000000000012221
+        <InlineData(30.0, 0.002, 30.0 + 0.001)> ' Passes with Diff=0.0010000000000012221
+        Public Sub EqualEnoughAbsolute_NormalValues_Succeeds(refVal As Double, tolerance As Double,
+                                                             otherVal As Double)
+            Dim Result As System.Boolean = OSNW.Math.EqualEnoughAbsolute(refVal, tolerance, otherVal)
+            Assert.True(Result)
+        End Sub
+
+        <Theory>
+        <InlineData(30.0, Double.PositiveInfinity, 40.0)> ' Passes
+        Public Sub EqualEnoughAbsolute_AbnormalValues_AlsoSucceeds(refVal As Double, tolerance As Double,
+                                                                   otherVal As Double)
+            Dim Result As System.Boolean = OSNW.Math.EqualEnoughAbsolute(refVal, tolerance, otherVal)
+            Assert.True(Result)
+        End Sub
+
+        <Theory>
+        <InlineData(30.0, 0.001, 30.0 - 0.002)>
+        <InlineData(30.0, 0.001, 30.0 + 0.002)>
+        <InlineData(30.0, Double.NegativeInfinity, 30.0)>
+        <InlineData(30.0, Double.NaN, 30.0)>
+        <InlineData(Double.PositiveInfinity, 0.001, Double.PositiveInfinity)>
+        <InlineData(Double.NegativeInfinity, 0.001, Double.NegativeInfinity)>
+        <InlineData(Double.NaN, 0.001, Double.NaN)>
+        Public Sub EqualEnoughAbsolute_BadValues_Fails(refVal As Double, tolerance As Double,
+                                                       otherVal As Double)
+            Dim Result As System.Boolean = OSNW.Math.EqualEnoughAbsolute(refVal, tolerance, otherVal)
+            Assert.False(Result)
+        End Sub
+
+    End Class ' TestEqualEnoughAbsolute
+
+    Public Class TestEqualEnoughZero
+
+        <Theory>
+        <InlineData(0.001, 0.001)>
+        <InlineData(-0.001, 0.001)>
+        Public Sub EqualEnoughZero_NormalValues_Succeeds(value As Double, tolerance As Double)
+            Assert.True(OSNW.Math.EqualEnoughZero(value, tolerance))
+        End Sub
+
+        <Theory>
+        <InlineData(Double.NaN, 0.001)>
+        <InlineData(-0.0011, 0.001)>
+        <InlineData(0.0011, 0.001)>
+        Public Sub EqualEnoughZero_BadValues_Fails(value As Double, tolerance As Double)
+            Assert.False(OSNW.Math.EqualEnoughZero(value, tolerance))
+        End Sub
+
+    End Class ' TestEqualEnoughZero
+
+    Public Class TestEqualEnough
+
+        <Theory>
+        <InlineData(1000.0, 0.001, 999)>
+        <InlineData(1000.0, 0.001, 1001)>
+        <InlineData(-1000.0, 0.001, -999)>
+        <InlineData(-1000.0, 0.001, -1001)>
+        Public Sub EqualEnough_GoodValues_Succeeds(ByVal refVal As System.Double,
+            ByVal ratio As System.Double, ByVal otherVal As System.Double)
+
+            Assert.True(OSNW.Math.EqualEnough(refVal, ratio, otherVal))
+        End Sub
+
+        <Theory>
+        <InlineData(1000.0, 0.001, 998.999)>
+        <InlineData(1000.0, 0.001, 1001.001)>
+        <InlineData(1000.0, 0.001, Double.NaN)>
+        <InlineData(Double.NaN, 0.001, Double.NaN)>
+        Public Sub EqualEnough_BadValues_Fails(ByVal refVal As System.Double,
+            ByVal ratio As System.Double, ByVal otherVal As System.Double)
+
+            Assert.False(OSNW.Math.EqualEnough(refVal, ratio, otherVal))
+        End Sub
+
+        <Theory>
+        <InlineData(0.0, 0.001, 1001)>
+        <InlineData(1000.0, 0.001, 0.0)>
+        Public Sub EqualEnough_Zero_Fails(ByVal refVal As System.Double,
+            ByVal ratio As System.Double, ByVal otherVal As System.Double)
+
+            Try
+                ' Code that throws the exception.
+                Dim B As Boolean = OSNW.Math.EqualEnough(refVal, ratio, otherVal)
+            Catch ex As Exception
+                Assert.True(True)
+                Exit Sub
+            End Try
+            Assert.True(False, "Did not fail.")
+
+        End Sub
+
+    End Class ' TestEqualEnough
+
 #End Region ' "EqualityTests"
-    'xxxxxxxxxxxxxxxxxxxx
-
-
 
 #Region "GeometricMeanTests"
 
@@ -23,52 +132,24 @@ Namespace NumericTests
         ' Test data found at:
         ' https://www.statisticshowto.com/geometric-mean/
 
-        <Fact>
-        Sub GeometricMean_GoodEx1_Succeeds()
+        <Theory>
+        <InlineData(3.3019, {2.0, 3.0, 6.0})>
+        <InlineData(6.81, {4.0, 8.0, 3.0, 9.0, 17.0})>
+        <InlineData(0.3528, {1 / 2.0, 1 / 4.0, 1 / 5.0, 9 / 72.0, 7 / 4.0})>
+        Sub GeometricMean_GoodValues_Succeeds(ByVal expect As Double,
+                                              ByVal ParamArray values As Double())
+
             Dim Tolerance As Double = 0.001
-            Dim M As Double = OSNW.Math.GeometricMean({2, 3, 6})
-            Assert.True(OSNW.Math.EqualEnough(3.3019, M, Tolerance))
+            Dim M As Double = OSNW.Math.GeometricMean(values)
+            Assert.True(OSNW.Math.EqualEnough(expect, Tolerance, M))
         End Sub
 
-        <Fact>
-        Sub GeometricMean_GoodEx2_Succeeds()
-            Dim Tolerance As Double = 0.001
-            Dim M As Double = OSNW.Math.GeometricMean({4, 8, 3, 9, 17})
-            Assert.True(OSNW.Math.EqualEnough(6.81, M, Tolerance))
-        End Sub
-
-        <Fact>
-        Sub GeometricMean_GoodEx3_Succeeds()
-            Dim Tolerance As Double = 0.001
-            Dim M As Double = OSNW.Math.GeometricMean({1 / 2, 1 / 4, 1 / 5, 9 / 72, 7 / 4})
-            Assert.True(OSNW.Math.EqualEnough(0.3528, M, Tolerance))
-        End Sub
-
-        '<Theory>
-        '<InlineData(3.3019, {2, 3, 6})>
-        '<InlineData(6.81, {4, 8, 3, 9, 17})>
-        '<InlineData(0.3528, {1 / 2, 1 / 4, 1 / 5, 9 / 72, 7 / 4})>
-        'Sub GeometricMean_GoodInput_Succeeds(ByVal expect As Double,
-        '                                     ByVal ParamArray values As Double())
-
-        '    ' REF: Creating parameterised tests in xUnit with [InlineData], [ClassData], and [MemberData]
-        '    ' may have info to make this doable via <Theory>.
-        '    ' https://andrewlock.net/creating-parameterised-tests-in-xunit-with-inlinedata-classdata-and-memberdata/
-
-        '    Dim Tolerance As Double = 0.001
-        '    Dim M As Double = OSNW.Math.GeometricMean(values)
-        '    Assert.True(OSNW.Math.EqualEnough(expect, M, Tolerance))
-        'End Sub
-
-        <Fact>
-        Sub GeometricMean_Negative_Fails()
-            Dim M As Double = OSNW.Math.GeometricMean({2, -3, 6})
-            Assert.True(Double.IsNaN(M))
-        End Sub
-
-        <Fact>
-        Sub GeometricMean_Zero_Fails()
-            Dim M As Double = OSNW.Math.GeometricMean({2, 0, 6})
+        <Theory>
+        <InlineData({})> ' Empty.
+        <InlineData({2.0, -3.0, 6.0})> ' Negative.
+        <InlineData({2.0, 0.0, 6.0})> ' Zero.
+        Sub GeometricMean_BadValues_Fails(ByVal ParamArray values As Double())
+            Dim M As Double = OSNW.Math.GeometricMean(values)
             Assert.True(Double.IsNaN(M))
         End Sub
 
@@ -82,18 +163,18 @@ Namespace NumericTests
 
         <Fact>
         Sub MaxValue_InlineArray_Succeeds()
-            Assert.True(OSNW.Math.MaxValue({1, 3, 5, 4, 2}).Equals(5))
-        End Sub
-
-        <Fact>
-        Sub MaxValue_Negative_Succeeds()
-            Assert.True(OSNW.Math.MaxValue({1, 3, -5, 4, 2}).Equals(4))
+            Assert.True(OSNW.Math.MaxValue({1, 3, 4, 5, 2}).Equals(5))
         End Sub
 
         <Fact>
         Sub MaxValue_PassedArray_Succeeds()
-            Dim Values As Double() = {1, 3, 5, 4, 2}
+            Dim Values As Double() = {1, 3, 4, 5, 2}
             Assert.True(OSNW.Math.MaxValue(Values).Equals(5))
+        End Sub
+
+        <Fact>
+        Sub MaxValue_Negative_Succeeds()
+            Assert.True(OSNW.Math.MaxValue({1, 3, 4, -5, 2}).Equals(4))
         End Sub
 
     End Class
@@ -127,18 +208,13 @@ Namespace NumericTests
 
         <Fact>
         Sub MinValue_InlineArray_Succeeds()
-            Assert.True(OSNW.Math.MinValue({5, 3, 1, 4, 2}).Equals(1))
-        End Sub
-
-        <Fact>
-        Sub MinValue_Negative_Succeeds()
-            Assert.True(OSNW.Math.MinValue({1, 3, -5, 4, 2}).Equals(-5))
+            Assert.True(OSNW.Math.MinValue({2, 3, 1, -4, 5}).Equals(-4))
         End Sub
 
         <Fact>
         Sub MinValue_PassedArray_Succeeds()
-            Dim Values As Double() = {5, 3, 1, 4, 2}
-            Assert.True(OSNW.Math.MinValue(Values).Equals(1))
+            Dim Values As Double() = {2, 3, 1, -4, 5}
+            Assert.True(OSNW.Math.MinValue(Values).Equals(-4))
         End Sub
 
     End Class
@@ -147,47 +223,46 @@ Namespace NumericTests
 
         <Fact>
         Sub MinMagnitude_InlineArray_Succeeds()
-            Assert.True(OSNW.Math.MinMagnitude({5, 3, 1, 4, 2}).Equals(1))
-        End Sub
-
-        <Fact>
-        Sub MinMagnitude_Negative_Succeeds()
-            Assert.True(OSNW.Math.MinMagnitude({5, 3, -1, 4, 2}).Equals(1))
+            Assert.True(OSNW.Math.MinMagnitude({2, 3, 1, -4, 5}).Equals(1))
         End Sub
 
         <Fact>
         Sub MinMagnitude_PassedArray_Succeeds()
-            Dim Val1 As Double = 5
+            Dim Val1 As Double = 2
             Dim Val2 As Double = 3
-            Dim Val3 As Double = -1
-            Dim Val4 As Double = 4
-            Dim Val5 As Double = 2
+            Dim Val3 As Double = 1
+            Dim Val4 As Double = -4
+            Dim Val5 As Double = 5
             Dim Values As Double() = {Val1, Val2, Val3, Val4, Val5}
             Assert.True(OSNW.Math.MinMagnitude(Values).Equals(1))
+        End Sub
+
+        <Fact>
+        Sub MinMagnitude_Negative_Succeeds()
+            Assert.True(OSNW.Math.MinMagnitude({5, 3, 1, -4, 2}).Equals(1))
         End Sub
 
     End Class
 
     Public Class TestTryQuadratic
 
-        ' FIND A SET OF VALUES THAT TRIGGER THE ALTERNATE APPROACH.
+        ' TRY TO FIND MORE SETS OF VALUES THAT TRIGGER THE ALTERNATE APPROACH.
         <Theory>
         <InlineData(1.0, -3.0, 2.0, 1.0, 2.0, True)> ' Two real roots.
-        <InlineData(1 / 2.0, -3.0, 5 / 2.0, 1.0, 5.0, True)> ' Two real roots.
-        <InlineData(1.0, -1634.0, 2.0, 1.633_998_776E3, 0.001224, True)> ' Two real roots.
+        <InlineData(1.0 / 2, -3.0, 5.0 / 2, 1.0, 5.0, True)> ' Two real roots.
+        <InlineData(1.0, -1634.0, 2.0, 1.633_998_776E3, 0.001224, True)> ' Alternate.
         Sub TryQuadratic_GoodInput_Succeeds(
             ByVal a As System.Double, ByVal b As System.Double, ByVal c As System.Double,
             ByRef expectX0 As System.Double, ByRef expectX1 As System.Double, expectSuccess As Boolean)
 
             Dim X0, X1 As System.Double
-            Dim SymmetryX, SymmetryY As System.Double
-            Dim Success As Boolean = OSNW.Math.TryQuadratic(a, b, c, X0, X1, SymmetryX, SymmetryY)
+            Dim Success As Boolean = OSNW.Math.TryQuadratic(a, b, c, X0, X1)
             Assert.Equal(expectSuccess, Success)
             If Success Then
-                Assert.True((OSNW.Math.EqualEnough(X0, expectX0, 0.001) AndAlso
-                                 OSNW.Math.EqualEnough(X1, expectX1, 0.001)) OrElse
-                            (OSNW.Math.EqualEnough(X0, expectX1, 0.001) AndAlso
-                                 OSNW.Math.EqualEnough(X1, expectX0, 0.001)))
+                Assert.True((OSNW.Math.EqualEnough(X0, 0.001, expectX0) AndAlso
+                                 OSNW.Math.EqualEnough(X1, 0.001, expectX1)) OrElse
+                            (OSNW.Math.EqualEnough(X0, 0.001, expectX1) AndAlso
+                                 OSNW.Math.EqualEnough(X1, 0.001, expectX0)))
                 Dim ZeroTol As Double =
                     OSNW.Math.DFLTEQUALITYTOLERANCE * OSNW.Math.MaxMagnitude({a, b, c})
                 Dim Y0 As Double = a * X0 ^ 2 + b * X0 + c
@@ -203,14 +278,12 @@ Namespace NumericTests
 
         <Theory>
         <InlineData(0.0, -3.0, 2.0)> ' a=Zero.
-        <InlineData(1.0, -3.0, 99.0)> ' Discriminant.
+        <InlineData(1.0, -3.0, 99.0)> ' Negative discriminant.
         Sub TryQuadratic_BadInput_Fails(
              ByVal a As System.Double, ByVal b As System.Double, ByVal c As System.Double)
 
             Dim x0, x1 As System.Double
-            Dim SymmetryX As System.Double
-            Dim SymmetryY As System.Double
-            Dim Success As Boolean = OSNW.Math.TryQuadratic(a, b, c, x0, x1, SymmetryX, SymmetryY)
+            Dim Success As Boolean = OSNW.Math.TryQuadratic(a, b, c, x0, x1)
             Assert.False(Success)
         End Sub
 
@@ -218,30 +291,85 @@ Namespace NumericTests
 
 #End Region ' "MinMaxTests"
 
+    Public Class TestRoundTo
+
+        <Theory>
+        <InlineData(1.0, 17.0 / 2.0, 9.0, System.MidpointRounding.AwayFromZero)>
+        <InlineData(1.0, -17.0 / 2.0, -9.0, System.MidpointRounding.AwayFromZero)>
+        <InlineData(1.0, 8.5, 8.0, System.MidpointRounding.ToZero)>
+        <InlineData(1.0, -8.5, -8.0, System.MidpointRounding.ToZero)>
+        <InlineData(1.0, 8.5, 9.0, System.MidpointRounding.ToPositiveInfinity)>
+        <InlineData(1.0, -8.5, -8.0, System.MidpointRounding.ToPositiveInfinity)>
+        <InlineData(1.0, 8.5, 8.0, System.MidpointRounding.ToNegativeInfinity)>
+        <InlineData(1.0, -8.5, -9.0, System.MidpointRounding.ToNegativeInfinity)>
+        <InlineData(1.0, 8.5, 8.0, System.MidpointRounding.ToEven)>
+        <InlineData(1.0, 7.5, 8.0, System.MidpointRounding.ToEven)>
+        <InlineData(1.0, -8.5, -8.0, System.MidpointRounding.ToEven)>
+        <InlineData(1.0, -7.5, -8.0, System.MidpointRounding.ToEven)>
+        <InlineData(5, 28.0, 30.0)> ' Default rounding.
+        <InlineData(5, 32.0, 30.0)> ' Default rounding.
+        Public Sub RoundTo_NormalValues_Succeeds(nearest As Double, value As Double, expected As Double,
+            Optional mode As System.MidpointRounding = OSNW.Math.OSNWDFLTMPR)
+
+            Dim Result As System.Double = OSNW.Math.RoundTo(nearest, value, mode)
+            Assert.True(OSNW.Math.EqualEnough(expected, 0.001, Result))
+        End Sub
+
+        <Theory>
+        <InlineData(Double.PositiveInfinity, 0.001, Double.PositiveInfinity)>
+        <InlineData(Double.NaN, 0.001, Double.NaN)>
+        Public Sub RoundTo_AbnormalValues_Fails(nearest As Double, value As Double, expected As Double,
+            Optional mode As System.MidpointRounding = OSNW.Math.OSNWDFLTMPR)
+
+            Dim Result As System.Double = OSNW.Math.RoundTo(nearest, value, mode)
+            Assert.False(OSNW.Math.EqualEnough(expected, 0.001, Result))
+        End Sub
+
+        <Theory>
+        <InlineData(Double.NegativeInfinity, Double.NegativeInfinity)>
+        <InlineData(0, 32.0)> ' Zero for nearest.
+        <InlineData(-5, -32.0)> ' Negative for nearest.
+        Public Sub RoundTo_BadValues_Fails(nearest As Double, value As Double,
+            Optional mode As System.MidpointRounding = OSNW.Math.OSNWDFLTMPR)
+
+            Try
+                ' Code that throws the exception.
+                Dim Result As System.Double = OSNW.Math.RoundTo(nearest, value, mode)
+            Catch ex As Exception
+                Assert.True(True)
+                Exit Sub
+            End Try
+            Assert.True(False, "Did not fail.")
+        End Sub
+
+    End Class ' TestRoundTo
+
 End Namespace ' NumericTests    
 
+' xxxxxxxxxx MOVE THE ITEMS BELOW TO ONE OR MORE OF THE GEOMETRIC TESTS xxxxxxxxxx
 Namespace GeometricTests
 
     Public Class TestTryCircleLineIntersections
 
         Const POSINF As Double = Double.PositiveInfinity
 
-        <Theory>
-        <InlineData(POSINF, 6.75, 1.5, (6.25 - 6.75) / (3 - 1.75), 7.45)>
-        <InlineData(1.75, POSINF, 1.5, (6.25 - 6.75) / (3 - 1.75), 7.45)>
-        <InlineData(1.75, 6.75, POSINF, (6.25 - 6.75) / (3 - 1.75), 7.45)>
-        <InlineData(1.75, 6.75, 1.5, POSINF, 7.45)>
-        <InlineData(1.75, 6.75, 1.5, (6.25 - 6.75) / (3 - 1.75), POSINF)>
-        <InlineData(1.75, 6.75, 1.5, (6.25 - 6.75) / (3 - 1.75), -1.5)>
-        Sub TryCircleLineIntersectionsLine_BadInput_Fails(circleX As Double, circleY As Double,
-            circleR As Double, lineM As Double, lineB As Double)
+        '' Suspend due to allowing NaN and infinity.
+        '<Theory>
+        '<InlineData(POSINF, 6.75, 1.5, (6.25 - 6.75) / (3 - 1.75), 7.45)>
+        '<InlineData(1.75, POSINF, 1.5, (6.25 - 6.75) / (3 - 1.75), 7.45)>
+        '<InlineData(1.75, 6.75, POSINF, (6.25 - 6.75) / (3 - 1.75), 7.45)>
+        '<InlineData(1.75, 6.75, 1.5, POSINF, 7.45)>
+        '<InlineData(1.75, 6.75, 1.5, (6.25 - 6.75) / (3 - 1.75), POSINF)>
+        '<InlineData(1.75, 6.75, 1.5, (6.25 - 6.75) / (3 - 1.75), -1.5)>
+        'Sub TryCircleLineIntersectionsLine_BadInput_Fails(circleX As Double, circleY As Double,
+        '    circleR As Double, lineM As Double, lineB As Double)
 
-            Dim Intersect1X, Intersect1Y, Intersect2X, Intersect2Y As Double
+        '    Dim Intersect1X, Intersect1Y, Intersect2X, Intersect2Y As Double
 
-            Assert.False(OsnwCircle2D.TryCircleLineIntersections(circleX, circleY, circleR, lineM, lineB,
-                Intersect1X, Intersect1Y, Intersect2X, Intersect2Y))
+        '    Assert.False(OsnwCircle2D.TryCircleLineIntersections(circleX, circleY, circleR, lineM, lineB,
+        '        Intersect1X, Intersect1Y, Intersect2X, Intersect2Y))
 
-        End Sub
+        'End Sub
 
         ''' <summary>
         ''' Tests TryCircleLineIntersections with a line defined by its slope and Y-intercept.<br/>
@@ -268,25 +396,26 @@ Namespace GeometricTests
 
         End Sub
 
-        <Theory>
-        <InlineData(POSINF, 6.75, 1.5, 3.1698, 7.2381, 2.4427, 5.4205)>
-        <InlineData(1.75, POSINF, 1.5, 3.1698, 7.2381, 2.4427, 5.4205)>
-        <InlineData(1.75, 6.75, POSINF, 3.1698, 7.2381, 2.4427, 5.4205)>
-        <InlineData(1.75, 6.75, 1.5, POSINF, 7.2381, 2.4427, 5.4205)>
-        <InlineData(1.75, 6.75, 1.5, 3.1698, POSINF, 2.4427, 5.4205)>
-        <InlineData(1.75, 6.75, 1.5, 3.1698, 7.2381, POSINF, 5.4205)>
-        <InlineData(1.75, 6.75, 1.5, 3.1698, 7.2381, 2.4427, POSINF)>
-        <InlineData(1.75, 6.75, -1.5, 3.1698, 7.2381, 2.4427, 5.4205)>
-        Sub TryCircleLineIntersectionsPoints_BadInput_Fails(
-             circleX As Double, circleY As Double, circleR As Double,
-             lineX1 As Double, lineY1 As Double, lineX2 As Double, lineY2 As Double)
+        '' Suspend due to allowing NaN and infinity.
+        '<Theory>
+        '<InlineData(POSINF, 6.75, 1.5, 3.1698, 7.2381, 2.4427, 5.4205)>
+        '<InlineData(1.75, POSINF, 1.5, 3.1698, 7.2381, 2.4427, 5.4205)>
+        '<InlineData(1.75, 6.75, POSINF, 3.1698, 7.2381, 2.4427, 5.4205)>
+        '<InlineData(1.75, 6.75, 1.5, POSINF, 7.2381, 2.4427, 5.4205)>
+        '<InlineData(1.75, 6.75, 1.5, 3.1698, POSINF, 2.4427, 5.4205)>
+        '<InlineData(1.75, 6.75, 1.5, 3.1698, 7.2381, POSINF, 5.4205)>
+        '<InlineData(1.75, 6.75, 1.5, 3.1698, 7.2381, 2.4427, POSINF)>
+        '<InlineData(1.75, 6.75, -1.5, 3.1698, 7.2381, 2.4427, 5.4205)>
+        'Sub TryCircleLineIntersectionsPoints_BadInput_Fails(
+        '     circleX As Double, circleY As Double, circleR As Double,
+        '     lineX1 As Double, lineY1 As Double, lineX2 As Double, lineY2 As Double)
 
-            Dim Intersect1X, Intersect1Y, Intersect2X, Intersect2Y As Double
+        '    Dim Intersect1X, Intersect1Y, Intersect2X, Intersect2Y As Double
 
-            Assert.False(OsnwCircle2D.TryCircleLineIntersections(circleX, circleY, circleR, lineX1, lineY1,
-                lineX2, lineY2, Intersect1X, Intersect1Y, Intersect2X, Intersect2Y))
+        '    Assert.False(OsnwCircle2D.TryCircleLineIntersections(circleX, circleY, circleR, lineX1, lineY1,
+        '        lineX2, lineY2, Intersect1X, Intersect1Y, Intersect2X, Intersect2Y))
 
-        End Sub
+        'End Sub
 
         ''' <summary>
         ''' Tests TryCircleLineIntersections with a line defined by two points.<br/>

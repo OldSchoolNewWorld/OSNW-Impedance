@@ -141,7 +141,7 @@ Namespace TryParseStandardTests
         Sub TryParseStandardDefault_NegativeConductance_Fails()
             Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
                 Sub()
-                    ' Code that throws the exception
+                    ' Code that throws the exception.
                     Dim Admt As New OsnwAdmt
                     If OsnwAdmt.TryParseStandard("-111111.125+555555.6875j", Nothing, Nothing, Admt) Then
                         Assert.Fail("Parsed despite bad entry.")

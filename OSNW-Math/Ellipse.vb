@@ -96,7 +96,7 @@ Partial Public Module Math
 
 #Region "Persistent Derived Properties"
 
-            ' These properties should be excluded from serialization, with the their
+            ' These properties should be excluded from serialization, with their
             ' values being derived in New().
 
             ' MajorLen Property.
@@ -104,9 +104,8 @@ Partial Public Module Math
             ''' <summary>
             ''' xxxxxxxxxx
             ''' </summary>
-            ''' <returns>xxxxxxxxxx</returns>
-            ''' <exception cref="System.InvalidOperationException">When the value has
-            ''' not been set.</exception>
+            ''' <returns>xxxxxxxxxx when the value has been set, or
+            ''' <c>System.Double</c> when the value has not been set.</returns>
             Public ReadOnly Property MajorLen As System.Double
                 Get
                     Return Me.m_MajorLen
@@ -118,9 +117,8 @@ Partial Public Module Math
             ''' <summary>
             ''' xxxxxxxxxx
             ''' </summary>
-            ''' <returns>xxxxxxxxxx</returns>
-            ''' <exception cref="System.InvalidOperationException">When the value has
-            ''' not been set.</exception>
+            ''' <returns>xxxxxxxxxx when the value has been set, or
+            ''' <c>System.Double</c> when the value has not been set.</returns>
             Public ReadOnly Property MinorLen As System.Double
                 Get
                     Return Me.m_MinorLen
@@ -132,9 +130,8 @@ Partial Public Module Math
             ''' <summary>
             ''' xxxxxxxxxx
             ''' </summary>
-            ''' <returns>xxxxxxxxxx</returns>
-            ''' <exception cref="System.InvalidOperationException">When the value has
-            ''' not been set.</exception>
+            ''' <returns>xxxxxxxxxx when the value has been set, or
+            ''' <c>System.Double</c> when the value has not been set.</returns>
             Public ReadOnly Property StdA As System.Double
                 Get
                     Return Me.m_StdA
@@ -146,28 +143,26 @@ Partial Public Module Math
             ''' <summary>
             ''' xxxxxxxxxx
             ''' </summary>
-            ''' <returns>xxxxxxxxxx</returns>
-            ''' <exception cref="System.InvalidOperationException">When the value has
-            ''' not been set.</exception>
+            ''' <returns>xxxxxxxxxx when the value has been set, or
+            ''' <c>System.Double</c> when the value has not been set.</returns>
             Public ReadOnly Property StdB As System.Double
                 Get
                     Return Me.m_StdB
                 End Get
             End Property
 
-            '' StdC Property.
-            'Private m_StdC As System.Double
-            '''' <summary>
-            '''' xxxxxxxxxx
-            '''' </summary>
-            '''' <returns>xxxxxxxxxx</returns>
-            '''' <exception cref="System.InvalidOperationException">When the value has
-            '''' not been set.</exception>
-            'Public ReadOnly Property StdC As System.Double
-            '    Get
-            '        Return Me.m_StdC
-            '    End Get
-            'End Property
+            ' StdC Property.
+            Private m_StdC As System.Double
+            ''' <summary>
+            ''' xxxxxxxxxx
+            ''' </summary>
+            ''' <returns>xxxxxxxxxx when the value has been set, or
+            ''' <c>System.Double</c> when the value has not been set.</returns>
+            Public ReadOnly Property StdC As System.Double
+                Get
+                    Return Me.m_StdC
+                End Get
+            End Property
 
             ' Eccentricity Property.
             Private m_Eccentricity As System.Double
@@ -207,7 +202,7 @@ Partial Public Module Math
 
 #Region "Foci"
 
-            ' These properties should be excluded from serialization, with the their
+            ' These properties should be excluded from serialization, with their
             ' values being derived in New().
             ' The "r_" prefix denotes rotatable values used in the initial calculations.
 
@@ -264,7 +259,7 @@ Partial Public Module Math
 
 #Region "Major Axis"
 
-            ' These properties should be excluded from serialization, with the their
+            ' These properties should be excluded from serialization, with their
             ' values being derived in New().
 
             ' MajorVertex0 Property.
@@ -355,7 +350,7 @@ Partial Public Module Math
 
 #Region "Minor Axis"
 
-            ' These properties should be excluded from serialization, with the their
+            ' These properties should be excluded from serialization, with their
             ' values being derived in New().
 
             ' MinorVertex0 Property.
@@ -490,7 +485,7 @@ Partial Public Module Math
                     Dim SqrStdB As System.Double = Me.StdB * Me.StdB
                     ' The distance from center to a focus.
                     ' The foci are located +/-StdC from the center point.
-                    Dim StdC As System.Double = System.Math.Sqrt(SqrStdA - SqrStdB)
+                    Me.m_StdC = System.Math.Sqrt(SqrStdA - SqrStdB)
                     '                Dim SqrStdC As System.Double = StdC * StdC
 
                     ' Calculate Eccentricity.
@@ -533,42 +528,41 @@ Partial Public Module Math
 
                     ' XXX Progress check. XXX
                     Dim PathLenMajor0 As System.Double =
-                    OSNW.Math.D2.Distance(r_Focus0, r_MajorVertex0) _
-                    + OSNW.Math.D2.Distance(r_Focus1, r_MajorVertex0)
+                        OSNW.Math.D2.Point.Distance(r_Focus0, r_MajorVertex0) _
+                        + OSNW.Math.D2.Point.Distance(r_Focus1, r_MajorVertex0)
                     Dim PathLenMajor1 As System.Double =
-                    OSNW.Math.D2.Distance(r_Focus0, r_MajorVertex1) _
-                    + OSNW.Math.D2.Distance(r_Focus1, r_MajorVertex1)
+                        OSNW.Math.D2.Point.Distance(r_Focus0, r_MajorVertex1) _
+                        + OSNW.Math.D2.Point.Distance(r_Focus1, r_MajorVertex1)
                     Dim PathLenMinor0 As System.Double =
-                    OSNW.Math.D2.Distance(r_Focus0, r_MinorVertex0) _
-                    + OSNW.Math.D2.Distance(r_Focus1, r_MinorVertex0)
+                    OSNW.Math.D2.Point.Distance(r_Focus0, r_MinorVertex0) _
+                    + OSNW.Math.D2.Point.Distance(r_Focus1, r_MinorVertex0)
                     Dim PathLenMinor1 As System.Double =
-                    OSNW.Math.D2.Distance(r_Focus0, r_MinorVertex1) _
-                    + OSNW.Math.D2.Distance(r_Focus1, r_MinorVertex1)
+                        OSNW.Math.D2.Point.Distance(r_Focus0, r_MinorVertex1) _
+                        + OSNW.Math.D2.Point.Distance(r_Focus1, r_MinorVertex1)
 
                     m_PathLen =
-                    OSNW.Math.D2.Distance(r_Focus0, r_MajorVertex0) _
-                    + OSNW.Math.D2.Distance(r_Focus1, r_MajorVertex0)
+                        OSNW.Math.D2.Point.Distance(r_Focus0, r_MajorVertex0) _
+                        + OSNW.Math.D2.Point.Distance(r_Focus1, r_MajorVertex0)
 
                     ' Now there is enough info to start using rotated values.
 
                     ' Calculate the foci and vertices.
                     Dim Cx As System.Double = Me.Center.X
                     Dim Cy As System.Double = Me.Center.Y
-                    Me.m_Focus0 = r_Focus0.RotatedRad(Me.Rotation, Cx, Cy)
-                    Me.m_Focus1 = r_Focus1.RotatedRad(Me.Rotation, Cx, Cy)
+                    Me.m_Focus0 = r_Focus0.RotatedAround(Me.Rotation, Cx, Cy)
+                    Me.m_Focus1 = r_Focus1.RotatedAround(Me.Rotation, Cx, Cy)
                     Me.m_MajorVertex0 =
-                    r_MajorVertex0.RotatedRad(Me.Rotation, Cx, Cy)
+                    r_MajorVertex0.RotatedAround(Me.Rotation, Cx, Cy)
                     Me.m_MajorVertex1 =
-                    r_MajorVertex1.RotatedRad(Me.Rotation, Cx, Cy)
+                    r_MajorVertex1.RotatedAround(Me.Rotation, Cx, Cy)
                     Me.m_MinorVertex0 =
-                    r_MinorVertex0.RotatedRad(Me.Rotation, Cx, Cy)
+                    r_MinorVertex0.RotatedAround(Me.Rotation, Cx, Cy)
                     Me.m_MinorVertex1 =
-                    r_MinorVertex1.RotatedRad(Me.Rotation, Cx, Cy)
+                    r_MinorVertex1.RotatedAround(Me.Rotation, Cx, Cy)
 
                     ' Calculate the slopes.
-                    Me.m_MajorM =
-                    OSNW.Math.D2.Slope(Me.Focus0.X, Me.Focus0.Y,
-                                       Me.Focus1.X, Me.Focus1.Y)
+                    Me.m_MajorM = OSNW.Math.D2.Line.GetSlopeFromTwoPoints(
+                        Me.Focus0.X, Me.Focus0.Y, Me.Focus1.X, Me.Focus1.Y)
                     Me.m_MinorM = -1.0 / Me.MajorM
 
                     ' Calculate the intercepts.
@@ -598,17 +592,33 @@ Partial Public Module Math
             ''' xxxxxxxxxx
             ''' </summary>
             Public Sub New()
-                '        With Me
-                '            .Focus0Set = False
-                '            .Focus1Set = False
-                '            .PathLenSet = False
-                '            .CenterSet = False
-                '            .MajorLenSet = False
-                '            .MinorLenSet = False
-                '            .AngleRSet = False
-                '            .AngleDSet = False
-                '            .EccentricitySet = False
-                '        End With
+                With Me
+                    .m_Center = New Math.D2.Point(System.Double.NaN,
+                                                  System.Double.NaN)
+                    .m_Eccentricity = System.Double.NaN
+                    .m_Focus0 = New Math.D2.Point(System.Double.NaN,
+                                                  System.Double.NaN)
+                    .m_Focus1 = New Math.D2.Point(System.Double.NaN,
+                                                  System.Double.NaN)
+                    .m_Height = System.Double.NaN
+                    .m_MajorAngleD = System.Double.NaN
+                    .m_MajorAngleR = System.Double.NaN
+                    .m_MajorLen = System.Double.NaN
+                    .m_MajorM = System.Double.NaN
+                    .m_MajorVertex0 = New Math.D2.Point(System.Double.NaN,
+                                                        System.Double.NaN)
+                    .m_MajorVertex1 = New Math.D2.Point(System.Double.NaN,
+                                                        System.Double.NaN)
+                    .m_MinorAngleD = System.Double.NaN
+                    .m_MinorAngleR = System.Double.NaN
+                    .m_MinorB = System.Double.NaN
+                    .m_MinorLen = System.Double.NaN
+                    .m_MinorM = System.Double.NaN
+                    .m_MinorVertex0 = New Math.D2.Point(System.Double.NaN,
+                                                        System.Double.NaN)
+                    .m_MinorVertex1 = New Math.D2.Point(System.Double.NaN,
+                                                        System.Double.NaN)
+                End With
             End Sub ' New
 
             ''' <summary>
@@ -619,7 +629,7 @@ Partial Public Module Math
             ''' <param name="center">xxxxxxxxxx</param>
             ''' <param name="rotation">xxxxxxxxxx</param>
             Public Sub New(ByVal width As System.Double, ByVal height As System.Double,
-            ByVal center As Math.D2.Point, ByVal rotation As System.Double)
+                ByVal center As Math.D2.Point, ByVal rotation As System.Double)
 
                 Me.New()
 

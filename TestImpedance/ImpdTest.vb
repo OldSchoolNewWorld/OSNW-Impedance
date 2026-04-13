@@ -119,7 +119,7 @@ Namespace DevelopmentTests
         Public Sub ToString_NegativeResistance_Fails()
             Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
                 Sub()
-                    ' Code that throws the exception
+                    ' Code that throws the exception.
                     Dim Z As New OSNW.Numerics.Impedance(-1.125, 5.675)
                     Dim AdmtStr As String = Z.ToString()
                 End Sub)
@@ -129,7 +129,7 @@ Namespace DevelopmentTests
         Public Sub ToString_NegativeConductance_Fails()
             Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
                 Sub()
-                    ' Code that throws the exception
+                    ' Code that throws the exception.
                     Dim Y As New OSNW.Numerics.Admittance(-1.125, 5.675)
                     Dim AdmtStr As String = Y.ToString()
                 End Sub)
@@ -303,15 +303,15 @@ Namespace TryParseStandardTests
             End If
             '        Const XXTOLERANCEXX As System.Double = 0.000001
             '        If Impedance.EqualEnough(reactance, TOLERANCE) Then
-            Assert.True(OSNW.Math.EqualEnough(resistance, Impd.Resistance, IMPDTOLERANCE) AndAlso
-                        OSNW.Math.EqualEnough(reactance, Impd.Reactance, IMPDTOLERANCE))
+            Assert.True(OSNW.Math.EqualEnough(resistance, IMPDTOLERANCE, Impd.Resistance) AndAlso
+                        OSNW.Math.EqualEnough(reactance, IMPDTOLERANCE, Impd.Reactance))
         End Sub
 
         <Fact>
         Sub TryParseStandardDefault_NegativeResistance_Fails()
             Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
                 Sub()
-                    ' Code that throws the exception
+                    ' Code that throws the exception.
                     Dim Impd As New OSNW.Numerics.Impedance
                     If OSNW.Numerics.Impedance.TryParseStandard("-111111.125+555555.6875j", Nothing, Nothing, Impd) Then
                         Assert.Fail("Parsed despite bad entry.")
@@ -339,8 +339,8 @@ Namespace TryParseStandardTests
             End If
 
             Assert.True(OSNW.Math.EqualEnoughZero(Impd.Resistance, NearlyZero) OrElse
-                        Not (OSNW.Math.EqualEnough(Impd.Resistance, resistance, IMPDTOLERANCE) AndAlso
-                             OSNW.Math.EqualEnough(Impd.Reactance, reactance, IMPDTOLERANCE)))
+                        Not (OSNW.Math.EqualEnough(Impd.Resistance, IMPDTOLERANCE, resistance) AndAlso
+                             OSNW.Math.EqualEnough(Impd.Reactance, IMPDTOLERANCE, reactance)))
 
         End Sub
 
@@ -363,8 +363,8 @@ Namespace TryParseStandardTests
             If Not OSNW.Numerics.Impedance.TryParseStandard(standardStr, Nothing, Nothing, Impd) Then
                 Assert.Fail("Failed to parse.")
             End If
-            Assert.True(OSNW.Math.EqualEnough(Impd.Resistance, resistance, IMPDTOLERANCE) AndAlso
-                        OSNW.Math.EqualEnough(Impd.Reactance, reactance, IMPDTOLERANCE))
+            Assert.True(OSNW.Math.EqualEnough(Impd.Resistance, IMPDTOLERANCE, resistance) AndAlso
+                        OSNW.Math.EqualEnough(Impd.Reactance, IMPDTOLERANCE, reactance))
         End Sub
 
     End Class ' TestTryParseStandardDefaultMixed
@@ -388,8 +388,8 @@ Namespace TryParseStandardTests
             If Not OSNW.Numerics.Impedance.TryParseStandard(standardStr, stdStyle, Nothing, Impd) Then
                 Assert.Fail("Failed to parse.")
             End If
-            Assert.True(OSNW.Math.EqualEnough(Impd.Resistance, resistance, IMPDTOLERANCE) AndAlso
-                        OSNW.Math.EqualEnough(Impd.Reactance, reactance, IMPDTOLERANCE))
+            Assert.True(OSNW.Math.EqualEnough(Impd.Resistance, IMPDTOLERANCE, resistance) AndAlso
+                        OSNW.Math.EqualEnough(Impd.Reactance, IMPDTOLERANCE, reactance))
         End Sub
 
         <Theory>
@@ -438,8 +438,8 @@ Namespace TryParseStandardTests
                 Assert.Fail("Failed to parse.")
             End If
 
-            Assert.True(OSNW.Math.EqualEnough(Impd.Resistance, resistance, IMPDTOLERANCE) AndAlso
-                        OSNW.Math.EqualEnough(Impd.Reactance, reactance, IMPDTOLERANCE))
+            Assert.True(OSNW.Math.EqualEnough(Impd.Resistance, IMPDTOLERANCE, resistance) AndAlso
+                        OSNW.Math.EqualEnough(Impd.Reactance, IMPDTOLERANCE, reactance))
 
         End Sub
 
@@ -567,7 +567,7 @@ Namespace MathTests
         Sub ToAdmittance_BadInput_Fails1(r As Double, x As Double)
             Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
                 Sub()
-                    ' Code that throws the exception
+                    ' Code that throws the exception.
                     Dim Imp As New Impedance(r, x)
                     Dim Y As Admittance = Imp.ToAdmittance()
                 End Sub)

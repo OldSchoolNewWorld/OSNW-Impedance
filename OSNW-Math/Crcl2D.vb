@@ -1,4 +1,9 @@
-﻿Imports OsnwPoint2D = OSNW.Math.D2.Point
+﻿Option Explicit On
+Option Strict On
+Option Compare Binary
+Option Infer Off
+
+Imports OsnwPoint2D = OSNW.Math.D2.Point
 
 Partial Public Module Math
 
@@ -6,7 +11,7 @@ Partial Public Module Math
 
         ''' <summary>
         ''' A base class that represents the geometry of a generic circle, with a
-        ''' center and radius, for use on a Cartesian grid. Dimensions are in
+        ''' center and radius, for use on a Cartesian plane. Dimensions are in
         ''' generic "units".
         ''' </summary>
         Public Class Circle
@@ -16,7 +21,7 @@ Partial Public Module Math
             Private m_CenterX As System.Double
             ''' <summary>
             ''' Represents the X-coordinate of the center of the <c>Circle2D</c>, on
-            ''' a Cartesian grid. Dimensions are in generic "units".
+            ''' a Cartesian plane. Dimensions are in generic "units".
             ''' </summary>
             ''' <exception cref="System.ArgumentOutOfRangeException"> Thrown when
             ''' the value is infinite.</exception>"
@@ -40,7 +45,7 @@ Partial Public Module Math
             Private m_CenterY As System.Double
             ''' <summary>
             ''' Represents the Y-coordinate of the center of the <c>Circle2D</c>, on
-            ''' a Cartesian grid. Dimensions are in generic "units".
+            ''' a Cartesian plane. Dimensions are in generic "units".
             ''' </summary>
             ''' <exception cref="System.ArgumentOutOfRangeException"> Thrown when
             ''' the value is infinite.</exception>"
@@ -63,8 +68,8 @@ Partial Public Module Math
 
             Private m_Radius As System.Double
             ''' <summary>
-            ''' Represents the radius of the <c>Circle2D</c>, on a Cartesian grid.
-            ''' Dimensions are in generic "units".
+            ''' Represents the radius of the <c>Circle2D</c>, on a Cartesian
+            ''' plane. Dimensions are in generic "units".
             ''' </summary>
             ''' <exception cref="System.ArgumentOutOfRangeException"> Thrown when
             ''' the value is infinite or negative.</exception>"
@@ -94,8 +99,8 @@ Partial Public Module Math
             End Property
 
             ''' <summary>
-            ''' Represents the diameter of the <c>Circle2D</c>, on a Cartesian grid.
-            ''' Dimensions are in generic "units".
+            ''' Represents the diameter of the <c>Circle2D</c>, on a Cartesian
+            ''' plane. Dimensions are in generic "units".
             ''' </summary>
             ''' <exception cref="System.ArgumentOutOfRangeException"> Thrown when
             ''' the value is infinite or negative.</exception>"
@@ -148,14 +153,14 @@ Partial Public Module Math
             ''' Creates a new instance of the <c>Circle2D</c> class with the
             ''' specified center coordinates and radius.
             ''' </summary>
-            ''' <param name="centerX"> Specifies the X-coordinate of the center of
-            ''' the <c>Circle2D</c>, on a Cartesian grid. Dimensions are in generic
-            ''' "units".</param>
-            ''' <param name="centerY"> Specifies the Y-coordinate of the center of
-            ''' the <c>Circle2D</c>, on a Cartesian grid. Dimensions are in generic
-            ''' "units".</param>
+            ''' <param name="centerX"> Specifies the X-coordinate of the center
+            ''' of the <c>Circle2D</c>, on a Cartesian plane. Dimensions are in
+            ''' generic "units".</param>
+            ''' <param name="centerY"> Specifies the Y-coordinate of the center
+            ''' of the <c>Circle2D</c>, on a Cartesian plane. Dimensions are in
+            ''' generic "units".</param>
             ''' <param name="radius">Specifies the radius of the <c>Circle2D</c>, on
-            ''' a Cartesian grid. Dimensions are in generic "units".</param>
+            ''' a Cartesian plane. Dimensions are in generic "units".</param>
             ''' <exception cref="System.ArgumentOutOfRangeException"> Thrown when
             ''' any parameter is infinite.</exception>
             ''' <exception cref="System.ArgumentOutOfRangeException">
@@ -167,13 +172,13 @@ Partial Public Module Math
 
                 ' Input checking.
                 If System.Double.IsInfinity(centerX) OrElse
-                System.Double.IsInfinity(centerY) OrElse
-                System.Double.IsInfinity(radius) Then
+                    System.Double.IsInfinity(centerY) OrElse
+                    System.Double.IsInfinity(radius) Then
 
                     Dim CaughtBy As System.Reflection.MethodBase =
-                    System.Reflection.MethodBase.GetCurrentMethod
+                        System.Reflection.MethodBase.GetCurrentMethod
                     Throw New System.ArgumentOutOfRangeException(
-                    $"Arguments to {CaughtBy} {MSGCHIV}")
+                        $"Arguments to {CaughtBy} {MSGCHIV}")
                 End If
                 ' A zero radius seems useless, but may be valid in some specific
                 ' case.
@@ -197,10 +202,11 @@ Partial Public Module Math
             ''' specified center coordinates and radius.
             ''' </summary>
             ''' <param name="center"> Specifies the center point of the
-            ''' <c>Circle2D</c>, on a Cartesian grid. Dimensions are in generic
+            ''' <c>Circle2D</c>, on a Cartesian plane. Dimensions are in generic
             ''' "units".</param>
-            ''' <param name="radius">Specifies the radius of the <c>Circle2D</c>, on
-            ''' a Cartesian grid. Dimensions are in generic "units".</param>
+            ''' <param name="radius">Specifies the radius of the
+            ''' <c>Circle2D</c>, on a Cartesian plane. Dimensions are in generic
+            ''' "units".</param>
             ''' <exception cref="System.ArgumentOutOfRangeException">
             ''' Thrown when any parameter is infinite.
             ''' </exception>
@@ -240,36 +246,28 @@ Partial Public Module Math
 
 #Region "Methods"
 
-            '''' Suspended XML comments for suspended code:
-            '''' <exception cref="System.ArgumentOutOfRangeException">
-            '''' Thrown when <paramref name="circleX"/>, <paramref name="circleY"/>,
-            '''' <paramref name="circleR"/>, <paramref name="lineM"/>, or
-            '''' <paramref name="lineB"/> is infinite.
-            '''' </exception>
-            '''' <exception cref="System.ArgumentOutOfRangeException"> Thrown when
-            '''' <paramref name="circleR"/> is less than or equal to zero.
-            '''' </exception>
-            '''' ''''''''''''''''''''''''''''''''''
             ''' <summary>
-            ''' Attempts to solve where a line intersects a circle, given the center
-            ''' coordinates and radius of the circle, along with the slope and
-            ''' Y-intercept of the line.
+            ''' Attempts to solve where a line intersects a circle, given the
+            ''' center coordinates and radius of the circle, along with the
+            ''' slope and Y-intercept of the line.
             ''' </summary>
-            ''' <param name="circleX">Specifies the X-coordinate of the center of
-            ''' the circle.</param>
-            ''' <param name="circleY">Specifies the Y-coordinate of the center of
-            ''' the circle.</param>
-            ''' <param name="circleR">Specifies the radius of the circle.</param>
+            ''' <param name="circleX">Specifies the X-coordinate of the center
+            ''' of the circle.</param>
+            ''' <param name="circleY">Specifies the Y-coordinate of the center
+            ''' of the circle.</param>
+            ''' <param name="circleR">Specifies the radius of the
+            ''' circle.</param>
             ''' <param name="lineM">Specifies the slope of the line.</param>
-            ''' <param name="lineB">Specifies the Y-intercept of the line.</param>
+            ''' <param name="lineB">Specifies the Y-intercept of the
+            ''' line.</param>
             ''' <param name="intersect0X">Specifies the X-coordinate of one
             ''' intersection.</param>
             ''' <param name="intersect0Y">Specifies the Y-coordinate of one
             ''' intersection.</param>
-            ''' <param name="intersect1X">Specifies the X-coordinate of the other
-            ''' intersection.</param>
-            ''' <param name="intersect1Y">Specifies the Y-coordinate of the other
-            ''' intersection.</param>
+            ''' <param name="intersect1X">Specifies the X-coordinate of the
+            ''' other intersection.</param>
+            ''' <param name="intersect1Y">Specifies the Y-coordinate of the
+            ''' other intersection.</param>
             ''' <returns><c>True</c> if the process succeeds; otherwise,
             ''' <c>False</c>.
             ''' When valid, also returns the results in
@@ -277,56 +275,37 @@ Partial Public Module Math
             ''' <paramref name="intersect1X"/>, and
             ''' <paramref name="intersect1Y"/>.</returns>
             ''' <remarks>
-            ''' A vertical line (infinite slope) will not have a Y-intercept, except
-            ''' when that line passes through the circle center - a case which would
-            ''' have infinite common points.
+            ''' A vertical line (infinite slope) will not have a Y-intercept,
+            ''' except when that line passes through the circle center - a case
+            ''' which would have infinite common points.
             ''' <br/>
-            ''' To avoid throwing an exception, <c>False</c> is returned
-            ''' when any of <paramref name="circleX"/>, <paramref name="circleY"/>,
+            ''' To avoid throwing an exception, <c>False</c> is returned when
+            ''' any of <paramref name="circleX"/>, <paramref name="circleY"/>,
             ''' <paramref name="circleR"/>, <paramref name="lineM"/>,
-            ''' <paramref name="lineB"/>, or
-            ''' <paramref name="circleR"/> is infinite,
-            ''' or
-            ''' when <paramref name="circleR"/> is negative.
+            ''' <paramref name="lineB"/>, or <paramref name="circleR"/> is
+            ''' infinite, or when <paramref name="circleR"/> is negative.
             ''' </remarks>
             Public Shared Function TryCircleLineIntersections(
-            ByVal circleX As System.Double, ByVal circleY As System.Double,
-            ByVal circleR As System.Double, ByVal lineM As System.Double,
-            ByVal lineB As System.Double, ByRef intersect0X As System.Double,
-            ByRef intersect0Y As System.Double,
-            ByRef intersect1X As System.Double,
-            ByRef intersect1Y As System.Double) As System.Boolean
+                ByVal circleX As System.Double, ByVal circleY As System.Double,
+                ByVal circleR As System.Double, ByVal lineM As System.Double,
+                ByVal lineB As System.Double,
+                ByRef intersect0X As System.Double,
+                ByRef intersect0Y As System.Double,
+                ByRef intersect1X As System.Double,
+                ByRef intersect1Y As System.Double) As System.Boolean
 
-                ' Suspended to avoid exceptions:
+                '' Suspend to avoid exceptions:
+                '' Input checking.
                 'If System.Double.IsInfinity(circleX) OrElse
                 '    System.Double.IsInfinity(circleY) OrElse
                 '    System.Double.IsInfinity(circleR) OrElse
                 '    System.Double.IsInfinity(lineM) OrElse
-                '    System.Double.IsInfinity(lineB) Then
-                '    'Dim CaughtBy As System.Reflection.MethodBase =
-                '    '    System.Reflection.MethodBase.GetCurrentMethod
-                '    Throw New System.ArgumentOutOfRangeException(
-                '        $"Arguments to {NameOf(TryCircleLineIntersections)} {MSGCHIV}")
+                '    System.Double.IsInfinity(lineB) OrElse
+                '    System.Double.IsInfinity(circleR) OrElse
+                '    circleR < 0.0 Then
+
+                '    Return False
                 'End If
-                '' A zero radius seems useless, but may be valid in some specific
-                '' case.
-                'If circleR < 0.0 Then
-                '    'Dim CaughtBy As System.Reflection.MethodBase =
-                '    '    System.Reflection.MethodBase.GetCurrentMethod
-                '    Throw New System.ArgumentOutOfRangeException(
-                '            NameOf(circleR), OSNW.Math.MSGCHNV)
-                'End If
-                ' ''''''''''''''''''''''''''''''''''
-                ' Input checking.
-                If System.Double.IsInfinity(circleX) OrElse
-                System.Double.IsInfinity(circleY) OrElse
-                System.Double.IsInfinity(circleR) OrElse
-                System.Double.IsInfinity(lineM) OrElse
-                System.Double.IsInfinity(lineB) OrElse
-                System.Double.IsInfinity(circleR) OrElse
-                circleR < 0.0 Then
-                    Return False
-                End If
 
                 ' The derivation follows:
                 ' DEV: Any square brackets, braces, and split lines below are used
@@ -397,10 +376,8 @@ Partial Public Module Math
                     2 * ((lineM * (lineB - circleY)) - circleX)
                 Dim QuadC As Double = CircleX2 + CircleY2 - CircleR2 + LineB2 _
                                       - 2 * lineB * circleY
-                Dim SymmetryX As System.Double
-                Dim SymmetryY As System.Double
-                If Not TryQuadratic(QuadA, QuadB, QuadC, intersect0X,
-                                    intersect1X, SymmetryX, SymmetryY) Then
+                If Not TryQuadratic(
+                    QuadA, QuadB, QuadC, intersect0X, intersect1X) Then
 
                     intersect0X = System.Double.NaN
                     intersect0Y = System.Double.NaN
@@ -416,17 +393,6 @@ Partial Public Module Math
 
             End Function ' TryCircleLineIntersections
 
-            '''' Suspended XML comments for suspended code:
-            '''' <exception cref="System.ArgumentOutOfRangeException">
-            '''' Thrown when <paramref name="circleX"/>, <paramref name="circleY"/>,
-            '''' <paramref name="circleR"/>, <paramref name="lineX1"/>,
-            '''' <paramref name="lineX2"/>, <paramref name="lineY1"/>, or
-            '''' <paramref name="lineY2"/> is infinite.
-            '''' </exception>
-            '''' <exception cref="System.ArgumentOutOfRangeException">Thrown when
-            '''' <paramref name="circleR"/> is less than or equal to zero.
-            '''' </exception>
-            '''' ''''''''''''''''''''''''''''''''''
             ''' <summary>
             ''' Attempts to solve where a line intersects a circle, given the center
             ''' coordinates and radius of the circle, along with the coordinates of
@@ -469,46 +435,28 @@ Partial Public Module Math
             ''' when <paramref name="circleR"/> is less than or equal to zero.
             ''' </remarks>
             Public Shared Function TryCircleLineIntersections(
-            ByVal circleX As System.Double,
-            ByVal circleY As System.Double, ByVal circleR As System.Double,
-            ByVal line1X As System.Double, ByVal line1Y As System.Double,
-            ByVal line2X As System.Double, ByVal line2Y As System.Double,
-            ByRef intersect0X As System.Double,
-            ByRef intersect0Y As System.Double,
-            ByRef intersect1X As System.Double,
-            ByRef intersect1Y As System.Double) As System.Boolean
+                ByVal circleX As System.Double, ByVal circleY As System.Double,
+                ByVal circleR As System.Double, ByVal line1X As System.Double,
+                ByVal line1Y As System.Double, ByVal line2X As System.Double,
+                ByVal line2Y As System.Double,
+                ByRef intersect0X As System.Double,
+                ByRef intersect0Y As System.Double,
+                ByRef intersect1X As System.Double,
+                ByRef intersect1Y As System.Double) As System.Boolean
 
-                ' Suspended to avoid exceptions:
-                '       If System.Double.IsInfinity(circleX) OrElse
-                '           System.Double.IsInfinity(circleY) OrElse
-                '           System.Double.IsInfinity(circleR) OrElse
-                '           System.Double.IsInfinity(line1X) OrElse
-                '           System.Double.IsInfinity(line1Y) OrElse
-                '           System.Double.IsInfinity(line2X) OrElse
-                '           System.Double.IsInfinity(line2Y) Then
-                '           'Dim CaughtBy As System.Reflection.MethodBase =
-                '           '    System.Reflection.MethodBase.GetCurrentMethod
-                '           Throw New System.ArgumentOutOfRangeException(
-                '               $"Arguments to {NameOf(TryCircleLineIntersections)} {MSGCHIV}")
-                '       End If
-                '        If circleR <= 0.0 Then
-                '            'Dim CaughtBy As System.Reflection.MethodBase =
-                '            '    System.Reflection.MethodBase.GetCurrentMethod
-                '            Throw New System.ArgumentOutOfRangeException(
-                '                NameOf(circleR), MSGVMBGTZ)
-                '        End If
-                '''' ''''''''''''''''''''''''''''''''''
-                ' Input checking.
-                If System.Double.IsInfinity(circleX) OrElse
-                System.Double.IsInfinity(circleY) OrElse
-                System.Double.IsInfinity(circleR) OrElse
-                System.Double.IsInfinity(line1X) OrElse
-                System.Double.IsInfinity(line1Y) OrElse
-                System.Double.IsInfinity(line2X) OrElse
-                System.Double.IsInfinity(line2Y) OrElse
-                circleR <= 0.0 Then
-                    Return False
-                End If
+                '' Suspend to avoid exceptions:
+                '' Input checking.
+                'If System.Double.IsInfinity(circleX) OrElse
+                '    System.Double.IsInfinity(circleY) OrElse
+                '    System.Double.IsInfinity(circleR) OrElse
+                '    System.Double.IsInfinity(line1X) OrElse
+                '    System.Double.IsInfinity(line1Y) OrElse
+                '    System.Double.IsInfinity(line2X) OrElse
+                '    System.Double.IsInfinity(line2Y) OrElse
+                '    circleR <= 0.0 Then
+
+                '    Return False
+                'End If
 
                 ' Check for a vertical line.
                 Dim DeltaX As System.Double = line2X - line1X
@@ -644,8 +592,8 @@ Partial Public Module Math
 
                     ' Consider to have one inside the other.
                     Return False
-                ElseIf EqualEnoughAbsolute(x1, x0, tolerance) AndAlso
-                EqualEnoughAbsolute(y1, y0, tolerance) Then
+                ElseIf EqualEnoughAbsolute(x0, tolerance, x1) AndAlso
+                    EqualEnoughAbsolute(y0, tolerance, y1) Then
 
                     ' Consider the circles to be concentric, with either zero or
                     ' infinite common points. The second case is considered to not
@@ -1102,16 +1050,13 @@ Partial Public Module Math
                     intersect0X = (r02 - r12 + x12 - x02) / (2 * (x1 - x0))
                     Intersect0X2 = intersect0X * intersect0X
 
-                    ' Set up and use "a*x^2 + b*x + c = 0" terms in the quadratic
-                    ' formula.
+                    ' Set up and use "a*x^2 + b*x + c = 0" terms in the
+                    ' quadratic formula.
                     Dim a As System.Double = 1
                     Dim b As System.Double = -2 * y0
                     Dim c As System.Double =
-                    Intersect0X2 - 2 * x0 * intersect0X + x02 + y02 - r02
-                    Dim SymmetryX As System.Double
-                    Dim SymmetryY As System.Double
-                    If Not TryQuadratic(a, b, c, intersect0Y, intersect1Y,
-                                        SymmetryX, SymmetryY) Then
+                        Intersect0X2 - 2 * x0 * intersect0X + x02 + y02 - r02
+                    If Not TryQuadratic(a, b, c, intersect0Y, intersect1Y) Then
                         intersect0X = System.Double.NaN
                         intersect0Y = System.Double.NaN
                         intersect1X = System.Double.NaN
@@ -1125,13 +1070,15 @@ Partial Public Module Math
 
                 End If
 
-                ' On getting here, the circles do not share the center Y-coordinate.
+                ' On getting here, the circles do not share the center
+                ' Y-coordinate.
                 ' The derivation follows:
-                ' DEV: Square brackets, braces, and split lines are used below for
-                ' visual clarity across the various steps. "h", "k", and squared
-                ' values are carried through the derivation, in keeping with the
-                ' standard form; the actual parameters, and multiplication vs.
-                ' squaring, are substituted in the implementation.
+                ' DEV: Square brackets, braces, and split lines are used below
+                ' for visual clarity across the various steps. "h", "k", and
+                ' squared values are carried through the derivation, in keeping
+                ' with the standard form; the actual parameters, and
+                ' multiplication vs. squaring, are substituted in the
+                ' implementation.
 
                 ' The basic approach is laid out here and broken out below:
                 ' REF: How can I find the points at which two circles intersect?

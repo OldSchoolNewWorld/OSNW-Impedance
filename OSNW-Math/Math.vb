@@ -2,16 +2,14 @@ Option Explicit On
 Option Strict On
 Option Compare Binary
 Option Infer Off
-Imports System.ComponentModel.Design
 
 ''' <summary>
-''' A root name for a collection of types and routines for various generic
-''' mathematical operations.
+''' A root name for a collection of types and routines for various mathematical
+''' operations.
 ''' </summary>
 ''' <remarks>This primarily consists of functionality created to support the
 ''' needs of other OSNW implementations.</remarks>
 Public Module Math
-
 
     ''' <summary>
     ''' A collection of types and methods for mathematical operations on a
@@ -48,16 +46,16 @@ Public Module Math
     ''' <example>
     ''' This example uses the <c>DFLTEQUALITYTOLERANCE</c> value to determine if
     ''' two values are close enough to be treated as being equal. In the case of
-    ''' <see cref="OSNW.Math.EqualEnough(Double, Double, Double)"/>,
+    ''' <see cref="EqualEnough(System.Double, System.Double, System.Double)"/>,
     ''' the reference value is the "refVal" parameter.
     ''' <code>
     ''' Public Shared Sub EqualityTest
     '''
-    '''     Dim Tol As System.Double = OSNW.Math.DFLTEQUALITYTOLERANCE
     '''     Dim RefVal As System.Double = 50.0
+    '''     Dim Tol As System.Double = OSNW.Math.DFLTEQUALITYTOLERANCE
     '''     Dim TestVal As System.Double = 50.000049
     '''
-    '''     if OSNW.Math.EqualEnough(TestVal, RefVal, Tol) then
+    '''     if OSNW.Math.EqualEnough(RefVal, Tol, TestVal) then
     '''         '
     '''         ' Code for a match.
     '''         '
@@ -91,10 +89,10 @@ Public Module Math
     ''' Public Shared Sub GraphicEqualityTest
     '''
     '''     Dim RefVal As System.Double = 100.0
-    '''     Dim TestVal As System.Double = 100.00005
     '''     Dim Tol As System.Double = OSNW.Math.DFLTGRAPHICTOLERANCE
+    '''     Dim TestVal As System.Double = 100.00005
     '''
-    '''     if OSNW.Math.EqualEnough(TestVal, RefVal, Tol) then
+    '''     if OSNW.Math.EqualEnough(RefVal, Tol, TestVal) then
     '''         '
     '''         ' Code for a match.
     '''         '
@@ -112,14 +110,39 @@ Public Module Math
     Public Const OSNWDFLTMPR As System.MidpointRounding =
         System.MidpointRounding.ToEven
 
-    ' Just for shorthand.
-    Public Const PIs As Single = System.Single.Pi
-    Public Const HALFPIs As System.Single = PIs / 2.0
-    Public Const TWOPIs As System.Single = PIs * 2.0
-    Public Const PId As System.Double = System.Double.Pi
-    Public Const HALFPId As System.Double = PId / 2.0
-    Public Const TWOPId As System.Double = PId * 2.0
+    ' Just for shorthand and obvious radian/degree ties for key angles.
+    Public Const PIs As System.Single = System.Single.Pi ' As a Single.
+    Public Const TWOPIs As System.Single = 2.0 * System.Single.Pi ' As a Single.
+    Public Const PId As System.Double = System.Double.Pi ' As a Double.
+    Public Const TWOPId As System.Double = 2.0 * System.Double.Pi ' As a Double.
+    Public Const RAD30s As System.Single = PIs / 6.0
+    Public Const RAD45s As System.Single = PIs / 4.0
+    Public Const RAD60s As System.Single = PIs / 3.0
+    Public Const RAD90s As System.Single = PIs / 2.0
+    Public Const RAD120s As System.Single = 2.0 * PIs / 3.0
+    Public Const RAD150s As System.Single = 5.0 * PIs / 6.0
+    Public Const RAD180s As System.Single = PIs
+    Public Const RAD210s As System.Single = 7.0 * PIs / 6.0
+    Public Const RAD240s As System.Single = 4.0 * PIs / 3.0
+    Public Const RAD270s As System.Single = 1.5 * PIs
+    Public Const RAD300s As System.Single = 5.0 * PIs / 3.0
+    Public Const RAD330s As System.Single = 11.0 * PIs / 6.0
+    Public Const RAD360s As System.Single = 2.0 * PIs
+    Public Const RAD30d As System.Double = PId / 6.0
+    Public Const RAD45d As System.Single = PId / 4.0
+    Public Const RAD60d As System.Double = PId / 3.0
+    Public Const RAD90d As System.Double = PId / 2.0
+    Public Const RAD120d As System.Double = 2.0 * PId / 3.0
+    Public Const RAD150d As System.Double = 5.0 * PId / 6.0
+    Public Const RAD180d As System.Double = PId
+    Public Const RAD210d As System.Double = 7.0 * PId / 6.0
+    Public Const RAD240d As System.Double = 4.0 * PId / 3.0
+    Public Const RAD270d As System.Double = 1.5 * PId
+    Public Const RAD300d As System.Double = 5.0 * PId / 3.0
+    Public Const RAD330d As System.Double = 11.0 * PId / 6.0
+    Public Const RAD360d As System.Double = 2.0 * PId
 
+    ' For consistency and reuse.
     Public Const MSGCHIV As System.String = "Cannot have an infinite value."
     Public Const MSGCHNV As System.String = "Cannot have a negative value."
     Public Const MSGCHZV As System.String = "Cannot have a zero value."
@@ -128,8 +151,10 @@ Public Module Math
         "Must be greater than or equal to 1."
     Public Const MSGVMBGTZ As System.String =
         "Must be a positive, non-zero value." ' Must be greater than zero.
+    Public Const MSGMHUV As System.String =
+        "Must have a usable value."
 
-#End Region ' Constants
+#End Region ' "Constants"
 
 #Region "EqualEnough Implementations"
 
@@ -141,66 +166,62 @@ Public Module Math
 
     ''' <summary>
     ''' Check for reasonable equality when using floating point values. A
-    ''' difference of less than or equal to <paramref name="maxDiff"/> is
+    ''' difference of less than or equal to <paramref name="tolerance"/> is
     ''' considered to establish equality.
     ''' </summary>
-    ''' <param name="otherVal">Specifies the value to be compared to
-    ''' <paramref name="refVal"/>.</param>
     ''' <param name="refVal">Specifies the reference value to which
     ''' <paramref name="otherVal"/> is compared.</param>
-    ''' <param name="maxDiff">Specifies the maximum difference that satisfies
+    ''' <param name="tolerance">Specifies the maximum difference that satisfies
     ''' equality.</param>
+    ''' <param name="otherVal">Specifies the value to be compared to
+    ''' <paramref name="refVal"/>.</param>
     ''' <returns><c>True</c> if the values are reasonably close in value;
     ''' otherwise, <c>False</c>.</returns>
     ''' <remarks>
     ''' This does the comparison based on an absolute numeric difference. The
-    ''' control value is <paramref name="maxDiff"/>. Select
-    ''' <paramref name="maxDiff"/> such that it is a good representation of
+    ''' control value is <paramref name="tolerance"/>. Select
+    ''' <paramref name="tolerance"/> such that it is a good representation of
     ''' zero, relative to other known or expected values.</remarks>
-    Public Function EqualEnoughAbsolute(ByVal otherVal As System.Double,
-        ByVal refVal As System.Double, ByVal maxDiff As System.Double) _
+    Public Function EqualEnoughAbsolute(ByVal refVal As System.Double,
+        ByVal tolerance As System.Double, ByVal otherVal As System.Double) _
         As System.Boolean
 
-        ' xxxxxxxxxx NO TEST HAS BEEN ADDED FOR THIS. xxxxxxxxxx
-
         ' No input checking.
-        Return System.Math.Abs(otherVal - refVal) <= maxDiff
+        Return System.Math.Abs(otherVal - refVal) <= tolerance
     End Function ' EqualEnoughAbsolute
 
     ''' <summary>
     ''' Check for reasonable equality to zero when using floating point values.
-    ''' Any value less than or equal to <paramref name="zeroTolerance"/> from
-    ''' zero is considered to be equal to zero.
+    ''' Any value less than or equal to <paramref name="tolerance"/> from zero
+    ''' is considered to equal zero.
     ''' </summary>
     ''' <param name="value">Specifies the value to be compared to zero.</param>
-    ''' <param name="zeroTolerance">Specifies the maximum offset from zero which
+    ''' <param name="tolerance">Specifies the maximum offset from zero which
     ''' is assumed to represent zero.</param>
     ''' <returns><c>True</c> if <paramref name="value"/> is reasonably close to
     ''' zero; otherwise, <c>False</c>.</returns>
     ''' <remarks>Use this when an actual zero reference would cause a failure in
     ''' <see cref="EqualEnough(System.Double, System.Double, System.Double)"/>.
-    ''' Select <paramref name="zeroTolerance"/> such that it is a good
+    ''' Select <paramref name="tolerance"/> such that it is a good
     ''' representation of zero relative to other known or expected
     ''' values.</remarks>
     Public Function EqualEnoughZero(ByVal value As System.Double,
-        ByVal zeroTolerance As System.Double) As System.Boolean
-
-        ' xxxxxxxxxx NO TEST HAS BEEN ADDED FOR THIS. xxxxxxxxxx
+        ByVal tolerance As System.Double) As System.Boolean
 
         ' No input checking.
-        Return System.Math.Abs(value) <= System.Math.Abs(zeroTolerance)
+        Return System.Math.Abs(value) <= System.Math.Abs(tolerance)
     End Function ' EqualEnoughZero
 
     ''' <summary>
     ''' Check for reasonable equality, within a specified ratio, when using
     ''' floating point values.
     ''' </summary>
-    ''' <param name="otherVal">Specifies the value to be compared to
-    ''' <paramref name="refVal"/>.</param>
     ''' <param name="refVal">Specifies the reference value to which
     ''' <paramref name="otherVal"/> is compared.</param>
     ''' <param name="ratio">Specifies the maximum ratio of the values which is
     ''' assumed to represent equality.</param>
+    ''' <param name="otherVal">Specifies the value to be compared to
+    ''' <paramref name="refVal"/>.</param>
     ''' <returns><c>True</c> if the values are reasonably close in value;
     ''' otherwise, <c>False</c>.</returns>
     ''' <exception cref="System.ArgumentOutOfRangeException">When either
@@ -214,11 +235,9 @@ Public Module Math
     ''' would cause a failure here, use
     ''' <see cref="EqualEnoughZero(System.Double, System.Double)"/>.
     ''' </remarks>
-    Public Function EqualEnough(ByVal otherVal As System.Double,
-        ByVal refVal As System.Double, ByVal ratio As System.Double) _
+    Public Function EqualEnough(ByVal refVal As System.Double,
+        ByVal ratio As System.Double, ByVal otherVal As System.Double) _
         As System.Boolean
-
-        ' xxxxxxxxxx NO TEST HAS BEEN ADDED FOR THIS. xxxxxxxxxx
 
         ' Input checking.
         If otherVal.Equals(0.0) OrElse refVal.Equals(0.0) Then
@@ -292,6 +311,9 @@ Public Module Math
     ''' <code>
     ''' Dim MaxAll As System.Double =
     '''     OSNW.Math.MaxValue({x0, y0, r0, x1, y1, r1})
+    ''' <br/><br/>or, with an array variable:<br/><br/>
+    ''' Dim Values As Double() = {x0, y0, r0, x1, y1, r1}
+    ''' Dim MaxAll As System.Double = OSNW.Math.MaxValue({Values})
     ''' </code></example>
     ''' </remarks>
     Public Function MaxValue(
@@ -398,13 +420,13 @@ Public Module Math
     ''' <remarks>
     ''' An empty array returns <c>System.Double.NaN</c>.<br/>
     ''' The geometric mean is the nth root of the product of n values. It is
-    ''' only valid for positive, non-zero values. To avoid an exception, any
+    ''' only valid for positive, non-zero, values. To avoid an exception, any
     ''' negative or zero value causes the result to be
     ''' <c>System.Double.NaN</c>.<br/>
     ''' <example>
     ''' This example shows how to call <c>GeometricMean</c>.
     ''' <code>
-    ''' Dim M as System.Double = OSNW.Math.GeometricMean({2, 3, 6})
+    ''' Dim M as System.Double = OSNW.Math.GeometricMean({2.0, 3.0, 6.0})
     ''' </code></example>
     ''' </remarks>
     Public Function GeometricMean(
@@ -453,8 +475,6 @@ Public Module Math
         Optional ByVal mode As System.MidpointRounding = OSNWDFLTMPR) _
         As System.Double
 
-        ' xxxxxxxxxx NO TEST HAS BEEN ADDED FOR THIS. xxxxxxxxxx
-
         ' Input checking.
         If nearest <= 0.0 Then
             'Dim CaughtBy As System.Reflection.MethodBase =
@@ -466,216 +486,5 @@ Public Module Math
         Return Interim * nearest
 
     End Function ' RoundTo
-
-    '''' <summary>
-    '''' Attempts to solve the "aX^2 + bX + c = 0" quadratic equation for real
-    '''' solutions.
-    '''' </summary>
-    '''' <param name="a">Specifies the <paramref name="a"/> in the well-known
-    '''' formula.</param>
-    '''' <param name="b">Specifies the <paramref name="b"/> in the well-known
-    '''' form.</param>
-    '''' <param name="c">Specifies the <paramref name="c"/> in the well-known
-    '''' form.</param>
-    '''' <param name="x0">Returns one of the x values.</param>
-    '''' <param name="x1">Returns one of the x values.</param>
-    '''' <param name="symmetryX">Returns the x-value of the axis of
-    '''' symmetry.</param>
-    '''' <param name="symmetryY">Returns the y-value where x=symmetryX.</param>
-    '''' <returns><c>True</c> if the process succeeds; otherwise, <c>False</c>.
-    '''' When valid, also returns the results in <paramref name="x0"/> and
-    '''' <paramref name="x1"/>.</returns>
-    '''' <remarks>
-    '''' <br/><example>
-    '''' This example shows how to use <c>TryQuadratic</c>.
-    '''' <code>
-    '''' Dim A As System.Double = something
-    '''' Dim B As System.Double = something
-    '''' Dim C As System.Double = something
-    '''' Dim x0 As System.Double
-    '''' Dim x1 As System.Double
-    '''' Dim SymmetryX As System.Double
-    '''' Dim SymmetryY As System.Double
-    '''' 
-    '''' If OSNW.Math.TryQuadratic(A, B, C, x0, x1, SymmetryX, SymmetryY) Then
-    ''''     '
-    ''''     ' Use x0 and x1 for further processing.
-    ''''     '
-    '''' else
-    ''''     '
-    ''''     ' Respond to the failure with a warning, exception, or default
-    ''''     ' value.
-    ''''     '
-    '''' End If
-    '''' 
-    ''''     - or -
-    '''' 
-    '''' If not OSNW.Math.TryQuadratic(A, B, C, x0, x1) Then
-    ''''     '
-    ''''     ' Respond to the failure with a warning, default value,
-    ''''     ' or exception.
-    ''''     ' Early exit.
-    ''''     '
-    '''' End If
-    ''''
-    '''' '
-    '''' ' Use x0 and x1 for further processing.
-    '''' '
-    '''' </code></example>
-    '''' 
-    '''' 
-    '''' 
-    '''' <br/>
-    '''' 
-    '''' The most familiar use of this is to find the points where the graph of
-    '''' the quadratic equation crosses the x-axis.
-    '''' 
-    '''' 
-    '''' This is normally used to find two places where a curve intersects a
-    '''' line, or to find the points of tangency between two curves. In those
-    '''' cases, the coefficients are derived from
-    '''' <code>
-    '''' There are a, b, and c coefficients that lead to two duplicate results.
-    '''' The formula is x = (-b +/- sqrt(b^2 - 4ac)) / 2a.
-    '''' Duplicates emerge when:
-    '''' (-b + sqrt(b^2 - 4ac)) / 2a = (-b - sqrt(b^2 - 4ac)) / 2a
-    '''' Multiplying both sides by 2a.
-    '''' -b + sqrt(b^2 - 4ac) = -b - sqrt(b^2 - 4ac)
-    '''' Adding b to both sides.
-    '''' sqrt(b^2 - 4ac) = -sqrt(b^2 - 4ac)
-    '''' same = -same only happens when same is zero, so:
-    '''' sqrt(b^2 - 4ac) = 0
-    '''' Squaring both sides gives:
-    '''' b^2 - 4ac = 0
-    '''' Duplicates emerge when the discriminant (b^2 - 4ac) is zero. Also, when
-    '''' b^2 = 4ac.
-    '''' In that case, the formula reduces to x = -b / 2a. This is a single solution that
-    '''' is returned twice.
-    '''' </code>
-    '''' 
-    '''' 
-    '''' 
-    '''' 
-    '''' 
-    '''' 
-    '''' 
-    '''' 
-    '''' 
-    '''' </remarks>
-    'Public Function TryQuadratic(ByVal a As System.Double,
-    '    ByVal b As System.Double, ByVal c As System.Double,
-    '    ByRef x0 As System.Double, ByRef x1 As System.Double,
-    '    ByRef symmetryX As System.Double, ByRef symmetryY As System.Double) _
-    '    As System.Boolean
-
-    '    '' Input checking.
-    '    'Dim Discriminant As System.Double = b * b - 4 * a * c
-    '    'If a.Equals(0.0) OrElse Discriminant < 0.0 Then
-    '    '    ' Not a quadratic equation.
-    '    '    x0 = Double.NaN
-    '    '    x1 = Double.NaN
-    '    '    Return False
-    '    'End If
-
-    '    'Dim DiscRoot As System.Double = System.Math.Sqrt(Discriminant)
-    '    'Dim A2 As System.Double = 2.0 * a
-    '    'x0 = (-b + DiscRoot) / A2
-    '    'x1 = (-b - DiscRoot) / A2
-    '    'Return True
-
-    '    ' Input checking.
-    '    Dim B2 As System.Double = b * b
-    '    Dim AC4 As System.Double = 4 * a * c
-    '    If a.Equals(0.0) OrElse AC4 > B2 Then
-    '        ' Not a quadratic equation.
-    '        x0 = Double.NaN
-    '        x1 = Double.NaN
-    '        symmetryX = Double.NaN
-    '        symmetryY = Double.NaN
-    '        Return False
-    '    End If
-
-    '    Dim DiscRoot As System.Double = System.Math.Sqrt(B2 - AC4)
-    '    Dim A2 As System.Double = 2.0 * a
-    '    x0 = (-b + DiscRoot) / A2
-    '    x1 = (-b - DiscRoot) / A2
-    '    symmetryX = -b / A2
-    '    symmetryY = a * symmetryX ^ 2 + b * symmetryX + c
-    '    Return True
-
-    'End Function ' TryQuadratic
-
-    Public Function TryQuadratic(ByVal a As System.Double,
-        ByVal b As System.Double, ByVal c As System.Double,
-        ByRef x0 As System.Double, ByRef x1 As System.Double,
-        ByRef symmetryX As System.Double, ByRef symmetryY As System.Double) _
-        As System.Boolean
-
-        ' REF: Quadratic formula
-        ' https://en.wikipedia.org/wiki/Quadratic_formula
-
-        '' Input checking.
-        'Dim Discriminant As System.Double = b * b - 4 * a * c
-        'If a.Equals(0.0) OrElse Discriminant < 0.0 Then
-        '    ' Not a quadratic equation.
-        '    x0 = Double.NaN
-        '    x1 = Double.NaN
-        '    Return False
-        'End If
-
-        'Dim DiscRoot As System.Double = System.Math.Sqrt(Discriminant)
-        'Dim A2 As System.Double = 2.0 * a
-        'x0 = (-b + DiscRoot) / A2
-        'x1 = (-b - DiscRoot) / A2
-        'Return True
-
-        ' Input checking.
-        Dim AC4 As System.Double = 4 * a * c
-        Dim SqrB As System.Double = b * b
-        If a.Equals(0.0) OrElse AC4 > SqrB Then
-            ' Not a quadratic equation.
-            x0 = Double.NaN
-            x1 = Double.NaN
-            symmetryX = Double.NaN
-            symmetryY = Double.NaN
-            Return False
-        End If
-
-        Dim Diff As System.Double = SqrB - AC4
-        Dim DiscRoot As System.Double = System.Math.Sqrt(Diff)
-        Dim A2 As System.Double = 2.0 * a
-
-        '        Dim UseTol As System.Double = DFLTEQUALITYTOLERANCE)
-        Dim UseZeroTol As System.Double = 0.01 * System.Math.Abs(b)
-        Dim C2 As System.Double = 2.0 * c
-        If EqualEnoughZero(-b + DiscRoot, UseZeroTol) Then
-            ' (-b + DiscRoot) near zero:
-
-            ' Consider these values to be close enough to cause catastrophic
-            ' cancellation due to subtraction of nearly-equal values, which can
-            ' degrade the precision of the results.
-            ' REF: Numerical calculation
-            ' https://en.wikipedia.org/wiki/Quadratic_formula#Numerical_calculation
-            ' REF: Square root in the denominator
-            ' https://en.wikipedia.org/wiki/Quadratic_formula#Square_root_in_the_denominator
-
-            ' Use the alternate approach.
-            x0 = C2 / (-b + DiscRoot)
-            x1 = (-b + DiscRoot) / A2
-        ElseIf EqualEnoughZero(-b - DiscRoot, UseZeroTol) Then
-            ' (-b - DiscRoot) near zero:
-
-            x0 = (-b - DiscRoot) / A2
-            x1 = C2 / (-b - DiscRoot)
-        Else
-            x0 = (-b + DiscRoot) / A2
-            x1 = (-b - DiscRoot) / A2
-        End If
-
-
-
-        Return True
-
-    End Function ' TryQuadratic
 
 End Module ' Math

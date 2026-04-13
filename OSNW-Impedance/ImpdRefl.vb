@@ -565,10 +565,10 @@ Partial Public Structure Impedance
             ' Vertical would have zero as the adjacent side (below).
             If PlotY > MainCirc.CenterY Then
                 ' Above the resonance line.
-                Return OSNW.Math.HALFPId
+                Return OSNW.Math.RAD90d
             ElseIf PlotY < MainCirc.CenterY Then
                 ' Below the resonance line.
-                Return -OSNW.Math.HALFPId
+                Return -OSNW.Math.RAD90d
             Else
                 ' At the center.
                 ' MATCHED, SO NO REFLECTION. SHOULD THIS HAVE *ANY* VALUE? NOT
@@ -580,8 +580,8 @@ Partial Public Structure Impedance
 
         Dim Opposite As System.Double = PlotY - MainCirc.CenterY
         Dim Adjacent As System.Double = PlotX - MainCirc.CenterX
-        Dim TanAlpha As System.Double = Opposite / Adjacent
-        Dim RadAngle As System.Double = System.Math.Atan(TanAlpha)
+        Dim TanTheta As System.Double = Opposite / Adjacent
+        Dim RadAngle As System.Double = System.Math.Atan(TanTheta)
         If PlotX > MainCirc.CenterX Then
             ' Right side.
             Return RadAngle
@@ -766,22 +766,22 @@ Partial Public Structure Impedance
 
         Dim Opposite As System.Double = PlotY - MainCirc.CenterY
         Dim Adjacent As System.Double = PlotX - MainCirc.LeftEdgeX
-        Dim TanAlpha As System.Double
+        Dim TanTheta As System.Double
         Dim RadAngle As System.Double
 
         ' SHOULD ALL OF THESE BE THE SAME OR DOES SOME MANIPULATION NEED TO BE
         ' DONE FOR POSSIBILITIES OUTSIE THE -PI/2 TO PI/2 RANGE?
         If PlotY < MainCirc.CenterY Then
-            TanAlpha = Opposite / Adjacent
-            RadAngle = System.Math.Atan(TanAlpha)
+            TanTheta = Opposite / Adjacent
+            RadAngle = System.Math.Atan(TanTheta)
             Return RadAngle
         ElseIf PlotY > MainCirc.CenterY Then
-            TanAlpha = Opposite / Adjacent
-            RadAngle = System.Math.Atan(TanAlpha)
+            TanTheta = Opposite / Adjacent
+            RadAngle = System.Math.Atan(TanTheta)
             Return RadAngle
         Else
-            TanAlpha = Opposite / Adjacent
-            RadAngle = System.Math.Atan(TanAlpha)
+            TanTheta = Opposite / Adjacent
+            RadAngle = System.Math.Atan(TanTheta)
             Return RadAngle
         End If
 

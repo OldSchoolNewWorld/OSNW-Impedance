@@ -64,7 +64,7 @@ Namespace GeometryTests
 
             Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
                 Sub()
-                    ' Code that throws the exception
+                    ' Code that throws the exception.
                     Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridRadius * 2.0, z0)
                     Dim RadiusAns As Double = SmithCirc.GetRadiusR(testR)
                     Assert.Equal(expectRadR, RadiusAns, Precision)
@@ -80,7 +80,7 @@ Namespace GeometryTests
         'Sub GetRadiusR_BadInput_Fails2(gridCenterX As Double, gridCenterY As Double, gridRadius As Double,
         '                               z0 As Double, testR As Double, expectRadR As Double)
         '    Try
-        '        ' Code that throws the exception
+        '        ' Code that throws the exception.
         '        Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridRadius * 2.0, z0)
         '        Dim RadiusAns As Double = SmithCirc.GetRadiusR(testR)
         '        Assert.Equal(expectRadR, RadiusAns, Precision)
@@ -146,7 +146,7 @@ Namespace GeometryTests
 
             Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
                 Sub()
-                    ' Code that throws the exception
+                    ' Code that throws the exception.
                     Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridRadius * 2.0, z0)
                     Dim RadiusAns As Double = SmithCirc.GetRadiusX(testX)
                     Assert.Equal(expectRad, RadiusAns, Precision)
@@ -168,7 +168,7 @@ Namespace GeometryTests
         'Sub GetRadiusX_BadInput_Fails2(gridCenterX As Double, gridCenterY As Double, gridRadius As Double,
         '                               z0 As Double, testX As Double, expectRad As Double)
         '    Try
-        '        ' Code that throws the exception
+        '        ' Code that throws the exception.
         '        Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridRadius * 2.0, z0)
         '        Dim RadiusAns As Double = SmithCirc.GetRadiusX(testX)
         '        Assert.Equal(expectRad, RadiusAns, Precision)
@@ -232,7 +232,7 @@ Namespace GeometryTests
 
             Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
                 Sub()
-                    ' Code that throws the exception
+                    ' Code that throws the exception.
                     Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridRadius * 2.0, z0)
                     Dim RadiusAns As Double = SmithCirc.GetRadiusG(testG)
                     Assert.Equal(expectRad, RadiusAns, Precision)
@@ -246,7 +246,7 @@ Namespace GeometryTests
         'Sub GetRadiusG_BadInput_Fails2(gridCenterX As Double, gridCenterY As Double, gridRadius As Double,
         '                               z0 As Double, testG As Double, expectRad As Double)
         '    Try
-        '        ' Code that throws the exception
+        '        ' Code that throws the exception.
         '        Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridRadius * 2.0, z0)
         '        Dim RadiusAns As Double = SmithCirc.GetRadiusG(testG)
         '        Assert.Equal(expectRad, RadiusAns, Precision)
@@ -310,7 +310,7 @@ Namespace GeometryTests
 
             Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
                 Sub()
-                    ' Code that throws the exception
+                    ' Code that throws the exception.
                     Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridRadius * 2, z0)
                     Dim RadiusAns As Double = SmithCirc.GetRadiusB(testB)
                     Assert.Equal(expectRad, RadiusAns, Precision)
@@ -333,7 +333,7 @@ Namespace GeometryTests
         'Sub GetRadiusB_BadInput_Fails2(gridCenterX As Double, gridCenterY As Double, gridRadius As Double,
         '                               z0 As Double, testB As Double, expectRad As Double)
         '    Try
-        '        ' Code that throws the exception
+        '        ' Code that throws the exception.
         '        Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridRadius * 2, z0)
         '        Dim RadiusAns As Double = SmithCirc.GetRadiusB(testB)
         '        Assert.Equal(expectRad, RadiusAns, Precision)
@@ -407,7 +407,7 @@ Namespace GeometryTests
 
             Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
             Sub()
-                ' Code that throws the exception
+                ' Code that throws the exception.
 
                 Dim GridX, GridY As Double
                 Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridRadius * 2.0, z0)
@@ -435,7 +435,7 @@ Namespace GeometryTests
         '    testR As Double, testX As Double, expectPlotX As Double, expectPlotY As Double)
 
         '    Try
-        '        ' Code that throws the exception
+        '        ' Code that throws the exception.
 
         '        Dim GridX, GridY As Double
         '        Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridRadius * 2.0, z0)
@@ -520,7 +520,7 @@ Namespace GeometryTests
             ' Try GetZFromPlot with point outside circle.
             Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
                 Sub()
-                    ' Code that throws the exception
+                    ' Code that throws the exception.
                     Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridRadius * 2, z0)
                     Dim ZAns As Impedance = SmithCirc.GetZFromPlot(plotX, plotY)
                     Assert.Equal(expectR, ZAns.Resistance, Precision)
@@ -541,7 +541,7 @@ Namespace GeometryTests
         '    plotX As Double, plotY As Double)
 
         '    Try
-        '        ' Code that throws the exception
+        '        ' Code that throws the exception.
         '        Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridRadius * 2, z0)
         '        Dim ZAns As Impedance = SmithCirc.GetZFromPlot(plotX, plotY)
         '        Assert.Equal(expectR, ZAns.Resistance, Precision)
@@ -614,7 +614,7 @@ Namespace GeometryTests
             ' Try GetYFromPlot with point outside circle.
             Dim Ex As Exception = Assert.Throws(Of ArgumentOutOfRangeException)(
             Sub()
-                ' Code that throws the exception
+                ' Code that throws the exception.
                 Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridRadius * 2.0, z0)
                 Dim YAns As Admittance = SmithCirc.GetYFromPlot(plotX, plotY)
                 Assert.Equal(expectG, YAns.Conductance, Precision)
@@ -634,7 +634,7 @@ Namespace GeometryTests
         '    plotX As Double, plotY As Double)
 
         '    Try
-        '        ' Code that throws the exception
+        '        ' Code that throws the exception.
         '        Dim SmithCirc As New SmithMainCircle(gridCenterX, gridCenterY, gridRadius * 2.0, z0)
         '        Dim YAns As Admittance = SmithCirc.GetYFromPlot(plotX, plotY)
         '        Assert.Equal(expectG, YAns.Conductance, Precision)

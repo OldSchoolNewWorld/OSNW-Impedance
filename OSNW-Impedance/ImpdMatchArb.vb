@@ -769,7 +769,7 @@ Partial Public Structure Impedance
         End If
 
         ' Check whether a match is needed.
-        If Impedance.EqualEnough(mainCirc.Z0, loadZ, sourceZ) Then
+        If Impedance.EqualEnough(mainCirc.Z0, sourceZ, loadZ) Then
             ' Not needed. Add the inaction to the array of transformations.
             Dim Trans As New Transformation With
                 {.Style = TransformationStyles.None}
