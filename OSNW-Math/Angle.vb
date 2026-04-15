@@ -468,7 +468,7 @@ Partial Public Module Math
                     OSNW.Math.DFLTEQUALITYTOLERANCE * OSNW.Math.TWOPId
 
                 ' Input checking.
-                If System.Double.Abs(angleInRadians) > OSNW.Math.RAD90d Then
+                If System.Double.Abs(angleInRadians) > OSNW.Math.RAD090d Then
 
                     Return System.Double.NaN
                 End If
@@ -476,17 +476,17 @@ Partial Public Module Math
                 ' Check special cases.
                 If OSNW.Math.EqualEnoughZero(angleInRadians, Tolerance) Then
                     Return 0.0
-                ElseIf OSNW.Math.EqualEnough(OSNW.Math.RAD90d, Tolerance,
+                ElseIf OSNW.Math.EqualEnough(OSNW.Math.RAD090d, Tolerance,
                     System.Math.Abs(angleInRadians)) Then
 
                     ' The tangent of 90 degrees is undefined, so the grade is
                     ' effectively infinite. Return the largest possible value.
                     If OSNW.Math.EqualEnough(
-                        OSNW.Math.RAD90d, 0.001, angleInRadians) Then
+                        OSNW.Math.RAD090d, 0.001, angleInRadians) Then
 
                         Return System.Double.PositiveInfinity
                     ElseIf OSNW.Math.EqualEnough(
-                        -OSNW.Math.RAD90d, 0.001, angleInRadians) Then
+                        -OSNW.Math.RAD090d, 0.001, angleInRadians) Then
 
                         Return System.Double.NegativeInfinity
                     End If

@@ -24,9 +24,9 @@ Imports OsnwEllipse2D = OSNW.Math.D2.Ellipse
 
 Namespace NumericTests
 
-#Region "EqualityTests"
+    Public Class EqualityTests
 
-    Public Class TestEqualEnoughAbsolute
+#Region "TestEqualEnoughAbsolute"
 
         <Theory>
         <InlineData(30.0, 0.002, 30.0 - 0.001)> ' Passes with Diff=-0.0010000000000012221
@@ -59,9 +59,9 @@ Namespace NumericTests
             Assert.False(Result)
         End Sub
 
-    End Class ' TestEqualEnoughAbsolute
+#End Region ' "TestEqualEnoughAbsolute"
 
-    Public Class TestEqualEnoughZero
+#Region "TestEqualEnoughZero"
 
         <Theory>
         <InlineData(0.001, 0.001)>
@@ -78,9 +78,9 @@ Namespace NumericTests
             Assert.False(OSNW.Math.EqualEnoughZero(value, tolerance))
         End Sub
 
-    End Class ' TestEqualEnoughZero
+#End Region ' "TestEqualEnoughZero"
 
-    Public Class TestEqualEnough
+#Region "TestEqualEnough"
 
         <Theory>
         <InlineData(1000.0, 0.001, 999)>
@@ -121,13 +121,11 @@ Namespace NumericTests
 
         End Sub
 
-    End Class ' TestEqualEnough
+#End Region ' "TestEqualEnough"
 
-#End Region ' "EqualityTests"
+    End Class ' EqualityTests
 
-#Region "GeometricMeanTests"
-
-    Public Class TestGeometricMean
+    Public Class GeometricMeanTests
 
         ' Test data found at:
         ' https://www.statisticshowto.com/geometric-mean/
@@ -153,13 +151,11 @@ Namespace NumericTests
             Assert.True(Double.IsNaN(M))
         End Sub
 
-    End Class
+    End Class ' GeometricMeanTests
 
-#End Region ' "GeometricMeanTests"
+    Public Class MinMaxTests
 
-#Region "MinMaxTests"
-
-    Public Class TestMaxValue
+#Region "TestMaxValue"
 
         <Fact>
         Sub MaxValue_InlineArray_Succeeds()
@@ -177,9 +173,9 @@ Namespace NumericTests
             Assert.True(OSNW.Math.MaxValue({1, 3, 4, -5, 2}).Equals(4))
         End Sub
 
-    End Class
+#End Region ' "TestMaxValue"
 
-    Public Class TestMaxMagnitude
+#Region "TestMaxMagnitude"
 
         <Fact>
         Sub MaxMagnitude_InlineArray_Succeeds()
@@ -202,9 +198,9 @@ Namespace NumericTests
             Assert.True(OSNW.Math.MaxMagnitude(Values).Equals(5))
         End Sub
 
-    End Class
+#End Region ' "TestMaxMagnitude"
 
-    Public Class TestMinValue
+#Region "TestMinValue"
 
         <Fact>
         Sub MinValue_InlineArray_Succeeds()
@@ -217,9 +213,9 @@ Namespace NumericTests
             Assert.True(OSNW.Math.MinValue(Values).Equals(-4))
         End Sub
 
-    End Class
+#End Region ' "TestMinValue"
 
-    Public Class TestMinMagnitude
+#Region "TestMinMagnitude"
 
         <Fact>
         Sub MinMagnitude_InlineArray_Succeeds()
@@ -242,11 +238,11 @@ Namespace NumericTests
             Assert.True(OSNW.Math.MinMagnitude({5, 3, 1, -4, 2}).Equals(1))
         End Sub
 
-    End Class
+#End Region ' "TestMinMagnitude"
 
-#End Region ' "MinMaxTests"
+    End Class ' MinMaxTests
 
-    Public Class TestRoundTo
+    Public Class RoundToTests
 
         <Theory>
         <InlineData(1.0, 17.0 / 2.0, 9.0, System.MidpointRounding.AwayFromZero)>
@@ -297,11 +293,11 @@ Namespace NumericTests
             Assert.True(False, "Did not fail.")
         End Sub
 
-    End Class ' TestRoundTo
+    End Class ' RoundToTests
 
 End Namespace ' NumericTests    
 
-Namespace GeometricTests
+    Namespace GeometricTests
 
     ' XXXXXXXXXX MOVE THIS TO A GROUP FOR A PARABOLA. XXXXXXXXXX
     Public Class TestTryQuadratic

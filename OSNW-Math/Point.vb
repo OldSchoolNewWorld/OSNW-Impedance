@@ -230,10 +230,10 @@ Partial Public Module Math
                     ' Same X. Vertical line; special handling.
                     If DeltaY > 0.0 Then
                         ' Above the reference.
-                        CurrentAngle = OSNW.Math.RAD90d
+                        CurrentAngle = OSNW.Math.RAD090d
                     ElseIf DeltaY < 0.0 Then
                         ' Below the reference.
-                        CurrentAngle = -OSNW.Math.RAD90d
+                        CurrentAngle = -OSNW.Math.RAD090d
                     Else
                         ' Same point.
                         Return New D2.Point(Me.X, Me.Y) ' Early exit.
@@ -254,7 +254,7 @@ Partial Public Module Math
 
                     ' Ensure that the result is in the [0, 2*PI] range.
                     If DeltaX < 0.0 Then
-                        CurrentAngle += OSNW.Math.RAD90d
+                        CurrentAngle += OSNW.Math.RAD090d
                     End If
 
                     RadLen = System.Math.Sqrt(

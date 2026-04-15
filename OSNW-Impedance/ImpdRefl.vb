@@ -565,10 +565,10 @@ Partial Public Structure Impedance
             ' Vertical would have zero as the adjacent side (below).
             If PlotY > MainCirc.CenterY Then
                 ' Above the resonance line.
-                Return OSNW.Math.RAD90d
+                Return OSNW.Math.RAD090d
             ElseIf PlotY < MainCirc.CenterY Then
                 ' Below the resonance line.
-                Return -OSNW.Math.RAD90d
+                Return -OSNW.Math.RAD090d
             Else
                 ' At the center.
                 ' MATCHED, SO NO REFLECTION. SHOULD THIS HAVE *ANY* VALUE? NOT
