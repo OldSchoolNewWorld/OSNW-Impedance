@@ -244,51 +244,6 @@ Namespace NumericTests
 
     End Class
 
-    Public Class TestTryQuadratic
-
-        ' TRY TO FIND MORE SETS OF VALUES THAT TRIGGER THE ALTERNATE APPROACH.
-        <Theory>
-        <InlineData(1.0, -3.0, 2.0, 1.0, 2.0, True)> ' Two real roots.
-        <InlineData(1.0 / 2, -3.0, 5.0 / 2, 1.0, 5.0, True)> ' Two real roots.
-        <InlineData(1.0, -1634.0, 2.0, 1.633_998_776E3, 0.001224, True)> ' Alternate.
-        Sub TryQuadratic_GoodInput_Succeeds(
-            ByVal a As System.Double, ByVal b As System.Double, ByVal c As System.Double,
-            ByRef expectX0 As System.Double, ByRef expectX1 As System.Double, expectSuccess As Boolean)
-
-            Dim X0, X1 As System.Double
-            Dim Success As Boolean = OSNW.Math.TryQuadratic(a, b, c, X0, X1)
-            Assert.Equal(expectSuccess, Success)
-            If Success Then
-                Assert.True((OSNW.Math.EqualEnough(X0, 0.001, expectX0) AndAlso
-                                 OSNW.Math.EqualEnough(X1, 0.001, expectX1)) OrElse
-                            (OSNW.Math.EqualEnough(X0, 0.001, expectX1) AndAlso
-                                 OSNW.Math.EqualEnough(X1, 0.001, expectX0)))
-                Dim ZeroTol As Double =
-                    OSNW.Math.DFLTEQUALITYTOLERANCE * OSNW.Math.MaxMagnitude({a, b, c})
-                Dim Y0 As Double = a * X0 ^ 2 + b * X0 + c
-                Dim Y1 As Double = a * X1 ^ 2 + b * X1 + c
-
-                '817 + 816.998_776_0 = 1.633_998_776e3
-                '817 - 816.998_776_0=1.224e-3
-
-                Assert.True(OSNW.Math.EqualEnoughZero(Y0, ZeroTol) AndAlso
-                            OSNW.Math.EqualEnoughZero(Y1, ZeroTol))
-            End If
-        End Sub
-
-        <Theory>
-        <InlineData(0.0, -3.0, 2.0)> ' a=Zero.
-        <InlineData(1.0, -3.0, 99.0)> ' Negative discriminant.
-        Sub TryQuadratic_BadInput_Fails(
-             ByVal a As System.Double, ByVal b As System.Double, ByVal c As System.Double)
-
-            Dim x0, x1 As System.Double
-            Dim Success As Boolean = OSNW.Math.TryQuadratic(a, b, c, x0, x1)
-            Assert.False(Success)
-        End Sub
-
-    End Class
-
 #End Region ' "MinMaxTests"
 
     Public Class TestRoundTo
@@ -346,8 +301,70 @@ Namespace NumericTests
 
 End Namespace ' NumericTests    
 
-' xxxxxxxxxx MOVE THE ITEMS BELOW TO ONE OR MORE OF THE GEOMETRIC TESTS xxxxxxxxxx
 Namespace GeometricTests
+
+    ' XXXXXXXXXX MOVE THIS TO A GROUP FOR A PARABOLA. XXXXXXXXXX
+    Public Class TestTryQuadratic
+
+        ' TRY TO FIND MORE SETS OF VALUES THAT TRIGGER THE ALTERNATE APPROACH.
+        <Theory>
+        <InlineData(1.0, -3.0, 2.0, 1.0, 2.0, True)> ' Two real roots.
+        <InlineData(1.0 / 2, -3.0, 5.0 / 2, 1.0, 5.0, True)> ' Two real roots.
+        <InlineData(1.0, -1634.0, 2.0, 1.633_998_776E3, 0.001224, True)> ' Alternate.
+        Sub TryQuadratic_GoodInput_Succeeds(
+            ByVal a As System.Double, ByVal b As System.Double, ByVal c As System.Double,
+            ByRef expectX0 As System.Double, ByRef expectX1 As System.Double, expectSuccess As Boolean)
+
+            Dim X0, X1 As System.Double
+            Dim Success As Boolean = OSNW.Math.TryQuadratic(a, b, c, X0, X1)
+            Assert.Equal(expectSuccess, Success)
+            If Success Then
+                Assert.True((OSNW.Math.EqualEnough(X0, 0.001, expectX0) AndAlso
+                                 OSNW.Math.EqualEnough(X1, 0.001, expectX1)) OrElse
+                            (OSNW.Math.EqualEnough(X0, 0.001, expectX1) AndAlso
+                                 OSNW.Math.EqualEnough(X1, 0.001, expectX0)))
+                Dim ZeroTol As Double =
+                    OSNW.Math.DFLTEQUALITYTOLERANCE * OSNW.Math.MaxMagnitude({a, b, c})
+                Dim Y0 As Double = a * X0 ^ 2 + b * X0 + c
+                Dim Y1 As Double = a * X1 ^ 2 + b * X1 + c
+
+                '817 + 816.998_776_0 = 1.633_998_776e3
+                '817 - 816.998_776_0=1.224e-3
+
+                Assert.True(OSNW.Math.EqualEnoughZero(Y0, ZeroTol) AndAlso
+                            OSNW.Math.EqualEnoughZero(Y1, ZeroTol))
+            End If
+        End Sub
+
+        <Theory>
+        <InlineData(0.0, -3.0, 2.0)> ' a=Zero.
+        <InlineData(1.0, -3.0, 99.0)> ' Negative discriminant.
+        Sub TryQuadratic_BadInput_Fails(
+             ByVal a As System.Double, ByVal b As System.Double, ByVal c As System.Double)
+
+            Dim x0, x1 As System.Double
+            Dim Success As Boolean = OSNW.Math.TryQuadratic(a, b, c, x0, x1)
+            Assert.False(Success)
+        End Sub
+
+    End Class ' TestTryQuadratic
+
+    ' XXXXXXXXXX MOVE THIS TO A GROUP FOR AN ELLIPSE. XXXXXXXXXX
+    Public Class TestNewEllipse
+
+        <Fact>
+        Public Sub NewEllipse_WorksOK()
+
+            ' NOT A GOOD TEST.
+            ' JUST A WAY TO WALK DATA THROUGH DEBUGGING.
+            Dim Ellipse As New OsnwEllipse2D(4, 2, 3, 6, 30 * Double.Pi / 180)
+
+        End Sub
+
+    End Class
+
+    ' XXXXXXXXXX MOVE THIS TO A GROUP FOR CROSSOVER TESTS? XXXXXXXXXX
+#Region "CrossoverTests"
 
     Public Class TestTryCircleLineIntersections
 
@@ -462,6 +479,9 @@ Namespace GeometricTests
 
     End Class ' TryCircleLineIntersectionsTests
 
+#End Region ' "CrossoverTests"
+
+    ' XXXXXXXXXX MOVE THIS TO A GROUP FOR CIRCLE TESTS? XXXXXXXXXX
     Public Class TestTryCircleCircleIntersections
 
         <Theory>
@@ -637,18 +657,5 @@ Namespace GeometricTests
         End Sub
 
     End Class ' TryCircleCircleIntersectionsTests
-
-    Public Class TestNewEllipse
-
-        <Fact>
-        Public Sub NewEllipse_WorksOK()
-
-            ' NOT A GOOD TEST.
-            ' JUST A WAY TO WALK DATA THROUGH DEBUGGING.
-            Dim Ellipse As New OsnwEllipse2D(4, 2, 3, 6, 30 * Double.Pi / 180)
-
-        End Sub
-
-    End Class
 
 End Namespace ' GeometricTests

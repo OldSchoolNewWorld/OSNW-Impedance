@@ -1,4 +1,8 @@
-﻿Option Explicit On
+﻿' TODO:
+' If eventually getting there, it seems like two ellipses might have four
+'   intersetcions, if both do not have the horizontal major axis.
+
+Option Explicit On
 Option Strict On
 Option Compare Binary
 Option Infer Off
