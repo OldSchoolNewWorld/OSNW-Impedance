@@ -262,9 +262,9 @@ Partial Public Structure Impedance
             TestPassed = False
         End If
         Dim NearlyZero As System.Double = Z0 * DFLTIMPDTOLERANCE0
-        If OSNW.Math.EqualEnoughZero(sourceZ.Reactance, NearlyZero) Then
+        If OSNW.Math.EqualEnoughZero(NearlyZero, sourceZ.Reactance) Then
             ' This wants a Z0 match.
-            If Not OSNW.Math.EqualEnoughZero(WorkZ.Reactance, NearlyZero) Then
+            If Not OSNW.Math.EqualEnoughZero(NearlyZero, WorkZ.Reactance) Then
                 TestPassed = False
             End If
         Else

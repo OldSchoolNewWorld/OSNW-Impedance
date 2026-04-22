@@ -8,10 +8,6 @@ Namespace GeometricTests
     Public Class PointTests
 
         Const Tolerance As Double = 0.001
-        'Const RAD030 As Double = PId / 6.0 ' 0.5236
-        'Const RAD120 As Double = 2.0 * PId / 3.0 ' 2.0494
-        'Const RAD240 As Double = 4.0 * PId / 3.0 ' 4.1888
-        'Const RAD315 As Double = 7.0 * PId / 4.0 ' 5.4978
         Const RAD390d As Double = 13.0 * PId / 6.0 ' 6.8067 (30+360)
         Const RAD480d As Double = 8.0 * PId / 3.0 ' 8.3776 (120+360)
         Const RAD600d As Double = 10.0 * PId / 3.0 ' 10.4720 (240+360)
@@ -31,7 +27,7 @@ Namespace GeometricTests
         <InlineData(-3.0, 4.0)>
         <InlineData(3.0, -4.0)>
         <InlineData(-3.0, -4.0)>
-        Public Sub New_NormalValues_Succeeds(ByVal x As Double, ByVal y As Double)
+        Public Sub New_GoodValues_Succeeds(ByVal x As Double, ByVal y As Double)
             Dim P As New OsnwPoint2D(x, y)
             Assert.Equal(x, P.X)
             Assert.Equal(y, P.Y)
@@ -40,7 +36,7 @@ Namespace GeometricTests
         <Theory>
         <InlineData(Double.NaN, 4.0)>
         <InlineData(3.0, Double.NaN)>
-        Public Sub New_NaN_Succeeds(ByVal x As Double, ByVal y As Double)
+        Public Sub New_NaN_AlsoSucceeds(ByVal x As Double, ByVal y As Double)
             Dim P As New OsnwPoint2D(x, y)
             Assert.Equal(x, P.X)
             Assert.Equal(y, P.Y)
@@ -51,7 +47,7 @@ Namespace GeometricTests
         <InlineData(Double.NegativeInfinity, 4.0)>
         <InlineData(3.0, Double.PositiveInfinity)>
         <InlineData(3.0, Double.NegativeInfinity)>
-        Public Sub New_Infinity_Succeeds(ByVal x As Double, ByVal y As Double)
+        Public Sub New_Infinity_AlsoSucceeds(ByVal x As Double, ByVal y As Double)
             Dim P As New OsnwPoint2D(x, y)
             Assert.Equal(x, P.X)
             Assert.Equal(y, P.Y)
@@ -162,7 +158,7 @@ Namespace GeometricTests
         <InlineData(3.0, 4.0, 2.0, 3.0, 5.0, 7.0)>
         <InlineData(3.0, 4.0, -2.0, 3.0, 1.0, 7.0)> ' -X.
         <InlineData(3.0, 4.0, 2.0, -3.0, 5.0, 1.0)> ' -Y.
-        Public Sub Shifted_NormalValues_Succeeds(movingX As Double, movingY As Double,
+        Public Sub Shifted_GoodValues_Succeeds(movingX As Double, movingY As Double,
             shiftX As System.Double, shiftY As System.Double, expectedX As Double, expectedY As Double)
 
             Dim Moving As New OsnwPoint2D(movingX, movingY)

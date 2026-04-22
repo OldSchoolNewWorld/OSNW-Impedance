@@ -24,11 +24,11 @@ Partial Public Module Math
             ''' Represents the X-coordinate of this <c>D2.Point</c>.
             ''' </summary>
             ''' <remarks>
-            ''' Assignment of <c>NaN</c> or an infinite value is allowed, but
-            ''' may cause unexpected results. Calling routines might need
-            ''' special handling where those values are valid. For example, the
-            ''' Y=mX+b formula would result in an infinite Y when a vertical
-            ''' line has an infinite slope.
+            ''' Assignment of <see cref="System.Double.NaN"/> or an infinite
+            ''' value is allowed, but may cause unexpected results. Calling
+            ''' routines might need special handling where those values are
+            ''' valid. For example, the Y=mX+b formula would result in an
+            ''' infinite Y when a vertical line has an infinite slope.
             ''' </remarks>
             Public Property X As System.Double
                 Get
@@ -55,10 +55,8 @@ Partial Public Module Math
             ''' <summary>
             ''' Represents the Y-coordinate of this <c>D2.Point</c>.
             ''' </summary>
-            ''' <remarks>
-            ''' See <see cref="X"/> regarding <c>NaN</c> or infinite values.
-            ''' <br/>
-            ''' </remarks>
+            ''' <remarks> See <see cref="X"/> regarding
+            ''' <see cref="System.Double.NaN"/> or infinite values.</remarks>
             Public Property Y As System.Double
                 Get
                     Return Me.m_Y
@@ -100,7 +98,8 @@ Partial Public Module Math
             ''' point.</param>
             ''' <returns>The distance between the two points.</returns>
             ''' <remarks>
-            ''' See <see cref="X"/> regarding <c>NaN</c> or infinite values.
+            ''' See <see cref="X"/> regarding <see cref="System.Double.NaN"/> or
+            ''' infinite values.
             ''' <br/>
             ''' <see cref="D2.point.Distance(System.Double, System.Double,
             ''' System.Double, System.Double)"/>,
@@ -124,14 +123,14 @@ Partial Public Module Math
             End Function ' Distance
 
             ''' <summary>
-            ''' Returns the distance between two <see cref="D2.Point"/>s in a 2D
-            ''' plane.
+            ''' Returns the distance between two <c>D2.Point</c>s in a 2D plane.
             ''' </summary>
             ''' <param name="point0">Specifies one point.</param>
             ''' <param name="point1">Specifies the other point.</param>
             ''' <returns>The distance between the two points.</returns>
             ''' <remarks>
-            ''' See <see cref="X"/> regarding <c>NaN</c> or infinite values.
+            ''' See <see cref="X"/> regarding <see cref="System.Double.NaN"/> or
+            ''' infinite values.
             ''' <br/>
             ''' <see cref="D2.point.Distance(System.Double, System.Double,
             ''' System.Double, System.Double)"/>,
@@ -158,9 +157,11 @@ Partial Public Module Math
             ''' <c>D2.Point</c> in the same 2D plane.
             ''' </summary>
             ''' <param name="other">Specifies a distant <c>D2.Point</c>.</param>
-            ''' <returns>The distance between the two points.</returns>
+            ''' <returns>The distance between the two
+            ''' <c>D2.Point</c>s.</returns>
             ''' <remarks>
-            ''' See <see cref="X"/> regarding <c>NaN</c> or infinite values.
+            ''' See <see cref="X"/> regarding <see cref="System.Double.NaN"/> or
+            ''' infinite values.
             ''' <br/>
             ''' <see cref="D2.point.Distance(System.Double, System.Double,
             ''' System.Double, System.Double)"/>,
@@ -187,8 +188,8 @@ Partial Public Module Math
 
             ''' <summary>
             ''' Returns a <see cref="D2.Point"/> that is the result of rotating
-            ''' the current instance, by the specified <paramref name="angle"/>
-            ''' in radians, relative to the specified center of rotation.
+            ''' the current instance, by the specified angle in radians,
+            ''' relative to the specified center of rotation.
             ''' </summary>
             ''' <param name="angle">Specifies the angle in radians (positive for
             ''' CCW; negative for CW) by which to rotate. </param>
@@ -198,8 +199,14 @@ Partial Public Module Math
             ''' of rotation.</param>
             ''' <returns>The result of rotating the current instance around the
             ''' specified center of rotation.</returns>
-            ''' <remarks> See <see cref="X"/> regarding <c>NaN</c> or infinite
-            ''' values.</remarks>
+            ''' <remarks>
+            ''' See <see cref="X"/> regarding <c>NaN</c> or infinite values.
+            ''' <br/>
+            ''' <c>D2.Point.RotatedAround(System.Double, System.Double,
+            ''' System.Double)</c> and <see cref="D2.Point.RotatedAround(
+            ''' System.Double, D2.Point)"/> are effectively the same thing. Use
+            ''' whichever version best suits the variables at hand.
+            ''' </remarks>
             Public Function RotatedAround(
                 ByVal angle As System.Double, ByVal centerX As System.Double,
                 ByVal centerY As System.Double) As D2.Point
@@ -305,8 +312,14 @@ Partial Public Module Math
             ''' <param name="center">Specifies the center of rotation.</param>
             ''' <returns>The result of rotating the current instance around the
             ''' specified center of rotation.</returns>
-            ''' <remarks> See <see cref="X"/> regarding <c>NaN</c> or infinite
-            ''' values.</remarks>
+            ''' <remarks>
+            ''' See <see cref="X"/> regarding <c>NaN</c> or infinite values.
+            ''' <br/>
+            ''' <see cref="D2.point.RotatedAround(System.Double, System.Double,
+            ''' System.Double)"/> and <c>D2.Point.RotatedAround(System.Double,
+            ''' D2.Point)</c> are effectively the same thing. Use whichever
+            ''' version best suits the variables at hand.
+            ''' </remarks>
             Public Function RotatedAround(ByVal angle As System.Double,
                 ByVal center As D2.Point) As D2.Point
 

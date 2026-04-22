@@ -316,8 +316,8 @@ Namespace TryParseStandardTests
                     If OSNW.Numerics.Impedance.TryParseStandard("-111111.125+555555.6875j", Nothing, Nothing, Impd) Then
                         Assert.Fail("Parsed despite bad entry.")
                     End If
-                    Assert.False(OSNW.Math.EqualEnoughZero(Impd.Resistance, -CultureTestVals.SAMERESISTANCE) AndAlso
-                             OSNW.Math.EqualEnoughZero(Impd.Reactance, CultureTestVals.SAMEREACTANCE))
+                    Assert.False(OSNW.Math.EqualEnoughZero(-CultureTestVals.SAMERESISTANCE, Impd.Resistance) AndAlso
+                                 OSNW.Math.EqualEnoughZero(CultureTestVals.SAMEREACTANCE, Impd.Reactance))
                 End Sub)
         End Sub
 
@@ -338,7 +338,7 @@ Namespace TryParseStandardTests
                 Assert.Fail("Parsed despite bad entry.")
             End If
 
-            Assert.True(OSNW.Math.EqualEnoughZero(Impd.Resistance, NearlyZero) OrElse
+            Assert.True(OSNW.Math.EqualEnoughZero(NearlyZero, Impd.Resistance) OrElse
                         Not (OSNW.Math.EqualEnough(Impd.Resistance, IMPDTOLERANCE, resistance) AndAlso
                              OSNW.Math.EqualEnough(Impd.Reactance, IMPDTOLERANCE, reactance)))
 

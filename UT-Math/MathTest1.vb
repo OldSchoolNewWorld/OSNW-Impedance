@@ -3,24 +3,27 @@ Imports OsnwCircle2D = OSNW.Math.D2.Circle
 Imports OsnwEllipse2D = OSNW.Math.D2.Ellipse
 
 ' DEV: For comprehensive tests of numeric values, consider:
-'   Infinity. Check expected result.
+'   Positive sweet spot. Only if/while needed for initial development of the
+'     basic functionality.
+'   Negative sweet spot. Only if/while needed for initial development of the
+'     basic functionality.
+'   Infinity. Omit when clearly above a maximum. Check expected result,
+'     particularly when division is involved.
 '   Just above positive limit. Fail when requiring <= limit.
-'   At positive limit. Pass/fail as appropriate for the < or <= requirement.
+'   At positive limit. Pass/fail as appropriate for a < or <= requirement.
 '   Just below positive limit. Pass when requiring < limit.
-'   Positive sweet spot. Only if needed for initial development of the basic
-'     functionality.
-'   Positive edge cases. Check expected result.
 '   Near-zero positive. Maybe Epsilon?
-'   Zero. Check expected result.
+'   Zero. Check expected result, particularly when division is involved.
 '   Near-zero negative. Maybe -Epsilon?
-'   Negative edge cases. Check expected result.
-'   Negative sweet spot. Only if needed for initial development of the basic
-'     functionality.
 '   Just above negative limit. Pass when requiring > or >= limit.
-'   At negative limit. Pass/fail as appropriate for the requirement.
+'   At negative limit. Pass/fail as appropriate for a > or >= requirement.
 '   Just below negative limit. Fail when requiring >= limit.
-'   Negative infinity. Check expected result.
+'   Negative infinity. Omit when negatives are prohibited or when clearly below a
+'     minimum. Omit when clearly above a maximum. Check expected result,
+'     particularly when division is involved
 '   NaN. Check expected result.
+'   Positive edge cases. Check expected result.
+'   Negative edge cases. Check expected result.
 
 Namespace NumericTests
 
@@ -29,12 +32,18 @@ Namespace NumericTests
 #Region "TestEqualEnoughAbsolute"
 
         <Theory>
-        <InlineData(30.0, 0.002, 30.0 - 0.001)> ' Passes with Diff=-0.0010000000000012221
-        <InlineData(30.0, 0.002, 30.0 + 0.001)> ' Passes with Diff=0.0010000000000012221
-        Public Sub EqualEnoughAbsolute_NormalValues_Succeeds(refVal As Double, tolerance As Double,
-                                                             otherVal As Double)
+        <InlineData(30.0, 0.0011, 30.0 - 0.001)> ' Passes with Diff=-0.0010000000000012221
+        <InlineData(30.0, 0.0011, 30.0 + 0.001)> ' Passes with Diff=0.0010000000000012221
+        Public Sub EqualEnoughAbsolute_GoodValues_Succeeds(refVal As Double, tolerance As Double,
+                                                           otherVal As Double)
+
+            ' 0.001 was not chosen as the tolerance to avoid the possibility of a false failure due to
+            ' the way that the values are represented in binary. The actual difference is slightly more
+            ' than 0.001, so the test would fail if the tolerance was exactly 0.001.
+
             Dim Result As System.Boolean = OSNW.Math.EqualEnoughAbsolute(refVal, tolerance, otherVal)
             Assert.True(Result)
+
         End Sub
 
         <Theory>
@@ -46,8 +55,8 @@ Namespace NumericTests
         End Sub
 
         <Theory>
-        <InlineData(30.0, 0.001, 30.0 - 0.002)>
-        <InlineData(30.0, 0.001, 30.0 + 0.002)>
+        <InlineData(30.0, 0.001, 30.0 - 0.0011)> ' Fails with Diff=-0.0011000000000009891
+        <InlineData(30.0, 0.001, 30.0 + 0.0011)> ' Fails with Diff=.0011000000000009891
         <InlineData(30.0, Double.NegativeInfinity, 30.0)>
         <InlineData(30.0, Double.NaN, 30.0)>
         <InlineData(Double.PositiveInfinity, 0.001, Double.PositiveInfinity)>
@@ -65,17 +74,17 @@ Namespace NumericTests
 
         <Theory>
         <InlineData(0.001, 0.001)>
-        <InlineData(-0.001, 0.001)>
-        Public Sub EqualEnoughZero_NormalValues_Succeeds(value As Double, tolerance As Double)
-            Assert.True(OSNW.Math.EqualEnoughZero(value, tolerance))
+        <InlineData(0.001, -0.001)>
+        Public Sub EqualEnoughZero_GoodValues_Succeeds(tolerance As Double, value As Double)
+            Assert.True(OSNW.Math.EqualEnoughZero(tolerance, value))
         End Sub
 
         <Theory>
-        <InlineData(Double.NaN, 0.001)>
-        <InlineData(-0.0011, 0.001)>
-        <InlineData(0.0011, 0.001)>
-        Public Sub EqualEnoughZero_BadValues_Fails(value As Double, tolerance As Double)
-            Assert.False(OSNW.Math.EqualEnoughZero(value, tolerance))
+        <InlineData(0.001, Double.NaN)>
+        <InlineData(0.001, -0.0011)>
+        <InlineData(0.001, 0.0011)>
+        Public Sub EqualEnoughZero_BadValues_Fails(tolerance As Double, value As Double)
+            Assert.False(OSNW.Math.EqualEnoughZero(tolerance, value))
         End Sub
 
 #End Region ' "TestEqualEnoughZero"
@@ -134,19 +143,28 @@ Namespace NumericTests
         <InlineData(3.3019, {2.0, 3.0, 6.0})>
         <InlineData(6.81, {4.0, 8.0, 3.0, 9.0, 17.0})>
         <InlineData(0.3528, {1 / 2.0, 1 / 4.0, 1 / 5.0, 9 / 72.0, 7 / 4.0})>
-        Sub GeometricMean_GoodValues_Succeeds(ByVal expect As Double,
-                                              ByVal ParamArray values As Double())
+        <InlineData(Double.PositiveInfinity, {2.0, Double.PositiveInfinity, 6.0})> ' Passes as infinity.
+        Sub GeometricMean_GoodValues_Succeeds(expect As Double, ParamArray values As Double())
+
+            ' The ParamArray must be the last parameter, so the expect parameter must be first. This is
+            ' a bit awkward, but it allows .NET to use the InlineData attribute to specify the test data in
+            ' a compact way.
+            'Error BC30192 End of parameter list expected. Cannot define parameters after a paramarray
+            'parameter.
 
             Dim Tolerance As Double = 0.001
             Dim M As Double = OSNW.Math.GeometricMean(values)
             Assert.True(OSNW.Math.EqualEnough(expect, Tolerance, M))
+
         End Sub
 
         <Theory>
         <InlineData({})> ' Empty.
         <InlineData({2.0, -3.0, 6.0})> ' Negative.
         <InlineData({2.0, 0.0, 6.0})> ' Zero.
-        Sub GeometricMean_BadValues_Fails(ByVal ParamArray values As Double())
+        <InlineData({2.0, Double.NegativeInfinity, 6.0})> ' Negative.
+        <InlineData({2.0, Double.NaN, 6.0})> ' NaN.
+        Sub GeometricMean_BadValues_Fails(ParamArray values As Double())
             Dim M As Double = OSNW.Math.GeometricMean(values)
             Assert.True(Double.IsNaN(M))
         End Sub
@@ -155,55 +173,11 @@ Namespace NumericTests
 
     Public Class MinMaxTests
 
-#Region "TestMaxValue"
-
-        <Fact>
-        Sub MaxValue_InlineArray_Succeeds()
-            Assert.True(OSNW.Math.MaxValue({1, 3, 4, 5, 2}).Equals(5))
-        End Sub
-
-        <Fact>
-        Sub MaxValue_PassedArray_Succeeds()
-            Dim Values As Double() = {1, 3, 4, 5, 2}
-            Assert.True(OSNW.Math.MaxValue(Values).Equals(5))
-        End Sub
-
-        <Fact>
-        Sub MaxValue_Negative_Succeeds()
-            Assert.True(OSNW.Math.MaxValue({1, 3, 4, -5, 2}).Equals(4))
-        End Sub
-
-#End Region ' "TestMaxValue"
-
-#Region "TestMaxMagnitude"
-
-        <Fact>
-        Sub MaxMagnitude_InlineArray_Succeeds()
-            Assert.True(OSNW.Math.MaxMagnitude({1, 3, 5, 4, 2}).Equals(5))
-        End Sub
-
-        <Fact>
-        Sub MaxMagnitude_Negative_Succeeds()
-            Assert.True(OSNW.Math.MaxMagnitude({1, 3, -5, 4, 2}).Equals(5))
-        End Sub
-
-        <Fact>
-        Sub MaxMagnitude_PassedArray_Succeeds()
-            Dim Val1 As Double = 1
-            Dim Val2 As Double = 3
-            Dim Val3 As Double = -5
-            Dim Val4 As Double = 4
-            Dim Val5 As Double = 2
-            Dim Values As Double() = {Val1, Val2, Val3, Val4, Val5}
-            Assert.True(OSNW.Math.MaxMagnitude(Values).Equals(5))
-        End Sub
-
-#End Region ' "TestMaxMagnitude"
-
 #Region "TestMinValue"
 
         <Fact>
         Sub MinValue_InlineArray_Succeeds()
+            Assert.True(OSNW.Math.MinValue({2, 3, 1, 4, 5}).Equals(1))
             Assert.True(OSNW.Math.MinValue({2, 3, 1, -4, 5}).Equals(-4))
         End Sub
 
@@ -213,12 +187,21 @@ Namespace NumericTests
             Assert.True(OSNW.Math.MinValue(Values).Equals(-4))
         End Sub
 
+        <Fact>
+        Sub MinValue_AbnormalValues_Succeeds()
+            Assert.True(OSNW.Math.MinValue({2, Double.PositiveInfinity, 1, -4, 5}).Equals(-4))
+            Assert.True(OSNW.Math.MinValue({2, Double.NegativeInfinity, 1, -4, 5}).Equals(
+                        Double.NegativeInfinity))
+            Assert.True(OSNW.Math.MinValue({2, Double.NaN, 1, -4, 5}).Equals(-4))
+        End Sub
+
 #End Region ' "TestMinValue"
 
 #Region "TestMinMagnitude"
 
         <Fact>
         Sub MinMagnitude_InlineArray_Succeeds()
+            Assert.True(OSNW.Math.MinMagnitude({2, 3, 1, 4, 5}).Equals(1))
             Assert.True(OSNW.Math.MinMagnitude({2, 3, 1, -4, 5}).Equals(1))
         End Sub
 
@@ -234,11 +217,67 @@ Namespace NumericTests
         End Sub
 
         <Fact>
-        Sub MinMagnitude_Negative_Succeeds()
-            Assert.True(OSNW.Math.MinMagnitude({5, 3, 1, -4, 2}).Equals(1))
+        Sub MinMagnitude_AbnormalValues_Succeeds()
+            Assert.True(OSNW.Math.MinMagnitude({2, Double.PositiveInfinity, 1, -4, 5}).Equals(1))
+            Assert.True(OSNW.Math.MinMagnitude({2, Double.NegativeInfinity, 1, -4, 5}).Equals(1))
+            Assert.True(OSNW.Math.MinMagnitude({2, Double.NaN, 1, -4, 5}).Equals(1))
         End Sub
 
 #End Region ' "TestMinMagnitude"
+
+#Region "TestMaxValue"
+
+        <Fact>
+        Sub MaxValue_InlineArray_Succeeds()
+            Assert.True(OSNW.Math.MaxValue({1, 3, 4, 5, 2}).Equals(5))
+            Assert.True(OSNW.Math.MaxValue({1, 3, 4, -5, 2}).Equals(4))
+        End Sub
+
+        <Fact>
+        Sub MaxValue_PassedArray_Succeeds()
+            Dim Values As Double() = {1, 3, 4, -5, 2}
+            Assert.True(OSNW.Math.MaxValue(Values).Equals(4))
+        End Sub
+
+        <Fact>
+        Sub MaxValue_AbnormalValues_Succeeds()
+            Assert.True(OSNW.Math.MaxValue({1, Double.PositiveInfinity, 4, -5, 2}).Equals(
+                        Double.PositiveInfinity))
+            Assert.True(OSNW.Math.MaxValue({1, Double.NegativeInfinity, 4, -5, 2}).Equals(4))
+            Assert.True(OSNW.Math.MaxValue({1, Double.NaN, 4, -5, 2}).Equals(4))
+        End Sub
+
+#End Region ' "TestMaxValue"
+
+#Region "TestMaxMagnitude"
+
+        <Fact>
+        Sub MaxMagnitude_InlineArray_Succeeds()
+            Assert.True(OSNW.Math.MaxMagnitude({1, 3, 5, 4, 2}).Equals(5))
+            Assert.True(OSNW.Math.MaxMagnitude({1, 3, -5, 4, 2}).Equals(5))
+        End Sub
+
+        <Fact>
+        Sub MaxMagnitude_PassedArray_Succeeds()
+            Dim Val1 As Double = 1
+            Dim Val2 As Double = 3
+            Dim Val3 As Double = -5
+            Dim Val4 As Double = 4
+            Dim Val5 As Double = 2
+            Dim Values As Double() = {Val1, Val2, Val3, Val4, Val5}
+            Assert.True(OSNW.Math.MaxMagnitude(Values).Equals(5))
+        End Sub
+
+        <Fact>
+        Sub MaxMagnitude_AbnormalValues_Succeeds()
+            Assert.True(OSNW.Math.MaxMagnitude({1, Double.PositiveInfinity, -5, 4, 2}).Equals(
+                        Double.PositiveInfinity))
+            Assert.True(OSNW.Math.MaxMagnitude({1, Double.NegativeInfinity, -5, 4, 2}).Equals(
+                        Double.PositiveInfinity))
+            Assert.True(OSNW.Math.MaxMagnitude({1, Double.NaN, -5, 4, 2}).Equals(5))
+        End Sub
+
+#End Region ' "TestMaxMagnitude"
 
     End Class ' MinMaxTests
 
@@ -257,40 +296,42 @@ Namespace NumericTests
         <InlineData(1.0, 7.5, 8.0, System.MidpointRounding.ToEven)>
         <InlineData(1.0, -8.5, -8.0, System.MidpointRounding.ToEven)>
         <InlineData(1.0, -7.5, -8.0, System.MidpointRounding.ToEven)>
-        <InlineData(5, 28.0, 30.0)> ' Default rounding.
-        <InlineData(5, 32.0, 30.0)> ' Default rounding.
-        Public Sub RoundTo_NormalValues_Succeeds(nearest As Double, value As Double, expected As Double,
-            Optional mode As System.MidpointRounding = OSNW.Math.OSNWDFLTMPR)
+        <InlineData(5.0, 28.0, 30.0)> ' Default rounding.
+        <InlineData(5.0, 32.0, 30.0)> ' Default rounding.
+        <InlineData(5.0, 0.0, 0.0)> ' Default rounding.
+        <InlineData(5.0, -28.0, -30.0)> ' Default rounding.
+        <InlineData(5.0, -32.0, -30.0)> ' Default rounding.
+        <InlineData(0.05, 11.02, 11.0)> ' Default rounding.
+        <InlineData(0.05, 11.03, 11.05)> ' Default rounding.
+        <InlineData(0.05, 11.07, 11.05)> ' Default rounding.
+        <InlineData(0.05, 11.08, 11.1)> ' Default rounding.
+        <InlineData(0.05, -11.03, -11.05)> ' Default rounding.
+        <InlineData(0.05, -11.07, -11.05)> ' Default rounding.
+        Public Sub RoundTo_GoodValues_Succeeds(nearest As Double, value As Double, expected As Double,
+            Optional rounding As System.MidpointRounding = OSNW.Math.OSNWDFLTMPR)
 
-            Dim Result As System.Double = OSNW.Math.RoundTo(nearest, value, mode)
-            Assert.True(OSNW.Math.EqualEnough(expected, 0.001, Result))
+            Dim Result As System.Double = OSNW.Math.RoundTo(nearest, value, rounding)
+            If value.Equals(0.0) Then
+                Assert.True(OSNW.Math.EqualEnoughZero(0.000000000001, Result))
+            Else
+                Assert.True(OSNW.Math.EqualEnough(expected, 0.001, Result))
+            End If
         End Sub
 
         <Theory>
-        <InlineData(Double.PositiveInfinity, 0.001, Double.PositiveInfinity)>
-        <InlineData(Double.NaN, 0.001, Double.NaN)>
-        Public Sub RoundTo_AbnormalValues_Fails(nearest As Double, value As Double, expected As Double,
-            Optional mode As System.MidpointRounding = OSNW.Math.OSNWDFLTMPR)
-
-            Dim Result As System.Double = OSNW.Math.RoundTo(nearest, value, mode)
-            Assert.False(OSNW.Math.EqualEnough(expected, 0.001, Result))
-        End Sub
-
-        <Theory>
-        <InlineData(Double.NegativeInfinity, Double.NegativeInfinity)>
-        <InlineData(0, 32.0)> ' Zero for nearest.
-        <InlineData(-5, -32.0)> ' Negative for nearest.
+        <InlineData(0.0, 28.0)>
+        <InlineData(-5.0, 28.0)>
+        <InlineData(Double.PositiveInfinity, 28.0)>
+        <InlineData(Double.NaN, 28.0)>
+        <InlineData(Double.NegativeInfinity, 28.0)>
+        <InlineData(5.0, Double.PositiveInfinity)>
+        <InlineData(5.0, Double.NegativeInfinity)>
+        <InlineData(5.0, Double.NaN)>
         Public Sub RoundTo_BadValues_Fails(nearest As Double, value As Double,
-            Optional mode As System.MidpointRounding = OSNW.Math.OSNWDFLTMPR)
+            Optional rounding As System.MidpointRounding = OSNW.Math.OSNWDFLTMPR)
 
-            Try
-                ' Code that throws the exception.
-                Dim Result As System.Double = OSNW.Math.RoundTo(nearest, value, mode)
-            Catch ex As Exception
-                Assert.True(True)
-                Exit Sub
-            End Try
-            Assert.True(False, "Did not fail.")
+            Dim Result As System.Double = OSNW.Math.RoundTo(nearest, value, rounding)
+            Assert.True(Double.IsNaN(Result))
         End Sub
 
     End Class ' RoundToTests
@@ -327,8 +368,8 @@ End Namespace ' NumericTests
                 '817 + 816.998_776_0 = 1.633_998_776e3
                 '817 - 816.998_776_0=1.224e-3
 
-                Assert.True(OSNW.Math.EqualEnoughZero(Y0, ZeroTol) AndAlso
-                            OSNW.Math.EqualEnoughZero(Y1, ZeroTol))
+                Assert.True(OSNW.Math.EqualEnoughZero(ZeroTol, Y0) AndAlso
+                            OSNW.Math.EqualEnoughZero(ZeroTol, Y1))
             End If
         End Sub
 

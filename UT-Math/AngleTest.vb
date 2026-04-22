@@ -16,14 +16,14 @@ Namespace GeometricTests
         <InlineData(0.0, 0.0)>
         <InlineData(-RAD045d, -100.0)>
         <InlineData(-RAD090d, Double.NegativeInfinity)>
-        Public Sub AngleToGrade_NormalValues_Succeeds(angleInRadians As Double, expected As Double)
+        Public Sub AngleToGrade_GoodValues_Succeeds(angleInRadians As Double, expected As Double)
 
             Const ZeroTolerance As Double = OSNW.Math.DFLTEQUALITYTOLERANCE * OSNW.Math.TWOPId
             Const ResultTolerance As Double = OSNW.Math.DFLTEQUALITYTOLERANCE * OSNW.Math.TWOPId
 
             Dim Result As Double = D2.Angle.AngleToGrade(angleInRadians)
 
-            If EqualEnoughZero(angleInRadians, ZeroTolerance) Then
+            If EqualEnoughZero(ZeroTolerance, angleInRadians) Then
                 ' Force it to be exactly zero.
                 Assert.Equal(0.0, Result)
             Else
@@ -57,7 +57,7 @@ Namespace GeometricTests
         <InlineData(0.0, 0.0)>
         <InlineData(-100.0, -RAD045d)>
         <InlineData(Double.NegativeInfinity, -RAD090d)>
-        Public Sub GradeToAngle_NormalValues_Succeeds(grade As Double, expected As Double)
+        Public Sub GradeToAngle_GoodValues_Succeeds(grade As Double, expected As Double)
             Const Tolerance As Double = OSNW.Math.DFLTEQUALITYTOLERANCE * OSNW.Math.TWOPId
             Dim Result As Double = D2.Angle.GradeToAngle(grade)
             Assert.Equal(expected, Result, Tolerance)
@@ -67,7 +67,7 @@ Namespace GeometricTests
         <InlineData(0.0, 0.0)>
         <InlineData(Double.PositiveInfinity, RAD090d)>
         <InlineData(Double.NegativeInfinity, -RAD090d)>
-        Public Sub GradeToAngle_AbormalValues_Succeeds(grade As Double, expected As Double)
+        Public Sub GradeToAngle_AbormalValues_AlsoSucceeds(grade As Double, expected As Double)
             Const Tolerance As Double = OSNW.Math.DFLTEQUALITYTOLERANCE * OSNW.Math.TWOPId
             Dim Result As Double = D2.Angle.GradeToAngle(grade)
             Assert.Equal(expected, Result, Tolerance)
@@ -93,12 +93,6 @@ Namespace GeometricTests
             Assert.Equal(OsnwAngle2D.DFLTDIMENSION, A.Dimension)
             Assert.Equal(OsnwAngle2D.DFLTSTYLE, A.Style)
 
-            ''' 
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' GO CHECK THAT THE IMPLEMENTATION MATCHES THIS, AND THAT THE TESTING COVERS ALL OF THESE CASES,
-            ''' INCLUDING THE DEFAULT ANGLE CASE.
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' 
         End Sub
 
         <Theory>
@@ -109,8 +103,7 @@ Namespace GeometricTests
         <InlineData(400.0 * PId / 4.0, OsnwAngDim2D.Gradian, OsnwAngNormStyle.Full)>
         <InlineData(1000.0 * PId / 4.0, OsnwAngDim2D.Milliradian, OsnwAngNormStyle.Full)>
         <InlineData(PId / 4.0, OsnwAngDim2D.Radian, OsnwAngNormStyle.Half)>
-        Public Sub New_NormalValues_Succeeds(m As Double, d As OsnwAngDim2D,
-                                             s As OsnwAngNormStyle)
+        Public Sub New_GoodValues_Succeeds(m As Double, d As OsnwAngDim2D, s As OsnwAngNormStyle)
 
             Const Tolerance As Double = 0.001
 
@@ -120,12 +113,6 @@ Namespace GeometricTests
             Assert.Equal(d, A.Dimension)
             Assert.Equal(s, A.Style)
 
-            ''' 
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' GO CHECK THAT THE IMPLEMENTATION MATCHES THIS, AND THAT THE TESTING COVERS ALL OF THESE CASES,
-            ''' INCLUDING THE DEFAULT ANGLE CASE.
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' 
         End Sub
 
         <Fact>
@@ -137,12 +124,6 @@ Namespace GeometricTests
             Assert.Equal(OsnwAngle2D.DFLTDIMENSION, A.Dimension)
             Assert.Equal(OsnwAngle2D.DFLTSTYLE, A.Style)
 
-            ''' 
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' GO CHECK THAT THE IMPLEMENTATION MATCHES THIS, AND THAT THE TESTING COVERS ALL OF THESE CASES,
-            ''' INCLUDING THE DEFAULT ANGLE CASE.
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' 
         End Sub
 
         <Theory>
@@ -157,12 +138,6 @@ Namespace GeometricTests
             Assert.Equal(OsnwAngle2D.DFLTDIMENSION, A.Dimension)
             Assert.Equal(OsnwAngle2D.DFLTSTYLE, A.Style)
 
-            ''' 
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' GO CHECK THAT THE IMPLEMENTATION MATCHES THIS, AND THAT THE TESTING COVERS ALL OF THESE CASES,
-            ''' INCLUDING THE DEFAULT ANGLE CASE.
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' 
         End Sub
 
         <Theory>
@@ -182,12 +157,6 @@ Namespace GeometricTests
             Assert.Equal(d, A.Dimension)
             Assert.Equal(s, A.Style)
 
-            ''' 
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' GO CHECK THAT THE IMPLEMENTATION MATCHES THIS, AND THAT THE TESTING COVERS ALL OF THESE CASES,
-            ''' INCLUDING THE DEFAULT ANGLE CASE.
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' 
         End Sub
 
 #End Region ' "TestNewAngle"
@@ -202,7 +171,8 @@ Namespace GeometricTests
         <InlineData(1.0 / 8.0, D2.RADIANPERREVOLUTION, D2.DEGREEPERRADIAN, 45.0)>
         <InlineData(200.0, D2.RADIANPERGRADIAN, D2.REVOLUTIONPERRADIAN, 1.0 / 2.0)>
         <InlineData(1.0 / 2.0, D2.RADIANPERREVOLUTION, D2.GRADIANPERRADIAN, 200.0)>
-        Public Sub ScaleDimensionFactors_NormalValues_Succeeds(
+        <InlineData(-45.0, D2.RADIANPERDEGREE, D2.REVOLUTIONPERRADIAN, -1.0 / 8.0)>
+        Public Sub ScaleDimensionFactors_GoodValues_Succeeds(
             InM As Double, radiansPerUnitIn As Double, unitsOutPerRadian As Double, expectedM As Double)
 
             Const Tolerance As Double = 0.001
@@ -215,13 +185,6 @@ Namespace GeometricTests
                     Double.PositiveInfinity)>
         <InlineData(Double.NegativeInfinity, D2.RADIANPERDEGREE, D2.REVOLUTIONPERRADIAN,
                     Double.NegativeInfinity)>
-        <InlineData(45.0, Double.PositiveInfinity, D2.REVOLUTIONPERRADIAN, Double.PositiveInfinity)>
-        <InlineData(45.0, Double.NegativeInfinity, D2.REVOLUTIONPERRADIAN, Double.NegativeInfinity)>
-        <InlineData(45.0, D2.RADIANPERDEGREE, Double.PositiveInfinity, Double.PositiveInfinity)>
-        <InlineData(45.0, D2.RADIANPERDEGREE, Double.NegativeInfinity, Double.NegativeInfinity)>
-        <InlineData(-45.0, D2.RADIANPERDEGREE, D2.REVOLUTIONPERRADIAN, -1.0 / 8.0)>
-        <InlineData(45.0, -D2.RADIANPERDEGREE, D2.REVOLUTIONPERRADIAN, -1.0 / 8.0)>
-        <InlineData(45.0, D2.RADIANPERDEGREE, -D2.REVOLUTIONPERRADIAN, -1.0 / 8.0)>
         Public Sub ScaleDimensionFactors_AbnormalValues_AlsoSucceeds(
             InM As Double, radiansPerUnitIn As Double, unitsOutPerRadian As Double, expectedM As Double)
 
@@ -234,8 +197,14 @@ Namespace GeometricTests
         <InlineData(Double.NaN, D2.RADIANPERDEGREE, D2.REVOLUTIONPERRADIAN)>
         <InlineData(45.0, Double.NaN, D2.REVOLUTIONPERRADIAN)>
         <InlineData(45.0, D2.RADIANPERDEGREE, Double.NaN)>
-        Public Sub ScaleDimensionFactors_AbnormalValues_Fails(InM As Double, radiansPerUnitIn As Double,
-                                                              unitsOutPerRadian As Double)
+        <InlineData(45.0, Double.PositiveInfinity, D2.REVOLUTIONPERRADIAN)>
+        <InlineData(45.0, Double.NegativeInfinity, D2.REVOLUTIONPERRADIAN)>
+        <InlineData(45.0, D2.RADIANPERDEGREE, Double.PositiveInfinity)>
+        <InlineData(45.0, D2.RADIANPERDEGREE, Double.NegativeInfinity)>
+        <InlineData(45.0, -D2.RADIANPERDEGREE, D2.REVOLUTIONPERRADIAN)>
+        <InlineData(45.0, D2.RADIANPERDEGREE, -D2.REVOLUTIONPERRADIAN)>
+        Public Sub ScaleDimensionFactors_BadValues_Fails(InM As Double, radiansPerUnitIn As Double,
+                                                         unitsOutPerRadian As Double)
 
             Dim Scaled As Double = D2.Angle.ScaleDimension(InM, radiansPerUnitIn, unitsOutPerRadian)
             Assert.True(Double.IsNaN(Scaled))
@@ -247,36 +216,30 @@ Namespace GeometricTests
         <InlineData(45.0, OsnwAngDim2D.Degree, OsnwAngDim2D.Radian, PId / 4.0)> ' Radians out.
         <InlineData(45.0, OsnwAngDim2D.Degree, OsnwAngDim2D.Revolution, 1.0 / 8.0)>
         <InlineData(1.0 / 8.0, OsnwAngDim2D.Revolution, OsnwAngDim2D.Degree, 45.0)>
+        <InlineData(-1.0 / 8.0, OsnwAngDim2D.Revolution, OsnwAngDim2D.Degree, -45.0)>
+        <InlineData(Double.PositiveInfinity, OsnwAngDim2D.Revolution, OsnwAngDim2D.Degree,
+                    Double.PositiveInfinity)>
+        <InlineData(Double.NegativeInfinity, OsnwAngDim2D.Revolution, OsnwAngDim2D.Degree,
+                    Double.NegativeInfinity)>
         Public Sub ScaleDimensionValues_Defined_Succeeds(InM As Double, InD As OsnwAngDim2D,
             OutD As OsnwAngDim2D, expectedM As Double)
 
             Const Tolerance As Double = 0.001
             Dim Scaled As Double = D2.Angle.ScaleDimension(InM, InD, OutD)
             Assert.Equal(expectedM, Scaled, Tolerance)
-            ''' 
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' GO CHECK THAT THE IMPLEMENTATION MATCHES THIS, AND THAT THE TESTING COVERS ALL OF THESE CASES,
-            ''' INCLUDING THE DEFAULT ANGLE CASE.
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' 
         End Sub
 
         <Theory>
         <InlineData(PId, OsnwAngDim2D.Radian - 1, OsnwAngDim2D.Milliradian)>
         <InlineData(PId, OsnwAngDim2D.Radian, OsnwAngDim2D.Milliradian + 1)>
+        <InlineData(PId, OsnwAngDim2D.Radian - 1, OsnwAngDim2D.Radian - 1)>
+        <InlineData(PId, OsnwAngDim2D.Milliradian + 1, OsnwAngDim2D.Milliradian + 1)>
         Public Sub ScaleDimensionValues_Undefined_Fails(InM As Double, InD As OsnwAngDim2D,
                                                         OutD As OsnwAngDim2D)
 
             Dim Scaled As Double = D2.Angle.ScaleDimension(InM, InD, OutD)
             Assert.True(Double.IsNaN(Scaled))
-            ''' 
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' GO CHECK THAT THE IMPLEMENTATION MATCHES THIS, AND THAT THE TESTING COVERS ALL OF THESE CASES,
-            ''' INCLUDING THE DEFAULT ANGLE CASE.
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' 
         End Sub
-        ' xxxxxxxxxxxxxxxxxx CHECKING ABOVE HERE xxxxxxxxxxxxxxxxxx
 
         <Theory>
         <InlineData(90.0, OsnwAngDim2D.Degree, OsnwAngNormStyle.Full,
@@ -299,12 +262,6 @@ Namespace GeometricTests
             Assert.Equal(newD, OutA.Dimension)
             Assert.Equal(sIn, OutA.Style)
 
-            ''' 
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' GO CHECK THAT THE IMPLEMENTATION MATCHES THIS, AND THAT THE TESTING COVERS ALL OF THESE CASES,
-            ''' INCLUDING THE DEFAULT ANGLE CASE.
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' 
         End Sub
 
         <Theory>
@@ -318,12 +275,6 @@ Namespace GeometricTests
             Dim InA As New D2.Angle(mIn, dIn, sIn)
             Dim Scaled As D2.Angle = InA.ScaleDimension(newD)
             Assert.True(Double.IsNaN(Scaled.Magnitude))
-            ''' 
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' GO CHECK THAT THE IMPLEMENTATION MATCHES THIS, AND THAT THE TESTING COVERS ALL OF THESE CASES,
-            ''' INCLUDING THE DEFAULT ANGLE CASE.
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' 
         End Sub
 
 #End Region ' "TestScaleDimension"
@@ -344,9 +295,6 @@ Namespace GeometricTests
             Assert.False(D2.Angle.IsDefinedDimension(d))
         End Sub
 
-        ''' <summary>
-        ''' Tests Public Function HasDefinedDimension() As System.Boolean
-        ''' </summary>
         <Theory>
         <InlineData(OsnwAngDim2D.Radian)>
         <InlineData(OsnwAngDim2D.Milliradian)>
@@ -355,9 +303,6 @@ Namespace GeometricTests
             Assert.True(A.HasDefinedDimension)
         End Sub
 
-        ''' <summary>
-        ''' Tests Public Function HasDefinedDimension() As System.Boolean
-        ''' </summary>
         <Theory>
         <InlineData(OsnwAngDim2D.Radian - 1)>
         <InlineData(OsnwAngDim2D.Milliradian + 1)>
@@ -410,10 +355,6 @@ Namespace GeometricTests
 
 #Region "TestDimensionSize"
 
-        ''' <summary>
-        ''' Tests Public Shared Function GetFullDimensionSize(
-        '''   ByVal dimension As D2.Angle.AngularDimension) As System.Double
-        ''' </summary>
         <Theory>
         <InlineData(OsnwAngDim2D.Radian, TWOPId)>
         <InlineData(OsnwAngDim2D.Milliradian, 1000.0 * TWOPId)>
@@ -423,35 +364,16 @@ Namespace GeometricTests
             Const Tolerance As Double = 0.001
             Dim Size As Double = OsnwAngle2D.GetFullDimensionSize(d)
             Assert.Equal(expectedSize, Size, Tolerance)
-            ''' 
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' GO CHECK THAT THE IMPLEMENTATION MATCHES THIS, AND THAT THE TESTING COVERS ALL OF THESE CASES,
-            ''' INCLUDING THE DEFAULT ANGLE CASE.
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' 
         End Sub
 
-        ''' <summary>
-        ''' Tests Public Shared Function GetFullDimensionSize(
-        '''   ByVal dimension As D2.Angle.AngularDimension) As System.Double
-        ''' </summary>
         <Theory>
         <InlineData(OsnwAngDim2D.Radian - 1)>
         <InlineData(OsnwAngDim2D.Milliradian + 1)>
         Public Sub GetFullDimensionSizeDimen_Undefined_Fails(d As D2.Angle.AngularDimension)
             Dim Size As Double = OsnwAngle2D.GetFullDimensionSize(d)
-            Assert.Equal(Double.NaN, Size)
-            ''' 
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' GO CHECK THAT THE IMPLEMENTATION MATCHES THIS, AND THAT THE TESTING COVERS ALL OF THESE CASES,
-            ''' INCLUDING THE DEFAULT ANGLE CASE.
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' 
+            Assert.True(Double.IsNaN(Size))
         End Sub
 
-        ''' <summary>
-        ''' Tests Public Function GetFullDimensionSize() As System.Double
-        ''' </summary>
         <Theory>
         <InlineData(OsnwAngDim2D.Radian, TWOPId)>
         <InlineData(OsnwAngDim2D.Milliradian, 1000.0 * TWOPId)>
@@ -459,39 +381,20 @@ Namespace GeometricTests
             d As D2.Angle.AngularDimension, expectedSize As Double)
 
             Const Tolerance As Double = 0.001
-            Dim A As New D2.Angle(1, d, OsnwAngNormStyle.Full)
+            Dim A As New D2.Angle(1.0, d, OsnwAngNormStyle.Full)
             Dim Size As Double = A.GetFullDimensionSize()
             Assert.Equal(expectedSize, Size, Tolerance)
-            ''' 
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' GO CHECK THAT THE IMPLEMENTATION MATCHES THIS, AND THAT THE TESTING COVERS ALL OF THESE CASES,
-            ''' INCLUDING THE DEFAULT ANGLE CASE.
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' 
         End Sub
 
-        ''' <summary>
-        ''' Tests Public Function GetFullDimensionSize() As System.Double
-        ''' </summary>
         <Theory>
         <InlineData(OsnwAngDim2D.Radian - 1)>
         <InlineData(OsnwAngDim2D.Milliradian + 1)>
         Public Sub GetFullDimensionSizeObj_Undefined_Fails(d As D2.Angle.AngularDimension)
-            Dim A As New D2.Angle(1, d, OsnwAngNormStyle.Full)
+            Dim A As New D2.Angle(1.0, d, OsnwAngNormStyle.Full)
             Dim Size As Double = A.GetFullDimensionSize()
             Assert.True(Double.IsNaN(Size))
-            ''' 
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' GO CHECK THAT THE IMPLEMENTATION MATCHES THIS, AND THAT THE TESTING COVERS ALL OF THESE CASES,
-            ''' INCLUDING THE DEFAULT ANGLE CASE.
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' 
         End Sub
 
-        ''' <summary>
-        ''' Tests Public Shared Function GetHalfDimensionSize(
-        '''   ByVal dimension As D2.Angle.AngularDimension) As System.Double
-        ''' </summary>
         <Theory>
         <InlineData(OsnwAngDim2D.Radian, PId)>
         <InlineData(OsnwAngDim2D.Milliradian, 1000.0 * PId)>
@@ -501,70 +404,35 @@ Namespace GeometricTests
             Const Tolerance As Double = 0.001
             Dim Size As Double = OsnwAngle2D.GetHalfDimensionSize(d)
             Assert.Equal(expectedSize, Size, Tolerance)
-            ''' 
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' GO CHECK THAT THE IMPLEMENTATION MATCHES THIS, AND THAT THE TESTING COVERS ALL OF THESE CASES,
-            ''' INCLUDING THE DEFAULT ANGLE CASE.
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' 
         End Sub
 
-        ''' <summary>
-        ''' Tests Public Shared Function GetHalfDimensionSize(
-        '''   ByVal dimension As D2.Angle.AngularDimension) As System.Double
-        ''' </summary>
         <Theory>
         <InlineData(OsnwAngDim2D.Radian - 1)>
         <InlineData(OsnwAngDim2D.Milliradian + 1)>
         Public Sub GetHalfDimensionSizeDimen_Undefined_Fails(d As D2.Angle.AngularDimension)
-
             Dim Size As Double = OsnwAngle2D.GetHalfDimensionSize(d)
-            Assert.Equal(Double.NaN, Size)
-            ''' 
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' GO CHECK THAT THE IMPLEMENTATION MATCHES THIS, AND THAT THE TESTING COVERS ALL OF THESE CASES,
-            ''' INCLUDING THE DEFAULT ANGLE CASE.
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' 
+            Assert.True(Double.IsNaN(Size))
         End Sub
 
-        ''' <summary>
-        ''' Tests Public Function GetHalfDimensionSize() As System.Double
-        ''' </summary>
         <Theory>
         <InlineData(OsnwAngDim2D.Radian, PId)>
         <InlineData(OsnwAngDim2D.Milliradian, 1000.0 * PId)>
         Public Sub GetHalfDimensionSizeObj_Defined_Succeeds(d As D2.Angle.AngularDimension,
-                                                          expectedSize As Double)
+                                                            expectedSize As Double)
 
             Const Tolerance As Double = 0.001
-            Dim A As New D2.Angle(1, d, OsnwAngNormStyle.Half)
+            Dim A As New D2.Angle(1.0, d, OsnwAngNormStyle.Half)
             Dim S As Double = A.GetHalfDimensionSize()
             Assert.Equal(expectedSize, S, Tolerance)
-            ''' 
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' GO CHECK THAT THE IMPLEMENTATION MATCHES THIS, AND THAT THE TESTING COVERS ALL OF THESE CASES,
-            ''' INCLUDING THE DEFAULT ANGLE CASE.
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' 
         End Sub
 
-        ''' <summary>
-        ''' Tests Public Function GetHalfDimensionSize() As System.Double
-        ''' </summary>
         <Theory>
         <InlineData(OsnwAngDim2D.Radian - 1)>
         <InlineData(OsnwAngDim2D.Milliradian + 1)>
         Public Sub GetHalfDimensionSizeObj_Undefined_Fails(d As D2.Angle.AngularDimension)
-            Dim A As New D2.Angle(1, d, OsnwAngNormStyle.Half)
+            Dim A As New D2.Angle(1.0, d, OsnwAngNormStyle.Half)
             Dim Size As Double = A.GetHalfDimensionSize()
-            Assert.Equal(Double.NaN, Size)
-            ''' 
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' GO CHECK THAT THE IMPLEMENTATION MATCHES THIS, AND THAT THE TESTING COVERS ALL OF THESE CASES,
-            ''' INCLUDING THE DEFAULT ANGLE CASE.
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' 
+            Assert.True(Double.IsNaN(Size))
         End Sub
 
 #End Region ' "TestDimensionSize"
@@ -581,12 +449,6 @@ Namespace GeometricTests
         Public Sub IsNormalized_Normal_Succeeds(m As Double, d As OsnwAngDim2D, s As OsnwAngNormStyle)
             Dim A As New D2.Angle(m, d, s)
             Assert.True(A.IsNormalized())
-            ''' 
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' GO CHECK THAT THE IMPLEMENTATION MATCHES THIS, AND THAT THE TESTING COVERS ALL OF THESE CASES,
-            ''' INCLUDING THE DEFAULT ANGLE CASE.
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' 
         End Sub
 
         <Theory>
@@ -603,12 +465,6 @@ Namespace GeometricTests
         Public Sub IsNormalized_Abnormal_Fails(m As Double, d As OsnwAngDim2D, s As OsnwAngNormStyle)
             Dim A As New D2.Angle(m, d, s)
             Assert.False(A.IsNormalized())
-            ''' 
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' GO CHECK THAT THE IMPLEMENTATION MATCHES THIS, AND THAT THE TESTING COVERS ALL OF THESE CASES,
-            ''' INCLUDING THE DEFAULT ANGLE CASE.
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' 
         End Sub
 
 #End Region ' "TestIsNormalized"
@@ -663,23 +519,14 @@ Namespace GeometricTests
 
             Const Tolerance As Double = 0.001
             Dim A As New D2.Angle(m, d, s)
-
             Dim NormM As Double = A.GetNormalizedMagnitude()
-
             Assert.Equal(expectedM, NormM, Tolerance)
-
-            ''' 
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' GO CHECK THAT THE IMPLEMENTATION MATCHES THIS, AND THAT THE TESTING COVERS ALL OF THESE CASES,
-            ''' INCLUDING THE DEFAULT ANGLE CASE.
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' 
         End Sub
 
         <Theory>
         <InlineData(Double.PositiveInfinity, OsnwAngDim2D.Degree, OsnwAngNormStyle.Full)>
         <InlineData(Double.NegativeInfinity, OsnwAngDim2D.Degree, OsnwAngNormStyle.Full)>
-        Public Sub GetNormalizedMagnitude_Infinite_Succeeds(m As Double, d As OsnwAngDim2D,
+        Public Sub GetNormalizedMagnitude_Infinite_AlsoSucceeds(m As Double, d As OsnwAngDim2D,
             s As OsnwAngNormStyle)
 
             Dim A As New OsnwAngle2D(m, d, s)
@@ -688,12 +535,6 @@ Namespace GeometricTests
             Assert.Equal(d, A.Dimension)
             Assert.Equal(s, A.Style)
 
-            ''' 
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' GO CHECK THAT THE IMPLEMENTATION MATCHES THIS, AND THAT THE TESTING COVERS ALL OF THESE CASES,
-            ''' INCLUDING THE DEFAULT ANGLE CASE.
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' 
         End Sub
 
         <Theory>
@@ -704,12 +545,6 @@ Namespace GeometricTests
             Dim A As New D2.Angle(m, d, s)
             Dim NorM As Double = A.GetNormalizedMagnitude()
             Assert.True(Double.IsNaN(NorM))
-            ''' 
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' GO CHECK THAT THE IMPLEMENTATION MATCHES THIS, AND THAT THE TESTING COVERS ALL OF THESE CASES,
-            ''' INCLUDING THE DEFAULT ANGLE CASE.
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' 
         End Sub
 
 #End Region ' "TestGetNormalizedMagnitude"
@@ -759,7 +594,7 @@ Namespace GeometricTests
         <InlineData(-540.0, OsnwAngDim2D.Degree, OsnwAngNormStyle.Half, 180.0)>
         <InlineData(-630.0, OsnwAngDim2D.Degree, OsnwAngNormStyle.Full, 90.0)>
         <InlineData(-630.0, OsnwAngDim2D.Degree, OsnwAngNormStyle.Half, 90.0)>
-        Public Sub CreateNormalizedAngle_GoodArgs_Succeeds(m As System.Double,
+        Public Sub CreateNormalizedAngle_GoodValues_Succeeds(m As System.Double,
             d As D2.Angle.AngularDimension, s As D2.Angle.NormalizationStyle, expectedM As Double)
 
             Const Tolerance As Double = 0.001
@@ -770,47 +605,29 @@ Namespace GeometricTests
             Assert.Equal(d, A.Dimension)
             Assert.Equal(s, A.Style)
 
-            ''' 
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' GO CHECK THAT THE IMPLEMENTATION MATCHES THIS, AND THAT THE TESTING COVERS ALL OF THESE CASES,
-            ''' INCLUDING THE DEFAULT ANGLE CASE.
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' 
-        End Sub
-
-        <Theory>
-        <InlineData(Double.NaN, OsnwAngDim2D.Degree, OsnwAngNormStyle.Full)>
-        Public Sub CreateNormalizedAngle_NaN_Succeeds(ByVal m As System.Double,
-            ByVal d As D2.Angle.AngularDimension, ByVal s As D2.Angle.NormalizationStyle)
-
-            Dim A As D2.Angle = D2.Angle.CreateNormalizedAngle(m, d, s)
-            Assert.True(Double.IsNaN(A.Magnitude))
-            ''' 
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' GO CHECK THAT THE IMPLEMENTATION MATCHES THIS, AND THAT THE TESTING COVERS ALL OF THESE CASES,
-            ''' INCLUDING THE DEFAULT ANGLE CASE.
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' 
         End Sub
 
         <Theory>
         <InlineData(Double.PositiveInfinity, OsnwAngDim2D.Degree, OsnwAngNormStyle.Full)>
         <InlineData(Double.NegativeInfinity, OsnwAngDim2D.Degree, OsnwAngNormStyle.Half)>
-        Public Sub CreateNormalizedAngle_Infinite_Succeeds(ByVal m As System.Double,
+        Public Sub CreateNormalizedAngle_Infinite_AlsoSucceeds(ByVal m As System.Double,
             ByVal d As D2.Angle.AngularDimension, ByVal s As D2.Angle.NormalizationStyle)
 
             Dim A As D2.Angle = D2.Angle.CreateNormalizedAngle(m, d, s)
 
-            Assert.Equal(m, A.Magnitude)
+            Assert.True(Double.IsInfinity(A.Magnitude))
             Assert.Equal(d, A.Dimension)
             Assert.Equal(s, A.Style)
 
-            ''' 
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' GO CHECK THAT THE IMPLEMENTATION MATCHES THIS, AND THAT THE TESTING COVERS ALL OF THESE CASES,
-            ''' INCLUDING THE DEFAULT ANGLE CASE.
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' 
+        End Sub
+
+        <Theory>
+        <InlineData(Double.NaN, OsnwAngDim2D.Degree, OsnwAngNormStyle.Full)>
+        Public Sub CreateNormalizedAngle_NaN_Fails(ByVal m As System.Double,
+            ByVal d As D2.Angle.AngularDimension, ByVal s As D2.Angle.NormalizationStyle)
+
+            Dim A As D2.Angle = D2.Angle.CreateNormalizedAngle(m, d, s)
+            Assert.True(Double.IsNaN(A.Magnitude))
         End Sub
 
         <Theory>
@@ -830,13 +647,8 @@ Namespace GeometricTests
             Dim A As D2.Angle = D2.Angle.CreateNormalizedAngle(m, d, s)
             Assert.True(Double.IsNaN(A.Magnitude))
 
-            ''' 
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' GO CHECK THAT THE IMPLEMENTATION MATCHES THIS, AND THAT THE TESTING COVERS ALL OF THESE CASES,
-            ''' INCLUDING THE DEFAULT ANGLE CASE.
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' 
         End Sub
+
 
 #End Region ' "TestCreateNormalizedAngle"
 
@@ -863,63 +675,76 @@ Namespace GeometricTests
         <InlineData(-390.0, OsnwAngDim2D.Degree, OsnwAngNormStyle.Half, 60.0, 30.0)>
         <InlineData(-390.0, OsnwAngDim2D.Degree, OsnwAngNormStyle.Full, -60.0, 270.0)>
         <InlineData(-390.0, OsnwAngDim2D.Degree, OsnwAngNormStyle.Half, -60.0, -90.0)>
+        <InlineData(90.0, OsnwAngDim2D.Degree, OsnwAngNormStyle.Half, 45.0, 135.0)>
         Public Shared Sub GetNormalizedRotatedAngle_Defined_Succeeds(
             m As System.Double, d As D2.Angle.AngularDimension, s As D2.Angle.NormalizationStyle,
             rotation As System.Double, expectedM As System.Double)
 
             Const Tolerance As Double = 0.001
-            Dim A As New D2.Angle(m, d, s)
+            Dim AIn As New D2.Angle(m, d, s)
 
-            Dim RotatedA As D2.Angle = D2.Angle.GetNormalizedRotatedAngle(A, rotation)
+            Dim RotatedA As D2.Angle = D2.Angle.GetNormalizedRotatedAngle(AIn, rotation)
 
             Assert.Equal(expectedM, RotatedA.Magnitude, Tolerance)
             Assert.Equal(d, RotatedA.Dimension)
             Assert.Equal(s, RotatedA.Style)
 
-            ''' 
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' GO CHECK THAT THE IMPLEMENTATION MATCHES THIS, AND THAT THE TESTING COVERS ALL OF THESE CASES,
-            ''' INCLUDING THE DEFAULT ANGLE CASE.
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' 
         End Sub
 
-        '        Public Shared Sub GetNormalizedRotatedAngle_Undefined_Fails(
-        '            angle As System.Double, rotation As System.Double)
+        <Theory>
+        <InlineData(Double.PositiveInfinity, OsnwAngDim2D.Degree, OsnwAngNormStyle.Half, 45.0)>
+        <InlineData(Double.NegativeInfinity, OsnwAngDim2D.Degree, OsnwAngNormStyle.Half, 45.0)>
+        <InlineData(90.0, OsnwAngDim2D.Degree, OsnwAngNormStyle.Half, Double.PositiveInfinity)>
+        <InlineData(90.0, OsnwAngDim2D.Degree, OsnwAngNormStyle.Half, Double.NegativeInfinity)>
+        Public Shared Sub GetNormalizedRotatedAngle_Infinities_AlsoSucceeds(
+            m As System.Double, d As D2.Angle.AngularDimension, s As D2.Angle.NormalizationStyle,
+            rotation As System.Double)
 
+            Dim AIn As New D2.Angle(m, d, s)
 
-        '            '
-        '            '
-        '            '
-        '            '
-        '            '
-        '            '    Public Shared Function GetNormalizedRotatedAngle(ByVal angle As System.Double, rotation As System.Double) As System.Double
-        '        End Sub
-        'xxxx
+            Dim RotatedA As D2.Angle = D2.Angle.GetNormalizedRotatedAngle(AIn, rotation)
 
-        '        Public Sub GetNormalizedRotatedAngle_Defined_Succeeds()
+            Assert.True(Double.IsInfinity(RotatedA.Magnitude))
+            Assert.Equal(d, RotatedA.Dimension)
+            Assert.Equal(s, RotatedA.Style)
 
+        End Sub
 
-        '            '
-        '            '
-        '            '
-        '            '
-        '            '
-        '            '    Public Shared Function GetNormalizedRotatedAngle(ByVal angle As System.Double, rotation As System.Double) As System.Double
-        '        End Sub
-        'xxxx
+        <Theory>
+        <InlineData(Double.NaN, OsnwAngDim2D.Degree, OsnwAngNormStyle.Half, 45.0)>
+        <InlineData(90.0, OsnwAngDim2D.Degree, OsnwAngNormStyle.Half, Double.NaN)>
+        Public Shared Sub GetNormalizedRotatedAngle_NaN_AlsoSucceeds(
+            m As System.Double, d As D2.Angle.AngularDimension, s As D2.Angle.NormalizationStyle,
+            rotation As System.Double)
 
-        '        Public Sub GetNormalizedRotatedAngle_Undefined_Fails()
+            Dim AIn As New D2.Angle(m, d, s)
 
+            Dim RotatedA As D2.Angle = D2.Angle.GetNormalizedRotatedAngle(AIn, rotation)
 
-        '            '
-        '            '
-        '            '
-        '            '
-        '            '
-        '            '    Public Shared Function GetNormalizedRotatedAngle(ByVal angle As System.Double, rotation As System.Double) As System.Double
-        '        End Sub
-        'xxxx
+            Assert.True(Double.IsNaN(RotatedA.Magnitude))
+            Assert.Equal(d, RotatedA.Dimension)
+            Assert.Equal(s, RotatedA.Style)
+
+        End Sub
+
+        <Theory>
+        <InlineData(90.0, OsnwAngDim2D.Radian - 1, OsnwAngNormStyle.Half, 45.0)>
+        <InlineData(90.0, OsnwAngDim2D.Milliradian + 1, OsnwAngNormStyle.Half, 45.0)>
+        <InlineData(90.0, OsnwAngDim2D.Degree, OsnwAngNormStyle.Full - 1, 45.0)>
+        <InlineData(90.0, OsnwAngDim2D.Degree, OsnwAngNormStyle.Half + 1, 45.0)>
+        Public Shared Sub GetNormalizedRotatedAngle_Undefined_Fails(
+            m As System.Double, d As D2.Angle.AngularDimension, s As D2.Angle.NormalizationStyle,
+            rotation As System.Double)
+
+            Dim AIn As New D2.Angle(m, d, s)
+
+            Dim RotatedA As D2.Angle = D2.Angle.GetNormalizedRotatedAngle(AIn, rotation)
+
+            Assert.True(Double.IsNaN(RotatedA.Magnitude))
+            Assert.Equal(d, RotatedA.Dimension)
+            Assert.Equal(s, RotatedA.Style)
+
+        End Sub
 
 #End Region ' "TestGetNormalizedRotatedAngle"
 
@@ -934,7 +759,7 @@ Namespace GeometricTests
         <InlineData(-90.5, -90, 30.0)>
         <InlineData(-270.5, -270, 30.0)>
         <InlineData(-450.5, -450, 30.0)>
-        Public Sub DegToDddMm_NormalValues_Succeeds(dIn As Double, expectedD As Int32, expectedM As Double)
+        Public Sub DegToDddMm_GoodValues_Succeeds(dIn As Double, expectedD As Int32, expectedM As Double)
 
             Const Tolerance As Double = 0.001
             Dim DOut As System.Int32
@@ -981,8 +806,8 @@ Namespace GeometricTests
         <InlineData(-90.0 - SEC30, -90, 0, 30.0)>
         <InlineData(-270.0 - SEC30, -270, 0, 30.0)>
         <InlineData(-450.0 - SEC30, -450, 0, 30.0)>
-        Public Sub DegToDddMmSs_NormalValues_Succeeds(dIn As Double, expectedD As Int32,
-                                                      expectedM As Int32, expectedS As Double)
+        Public Sub DegToDddMmSs_GoodValues_Succeeds(dIn As Double, expectedD As Int32,
+                                                    expectedM As Int32, expectedS As Double)
 
             Const Tolerance As Double = 0.001
             Dim DOut As System.Int32
@@ -1025,10 +850,8 @@ Namespace GeometricTests
         <InlineData(-270, 30.0, -270.5)>
         <InlineData(-450, 30.0, -450.5)> ' Past -360.
         <InlineData(450, 60, 451.0)> ' Mixed signs.
-        <InlineData(91, -60, 90.0)> ' Mixed signs.
         <InlineData(-1, 120, -3.0)> ' Mixed signs.
-        <InlineData(1, -120, -1.0)> ' Mixed signs.
-        Public Sub DddMmToDeg_NormalValues_Succeeds(dIn As Int32, mIn As Double, expectedD As Double)
+        Public Sub DddMmToDeg_GoodValues_Succeeds(dIn As Int32, mIn As Double, expectedD As Double)
             Const Tolerance As Double = 0.001
             Dim D As Double
             D2.Angle.DddMmToDeg(dIn, mIn, D)
@@ -1036,36 +859,26 @@ Namespace GeometricTests
         End Sub
 
         <Theory>
-        <InlineData(30, Double.NaN)>
         <InlineData(30, Double.PositiveInfinity)>
         <InlineData(30, Double.NegativeInfinity)>
-        Public Sub DddMmToDeg_AbnormalValues_AlsoSucceeds(dIn As Int32, mIn As Double)
-            ' These arguments fail the equality test in DddMmToDeg_NormalValues_Succeeds, but do return
-            ' predicatble results.
+        <InlineData(30, Double.NaN)>
+        <InlineData(91, -60)> ' Mixed signs.
+        <InlineData(1, -120)> ' Negative mIn.
+        Public Sub DddMmToDeg_BadValues_Fails(dIn As Int32, mIn As Double)
             Dim D As Double
             D2.Angle.DddMmToDeg(dIn, mIn, D)
-            If Double.IsNaN(mIn) Then
-                Assert.True(Double.IsNaN(mIn))
-            ElseIf Double.IsInfinity(mIn) Then
-                Assert.True(Double.IsInfinity(D))
-            Else
-                Assert.True(False)
-            End If
+            Assert.True(Double.IsNaN(D))
         End Sub
 
         <Theory>
         <InlineData(30, 15, 50.0, 30.2639)>
         <InlineData(10, 20, 40.0, 10.3444)>
         <InlineData(90, 60, 7200.0, 93.0)> ' +++
-        <InlineData(90, 60, -7200.0, 89.0)> ' ++-
-        <InlineData(90, -60, 7200.0, 91.0)> ' +-+
-        <InlineData(90, -60, -7200.0, 87.0)> ' +--
         <InlineData(-90, 60, 7200.0, -93.0)> ' -++
-        <InlineData(-90, 60, -7200.0, -89.0)> ' -+-
-        <InlineData(-90, -60, 7200.0, -91.0)> ' --+
-        <InlineData(-90, -60, -7200.0, -87.0)> ' ---
-        Public Sub DddMmSsToDeg_NormalValues_Succeeds(dIn As Int32, mIn As Int32, sIn As Double,
-                                                      expectedD As Double)
+        <InlineData(0, -15, 0.0, -0.25)> ' 0-+
+        <InlineData(0, 0, -60.0, -1 / 60)> ' 00-
+        Public Sub DddMmSsToDeg_GoodValues_Succeeds(dIn As Int32, mIn As Int32, sIn As Double,
+                                                    expectedD As Double)
 
             Const Tolerance As Double = 0.001
             Dim DOut As Double
@@ -1080,19 +893,16 @@ Namespace GeometricTests
         <InlineData(30, 15, Double.NaN)>
         <InlineData(30, 15, Double.PositiveInfinity)>
         <InlineData(30, 15, Double.NegativeInfinity)>
-        Public Sub DddMmSsToDeg_Abnormal_AlsoSucceeds(dIn As Int32, mIn As Int32, sIn As Double)
-
-            ' These arguments fail the equality test in DA_DddMmSsToDeg_NormalValues_Succeeds, but do
-            ' return predicatble results.
+        <InlineData(90, 60, -7200.0)> ' ++-
+        <InlineData(90, -60, 7200.0)> ' +-+
+        <InlineData(90, -60, -7200.0)> ' +--
+        <InlineData(-90, 60, -7200.0)> ' -+-
+        <InlineData(-90, -60, 7200.0)> ' --+
+        <InlineData(-90, -60, -7200.0)> ' ---
+        Public Sub DddMmSsToDeg_BadValues_Fails(dIn As Int32, mIn As Int32, sIn As Double)
             Dim D As Double
             D2.Angle.DddMmSsToDeg(dIn, mIn, sIn, D)
-            If Double.IsNaN(sIn) Then
-                Assert.True(Double.IsNaN(D))
-            ElseIf Double.IsInfinity(sIn) Then
-                Assert.True(Double.IsInfinity(D))
-            Else
-                Assert.True(False)
-            End If
+            Assert.True(Double.IsNaN(D))
         End Sub
 
 #End Region ' "TestDegMinSec"

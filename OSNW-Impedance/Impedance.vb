@@ -310,12 +310,12 @@ Public Structure Impedance
 
             Return False
         End If
-        If EqualEnoughZero(otherVal.Reactance, NearlyZero) OrElse
-            EqualEnoughZero(refVal.Reactance, NearlyZero) Then
+        If EqualEnoughZero(NearlyZero, otherVal.Reactance) OrElse
+            EqualEnoughZero(NearlyZero, refVal.Reactance) Then
 
             ' There is a zero; both reactances must be nearly zero.
-            Return EqualEnoughZero(otherVal.Reactance, NearlyZero) AndAlso
-                EqualEnoughZero(refVal.Reactance, NearlyZero)
+            Return EqualEnoughZero(NearlyZero, otherVal.Reactance) AndAlso
+                EqualEnoughZero(NearlyZero, refVal.Reactance)
         Else
             ' Not zero; reactances must match.
             Return OSNW.Math.EqualEnough(otherVal.Reactance, DFLTIMPDTOLERANCE,

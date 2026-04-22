@@ -523,7 +523,7 @@ Partial Public Structure Impedance
         Dim ImageB As System.Double = oneImage.ToAdmittance.Susceptance
         Dim LoadB As System.Double = loadZ.ToAdmittance.Susceptance
         Dim DeltaX As System.Double
-        If OSNW.Math.EqualEnoughZero(ImageB - LoadB, DFLTIMPDTOLERANCE0 * z0) Then
+        If OSNW.Math.EqualEnoughZero(DFLTIMPDTOLERANCE0 * z0, ImageB - LoadB) Then
 
             ' Move only on the SourceR-circle.
             DeltaX = sourceZ.Reactance - loadZ.Reactance
@@ -641,7 +641,7 @@ Partial Public Structure Impedance
         Dim DeltaB As System.Double
         Dim DeltaX As System.Double
         If OSNW.Math.EqualEnoughZero(
-            ImageX - LoadX, DFLTIMPDTOLERANCE0 * z0) Then
+            DFLTIMPDTOLERANCE0 * z0, ImageX - LoadX) Then
 
             ' Move only on the SourceG-circle.
             DeltaB = sourceZ.ToAdmittance.Susceptance -

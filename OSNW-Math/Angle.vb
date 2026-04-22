@@ -1,11 +1,4 @@
-﻿' TODO:
-' Look into "grade" as used for hills and slopes. It is the tangent of the
-'   angle, expressed as a percentage. It is not a unit of measure for angles,
-'   but it is a way to express the steepness of a slope. It is commonly used in
-'   civil engineering and transportation. It might be worth adding a method to
-'   convert an angle to its grade, and vice versa.  
-
-Option Explicit On
+﻿Option Explicit On
 Option Strict On
 Option Compare Binary
 Option Infer Off
@@ -79,15 +72,21 @@ Partial Public Module Math
         ''' One gradian is defined as one-hundredth of a right angle, which is
         ''' 1/400 of a full circle. Therefore, a full circle is 400 gradians and
         ''' one gradian is 2*PI/400 (~1.57080e-2) radians.
-        ''' Gradian and gon are interchangeable.
+        ''' Gradian, gon, and grad are interchangeable.
         ''' </summary>
         Public Const GRADIANPERCIRCLE As System.Double = 400.0
 
         ''' <summary>
-        ''' One gon is equivalent to one gradian. Gradian and gon are
+        ''' One gon is equivalent to one gradian. Gradian, gon, and grad are
         ''' interchangeable.
         ''' </summary>
         Public Const GONPERCIRCLE As System.Double = GRADIANPERCIRCLE
+
+        ''' <summary>
+        ''' One GRAD is equivalent to one gradian. Gradian, GRAD, and grad are
+        ''' interchangeable.
+        ''' </summary>
+        Public Const GRADPERCIRCLE As System.Double = GRADIANPERCIRCLE
 
         ''' <summary>
         ''' Half of see <see cref="GRADIANPERCIRCLE"/>.
@@ -98,6 +97,11 @@ Partial Public Module Math
         ''' Half of see <see cref="GONPERCIRCLE"/>.
         ''' </summary>
         Public Const GONPERSEMICIRCLE As System.Double = GRADIANPERSEMICIRCLE
+
+        ''' <summary>
+        ''' Half of see <see cref="GRADPERCIRCLE"/>.
+        ''' </summary>
+        Public Const GRADPERSEMICIRCLE As System.Double = GRADIANPERSEMICIRCLE
 
         ''' <summary>
         ''' See <see cref="GRADIANPERCIRCLE"/>.
@@ -111,6 +115,11 @@ Partial Public Module Math
         Public Const GONPERRADIAN As System.Double = GRADIANPERRADIAN
 
         ''' <summary>
+        ''' See <see cref="GRADPERCIRCLE"/>.
+        ''' </summary>
+        Public Const GRADPERRADIAN As System.Double = GRADIANPERRADIAN
+
+        ''' <summary>
         ''' See <see cref="GRADIANPERCIRCLE"/>.
         ''' </summary>
         Public Const RADIANPERGRADIAN As System.Double =
@@ -120,6 +129,11 @@ Partial Public Module Math
         ''' See <see cref="GONPERCIRCLE"/>.
         ''' </summary>
         Public Const RADIANPERGON As System.Double = RADIANPERGRADIAN
+
+        ''' <summary>
+        ''' See <see cref="GRADPERCIRCLE"/>.
+        ''' </summary>
+        Public Const RADIANPERGRAD As System.Double = RADIANPERGRADIAN
 
         ''' <summary>
         ''' One arcminute is 1/60 of a degree and one degree is 1/360 of a full
@@ -277,6 +291,12 @@ Partial Public Module Math
             '''       </description>
             '''    </item>
             '''    <item>
+            '''       <term>Grad</term>
+            '''       <description>
+            '''       Equivalent to one Gradian.
+            '''       </description>
+            '''    </item>
+            '''    <item>
             '''       <term>ArcMinute</term>
             '''       <description>
             '''       One arcminute is 1/60 degree.
@@ -313,6 +333,7 @@ Partial Public Module Math
                 Degree
                 Gradian
                 Gon = Gradian
+                Grad = Gradian
                 ArcMinute
                 ArcSecond
                 Milliradian
@@ -437,17 +458,17 @@ Partial Public Module Math
 #Region "Grade"
 
             ''' <summary>
-            ''' Returns the grade corresponding to the specified
-            ''' <paramref name="angleInRadians"/>.
+            '''  Returns the grade corresponding to the specified angle in
+            '''  radians.
             ''' </summary>
-            ''' <param name="angleInRadians">Specifies the angle in radians, in
+            ''' <param name="angle">Specifies the angle in radians, in
             ''' the -PI/2 (-90 degrees) to PI/2 (90 degrees) range.</param>
             ''' <returns>The grade corresponding to the specified
-            ''' <paramref name="angleInRadians"/>. A negative
-            ''' <paramref name="angleInRadians"/> slopes down.</returns>
+            ''' <paramref name="angle"/>. A negative <paramref name="angle"/>
+            ''' slopes down.</returns>
             ''' <remarks>
             ''' Grade is the tangent of the angle, expressed as a
-            ''' percentage. When <paramref name="angleInRadians"/> is
+            ''' percentage. When <paramref name="angle"/> is
             ''' <c>System.Double.NaN</c> or greater than +/-PI/2 (90 degrees),
             ''' the result is <c>System.Double.IsNaN</c>.
             ''' <br/> 
@@ -461,56 +482,55 @@ Partial Public Module Math
             ''' Other terms for grade are gradient, slope, incline, mainfall,
             ''' pitch, and rise.
             ''' </remarks>"
-            Public Shared Function AngleToGrade(
-                ByVal angleInRadians As System.Double) As System.Double
+            Public Shared Function AngleToGrade(ByVal angle As System.Double) _
+                As System.Double
 
                 Const Tolerance As Double =
                     OSNW.Math.DFLTEQUALITYTOLERANCE * OSNW.Math.TWOPId
 
                 ' Input checking.
-                If System.Double.Abs(angleInRadians) > OSNW.Math.RAD090d Then
-
-                    Return System.Double.NaN
+                If System.Double.Abs(angle) > OSNW.Math.RAD090d Then
+                    Return System.Double.NaN ' Early exit.
                 End If
 
                 ' Check special cases.
-                If OSNW.Math.EqualEnoughZero(angleInRadians, Tolerance) Then
-                    Return 0.0
+                If OSNW.Math.EqualEnoughZero(Tolerance, angle) Then
+                    Return 0.0 ' Early exit.
                 ElseIf OSNW.Math.EqualEnough(OSNW.Math.RAD090d, Tolerance,
-                    System.Math.Abs(angleInRadians)) Then
+                    System.Math.Abs(angle)) Then
 
                     ' The tangent of 90 degrees is undefined, so the grade is
                     ' effectively infinite. Return the largest possible value.
                     If OSNW.Math.EqualEnough(
-                        OSNW.Math.RAD090d, 0.001, angleInRadians) Then
+                        OSNW.Math.RAD090d, 0.001, angle) Then
 
-                        Return System.Double.PositiveInfinity
+                        Return System.Double.PositiveInfinity ' Early exit.
                     ElseIf OSNW.Math.EqualEnough(
-                        -OSNW.Math.RAD090d, 0.001, angleInRadians) Then
+                        -OSNW.Math.RAD090d, 0.001, angle) Then
 
-                        Return System.Double.NegativeInfinity
+                        Return System.Double.NegativeInfinity ' Early exit.
                     End If
                 End If
 
                 ' Grade is the tangent of the angle, expressed as a percentage.
                 ' Grade = tan(angle) * 100
                 ' The angle needs to be in radians for the tangent function.
-                Return System.Math.Tan(angleInRadians) * 100.0
+                Return System.Math.Tan(angle) * 100.0
 
             End Function ' AngleToGrade
 
             ''' <summary>
             ''' Returns the angle in radians corresponding to the specified
-            ''' <paramref name="grade"/>.
+            ''' <c>grade</c>.
             ''' </summary>
             ''' <param name="grade">Specifies the percent grade of the
             ''' slope. A negative <paramref name="grade"/> slopes down.</param>
             ''' <returns>The angle in radians corresponding to the specified
-            ''' <c>grade</c>.</returns>
+            ''' <paramref name="grade"/>.</returns>
             ''' <remarks>
             ''' The angle is calculated as the arctangent of the grade
             ''' divided by 100. When <paramref name="grade"/> is
-            ''' <c>Double.NaN</c> the result is <c>System.Double.IsNaN</c>.
+            ''' <c>Double.NaN</c> the result is <c>System.Double.NaN</c>.
             ''' <br/> 
             ''' "Grade" is commonly used in civil engineering and
             ''' transportation. It is the tangent of an angle, expressed as a
@@ -638,19 +658,22 @@ Partial Public Module Math
             ''' angle.</param>
             ''' <param name="dOut">Returns the equivalent angle in decimal
             ''' degrees.</param>
-            ''' <remarks>When <paramref name="mIn"/> is
-            ''' <c>System.Double.NaN</c>, <paramref name="dOut"/> returns
-            ''' <c>System.Double.NaN</c>. When <paramref name="mIn"/> is an
-            ''' infinite value, <paramref name="dOut"/> returns the same
-            ''' infinite value.</remarks>
+            ''' <remarks>If <paramref name="mIn"/> is
+            ''' <see cref="System.Double.NaN"/>, or an infinite value,
+            ''' <paramref name="dOut"/> returns <see cref="System.Double.Nan"/>.
+            ''' <paramref name="mIn"/> cannot be negative unless
+            ''' <paramref name="dIn"/> is zero. When violated,
+            ''' <paramref name="dOut"/> returns <see cref="System.Double.Nan"/>.
+            ''' </remarks>
             Public Shared Sub DddMmToDeg(ByVal dIn As System.Int32,
                 ByVal mIn As System.Double, ByRef dOut As System.Double)
 
                 ' Input checking.
-                If System.Double.IsNaN(dIn) OrElse
-                    System.Double.IsInfinity(dIn) Then
+                If System.Double.IsNaN(mIn) OrElse
+                    System.Double.IsInfinity(mIn) OrElse
+                    (mIn < 0.0 AndAlso dIn <> 0.0) Then
+
                     dOut = System.Double.NaN
-                    '                   dOut = dIn
                     Exit Sub
                 End If
 
@@ -658,8 +681,6 @@ Partial Public Module Math
                 Dim MPart As System.Double = mIn / 60.0
                 If dIn < 0 Then
                     dOut = DPart - MPart
-                ElseIf mIn < 0.0 Then
-                    dOut = DPart + MPart
                 Else
                     dOut = DPart + MPart
                 End If
@@ -678,18 +699,28 @@ Partial Public Module Math
             ''' angle.</param>
             ''' <param name="dOut">Returns the equivalent angle in decimal
             ''' degrees.</param>
-            ''' <remarks>When <paramref name="sIn"/> is
-            ''' <c>System.Double.NaN</c>, <paramref name="dOut"/> returns
-            ''' <c>System.Double.NaN</c>. When <paramref name="sIn"/> is an
-            ''' infinite value, <paramref name="dOut"/> returns the same
-            ''' infinite value.</remarks>
+            ''' <remarks>
+            ''' <paramref name="mIn"/> cannot be negative unless
+            ''' <paramref name="dIn"/> is zero.
+            ''' <paramref name="sIn"/> cannot be negative unless
+            ''' <paramref name="dIn"/> and <paramref name="mIn"/> are zero.
+            ''' <paramref name="sIn"/> cannot be <see cref="System.Double.NaN"/>
+            ''' or an infinite value.
+            ''' <paramref name="dOut"/> returns <c>System.Double.NaN</c> for any
+            ''' violation.
+            ''' </remarks>
             Public Shared Sub DddMmSsToDeg(ByVal dIn As System.Int32,
                 ByVal mIn As System.Int32, ByVal sIn As System.Double,
                 ByRef dOut As System.Double)
 
                 ' Input checking.
-                If System.Double.IsInfinity(sIn) Then
-                    dOut = sIn
+                If System.Double.IsNaN(sIn) OrElse
+                    System.Double.IsInfinity(sIn) OrElse
+                    ((mIn < 0.0) AndAlso (dIn <> 0.0)) OrElse
+                    ((sIn < 0.0) AndAlso
+                        ((mIn <> 0.0) OrElse (dIn <> 0.0))) Then
+
+                    dOut = System.Double.NaN
                     Exit Sub
                 End If
 
@@ -699,7 +730,7 @@ Partial Public Module Math
                 If dIn < 0 Then
                     dOut = DPart - MPart - SPart
                 ElseIf mIn < 0.0 Then
-                    dOut = DPart + MPart + SPart
+                    dOut = MPart - SPart
                 Else
                     dOut = DPart + MPart + SPart
                 End If
@@ -710,13 +741,12 @@ Partial Public Module Math
             ''' Determines if <paramref name="dimension"/> refers to a value
             ''' defined in <see cref="D2.Angle.AngularDimension"/>.
             ''' </summary>
-            ''' <param name="dimension">Specifies the <c>AngularDimension</c> to
-            ''' be evaluated.</param>
+            ''' <param name="dimension">Specifies the
+            ''' <see cref="D2.Angle.AngularDimension"/> to be evaluated.</param>
             ''' <returns><c>True</c> if <paramref name="dimension"/> is defined
             ''' in <c>D2.Angle.AngularDimension</c>; otherwise,
             ''' <c>False</c>.</returns>
-            ''' <remarks><see cref="D2.Angle.IsDefinedDimension(
-            ''' D2.Angle.AngularDimension)"/> and
+            ''' <remarks><c>D2.Angle.IsDefinedDimension</c> and
             ''' <see cref="D2.Angle.HasDefinedDimension()"/> are effectively the
             ''' same thing. Use whichever version best suits the variables at
             ''' hand.</remarks>
@@ -739,17 +769,16 @@ Partial Public Module Math
                 '    dimension.Equals(
                 '        D2.Angle.AngularDimension.Milliradian)
 
-                ' As long as no non-automatic values are assigned, or the
-                ' current ones rearranged, it can be done this way:
+                ' Unless non-automatic values are assigned, or the current ones
+                ' rearranged, it can be done this way:
                 Return dimension >= D2.Angle.AngularDimension.Radian AndAlso
                     dimension <= D2.Angle.AngularDimension.Milliradian
 
             End Function ' IsDefinedDimension
 
             ''' <summary>
-            ''' Determines if the <see cref="D2.Angle.Dimension"/> property of
-            ''' the current instance is defined in
-            ''' <c>D2.Angle.AngularDimension</c>.
+            ''' Determines if the <c>D2.Angle.Dimension</c> property of the
+            ''' current instance is defined in <c>D2.Angle.AngularDimension</c>.
             ''' </summary>
             ''' <returns><c>True</c> if the <see cref="D2.Angle.Dimension"/>
             ''' property of the current instance is defined in
@@ -757,8 +786,8 @@ Partial Public Module Math
             ''' <c>False</c>.</returns>
             ''' <remarks><see cref="D2.Angle.IsDefinedDimension(
             ''' D2.Angle.AngularDimension)"/> and
-            ''' <see cref="D2.Angle.HasDefinedDimension()"/> are effectively the
-            ''' same thing. Use whichever version best suits the variables at
+            ''' <c>D2.Angle.HasDefinedDimension()</c> are effectively the same
+            ''' thing. Use whichever version best suits the variables at
             ''' hand.</remarks>
             Public Function HasDefinedDimension() As System.Boolean
                 Return D2.Angle.IsDefinedDimension(Me.Dimension)
@@ -773,8 +802,7 @@ Partial Public Module Math
             ''' <returns><c>True</c> if <paramref name="style"/> is defined
             ''' in <c>D2.Angle.NormalizationStyle</c>; otherwise,
             ''' <c>False</c>.</returns>
-            ''' <remarks><see cref="D2.Angle.IsDefinedStyle(
-            ''' D2.Angle.NormalizationStyle)"/> and
+            ''' <remarks><c>D2.Angle.IsDefinedStyle()</c> and
             ''' <see cref="D2.Angle.HasDefinedStyle()"/> are effectively the
             ''' same thing. Use whichever version best suits the variables at
             ''' hand.</remarks>
@@ -785,8 +813,8 @@ Partial Public Module Math
                 'Return style.Equals(D2.Angle.NormalizationStyle.Half) OrElse
                 '    style.Equals(D2.Angle.NormalizationStyle.Full)
 
-                ' As long as no non-automatic values are assigned, or the
-                ' current ones rearranged, it can be done this way:
+                ' Unless non-automatic values are assigned, or the current ones
+                ' rearranged, it can be done this way:
                 Return style >= D2.Angle.NormalizationStyle.Full AndAlso
                     style <= D2.Angle.NormalizationStyle.Half
 
@@ -799,12 +827,12 @@ Partial Public Module Math
             ''' </summary>
             ''' <returns> <c>True</c> if the <see cref="D2.Angle.Style"/>
             ''' property of the current instance refers to a value defined in
-            ''' <c>D2.Angle.NormalizationStyle</c>; otherwise,
+            ''' <see cref="D2.Angle.NormalizationStyle"/>; otherwise,
             ''' <c>False</c>.</returns>
             ''' <remarks><see cref="D2.Angle.IsDefinedStyle(
             ''' D2.Angle.NormalizationStyle)"/> and
-            ''' <see cref="D2.Angle.HasDefinedStyle()"/> are effectively the
-            ''' same thing. Use whichever version best suits the variables at
+            ''' <c>D2.Angle.HasDefinedStyle()</c> are effectively the same
+            ''' thing. Use whichever version best suits the variables at
             ''' hand.</remarks>
             Public Function HasDefinedStyle() As System.Boolean
                 Return D2.Angle.IsDefinedStyle(Me.Style)
@@ -821,30 +849,42 @@ Partial Public Module Math
             ''' <param name="unitsOutPerRadian">Specifies the number of
             ''' resulting units of measure per radian.</param>
             ''' <returns>The magnitude in the new dimension. Also returns
-            ''' <c>System.Double.NaN</c> when any argument is
-            ''' <c>System.Double.NaN</c>.</returns>
+            ''' <c>System.Double.NaN</c> when any argument is invalid.</returns>
             ''' <remarks>
-            ''' Use this when either, or both, of the units of measure does not
-            ''' refer to a value defined in <see cref="D2.Angle.Dimension"/>.
+            ''' Use this when either of the units of measure does not refer to a
+            ''' value defined in <see cref="D2.Angle.Dimension"/>.
             ''' Calculate the conversion values like this:
             ''' <br/>- When converting FROM degrees, <c>radiansPerUnitIn</c>
             ''' = 2*PI radians per 360 degrees = (2*PI)/360 = PI/180.
             ''' <br/>- When converting TO degrees, <c>unitsOutPerRadian</c>
             ''' = 360 degrees per 2*PI radians = 360/(2*PI) = 180/PI.
+            ''' <br/>
+            ''' <paramref name="origMag"/> is allowed to be any valid
+            ''' <c>System.Double</c> value, in consideration of such cases as
+            ''' accumulated rotation of a motor or wheel.
+            ''' The conversion factors are only valid for positive, non-zero,
+            ''' finite, values. To avoid an exception, any negative, zero,
+            ''' infinite, or <see cref="System.Double.NaN"/> value causes the
+            ''' result to be <see cref="System.Double.NaN"/>.
             ''' </remarks>
             Public Shared Function ScaleDimension(
                 ByVal origMag As System.Double,
                 ByVal radiansPerUnitIn As System.Double,
                 ByVal unitsOutPerRadian As System.Double) As System.Double
 
-                ' No input checking.
+                ' Input checking.
+                If radiansPerUnitIn <= 0.0 OrElse
+                    unitsOutPerRadian <= 0.0 OrElse
+                    System.Double.IsInfinity(radiansPerUnitIn) OrElse
+                    System.Double.IsInfinity(unitsOutPerRadian) OrElse
+                    System.Double.IsNaN(radiansPerUnitIn) OrElse
+                    System.Double.IsNaN(unitsOutPerRadian) Then
+
+                    Return System.Double.NaN ' Early exit.
+                End If
+
                 Return origMag * radiansPerUnitIn * unitsOutPerRadian
-                '' 
-                '' xxxxxxxxxxxxxxxxxx
-                '' GO CHECK THAT THE TESTING MATCHES THIS, AND THAT THE TESTING COVERS ALL OF THESE CASES,
-                '' INCLUDING THE DEFAULT ANGLE CASE.
-                '' xxxxxxxxxxxxxxxxxx
-                '' 
+
             End Function ' ScaleDimension
 
             ''' <summary>
@@ -862,9 +902,12 @@ Partial Public Module Math
             ''' <see cref="D2.Angle.Dimension"/>; otherwise,
             ''' <c>System.Double.NaN</c>.</returns>
             ''' <remarks>
-            ''' When either, or both, of the units of measure does not refer to
-            ''' a value defined in <see cref="D2.Angle.Dimension"/>,
-            ''' <c>System.Double.NaN</c> is returned. Use
+            ''' <paramref name="origMag"/> is allowed to be any valid
+            ''' <c>System.Double</c> value, in consideration of such cases as
+            ''' accumulated rotation of a motor or wheel.
+            ''' When either of the units of measure does not refer to a value
+            ''' defined in <see cref="D2.Angle.Dimension"/>,
+            ''' <c>System.Double.NaN</c> is returned; use
             ''' <see cref="ScaleDimension(System.Double, System.Double,
             ''' System.Double)"/> for that situation.
             ''' </remarks>
@@ -874,8 +917,11 @@ Partial Public Module Math
                 ByVal dimensionOut As D2.Angle.AngularDimension) _
                 As System.Double
 
-                ' No input checking.
-                ' Mismatches are detected during selection.
+                ' Input checking.
+                If Not (IsDefinedDimension(dimensionIn) AndAlso
+                    IsDefinedDimension(dimensionOut)) Then
+                    Return System.Double.NaN ' Early exit.
+                End If
 
                 If dimensionOut.Equals(dimensionIn) Then
                     ' Just copy it.
@@ -908,7 +954,7 @@ Partial Public Module Math
                     RadiansPerUnitIn = RADIANPERMILLIRADIAN
                 Else
                     ' No match.
-                    Return System.Double.NaN
+                    Return System.Double.NaN ' Early exit.
                 End If
 
                 ' Set the scale for the outgoing magnitude.
@@ -941,7 +987,7 @@ Partial Public Module Math
                     UnitsOutPerRadian = MILLIRADIANPERRADIAN
                 Else
                     ' No match.
-                    Return System.Double.NaN
+                    Return System.Double.NaN ' Early exit.
                 End If
 
                 'Dim AsRadians As System.Double = origMag * RadiansPerUnitIn
@@ -949,12 +995,6 @@ Partial Public Module Math
                 'Return Result
                 Return origMag * RadiansPerUnitIn * UnitsOutPerRadian
 
-                '' 
-                '' xxxxxxxxxxxxxxxxxx
-                '' GO CHECK THAT THE TESTING MATCHES THIS, AND THAT THE TESTING COVERS ALL OF THESE CASES,
-                '' INCLUDING THE DEFAULT ANGLE CASE.
-                '' xxxxxxxxxxxxxxxxxx
-                '' 
             End Function ' ScaleDimension
 
             ''' <summary>
@@ -963,15 +1003,12 @@ Partial Public Module Math
             ''' </summary>
             ''' <param name="newDimension">Specifies the resultant unit of
             ''' measure.</param>
-            ''' <returns>An equivalent angle having the new dimension, when both
-            ''' of the units of measure refer to a value defined in
-            ''' <see cref="D2.Angle.Dimension"/>; otherwise,
-            ''' <c>System.Double.NaN</c>.</returns>
+            ''' <returns>An equivalent angle having the new dimension.</returns>
             ''' <remarks>
-            ''' When either, or both, of the units of measure does not refer to
-            ''' a value defined in <see cref="D2.Angle.Dimension"/>, an angle
-            ''' having <c>System.Double.NaN</c> as its magnitude is returned.
-            ''' Use <see cref="ScaleDimension(System.Double, System.Double,
+            ''' When either of the units of measure does not refer to a value
+            ''' defined in <see cref="D2.Angle.Dimension"/>, an angle having
+            ''' <c>System.Double.NaN</c> as its magnitude is returned; use
+            ''' <see cref="ScaleDimension(System.Double, System.Double,
             ''' System.Double)"/> for that situation.
             ''' </remarks>
             Public Function ScaleDimension(
@@ -981,19 +1018,14 @@ Partial Public Module Math
                 If Not (Me.HasDefinedDimension() AndAlso
                     D2.Angle.IsDefinedDimension(newDimension)) Then
 
-                    Return New D2.Angle(System.Double.NaN, newDimension, Me.Style)
+                    Return New D2.Angle(
+                        System.Double.NaN, newDimension, Me.Style) ' Early exit.
                 End If
 
                 Dim NewMag As System.Double = D2.Angle.ScaleDimension(
                     Me.Magnitude, Me.Dimension, newDimension)
                 Return New D2.Angle(NewMag, newDimension, Me.Style)
 
-                '' 
-                '' xxxxxxxxxxxxxxxxxx
-                '' GO CHECK THAT THE TESTING MATCHES THIS, AND THAT THE TESTING COVERS ALL OF THESE CASES,
-                '' INCLUDING THE DEFAULT ANGLE CASE.
-                '' xxxxxxxxxxxxxxxxxx
-                '' 
             End Function ' ScaleDimension
 
             ''' <summary>
@@ -1003,11 +1035,6 @@ Partial Public Module Math
             ''' <param name="dimension">Specifies the
             ''' <see cref="D2.Angle.AngularDimension"/> to examine.</param>
             ''' <returns>The full-scale range size.</returns>
-            ''' <exception cref="System.ArgumentOutOfRangeException">When
-            ''' xxxxxxxxxxxxxxxxxxx
-            ''' <paramref name="dimension"/> specifies an
-            ''' <see cref="D2.Angle.AngularDimension"/> that is not defined in
-            ''' <see cref="D2.Angle.AngularDimension"/>.</exception>
             ''' <remarks>
             ''' This returns the size of the full range without regard to
             ''' whether it is marked
@@ -1025,6 +1052,7 @@ Partial Public Module Math
 
                 ' No input checking.
 
+                ' This does not need to check for the aliases.
                 If dimension.Equals(D2.Angle.AngularDimension.Radian) Then
                     Return D2.RADIANPERCIRCLE
                 ElseIf dimension.Equals(D2.Angle.AngularDimension.Degree) Then
@@ -1044,22 +1072,12 @@ Partial Public Module Math
                     Return System.Double.NaN
                 End If
 
-                '' 
-                '' xxxxxxxxxxxxxxxxxx
-                '' GO CHECK THAT THE TESTING MATCHES THIS, AND THAT THE TESTING COVERS ALL OF THESE CASES,
-                '' INCLUDING THE DEFAULT ANGLE CASE.
-                '' xxxxxxxxxxxxxxxxxx
-                '' 
             End Function ' GetFullDimensionSize
 
             ''' <summary>
             ''' Returns the full-scale range size for the current instance.
             ''' </summary>
             ''' <returns>The full-scale range size.</returns>
-            ''' <exception cref="System.ArgumentOutOfRangeException">When the
-            ''' current instance has a <see cref="D2.Angle.Dimension"/> property
-            ''' that is not defined in
-            ''' <see cref="D2.Angle.AngularDimension"/>.</exception>
             ''' <remarks>
             ''' This returns the size of the full range without regard to
             ''' whether it is marked
@@ -1067,16 +1085,15 @@ Partial Public Module Math
             ''' <see cref="D2.Angle.NormalizationStyle.Full"/>, not the
             ''' range-limited maximum magnitude. For example, -180 to 180 and
             ''' 0 to 360 degree ranges both have a range size of 360.
+            ''' <br/>
+            ''' When the <see cref="D2.Angle.AngularDimension"/> property of the
+            ''' current instance does not refer to a value defined in
+            ''' <see cref="D2.Angle.Dimension"/>, <c>System.Double.NaN</c> is
+            ''' returned.
             ''' </remarks>
             Public Function GetFullDimensionSize() As System.Double
                 ' No input checking.
                 Return Angle.GetFullDimensionSize(Me.Dimension)
-                '' 
-                '' xxxxxxxxxxxxxxxxxx
-                '' GO CHECK THAT THE TESTING MATCHES THIS, AND THAT THE TESTING COVERS ALL OF THESE CASES,
-                '' INCLUDING THE DEFAULT ANGLE CASE.
-                '' xxxxxxxxxxxxxxxxxx
-                '' 
             End Function ' GetFullDimensionSize
 
             ''' <summary>
@@ -1086,10 +1103,6 @@ Partial Public Module Math
             ''' <param name="dimension">Specifies the
             ''' <see cref="D2.Angle.AngularDimension"/> to examine.</param>
             ''' <returns>The half-scale range size.</returns>
-            ''' <exception cref="System.ArgumentOutOfRangeException">When
-            ''' <paramref name="dimension"/> specifies an
-            ''' <see cref="D2.Angle.AngularDimension"/> that is not defined in
-            ''' <see cref="D2.Angle.AngularDimension"/>.</exception>
             ''' <remarks>
             ''' This returns the size of the half range without regard to
             ''' whether it is marked
@@ -1107,6 +1120,7 @@ Partial Public Module Math
 
                 ' No input checking.
 
+                ' This does not need to check for the aliases.
                 If dimension.Equals(D2.Angle.AngularDimension.Radian) Then
                     Return D2.RADIANPERSEMICIRCLE
                 ElseIf dimension.Equals(D2.Angle.AngularDimension.Degree) Then
@@ -1126,47 +1140,35 @@ Partial Public Module Math
                     Return System.Double.NaN
                 End If
 
-                '' 
-                '' xxxxxxxxxxxxxxxxxx
-                '' GO CHECK THAT THE TESTING MATCHES THIS, AND THAT THE TESTING COVERS ALL OF THESE CASES,
-                '' INCLUDING THE DEFAULT ANGLE CASE.
-                '' xxxxxxxxxxxxxxxxxx
-                '' 
             End Function ' GetHalfDimensionSize
 
             ''' <summary>
             ''' Returns the half-scale range size for the current instance.
             ''' </summary>
             ''' <returns>The half-scale range size.</returns>
-            ''' <exception cref="System.ArgumentOutOfRangeException">When the
-            ''' current instance has a <see cref="D2.Angle.Dimension"/> property
-            ''' xxxxxxxxxxxxxxxx
-            ''' that is not defined in
-            ''' <see cref="D2.Angle.AngularDimension"/>.</exception>
             ''' <remarks>
             ''' This returns the size of the half range without regard to
             ''' whether it is marked
             ''' <see cref="D2.Angle.NormalizationStyle.Half"/> or
             ''' <see cref="D2.Angle.NormalizationStyle.Full"/>, not the
             ''' range-limited maximum magnitude. For example, -180 to 180 and
-            ''' 0 to 360 degree ranges both have a range size of 360.
+            ''' 0 to 360 degree ranges both have a half range size of 180.
+            ''' <br/>
+            ''' When the <see cref="D2.Angle.Dimension"/> property of the
+            ''' current instance does not refer to a value defined in
+            ''' <see cref="D2.Angle.Dimension"/>, <c>System.Double.NaN</c> is
+            ''' returned.
             ''' </remarks>
             Public Function GetHalfDimensionSize() As System.Double
                 ' No input checking.
                 Return Angle.GetHalfDimensionSize(Me.Dimension)
-                '' 
-                '' xxxxxxxxxxxxxxxxxx
-                '' GO CHECK THAT THE TESTING MATCHES THIS, AND THAT THE TESTING COVERS ALL OF THESE CASES,
-                '' INCLUDING THE DEFAULT ANGLE CASE.
-                '' xxxxxxxxxxxxxxxxxx
-                '' 
             End Function ' GetHalfDimensionSize
 
             ''' <summary>
-            ''' Determines if the <see cref="D2.Angle.Magnitude"/> property of
-            ''' the current instance is in the normalized range for its
-            ''' <see cref="D2.Angle.Dimension"/> and
-            ''' <see cref="D2.Angle.Style"/> properties.
+            ''' Determines if the <c>D2.Angle.Magnitude</c> property of the
+            ''' current instance is in the normalized range for its
+            ''' <c>D2.Angle.Dimension</c> and <c>D2.Angle.Style</c>
+            ''' properties.
             ''' </summary>
             ''' <returns><c>True</c> if <see cref="D2.Angle.Magnitude"/>
             ''' property is in the normalized range; otherwise, <c>False</c>.
@@ -1176,8 +1178,10 @@ Partial Public Module Math
             Public Function IsNormalized() As System.Boolean
 
                 ' Input checking.
-                If Not (Me.HasDefinedDimension() AndAlso Me.HasDefinedStyle()) Then
-                    Return False
+                If Not (Me.HasDefinedDimension() AndAlso
+                    Me.HasDefinedStyle()) Then
+
+                    Return False ' Early exit.
                 End If
 
                 Dim Mag As System.Double = Me.Magnitude
@@ -1191,51 +1195,38 @@ Partial Public Module Math
                     Return (Mag > -HalfLimit) AndAlso (Mag <= HalfLimit)
                 End If
 
-                '' 
-                '' xxxxxxxxxxxxxxxxxx
-                '' GO CHECK THAT THE TESTING MATCHES THIS, AND THAT THE TESTING COVERS ALL OF THESE CASES,
-                '' INCLUDING THE DEFAULT ANGLE CASE.
-                '' xxxxxxxxxxxxxxxxxx
-                '' 
             End Function ' IsNormalized
 
             ''' <summary>
-            ''' Returns a normalized value for the
-            ''' <see cref="D2.Angle.Magnitude"/> property of the current
-            ''' instance that conforms to the <see cref="D2.Angle.Style"/>
-            ''' property.
-            ''' 
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' GO CHECK THAT THE TESTING MATCHES THIS, AND THAT THE TESTING COVERS ALL OF THESE CASES,
-            ''' INCLUDING THE DEFAULT ANGLE CASE.
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' 
+            ''' Returns a normalized value for the <c>D2.Angle.Magnitude</c>
+            ''' property of the current instance that conforms to the
+            ''' <c>D2.Angle.Style</c> property.
             ''' </summary>
-            ''' <returns> The normalized magnitude, if the
-            ''' <see cref="D2.Angle.Style"/> property of the current instance is
-            ''' defined in <see cref="D2.Angle.NormalizationStyle"/>; otherwise,
-            ''' <c>System.Double.NaN</c>.
-            ''' 
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' GO CHECK THAT THE TESTING MATCHES THIS, AND THAT THE TESTING COVERS ALL OF THESE CASES,
-            ''' INCLUDING THE DEFAULT ANGLE CASE.
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' 
-            ''' </returns>
+            ''' <returns> The normalized magnitude.</returns>
+            ''' <remarks>
+            ''' When the current instance has an undefined
+            ''' <see cref="D2.Angle.Dimension"/> or <see cref="D2.Angle.Style"/>
+            ''' property, <c>System.Double.NaN</c> is returned.
+            ''' <br/> When the <see cref="D2.Angle.Magnitude"/> property of the
+            ''' current instance is <c>System.Double.NaN</c> or an infinite
+            ''' value, that value is returned unchanged.
+            ''' </remarks>
             Public Function GetNormalizedMagnitude() As System.Double
 
                 ' Input checking.
-                If Not Me.HasDefinedStyle Then
-                    ' Not in defined enum.
+                If Not (Me.HasDefinedStyle() AndAlso
+                    Me.HasDefinedDimension()) Then
+                    ' Not in defined enums.
                     'Dim CaughtBy As System.Reflection.MethodBase =
                     '    System.Reflection.MethodBase.GetCurrentMethod
                     'Throw New System.ArgumentOutOfRangeException(
                     '    $"Invalid {NameOf(Style)} in " &
                     '    $"{NameOf(GetNormalizedMagnitude)}.")
-                    Return System.Double.NaN
+                    Return System.Double.NaN ' Early exit.
                 End If
+                If System.Double.IsNaN(Me.Magnitude) OrElse
+                    System.Double.IsInfinity(Me.Magnitude) Then
 
-                If Double.IsInfinity(Me.Magnitude) Then
                     Return Me.Magnitude ' Early exit.
                 End If
 
@@ -1248,12 +1239,11 @@ Partial Public Module Math
                 ' Truncate rounds IntegerPart to the nearest integer toward
                 ' zero, keeping the sign intact.
                 Dim StyleFullSize As System.Double = Me.GetFullDimensionSize
-                Dim Denom As System.Double = Me.GetFullDimensionSize
                 Dim CurrMag As System.Double = Me.Magnitude
                 Dim IntegerPart As System.Double =
-                    System.Math.Truncate(CurrMag / Denom)
+                    System.Math.Truncate(CurrMag / StyleFullSize)
                 Dim FractionalPart As System.Double =
-                    CurrMag - (IntegerPart * Denom)
+                    CurrMag - (IntegerPart * StyleFullSize)
                 If Me.Style.Equals(D2.Angle.NormalizationStyle.Full) Then
                     If FractionalPart < 0.0 Then
                         Return StyleFullSize + FractionalPart
@@ -1281,81 +1271,41 @@ Partial Public Module Math
                     End If
                 End If
 
-                '' 
-                '' xxxxxxxxxxxxxxxxxx
-                '' GO CHECK THAT THE TESTING MATCHES THIS, AND THAT THE TESTING COVERS ALL OF THESE CASES,
-                '' INCLUDING THE DEFAULT ANGLE CASE.
-                '' xxxxxxxxxxxxxxxxxx
-                '' 
             End Function ' GetNormalizedMagnitude
 
             ''' <summary>
-            ''' Returns a normalized <c>D2.Angle</c> based on the specified <paramref name="magnitude"/>, <paramref name="dimension"/>, and <paramref name="style"/>.
+            ''' Returns a normalized <c>D2.Angle</c> based on the specified
+            ''' <paramref name="magnitude"/>, <paramref name="dimension"/>, and
+            ''' <paramref name="style"/>.
             ''' </summary>
-            ''' <param name="magnitude">Specifies the scalar value of the magnitude of the angle.</param>
-            ''' <param name="dimension">Specifies the <see cref="D2.Angle.AngularDimension"/> of the angle.</param>
-            ''' <param name="style">Specifies the <see cref="D2.Angle.NormalizationStyle"/> of the angle.</param>
-            ''' 
-            ''' 
-            ''' 
-            ''' 
-            ''' <returns>
-            ''' Returns a normalized <c>D2.Angle</c> based on the specified <paramref name="magnitude"/>,
-            ''' <paramref name="dimension"/>, and <paramref name="style"/>.
-            ''' Also returns the default angle when
-            ''' <paramref name="dimension"/> is not defined in <see cref="D2.Angle.AngularDimension"/>, or
-            ''' <paramref name="style"/> is not defined in <see cref="D2.Angle.NormalizationStyle"/>.
-            ''' Also returns an <c>Angle</c> with an infinite <c>magnitude</c> when
-            ''' <paramref name="magnitude"/> is infinite.
-            ''' 
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' GO CHECK THAT THE TESTING MATCHES THIS, AND THAT THE TESTING COVERS ALL OF THESE CASES,
-            ''' INCLUDING THE DEFAULT ANGLE CASE.
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' 
-            ''' </returns>
-            ''' 
-            ''' 
-            ''' 
-            ''' 
-            ''' 
-            ''' 
-            ''' 
-            ''' <exception cref="System.ArgumentOutOfRangeException">xxxxxxxxxxxxxxxxWhen
-            ''' 
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' GO CHECK THAT THE TESTING MATCHES THIS, AND THAT THE TESTING COVERS ALL OF THESE CASES,
-            ''' INCLUDING THE DEFAULT ANGLE CASE.
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' 
-            ''' <paramref name="magnitude"/> is <c>NaN</c> or infinite,
-            ''' <paramref name="dimension"/> is not defined in
-            ''' <see cref="D2.Angle.AngularDimension"/>, or
-            ''' <paramref name="style"/> is not defined in
-            ''' <see cref="D2.Angle.NormalizationStyle"/>xxxxxxxxxxxx.</exception>
+            ''' <param name="magnitude">Specifies the scalar value of the
+            ''' magnitude of the angle.</param>
+            ''' <param name="dimension">Specifies the
+            ''' <see cref="D2.Angle.AngularDimension"/> of the angle.</param>
+            ''' <param name="style">Specifies the
+            ''' <see cref="D2.Angle.NormalizationStyle"/> of the angle.</param>
+            ''' <returns> A normalized <see cref="D2.Angle"/> based on the
+            ''' specified <paramref name="magnitude"/>,
+            ''' <paramref name="dimension"/>, and
+            ''' <paramref name="style"/>.</returns>
             ''' <remarks>
-            ''' 
-            ''' 
-            ''' 
-            ''' Assignment of values not defined in
-            ''' <see cref="D2.Angle.NormalizationStyle"/> is allowed, but may
-            ''' cause unexpected results. Calling routines might need to either
-            ''' verify values prior to calling <see cref="New(System.Double,
-            ''' D2.Angle.AngularDimension, D2.Angle.NormalizationStyle)"/> or
-            ''' use special handling, after the call, where those values are
-            ''' valid.
-            ''' 
-            ''' 
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' GO CHECK THAT THE TESTING MATCHES THIS, AND THAT THE TESTING COVERS ALL OF THESE CASES,
-            ''' INCLUDING THE DEFAULT ANGLE CASE.
-            ''' xxxxxxxxxxxxxxxxxx
-            ''' first check is for undefined style.
-            ''' 
-            ''' 
-            ''' 
+            ''' Abnormal values for <paramref name="dimension"/>, and
+            ''' <paramref name="style"/> are acepted as provided, but may cause
+            ''' an unexpected <see cref="D2.Angle.Dimension"/> in the result.
+            ''' Calling routines might need to either verify values prior to
+            ''' calling this or use special handling, after the call, where
+            ''' those values are valid.
+            ''' <br/>When <paramref name="style"/> is not defined in
+            ''' <see cref="D2.Angle.NormalizationStyle"/>, or when
+            ''' <paramref name="dimension"/> is not defined in
+            ''' <see cref="D2.Angle.AngularDimension"/>, the returned angle's
+            ''' magnitude will be <c>System.Double.NaN</c>.
+            ''' <br/>When <paramref name="magnitude"/> is
+            ''' <c>System.Double.NaN</c> or infinite, the returned angle's
+            ''' magnitude will be the same value.
             ''' </remarks>
-            Public Shared Function CreateNormalizedAngle(ByVal magnitude As System.Double,
+            Public Shared Function CreateNormalizedAngle(
+                ByVal magnitude As System.Double,
                 ByVal dimension As D2.Angle.AngularDimension,
                 ByVal style As D2.Angle.NormalizationStyle) As D2.Angle
 
@@ -1385,22 +1335,18 @@ Partial Public Module Math
                 '        $"{NameOf(CreateNormalizedAngle)}.")
                 'End If
 
+                ' Input checking is done in the subsequent call.
+                'xxxxxxxxxx Not DONE????
                 Dim A As New D2.Angle(magnitude, dimension, style)
                 Dim NewM As System.Double = A.GetNormalizedMagnitude()
                 Return New D2.Angle(NewM, dimension, style)
 
-                '' 
-                '' xxxxxxxxxxxxxxxxxx
-                '' GO CHECK THAT THE TESTING MATCHES THIS, AND THAT THE TESTING COVERS ALL OF THESE CASES,
-                '' INCLUDING THE DEFAULT ANGLE CASE.
-                '' xxxxxxxxxxxxxxxxxx
-                '' 
             End Function ' CreateNormalizedAngle
 
             ''' <summary>
-            ''' Returns the normalized angle that is the result of rotating the
-            ''' specified <paramref name="angle"/> by the specified angle of
-            ''' <paramref name="rotation"/>.
+            ''' Returns the normalized <c>D2.Angle</c> that is the result of
+            ''' rotating the specified <paramref name="angle"/> by the specified
+            ''' angle of <paramref name="rotation"/>.
             ''' </summary>
             ''' <param name="angle">Specifies the angle to be rotated.</param>
             ''' <param name="rotation">Specifies the angle, in the same
@@ -1409,21 +1355,30 @@ Partial Public Module Math
             ''' <returns>The normalized angle that is the result of the
             ''' rotation.</returns>
             ''' <remarks>
-            ''' xxxxxxxxxxxxxxxx
-            ''' Out-of-range values of both <paramref name="angle"/> and
-            ''' <paramref name="rotation"/> are accepted.
-            ''' xxxxxxxxxxxxxxxx
+            ''' When either <paramref name="rotation"/> or the
+            ''' <see cref="D2.Angle.Magnitude"/> property of
+            ''' <paramref name="angle"/> are <c>System.Double.NaN</c> or
+            ''' infinite, the returned angle's magnitude will be the same value.
+            ''' <br/>
+            ''' When the <see cref="D2.Angle.style"/> property of
+            ''' <paramref name="angle"/> is not defined in
+            ''' <see cref="D2.Angle.NormalizationStyle"/>, or when the
+            ''' <see cref="D2.Angle.Dimension"/> property of
+            ''' <paramref name="angle"/> is not defined in
+            ''' <see cref="D2.Angle.AngularDimension"/>, the returned angle's
+            ''' magnitude will be <c>System.Double.NaN</c>.
+            ''' <br/>
+            ''' When the <see cref="D2.Angle.magnitude"/> property of
+            ''' <paramref name="angle"/> is <c>System.Double.NaN</c> or
+            ''' infinite, the returned angle's magnitude will have that same
+            ''' value.
             ''' </remarks>
             Public Shared Function GetNormalizedRotatedAngle(
                 ByVal angle As D2.Angle, ByVal rotation As System.Double) _
                 As D2.Angle
 
-                ' xxxxxxxxxx IS INPUT CHECKING NEEDED? xxxxxxxxxx
-                ' xxxxxxxxxx ARE THERE ANY EXCEPTIONS? xxxxxxxxxx
-                ' xxxxxxxxxx NO TEST HAS BEEN ADDED FOR THIS? xxxxxxxxxx
-
+                ' Input checking.
                 '' Suspend to avoid exceptions:
-                '' Input checking.
                 'If System.Double.IsInfinity(angle) OrElse
                 '    System.Double.IsInfinity(rotation) Then
 
@@ -1432,17 +1387,18 @@ Partial Public Module Math
                 '    Throw New System.ArgumentOutOfRangeException(
                 '    $"Arguments to {NameOf(RotateNormalRad)} {MSGCHIV}")
                 'End If
+                If Double.IsInfinity(angle.Magnitude) OrElse
+                    Double.IsInfinity(rotation) Then
+
+                    Return New D2.Angle(
+                        Double.PositiveInfinity, angle.Dimension, angle.Style)
+                    ' Early exit.
+                End If
 
                 ' Calculate and normalize the resulting angle.
                 Return D2.Angle.CreateNormalizedAngle(
                     angle.Magnitude + rotation, angle.Dimension, angle.Style)
 
-                '' 
-                '' xxxxxxxxxxxxxxxxxx
-                '' GO CHECK THAT THE TESTING MATCHES THIS, AND THAT THE TESTING COVERS ALL OF THESE CASES,
-                '' INCLUDING THE DEFAULT ANGLE CASE.
-                '' xxxxxxxxxxxxxxxxxx
-                '' 
             End Function ' GetNormalizedRotatedAngle
 
 #End Region ' "Methods"
@@ -1455,21 +1411,12 @@ Partial Public Module Math
             ''' <c>Dimension</c>, and <c>Style</c>.
             ''' </summary>
             Public Sub New()
-
-                ' xxxxxxxxxx NO TEST HAS BEEN ADDED FOR THIS xxxxxxxxxx
-
                 ' A default constructor is required to allow inheritance.
                 With Me
                     Me.m_Magnitude = D2.Angle.DFLTMAGNITUDE
                     Me.m_Dimension = D2.Angle.DFLTDIMENSION
                     Me.m_Style = D2.Angle.DFLTSTYLE
                 End With
-                '' 
-                '' xxxxxxxxxxxxxxxxxx
-                '' GO CHECK THAT THE TESTING MATCHES THIS, AND THAT THE TESTING COVERS ALL OF THESE CASES,
-                '' INCLUDING THE DEFAULT ANGLE CASE.
-                '' xxxxxxxxxxxxxxxxxx
-                '' 
             End Sub ' New
 
             ''' <summary>
@@ -1490,10 +1437,6 @@ Partial Public Module Math
             Public Sub New(ByVal magnitude As System.Double,
                            ByVal dimension As D2.Angle.AngularDimension,
                            ByVal style As D2.Angle.NormalizationStyle)
-
-                ' xxxxxxxxxx IS INPUT CHECKING NEEDED? xxxxxxxxxx
-                ' xxxxxxxxxx ARE THERE ANY EXCEPTIONS? xxxxxxxxxx
-                ' xxxxxxxxxx NO TEST HAS BEEN ADDED FOR THIS? xxxxxxxxxx
 
                 '' Suspend to avoid exceptions:
                 '' Input checking.
@@ -1527,13 +1470,6 @@ Partial Public Module Math
                     .m_Style = style
                 End With
 
-                '' 
-                '' xxxxxxxxxxxxxxxxxx
-                '' GO CHECK THAT THE TESTING MATCHES THIS, AND THAT THE TESTING COVERS ALL OF THESE CASES,
-                '' INCLUDING THE DEFAULT ANGLE CASE.
-                '' xxxxxxxxxxxxxxxxxx
-                '' 
-
             End Sub ' New
 
             ''' <summary>
@@ -1551,10 +1487,6 @@ Partial Public Module Math
             ''' <paramref name="dimension"/> is invalid.</exception>
             Public Sub New(ByVal magnitude As System.Double,
                            ByVal dimension As D2.Angle.AngularDimension)
-
-                ' xxxxxxxxxx IS INPUT CHECKING NEEDED? xxxxxxxxxx
-                ' xxxxxxxxxx ARE THERE ANY EXCEPTIONS? xxxxxxxxxx
-                ' xxxxxxxxxx NO TEST HAS BEEN ADDED FOR THIS? xxxxxxxxxx
 
                 '' Suspend to avoid exceptions:
                 '' Input checking.
@@ -1580,13 +1512,6 @@ Partial Public Module Math
                     .m_Dimension = dimension
                     .m_Style = D2.Angle.DFLTSTYLE
                 End With
-
-                '' 
-                '' xxxxxxxxxxxxxxxxxx
-                '' GO CHECK THAT THE TESTING MATCHES THIS, AND THAT THE TESTING COVERS ALL OF THESE CASES,
-                '' INCLUDING THE DEFAULT ANGLE CASE.
-                '' xxxxxxxxxxxxxxxxxx
-                '' 
 
             End Sub ' New
 

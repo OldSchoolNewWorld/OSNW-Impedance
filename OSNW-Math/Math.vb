@@ -171,9 +171,9 @@ Public Module Math
     ' https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/
 
     ''' <summary>
-    ''' Check for reasonable equality when using floating point values. A
-    ''' difference of less than or equal to <paramref name="tolerance"/> is
-    ''' considered to establish equality.
+    ''' Checks for reasonable equality when using floating point values. A
+    ''' difference of less than or equal to <c>tolerance</c> is considered to
+    ''' establish equality.
     ''' </summary>
     ''' <param name="refVal">Specifies the reference value to which
     ''' <paramref name="otherVal"/> is compared.</param>
@@ -184,8 +184,7 @@ Public Module Math
     ''' <returns><c>True</c> if the values are reasonably close in value;
     ''' otherwise, <c>False</c>.</returns>
     ''' <remarks>
-    ''' This does the comparison based on an absolute numeric difference. The
-    ''' control value is <paramref name="tolerance"/>. Select
+    ''' This does the comparison based on an absolute numeric difference. Select
     ''' <paramref name="tolerance"/> such that it is a good representation of
     ''' zero, relative to other known or expected values.</remarks>
     Public Function EqualEnoughAbsolute(ByVal refVal As System.Double,
@@ -193,17 +192,17 @@ Public Module Math
         As System.Boolean
 
         ' No input checking.
-        Return System.Math.Abs(otherVal - refVal) <= tolerance
+        Return System.Double.Abs(otherVal - refVal) <= tolerance
     End Function ' EqualEnoughAbsolute
 
     ''' <summary>
-    ''' Check for reasonable equality to zero when using floating point values.
-    ''' Any value less than or equal to <paramref name="tolerance"/> from zero
-    ''' is considered to equal zero.
+    ''' Checks for reasonable equality to zero when using floating point values.
+    ''' Any value less than or equal to <c>tolerance</c> from zero is considered
+    ''' to equal zero.
     ''' </summary>
-    ''' <param name="value">Specifies the value to be compared to zero.</param>
     ''' <param name="tolerance">Specifies the maximum offset from zero which
     ''' is assumed to represent zero.</param>
+    ''' <param name="value">Specifies the value to be compared to zero.</param>
     ''' <returns><c>True</c> if <paramref name="value"/> is reasonably close to
     ''' zero; otherwise, <c>False</c>.</returns>
     ''' <remarks>Use this when an actual zero reference would cause a failure in
@@ -211,15 +210,15 @@ Public Module Math
     ''' Select <paramref name="tolerance"/> such that it is a good
     ''' representation of zero relative to other known or expected
     ''' values.</remarks>
-    Public Function EqualEnoughZero(ByVal value As System.Double,
-        ByVal tolerance As System.Double) As System.Boolean
+    Public Function EqualEnoughZero(ByVal tolerance As System.Double,
+                                    ByVal value As System.Double) As System.Boolean
 
         ' No input checking.
-        Return System.Math.Abs(value) <= System.Math.Abs(tolerance)
+        Return System.Double.Abs(value) <= System.Double.Abs(tolerance)
     End Function ' EqualEnoughZero
 
     ''' <summary>
-    ''' Check for reasonable equality, within a specified ratio, when using
+    ''' Checks for reasonable equality, within a specified ratio, when using
     ''' floating point values.
     ''' </summary>
     ''' <param name="refVal">Specifies the reference value to which
@@ -235,8 +234,10 @@ Public Module Math
     ''' <remarks>
     ''' This does the comparison based on scale, not on an absolute numeric
     ''' difference. The control value is <paramref name="ratio"/> multiplied
-    ''' by <paramref name="refVal"/>, to determine the minimum difference that
-    ''' excludes equality.<br/>
+    ''' by <paramref name="refVal"/>, to determine the maximum difference that
+    ''' satisfies equality. Infinities are only equal to other infinities with
+    ''' the same sign.
+    ''' <br/>
     ''' There is no way to scale a comparison to zero. When a zero reference
     ''' would cause a failure here, use
     ''' <see cref="EqualEnoughZero(System.Double, System.Double)"/>.
@@ -253,8 +254,14 @@ Public Module Math
                 $"Arguments to {NameOf(EqualEnough)} {MSGCHZV} {MSGUEEZ}")
         End If
 
-        Return System.Math.Abs(otherVal - refVal) <=
-            System.Math.Abs(ratio * refVal)
+        If System.Double.IsInfinity(refVal) Then
+            Return System.Double.IsInfinity(otherVal) AndAlso
+                System.Double.Sign(refVal).Equals(System.Double.Sign(otherVal))
+            ' Early exit.
+        End If
+
+        Return System.Double.Abs(otherVal - refVal) <=
+            System.Double.Abs(ratio * refVal)
 
     End Function ' EqualEnough
 
@@ -263,54 +270,94 @@ Public Module Math
 #Region "Minimum/Maximum Implementations"
 
     ''' <summary>
-    ''' Compares an array of values to compute which has the greatest magnitude.
+    ''' Compares an array of values to compute which has the smallest value.
     ''' </summary>
-    ''' <param name="values">Specifies an array of values to examine.</param>
-    ''' <returns>The magnitude of greatest absolute value in the
-    ''' array.</returns>
+    ''' <param name="values">Specifies the array of values to be examined.
+    ''' Infinite values are allowed; <c>NaN</c> values are (effectively)
+    ''' ignored.</param>
+    ''' <returns>The smallest value in the array.</returns>
     ''' <remarks>
-    ''' An empty array returns <c>System.Double.NaN</c>. When the array is not
-    ''' empty, this always returns a positive magnitude.
-    ''' <see cref="MaxValue"/> and <c>MaxMagnitude</c> differ in their handling
-    ''' of negative arguments: <c>MaxValue({4, -5})</c> returns 4;
-    ''' <c>MaxMagnitude({4, -5})</c> returns 5.
+    ''' An empty array returns <see cref="System.Double.NaN"/>.
+    ''' <see cref="MinValue"/> and <c>MinMagnitude</c> differ in their handling
+    ''' of negative arguments: <c>MinValue({4, -5})</c> returns -5;
+    ''' <c>MinMagnitude({4, -5})</c> returns 4.
     ''' <br/><example>
-    ''' This example shows how to call <c>MaxMagnitude</c>.
+    ''' This example shows how to call <c>MinValue</c>.
     ''' <code>
-    ''' Dim MaxAll As System.Double =
-    '''     OSNW.Math.MaxMagnitude({x0, y0, r0, x1, y1, r1})
+    ''' Dim MinAll As System.Double =
+    '''     OSNW.Math.MinValue({x0, y0, r0, x1, y1, r1})
     ''' </code></example>
     ''' </remarks>
-    Public Function MaxMagnitude(
+    Public Function MinValue(
         ByVal ParamArray values() As System.Double) As System.Double
 
         ' Input checking.
         If values.Length.Equals(0) Then
-            Return System.Double.NaN
+            Return System.Double.NaN ' Early exit.
         End If
 
-        Dim Max As System.Double ' Starts at zero.
-        Dim AbsVal As System.Double
+        Dim Min As System.Double = values(0)
         For Each OneValue As System.Double In values
-            AbsVal = System.Math.Abs(OneValue)
-            If AbsVal > Max Then
-                Max = AbsVal
+            If OneValue < Min Then
+                Min = OneValue
             End If
         Next
-        Return Max
+        Return Min
 
-    End Function ' MaxMagnitude
+    End Function ' MinValue
+
+    ''' <summary>
+    ''' Compares an array of values to compute which has the smallest magnitude.
+    ''' </summary>
+    ''' <param name="values">Specifies the array of values to be examined.
+    ''' Infinite values are allowed; <c>NaN</c> values are (effectively)
+    ''' ignored.</param>
+    ''' <returns>The magnitude of smallest absolute value in the
+    ''' array.</returns>
+    ''' <remarks>
+    ''' An empty array returns <see cref="System.Double.NaN"/>. When the array
+    ''' is not empty, this always returns a positive magnitude.
+    ''' <see cref="MinValue"/> and <c>MinMagnitude</c> differ in their handling
+    ''' of negative arguments: <c>MinValue({4, -5})</c> returns -5;
+    ''' <c>MinMagnitude({4, -5})</c> returns 4.
+    ''' <br/><example>
+    ''' This example shows how to call <c>MinMagnitude</c>.
+    ''' <code>
+    ''' Dim MinAll As System.Double =
+    '''     OSNW.Math.MinMagnitude({x0, y0, r0, x1, y1, r1})
+    ''' </code></example>
+    ''' </remarks>
+    Public Function MinMagnitude(
+        ByVal ParamArray values() As System.Double) As System.Double
+
+        ' Input checking.
+        If values.Length.Equals(0) Then
+            Return System.Double.NaN ' Early exit.
+        End If
+
+        Dim Min As System.Double = values(0)
+        Dim AbsVal As System.Double
+        For Each OneValue As System.Double In values
+            AbsVal = System.Double.Abs(OneValue)
+            If AbsVal < Min Then
+                Min = AbsVal
+            End If
+        Next
+        Return Min
+
+    End Function ' MinMagnitude
 
     ''' <summary>
     ''' Compares an array of values to compute which has the greatest value.
     ''' </summary>
-    ''' <param name="values">Specifies the array of values to be
-    ''' examined.</param>
+    ''' <param name="values">Specifies the array of values to be examined.
+    ''' Infinite values are allowed; <c>NaN</c> values are (effectively)
+    ''' ignored.</param>
     ''' <returns>The greatest value in the array.</returns>
     ''' <remarks>
-    ''' An empty array returns <c>System.Double.NaN</c>.
-    ''' <see cref="MaxValue"/> and <c>MaxMagnitude</c> differ in their handling
-    ''' of negative arguments: <c>MaxValue({4, -5})</c> returns 4;
+    ''' An empty array returns <see cref="System.Double.NaN"/>. <c>MaxValue</c>
+    ''' and <see cref="MaxMagnitude"/> differ in their handling of negative
+    ''' arguments: <c>MaxValue({4, -5})</c> returns 4;
     ''' <c>MaxMagnitude({4, -5})</c> returns 5.
     ''' <br/><example>
     ''' This example shows how to call <c>MaxValue</c>.
@@ -327,7 +374,7 @@ Public Module Math
 
         ' Input checking.
         If values.Length.Equals(0) Then
-            Return System.Double.NaN
+            Return System.Double.NaN ' Early exit.
         End If
 
         Dim Max As System.Double ' Starts at zero.
@@ -341,95 +388,63 @@ Public Module Math
     End Function ' MaxValue
 
     ''' <summary>
-    ''' Compares an array of values to compute which has the smallest magnitude.
+    ''' Compares an array of values to compute which has the greatest magnitude.
     ''' </summary>
-    ''' <param name="values">Specifies an array of values to examine.</param>
-    ''' <returns>The magnitude of smallest absolute value in the
+    ''' <param name="values">Specifies the array of values to be examined.
+    ''' Infinite values are allowed; <c>NaN</c> values are (effectively)
+    ''' ignored.</param>
+    ''' <returns>The magnitude of greatest absolute value in the
     ''' array.</returns>
     ''' <remarks>
-    ''' An empty array returns <c>System.Double.NaN</c>. When the array is not
-    ''' empty, this always returns a positive magnitude.
-    ''' <see cref="MinValue"/> and <c>MinMagnitude</c> differ in their handling
-    ''' of negative arguments: <c>MinValue({4, -5})</c> returns -5;
-    ''' <c>MinMagnitude({4, -5})</c> returns 4.
+    ''' An empty array returns <see cref="System.Double.NaN"/>. When the array
+    ''' is not empty, this always returns a positive magnitude.
+    ''' <see cref="MaxValue"/> and <c>MaxMagnitude</c> differ in their handling
+    ''' of negative arguments: <c>MaxValue({4, -5})</c> returns 4;
+    ''' <c>MaxMagnitude({4, -5})</c> returns 5.
     ''' <br/><example>
-    ''' This example shows how to call <c>MinMagnitude</c>.
+    ''' This example shows how to call <c>MaxMagnitude</c>.
     ''' <code>
-    ''' Dim MinAll As System.Double =
-    '''     OSNW.Math.MinMagnitude({x0, y0, r0, x1, y1, r1})
+    ''' Dim MaxAll As System.Double =
+    '''     OSNW.Math.MaxMagnitude({x0, y0, r0, x1, y1, r1})
     ''' </code></example>
     ''' </remarks>
-    Public Function MinMagnitude(
+    Public Function MaxMagnitude(
         ByVal ParamArray values() As System.Double) As System.Double
 
         ' Input checking.
         If values.Length.Equals(0) Then
-            Return System.Double.NaN
+            Return System.Double.NaN ' Early exit.
         End If
 
-        Dim Min As System.Double = values(0)
+        Dim Max As System.Double ' Starts at zero.
         Dim AbsVal As System.Double
         For Each OneValue As System.Double In values
-            AbsVal = System.Math.Abs(OneValue)
-            If AbsVal < Min Then
-                Min = AbsVal
+            AbsVal = System.Double.Abs(OneValue)
+            If AbsVal > Max Then
+                Max = AbsVal
             End If
         Next
-        Return Min
+        Return Max
 
-    End Function ' MinMagnitude
-
-    ''' <summary>
-    ''' Compares an array of values to compute which has the smallest value.
-    ''' </summary>
-    ''' <param name="values">Specifies the array of values to be
-    ''' examined.</param>
-    ''' <returns>The smallest value in the array.</returns>
-    ''' <remarks>
-    ''' An empty array returns <c>System.Double.NaN</c>.
-    ''' <see cref="MinValue"/> and <c>MinMagnitude</c> differ in their handling
-    ''' of negative arguments: <c>MinValue({4, -5})</c> returns -5;
-    ''' <c>MinMagnitude({4, -5})</c> returns 4.
-    ''' <br/><example>
-    ''' This example shows how to call <c>MinValue</c>.
-    ''' <code>
-    ''' Dim MinAll As System.Double =
-    '''     OSNW.Math.MinValue({x0, y0, r0, x1, y1, r1})
-    ''' </code></example>
-    ''' </remarks>
-    Public Function MinValue(
-        ByVal ParamArray values() As System.Double) As System.Double
-
-        ' Input checking.
-        If values.Length.Equals(0) Then
-            Return System.Double.NaN
-        End If
-
-        Dim Min As System.Double = values(0)
-        For Each OneValue As System.Double In values
-            If OneValue < Min Then
-                Min = OneValue
-            End If
-        Next
-        Return Min
-
-    End Function ' MinValue
+    End Function ' MaxMagnitude
 
 #End Region ' "Minimum/Maximum Implementations"
 
     ''' <summary>
     ''' Computes the geometric mean of an array of values.
     ''' </summary>
-    ''' <param name="values">Specifies the array of values to be
-    ''' evaluated.</param>
+    ''' <param name="values">Specifies the array of values to be evaluated.
+    ''' </param>
     ''' <returns>The geometric mean of the values.</returns>
     ''' <remarks>
-    ''' An empty array returns <c>System.Double.NaN</c>.<br/>
     ''' The geometric mean is the nth root of the product of n values. It is
     ''' only valid for positive, non-zero, values. To avoid an exception, any
-    ''' negative or zero value causes the result to be
-    ''' <c>System.Double.NaN</c>.<br/>
-    ''' <example>
+    ''' negative, zero, or <see cref="System.Double.NaN"/> value causes the
+    ''' result to be <see cref="System.Double.NaN"/>.
+    ''' <see cref="System.Double.PositiveInfinity"/> is allowed, but the
+    ''' result will always be <see cref="System.Double.PositiveInfinity"/>. An
+    ''' empty array returns <see cref="System.Double.NaN"/>.
+    ''' <br/><example>
     ''' This example shows how to call <c>GeometricMean</c>.
     ''' <code>
     ''' Dim M as System.Double = OSNW.Math.GeometricMean({2.0, 3.0, 6.0})
@@ -440,7 +455,7 @@ Public Module Math
 
         ' Input checking.
         If values.Length = 0 Then
-            Return System.Double.NaN
+            Return System.Double.NaN ' Early exit.
         End If
 
         Dim Product As System.Double = 1.0
@@ -451,45 +466,55 @@ Public Module Math
             Product *= OneValue
         Next
         ' On getting here,
-        Return System.Math.Pow(Product, 1.0 / values.Length)
+        Return System.Double.Pow(Product, 1.0 / values.Length)
 
     End Function ' GeometricMean
 
     ''' <summary>
-    ''' Rounds a double-precision floating-point value to the nearest multiple
-    ''' of the specified value. A parameter specifies how to round the interim
-    ''' value if it is midway between two other numbers.
+    ''' Rounds a value to the nearest multiple of the specified
+    ''' <c>multipleOf</c>, using the specified <c>MidpointRounding</c> mode.
     ''' </summary>
-    ''' <param name="nearest">Specification for the value to which
+    ''' <param name="multipleOf">Specifies the value to which
     ''' <paramref name="value"/> should be rounded.</param>
-    ''' <param name="value">A double-precision, floating-point, number to be
-    ''' rounded.</param>
-    ''' <param name="mode">Specification for how to round
+    ''' <param name="value">Specifies the  number to be rounded.</param>
+    ''' <param name="mode">Optional. Specifies how to round
     ''' <paramref name="value"/> if it is midway between two potential results.
-    ''' This is optional. If not specified, System.MidpointRounding.ToEven is
+    ''' If not specified, <see cref="System.MidpointRounding.ToEven"/> is
     ''' assumed.</param>
-    ''' <returns>
-    ''' The nearest multiple of <paramref name="value"/>. If the interim
-    ''' rounding point value is halfway between two digits, one of which is even
-    ''' and the other odd, then <paramref name="mode"/> determines which of the
-    ''' two is used.
-    ''' </returns>
-    ''' <exception cref="System.ArgumentException"> Thrown when
-    ''' <paramref name="nearest"/> is negative or zero.</exception>
-    Public Function RoundTo(ByVal nearest As System.Double,
+    ''' <returns>The nearest multiple of the specified
+    ''' <paramref name="multipleOf"/>, using the specified
+    ''' <see cref="System.MidpointRounding"/> mode. If the rounding point value
+    ''' is halfway between two digits, one of which is even and the other odd,
+    ''' then <paramref name="mode"/> determines which of the two is used. Also
+    ''' returns <see cref="System.Double.NaN"/> when
+    ''' <paramref name="multipleOf"/> is negative, zero, infinite or
+    ''' <see cref="System.Double.NaN"/>. Also returns
+    ''' <see cref="System.Double.NaN"/> when <paramref name="value"/> is
+    ''' infinite or <see cref="System.Double.NaN"/>.</returns>
+    Public Function RoundTo(ByVal multipleOf As System.Double,
         ByVal value As System.Double,
         Optional ByVal mode As System.MidpointRounding = OSNWDFLTMPR) _
         As System.Double
 
         ' Input checking.
-        If nearest <= 0.0 Then
-            'Dim CaughtBy As System.Reflection.MethodBase =
-            '    System.Reflection.MethodBase.GetCurrentMethod
-            Throw New System.ArgumentOutOfRangeException(NameOf(nearest), MSGVMBGTZ)
+        If multipleOf <= 0.0 OrElse
+            System.Double.IsInfinity(multipleOf) OrElse
+            System.Double.IsNaN(multipleOf) Then
+
+            Return Double.NaN ' Early exit.
+        End If
+        If System.Double.IsInfinity(value) OrElse
+            System.Double.IsNaN(value) Then
+
+            Return Double.NaN ' Early exit.
         End If
 
-        Dim Interim As System.Double = System.Math.Round(value / nearest, mode)
-        Return Interim * nearest
+        'Dim Multiples As System.Double = value / multipleOf
+        'Dim RoundMults As System.Double = System.Double.Round(Multiples, mode)
+        'Dim Result As System.Double = RoundMults * multipleOf
+        'Return Result
+
+        Return System.Double.Round(value / multipleOf, mode) * multipleOf
 
     End Function ' RoundTo
 

@@ -132,7 +132,7 @@ Partial Public Module Math
         Dim C2 As System.Double = 2.0 * c
         Dim A2 As System.Double = 2.0 * a
 
-        If EqualEnoughZero(Sum, UseZeroTol) Then
+        If EqualEnoughZero(UseZeroTol, Sum) Then
             ' (-b PLUS DiscRoot) near zero
 
             ' Consider these values to be close enough to cause catastrophic
@@ -147,7 +147,7 @@ Partial Public Module Math
             x0 = C2 / Sum ' Avoid catastrophic cancellation.
             x1 = Sum / A2 ' Normal.
 
-        ElseIf EqualEnoughZero(Diff, UseZeroTol) Then
+        ElseIf EqualEnoughZero(UseZeroTol, Diff) Then
             ' (-b MINUS DiscRoot) near zero.
 
             ' Similar to above,
